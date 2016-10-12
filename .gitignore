@@ -1,0 +1,10 @@
+.idea/
+.vagrant/
+.venv/
+db.sqlite3
+local.py
+main.yml
+ngt_archive.egg-info/
+ngt_archive/__pycache__/
+static
+vagrant.retry
