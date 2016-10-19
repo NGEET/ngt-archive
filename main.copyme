@@ -1,0 +1,7 @@
+
+
+secret_key: 'changemeto a secret'
+
+
+ldap_bind_password: <change to ldap bind password >
+ldap_bind_dn: cn=<user name>,cn=users,dc=flux,dc=local
