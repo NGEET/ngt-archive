@@ -1,0 +1,26 @@
+{% extends "rest_framework/base.html" %}
+{% load str_utils %}
+{% block title %}{% if name %}{{ name }} – {% endif %}NGEE Tropics Archive Service{% endblock %}
+{% block bootstrap_navbar_variant %}navbar-default{% endblock %}
+{% block branding %}
+    <a class='navbar-brand' rel="nofollow" href='.'>
+        NGEE Tropics Archive Service
+    </a>
+{% endblock %}
+{% block bootstrap_theme %}
+    <link rel="stylesheet" href="http://bootswatch.com/darkly/bootstrap.min.css" type="text/css">
+{% endblock %}
+
+{% block breadcrumbs %}
+    <ul class="breadcrumb">
+        {% for breadcrumb_name, breadcrumb_url in breadcrumblist %}
+            {% if forloop.last %}
+                <li class="active"><a
+                        href="{{ breadcrumb_url }}">{{ breadcrumb_name|breadcrumb_convert:breadcrumb_url }}</a></li>
+            {% else %}
+                <li><a href="{{ breadcrumb_url }}">{{ breadcrumb_name|breadcrumb_convert:breadcrumb_url }}</a></li>
+            {% endif %}
+
+        {% endfor %}
+    </ul>
+{% endblock %}

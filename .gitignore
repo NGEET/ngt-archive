@@ -1,9 +1,14 @@
-.idea/
+*.egg-info/
+*.py[cod]
+.env.idea/
+.idea
 .vagrant/
 .venv/
+__pycache__/
 db.sqlite3
 local.py
 main.yml
+ngt-archive.log
 ngt_archive.egg-info/
 ngt_archive/__pycache__/
 static
