@@ -8,6 +8,10 @@ setgid vagrant
 # Start the app with the default number of processes
 script
     cd {{ project_root }}
-    uwsgi --http-socket :9999 --plugins python3 --module=ngt_archive.wsgi --chdir {{ project_root }} --static-map /static={{ project_root }}/static/ --enable-threads --virtualenv {{ project_root }}/.venv --uid vagrant --gid vagrant
+    uwsgi --http-socket :9999 --plugins python3 \
+        --module=ngt_archive.wsgi --chdir {{ project_root }} \
+        --static-map /static={{ project_root }}/static/ --enable-threads \
+        --virtualenv {{ project_root }}/.venv --uid vagrant --gid vagrant \
+        --logto {{ project_root }}/ngt-archive.log
 
 end script
