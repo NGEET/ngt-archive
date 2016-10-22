@@ -8,6 +8,18 @@ MANAGERS = ADMINS
 
 SECRET_KEY = '{{ secret_key }}'
 
+DATABASES = {
+
+'default': {
+'ENGINE': 'django.db.backends.postgresql_psycopg2',
+'NAME': '{{ db_name }}',
+'USER': '{{ db_user }}',
+'PASSWORD': '{{ db_password }}',
+'HOST': '{{ db_host }}',
+'PORT': {{ db_port }}'',
+}
+}
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/

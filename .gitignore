@@ -13,3 +13,8 @@ ngt_archive.egg-info/
 ngt_archive/__pycache__/
 static
 vagrant.retry
+ngee_tropics.sql
+sites.txt
+plots.txt
+archive_api_import.json
+

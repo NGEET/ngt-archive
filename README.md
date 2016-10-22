@@ -24,7 +24,7 @@ development and testing purposes. See deployment for notes on how to deploy the 
 WFSFA is a Django application which requires:
 
 * Python (>= 3.4, 3.5)
-* Django (1.8, 1.9)
+* Django (> 1.8)
 
 ###Setup Development
 There is an option for virtual machine development and local machine 
@@ -100,17 +100,37 @@ Create the database and load some data
 ./manage.py createsuperuser
 ```
 
-Run the server
+Load Test Users *superadmin, admin, auser*. Passwords are 
+*ngeet2016, ngeetdata, ngeetdata* respectively.
 
 ```
-./manage.py runserver
+./manage.py loaddata test_auth.json 
+```
+
+Load Archive Service Test Data
+```
+./manage.py loaddata test_archive_api.json 
+```
+
+Run a develeop server
+
+```
+./manage.py runserver  0.0.0.0:8888
 Performing system checks...
 
 System check identified no issues (0 silenced).
 August 05, 2016 - 23:48:34
 Django version 1.9.8, using settings 'wfsfa_broker.settings'
-Starting development server at http://127.0.0.1:8000/
+Starting development server at http://127.0.0.1:8888/
 Quit the server with CONTROL-C.
+```
+**OR** use the *ngt_archive* service on ubuntu. This
+service starts up at http://0.0.0.0:9999
+
+```
+sudo initctl start ngt_archive
+sudo initctl stop ngt_archive
+sudo initctl list | grep ngt_archive
 ```
 
 
