@@ -5,8 +5,31 @@ stop on runlevel [!2345]
 setuid vagrant
 setgid vagrant
 
+start on starting apache2
+stop on stopped apache2
+
+start on starting postgresql
+stop on stopped postgresql
+
+# Restart the process if it dies with a signal
+# or exit code not given by the 'normal exit' stanza.
+respawn
+
+# Give up if restart occurs 10 times in 90 seconds.
+respawn limit 10 90
+
+pre-start script
+  logger "ngt_archive is starting"
+end script
+
+post-start script
+  logger "ngt_archive has started"
+end script
+
+
 # Start the app with the default number of processes
 script
+    logger "About to start ngt_archive"
     cd {{ project_root }}
     uwsgi --http-socket :9999 --plugins python3 \
         --module=ngt_archive.wsgi --chdir {{ project_root }} \

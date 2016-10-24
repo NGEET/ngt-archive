@@ -1,4 +1,4 @@
-{% extends "rest_framework/base.html" %}
+{% extends "rest_framework/api.html" %}
 {% load str_utils %}
 {% block title %}{% if name %}{{ name }} – {% endif %}NGEE Tropics Archive Service{% endblock %}
 {% block bootstrap_navbar_variant %}navbar-default{% endblock %}
@@ -8,7 +8,7 @@
     </a>
 {% endblock %}
 {% block bootstrap_theme %}
-    <link rel="stylesheet" href="http://bootswatch.com/darkly/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="{% if request.is_secure %}HTTPS{% else %}HTTP{% endif %}://bootswatch.com/darkly/bootstrap.min.css" type="text/css">
 {% endblock %}
 
 {% block breadcrumbs %}

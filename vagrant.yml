@@ -8,6 +8,7 @@
   vars:
     domain: localhost
     http_port: 9999
+    apache_ssl_port: 9443
     project_root: /vagrant
     project_dir: /vagrant/ngt_archive
   vars_files:
@@ -16,6 +17,7 @@
   tasks:
       - name: update apt cache
         apt: update_cache=yes
+
       - name: Install Python and Sqlite3 Packages
         apt: name={{ item }} state=present
         with_items:
@@ -35,6 +37,62 @@
           - python
           - app
 
+      # Setup up Postgres  DB
+      - name: Install Postgres
+        apt: name={{ item }} state=present
+        with_items:
+            - postgresql
+            - postgresql-contrib
+            - libpq-dev
+            - python-dev
+            - python3-dev
+            - python-psycopg2
+        tags:
+          - db
+          - base
+          - app
+
+
+      - name: Ensure the PostgreSQL service is running
+        service: name=postgresql state=started enabled=yes
+
+      - name: Setup Postgres DB
+        become: yes
+        become_user: postgres
+        postgresql_db: name={{ db_user }} state=present login_user=postgres
+        tags:
+          - app
+
+
+      # This sets up the postgres user.
+      - name: Ensure postgres user has access to the database
+        become: yes
+        become_user: postgres
+        postgresql_user: db={{ db_user }}
+                         name={{ db_user }}
+                         password={{ db_password }}
+                         priv=ALL
+                         role_attr_flags=CREATEDB
+                         state=present
+        tags:
+          - app
+
+      - name: Ensure vagrant has access to the database
+        become: yes
+        become_user: postgres
+        postgresql_user: db={{ db_user }}
+                         name=vagrant
+                         password={{ db_password }}
+                         priv=ALL
+                         role_attr_flags=SUPERUSER,CREATEDB
+                         state=present
+        tags:
+          - app
+
+
+      #####################
+      ## Setup Application
+
       - name: Create a local settings file in {{ project_dir }}
         template: src=settings_local_py.jinja2
                   dest={{ project_dir }}/local.py
@@ -52,6 +110,7 @@
         pip: name={{ item }} virtualenv={{ project_root }}/.venv virtualenv_python=/usr/bin/python3.4 chdir={{ project_root }}
         with_items:
             - django
+            - psycopg2
             - -e .
         tags:
          - app
@@ -90,8 +149,72 @@
         tags:
          - app
 
+      ############################
+      ## Apache Support
+      ############################
+      - name: install required packages
+        apt: name={{ item }} state=present
+        with_items:
+          - apache2
+          - libapache2-mod-proxy-uwsgi
+        tags:
+           - webserver
+      - name: enabled apache modules
+        apache2_module: name={{ item }} state=present
+        with_items:
+          - include
+          - headers
+          - expires
+          - ssl
+          - proxy
+          - proxy_uwsgi
+        tags:
+           - webserver
+      - name: apache2 listen on port {{ apache_ssl_port }}
+        lineinfile: dest=/etc/apache2/ports.conf regexp="^Listen {{ apache_ssl_port }}" line="Listen {{ apache_ssl_port }}" state=present
+        notify: restart apache2
+        tags:
+           - webserver
+      - name: Links /vagrant with /var/www/localhost
+        file: src=/vagrant dest=/var/www/localhost state=link
+        tags:
+           - webserver
+      - name: Creates SSL certificate directory
+        file: path=/etc/apache2/ssl state=directory
+        tags:
+           - webserver
+      - stat: path=/etc/apache2/ssl/server.crt
+        register: server_cert_file
+        tags:
+           - webserver
+      - name: create self-signed SSL cert
+        command: openssl req -x509 -nodes -days 1095 -newkey rsa:2048 -out /etc/apache2/ssl/server.crt -keyout /etc/apache2/ssl/server.key -subj "/C=US/ST=California/L=Berkeley/O=LBNL/OU=CRD/CN=localhost"
+        notify: restart apache2
+        when: server_cert_file.stat.exists == False
+        tags:
+           - webserver
+#      - name: apache2 virtualhost on port {{ apache_ssl_port }}
+#        lineinfile: dest=/etc/apache2/sites-available/000-default.conf regexp="^<VirtualHost \*:" line="<VirtualHost *:{{ apache_ssl_port }}>"
+#        notify: restart apache2
+#        tags:
+#           - webserver
+      - name: create virtual host file
+        template: src=virtualhost.conf dest=/etc/apache2/sites-available/{{ domain }}.conf
+        tags:
+           - webserver
+      - name: a2ensite {{ domain }}
+        command: a2ensite {{ domain }}
+        args:
+          creates: /etc/apache2/sites-enabled/{{ domain }}.conf
+        notify:
+          - restart apache2
+        tags:
+           - webserver
+
 
   handlers:
       - name: restart ngt_archive
         service: name=ngt_archive state=restarted
+      - name: restart apache2
+        service: name=apache2 state=restarted
 

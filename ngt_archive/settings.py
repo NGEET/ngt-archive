@@ -31,7 +31,6 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'ngt_archive',
-    'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'archive_api.apps.ArchiveApiConfig',
+    'rest_framework',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -57,8 +57,8 @@ ROOT_URLCONF = 'ngt_archive.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
-        ,
+        # 'DIRS': [os.path.join(BASE_DIR, 'templates')]
+        # ,
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

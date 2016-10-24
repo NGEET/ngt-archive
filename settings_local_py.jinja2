@@ -8,6 +8,18 @@ MANAGERS = ADMINS
 
 SECRET_KEY = '{{ secret_key }}'
 
+DATABASES = {
+
+'default': {
+'ENGINE': 'django.db.backends.postgresql_psycopg2',
+'NAME': '{{ db_name }}',
+'USER': '{{ db_user }}',
+'PASSWORD': '{{ db_password }}',
+'HOST': '{{ db_host }}',
+'PORT': {{ db_port }}'',
+}
+}
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
@@ -52,3 +64,6 @@ AUTHENTICATION_BACKENDS = (
     'django_auth_ldap.backend.LDAPBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
+
+# django app running behind a reverse proxy
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

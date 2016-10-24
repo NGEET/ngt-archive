@@ -1,4 +1,8 @@
-
+db_name: ngt_archive
+db_user: ngt_archive
+db_password: changmetosomethingsecret
+db_host: localhost
+db_port: ''
 
 secret_key: 'changemeto a secret'
 
