@@ -8,7 +8,7 @@
     </a>
 {% endblock %}
 {% block bootstrap_theme %}
-    <link rel="stylesheet" href="http://bootswatch.com/darkly/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="{% if request.is_secure %}HTTPS{% else %}HTTP{% endif %}://bootswatch.com/darkly/bootstrap.min.css" type="text/css">
 {% endblock %}
 
 {% block breadcrumbs %}

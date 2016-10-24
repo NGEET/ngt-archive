@@ -8,6 +8,7 @@
   vars:
     domain: localhost
     http_port: 9999
+    apache_ssl_port: 9443
     project_root: /vagrant
     project_dir: /vagrant/ngt_archive
   vars_files:
@@ -16,6 +17,7 @@
   tasks:
       - name: update apt cache
         apt: update_cache=yes
+
       - name: Install Python and Sqlite3 Packages
         apt: name={{ item }} state=present
         with_items:
@@ -147,8 +149,72 @@
         tags:
          - app
 
+      ############################
+      ## Apache Support
+      ############################
+      - name: install required packages
+        apt: name={{ item }} state=present
+        with_items:
+          - apache2
+          - libapache2-mod-proxy-uwsgi
+        tags:
+           - webserver
+      - name: enabled apache modules
+        apache2_module: name={{ item }} state=present
+        with_items:
+          - include
+          - headers
+          - expires
+          - ssl
+          - proxy
+          - proxy_uwsgi
+        tags:
+           - webserver
+      - name: apache2 listen on port {{ apache_ssl_port }}
+        lineinfile: dest=/etc/apache2/ports.conf regexp="^Listen {{ apache_ssl_port }}" line="Listen {{ apache_ssl_port }}" state=present
+        notify: restart apache2
+        tags:
+           - webserver
+      - name: Links /vagrant with /var/www/localhost
+        file: src=/vagrant dest=/var/www/localhost state=link
+        tags:
+           - webserver
+      - name: Creates SSL certificate directory
+        file: path=/etc/apache2/ssl state=directory
+        tags:
+           - webserver
+      - stat: path=/etc/apache2/ssl/server.crt
+        register: server_cert_file
+        tags:
+           - webserver
+      - name: create self-signed SSL cert
+        command: openssl req -x509 -nodes -days 1095 -newkey rsa:2048 -out /etc/apache2/ssl/server.crt -keyout /etc/apache2/ssl/server.key -subj "/C=US/ST=California/L=Berkeley/O=LBNL/OU=CRD/CN=localhost"
+        notify: restart apache2
+        when: server_cert_file.stat.exists == False
+        tags:
+           - webserver
+#      - name: apache2 virtualhost on port {{ apache_ssl_port }}
+#        lineinfile: dest=/etc/apache2/sites-available/000-default.conf regexp="^<VirtualHost \*:" line="<VirtualHost *:{{ apache_ssl_port }}>"
+#        notify: restart apache2
+#        tags:
+#           - webserver
+      - name: create virtual host file
+        template: src=virtualhost.conf dest=/etc/apache2/sites-available/{{ domain }}.conf
+        tags:
+           - webserver
+      - name: a2ensite {{ domain }}
+        command: a2ensite {{ domain }}
+        args:
+          creates: /etc/apache2/sites-enabled/{{ domain }}.conf
+        notify:
+          - restart apache2
+        tags:
+           - webserver
+
 
   handlers:
       - name: restart ngt_archive
         service: name=ngt_archive state=restarted
+      - name: restart apache2
+        service: name=apache2 state=restarted
 
