@@ -156,7 +156,6 @@
         apt: name={{ item }} state=present
         with_items:
           - apache2
-          - libapache2-mod-proxy-uwsgi
         tags:
            - webserver
       - name: enabled apache modules
@@ -167,7 +166,6 @@
           - expires
           - ssl
           - proxy
-          - proxy_uwsgi
         tags:
            - webserver
       - name: apache2 listen on port {{ apache_ssl_port }}
