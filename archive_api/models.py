@@ -63,8 +63,8 @@ class Site(models.Model):
     location_bounding_box_lr_latitude = models.FloatField(blank=True, null=True)
     location_bounding_box_lr_longitude = models.FloatField(blank=True, null=True)
     site_urls = models.TextField(blank=True, null=True)
-    contact = models.ManyToManyField(Contact)
-    pi = models.ManyToManyField(Contact, related_name='+')
+    contacts = models.ManyToManyField(Contact)
+    pis = models.ManyToManyField(Contact, related_name='+')
     submission = models.ForeignKey(Contact, on_delete=models.DO_NOTHING, related_name='+')
     submission_date = models.DateField(blank=True, null=True)
 

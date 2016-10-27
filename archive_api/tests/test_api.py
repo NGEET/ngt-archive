@@ -101,7 +101,7 @@ class SiteClientTestCase(APITestCase):
                           "locationElevation": "100-400", "locationMapUrl": "", "locationBoundingBoxUlLatitude": None,
                           "locationBoundingBoxUlLongitude": None, "locationBoundingBoxLrLatitude": None,
                           "locationBoundingBoxLrLongitude": None, "siteUrls": "http://centralcityccpd.baz",
-                          "submissionDate": "2016-10-01", "contact": [], "pi": [],
+                          "submissionDate": "2016-10-01", "contacts": [], "pis": [],
                           "submission": "http://testserver/api/v1/contacts/3/"})
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
