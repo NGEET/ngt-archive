@@ -103,8 +103,8 @@
       "location_bounding_box_lr_latitude": null,
       "location_bounding_box_lr_longitude": null,
       "site_urls": "http://centralcityccpd.baz",
-      "contact": null,
-      "pi": null,
+      "contact": [],
+      "pi": [],
       "submission": 3,
       "submission_date": "2016-10-01"
     }
