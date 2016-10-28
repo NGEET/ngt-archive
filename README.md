@@ -112,7 +112,7 @@ Load Archive Service Test Data
 ./manage.py loaddata test_archive_api.json 
 ```
 
-Run a develeop server
+Run a develop server
 
 ```
 ./manage.py runserver  0.0.0.0:8888

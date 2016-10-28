@@ -1,12 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 
-from archive_api.models import DataSet, MeasurementVariable, Site, Contact, Plot
-
-
-@admin.register(DataSet)
-class DataSetAdmin(ModelAdmin):
-    list_display = ('data_set_id', 'description',)
+from archive_api.models import MeasurementVariable, Site, Person, Plot
 
 
 @admin.register(MeasurementVariable)
@@ -14,8 +9,8 @@ class MeasurementVariableAdmin(ModelAdmin):
     list_display = ('name',)
 
 
-@admin.register(Contact)
-class ContactAdmin(ModelAdmin):
+@admin.register(Person)
+class PersonAdmin(ModelAdmin):
     list_display = ('first_name', 'last_name', 'institution_affiliation',)
 
 

@@ -4,13 +4,13 @@ from rest_framework import routers
 
 admin.autodiscover()
 
-from archive_api.viewsets import DataSetViewSet, MeasurementVariableViewSet, SiteViewSet, ContactViewSet, PlotViewSet
+from archive_api.viewsets import DataSetViewSet, MeasurementVariableViewSet, SiteViewSet, PersonViewSet, PlotViewSet
 
 router = routers.DefaultRouter()
 router.register(r'datasets', DataSetViewSet, base_name='dataset')
 router.register(r'sites', SiteViewSet, base_name='site')
 router.register(r'variables', MeasurementVariableViewSet, base_name='measurementvariable')
-router.register(r'contacts', ContactViewSet, base_name='contact')
+router.register(r'people', PersonViewSet, base_name='person')
 router.register(r'plots', PlotViewSet, base_name='plot')
 
 urlpatterns = [

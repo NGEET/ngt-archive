@@ -22,60 +22,274 @@ class ApiRootClientTestCase(APITestCase):
                          {"datasets": "http://testserver/api/v1/datasets/",
                           "sites": "http://testserver/api/v1/sites/",
                           "variables": "http://testserver/api/v1/variables/",
-                          "contacts": "http://testserver/api/v1/contacts/",
+                          "people": "http://testserver/api/v1/people/",
                           "plots": "http://testserver/api/v1/plots/"})
 
 
 class DataSetClientTestCase(APITestCase):
     fixtures = ('test_archive_api.json', 'test_auth.json',)
 
-    def setUp(self):
-        self.client = Client()
-        user = User.objects.get(username="auser")
+    def login_user(self, username):
+        user = User.objects.get(username=username)
         self.client.force_login(user)
 
+    def setUp(self):
+        self.client = Client()
+
     def test_client_list(self):
+        self.login_user("auser")
         response = self.client.get('/api/v1/datasets/')
-        self.assertEqual(json.loads(response.content.decode('utf-8')),
-                         [
-                             {
-                                 "url": "http://testserver/api/v1/datasets/1/",
-                                 "dataSetId": "DS-1",
-                                 "description": "Lorem ipsum dolor sit amet, impedit accusamus reprehendunt in quo, accusata voluptaria scribentur te nec. Id mel partem euismod bonorum. No modus dolore vim, per in exerci iisque persequeris, animal interesset sit ex. Vero ocurreret nam an."
-                             },
-                             {
-                                 "url": "http://testserver/api/v1/datasets/2/",
-                                 "dataSetId": "DS-2",
-                                 "description": "Qui illud verear persequeris te. Vis probo nihil verear an, zril tamquam philosophia eos te, quo ne fugit movet contentiones. Quas mucius detraxit vis an, vero omnesque petentium sit ea. Id ius inimicus comprehensam."
-                             }
-                         ])
+        self.assertEqual(len(json.loads(response.content.decode('utf-8'))),
+                         2)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_client_get(self):
+        self.login_user("auser")
         response = self.client.get('/api/v1/datasets/2/')
-        self.assertEqual(json.loads(response.content.decode('utf-8')),
-                         {"url": "http://testserver/api/v1/datasets/2/", "dataSetId": "DS-2",
-                          "description": "Qui illud verear persequeris te. Vis probo nihil verear an, zril tamquam philosophia eos te, quo ne fugit movet contentiones. Quas mucius detraxit vis an, vero omnesque petentium sit ea. Id ius inimicus comprehensam."})
+        value = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(value,
+                         {'contact': 'http://testserver/api/v1/people/2/', 'owner': 'auser', 'name': 'Data Set 2',
+                          'startDate': '2016-10-28', 'acknowledgement': '',
+                          'createdDate': '2016-10-28T19:15:35.013361Z', 'sites': ['http://testserver/api/v1/sites/1/'],
+                          'qaqcStatus': None, 'plots': ['http://testserver/api/v1/plots/1/'],
+                          'doeFundingContractNumbers': '', 'status': '1', 'accessLevel': '0',
+                          'fundingOrganizations': 'A few funding organizations', 'dataSetId': 'DS-2', 'endDate': None,
+                          'submissionDate': '2016-10-28T19:12:35Z',
+                          'submissionContact': {'firstName': 'Merry', 'lastName': 'Yuser', 'email': 'myuser@foo.bar'},
+                          'variables': ['http://testserver/api/v1/variables/1/',
+                                        'http://testserver/api/v1/variables/2/',
+                                        'http://testserver/api/v1/variables/3/'], 'additionalAccessInformation': '',
+                          'modifiedDate': '2016-10-28T23:01:20.066913Z', 'reference': '',
+                          'authors': ["http://testserver/api/v1/people/2/"],
+                          'modifiedBy': 'auser', 'ngeeTropicsResources': True,
+                          'url': 'http://testserver/api/v1/datasets/2/', 'statusComment': '',
+                          'qaqcMethodDescription': '', 'additionalReferenceInformation': '', 'doi': '',
+                          'description': 'Qui illud verear persequeris te. Vis probo nihil verear an, zril tamquam philosophia eos te, quo ne fugit movet contentiones. Quas mucius detraxit vis an, vero omnesque petentium sit ea. Id ius inimicus comprehensam.'}
+
+                         )
+
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_client_post(self):
+        self.login_user("auser")
         response = self.client.post('/api/v1/datasets/',
                                     data='{"dataSetId":"FooBarBaz","description":"A FooBarBaz DataSet"}',
                                     content_type='application/json')
-        self.assertEqual(json.loads(response.content.decode('utf-8')),
-                         {"url": "http://testserver/api/v1/datasets/3/", "dataSetId": "FooBarBaz",
-                          "description": "A FooBarBaz DataSet"})
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
+        value = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(value['accessLevel'], '0')
+        self.assertEqual(value['sites'], [])
+        self.assertEqual(value['owner'], 'auser')
+        self.assertEqual(value['endDate'], None)
+        self.assertEqual(value['doeFundingContractNumbers'], None)
+        self.assertEqual(value['fundingOrganizations'], None)
+        self.assertEqual(value['description'], 'A FooBarBaz DataSet')
+        self.assertEqual(value['submissionContact'],
+                         {'firstName': 'Merry', 'lastName': 'Yuser', 'email': 'myuser@foo.bar'})
+        self.assertEqual(value['additionalAccessInformation'], None)
+        self.assertEqual(value['name'], None)
+        self.assertEqual(value['modifiedBy'], 'auser')
+        self.assertEqual(value['ngeeTropicsResources'], False)
+        self.assertEqual(value['status'], '0')
+        self.assertEqual(value['dataSetId'], 'FooBarBaz')
+        self.assertEqual(value['doi'], None)
+        self.assertEqual(value['plots'], [])
+        self.assertEqual(value['contact'], None)
+        self.assertEqual(value['reference'], None)
+        self.assertEqual(value['variables'], [])
+        self.assertEqual(value['additionalReferenceInformation'], None)
+        self.assertEqual(value['startDate'], None)
+        self.assertEqual(value['acknowledgement'], None)
+        self.assertEqual(value['statusComment'], None)
+        self.assertEqual(value['submissionDate'], None)
+        self.assertEqual(value['qaqcStatus'], None)
+        self.assertEqual(value['url'], 'http://testserver/api/v1/datasets/3/')
+        self.assertEqual(value['qaqcMethodDescription'], None)
+
+        # The submit action should fail
+        response = self.client.post('/api/v1/datasets/3/submit/')
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+
+        value = json.loads(response.content.decode('utf-8'))
+        self.assertEqual({'missingRequiredFields': ['sites', 'authors',
+                                                    'name', 'contact',
+                                                    'variables',
+                                                    'ngee_tropics_resources', 'funding_organizations']}, value)
 
     def test_client_put(self):
+        self.login_user("auser")
+        response = self.client.put('/api/v1/datasets/1/',
+                                   data='{"dataSetId":"FooBarBaz","description":"A FooBarBaz DataSet",'
+                                        '"name": "Data Set 1", '
+                                        '"statusComment": "",'
+                                        '"doi": "",'
+                                        '"startDate": "2016-10-28",'
+                                        '"endDate": null,'
+                                        '"qaqcStatus": null,'
+                                        '"qaqcMethodDescription": "",'
+                                        '"ngeeTropicsResources": true,'
+                                        '"fundingOrganizations": "",'
+                                        '"doeFundingContractNumbers": "",'
+                                        '"acknowledgement": "",'
+                                        '"reference": "",'
+                                        '"additionalReferenceInformation": "",'
+                                        '"additionalAccessInformation": "",'
+                                        '"submissionDate": "2016-10-28T19:12:35Z",'
+                                        '"contact": "http://0.0.0.0:8888/api/v1/people/4/",'
+                                        '"authors": ["http://0.0.0.0:8888/api/v1/people/1/"],'
+                                        '"sites": ["http://0.0.0.0:8888/api/v1/sites/1/"],'
+                                        '"plots": ["http://0.0.0.0:8888/api/v1/plots/1/"],'
+                                        '"variables": ["http://0.0.0.0:8888/api/v1/variables/1/", '
+                                        '"http://0.0.0.0:8888/api/v1/variables/2/"]}',
+                                   content_type='application/json')
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        response = self.client.get('/api/v1/datasets/1/')
+        value = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(value['dataSetId'], "FooBarBaz")
+        self.assertEqual(value['description'], "A FooBarBaz DataSet")
+
+    def test_user_approve_submit(self):
+        """
+        Test User permissions for datasets with different statuses
+        :return:
+        """
+        self.login_user("auser")
+
+        response = self.client.get("/api/v1/datasets/2/submit/")  # In submitted mode, owned by auser
+        value = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+        self.assertEqual({'detail': 'You do not have permission to perform this action.'}, value)
+
+        response = self.client.get("/api/v1/datasets/1/approve/")  # In draft mode, owned by auser
+        value = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+        self.assertEqual({'detail': 'You do not have permission to perform this action.'}, value)
+
+        response = self.client.get("/api/v1/datasets/2/approve/")  # In submitted mode, owned by auser
+        value = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+        self.assertEqual({'detail': 'You do not have permission to perform this action.'}, value)
+
+        response = self.client.get("/api/v1/datasets/1/submit/")  # In draft mode, owned by auser
+        value = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+        self.assertEqual({'missingRequiredFields': ['authors', 'name', 'funding_organizations']}, value)
+
+        response = self.client.put('/api/v1/datasets/1/',
+                                   data='{"dataSetId":"FooBarBaz","description":"A FooBarBaz DataSet",'
+                                        '"name": "Data Set 1", '
+                                        '"statusComment": "",'
+                                        '"doi": "",'
+                                        '"startDate": "2016-10-28",'
+                                        '"endDate": null,'
+                                        '"qaqcStatus": null,'
+                                        '"qaqcMethodDescription": "",'
+                                        '"ngeeTropicsResources": true,'
+                                        '"fundingOrganizations": "The funding organizations for my dataset",'
+                                        '"doeFundingContractNumbers": "",'
+                                        '"acknowledgement": "",'
+                                        '"reference": "",'
+                                        '"additionalReferenceInformation": "",'
+                                        '"additionalAccessInformation": "",'
+                                        '"submissionDate": "2016-10-28T19:12:35Z",'
+                                        '"contact": "http://0.0.0.0:8888/api/v1/people/4/",'
+                                        '"authors": ["http://0.0.0.0:8888/api/v1/people/1/"],'
+                                        '"sites": ["http://0.0.0.0:8888/api/v1/sites/1/"],'
+                                        '"plots": ["http://0.0.0.0:8888/api/v1/plots/1/"],'
+                                        '"variables": ["http://0.0.0.0:8888/api/v1/variables/1/", '
+                                        '"http://0.0.0.0:8888/api/v1/variables/2/"]}',
+                                   content_type='application/json')
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+
+        response = self.client.get("/api/v1/datasets/1/submit/")  # In draft mode, owned by auser
+        value = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual({'detail': 'DataSet has been submitted.', 'success': True}, value)
+
+        response = self.client.get("/api/v1/datasets/1/unsubmit/")  # In draft mode, owned by auser
+        value = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+        self.assertEqual({'detail': 'You do not have permission to perform this action.'}, value)
+
+    def test_admin_approve_submit(self):
+        """
+        Test Admin permissions for datasets with different statuses
+        :return:
+        """
+        self.login_user("admin")
+        response = self.client.get("/api/v1/datasets/1/submit/")  # In draft mode, owned by auser
+        value = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+        self.assertEqual({'detail': 'You do not have permission to perform this action.'}, value)
+
+        response = self.client.get("/api/v1/datasets/2/submit/")  # In submitted mode, owned by auser
+        value = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+        self.assertEqual({'detail': 'You do not have permission to perform this action.'}, value)
+
         response = self.client.put('/api/v1/datasets/2/',
-                                   data='{"dataSetId":"FooBarBaz","description":"A FooBarBaz DataSet"}',
+                                   data='{"dataSetId":"FooBarBaz","description":"A FooBarBaz DataSet",'
+                                        '"name": "Data Set 2", '
+                                        '"statusComment": "",'
+                                        '"doi": "",'
+                                        '"startDate": "2016-10-28",'
+                                        '"endDate": null,'
+                                        '"qaqcStatus": null,'
+                                        '"qaqcMethodDescription": "",'
+                                        '"ngeeTropicsResources": true,'
+                                        '"fundingOrganizations": "The funding organizations for my dataset",'
+                                        '"doeFundingContractNumbers": "",'
+                                        '"acknowledgement": "",'
+                                        '"reference": "",'
+                                        '"accessLevel": "0",'
+                                        '"additionalReferenceInformation": "",'
+                                        '"additionalAccessInformation": "",'
+                                        '"submissionDate": "2016-10-28T19:12:35Z",'
+                                        '"contact": "http://0.0.0.0:8888/api/v1/people/4/",'
+                                        '"authors": ["http://0.0.0.0:8888/api/v1/people/4/"],'
+                                        '"sites": ["http://0.0.0.0:8888/api/v1/sites/1/"],'
+                                        '"plots": ["http://0.0.0.0:8888/api/v1/plots/1/"],'
+                                        '"variables": ["http://0.0.0.0:8888/api/v1/variables/1/", '
+                                        '"http://0.0.0.0:8888/api/v1/variables/2/"]}',
                                    content_type='application/json')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
-        response = self.client.get('/api/v1/datasets/2/')
-        self.assertEqual(json.loads(response.content.decode('utf-8')),
-                         {"url": "http://testserver/api/v1/datasets/2/", "dataSetId": "FooBarBaz",
-                          "description": "A FooBarBaz DataSet"})
+
+        response = self.client.get("/api/v1/datasets/1/approve/")  # In draft mode, owned by auser
+        value = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+        self.assertEqual({'detail': 'You do not have permission to perform this action.'}, value)
+
+        response = self.client.get("/api/v1/datasets/2/approve/")  # In submitted mode, owned by auser
+        value = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual({'detail': 'DataSet has been approved.', 'success': True}, value)
+
+        response = self.client.get("/api/v1/datasets/2/")
+        value = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(value['status'], '2')
+
+        response = self.client.get("/api/v1/datasets/2/unsubmit/")  # In draft mode, owned by auser
+        value = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+        self.assertEqual({'detail': 'You do not have permission to perform this action.'}, value)
+
+    def test_admin_unsubmit(self):
+        """
+        Test Admin unsubmit
+        :return:
+        """
+        self.login_user("admin")
+
+        response = self.client.get("/api/v1/datasets/2/unsubmit/")  # In submitted mode, owned by auser
+        value = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual({'detail': 'DataSet has been unsubmitted.', 'success': True}, value)
+
+        response = self.client.get("/api/v1/datasets/2/")
+        value = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(value['status'], '0')
 
 
 class SiteClientTestCase(APITestCase):
@@ -102,7 +316,7 @@ class SiteClientTestCase(APITestCase):
                           "locationBoundingBoxUlLongitude": None, "locationBoundingBoxLrLatitude": None,
                           "locationBoundingBoxLrLongitude": None, "siteUrls": "http://centralcityccpd.baz",
                           "submissionDate": "2016-10-01", "contacts": [], "pis": [],
-                          "submission": "http://testserver/api/v1/contacts/3/"})
+                          "submission": "http://testserver/api/v1/people/3/"})
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_client_post(self):
@@ -137,9 +351,9 @@ class PlotClientTestCase(APITestCase):
                           "name": "Central City CCPD Plot 1",
                           "description": "Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo. Nemo enim ipsam voluptatem, quia voluptas sit, aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos, qui ratione voluptatem sequi nesciunt, neque porro quisquam est, qui dolorem ipsum, quia dolor sit amet, consectetur, adipisci[ng] velit, sed quia non numquam [do] eius modi tempora inci[di]dunt, ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit, qui in ea voluptate velit esse, quam nihil molestiae consequatur, vel illum, qui dolorem eum fugiat, quo voluptas nulla pariatur",
                           "size": "", "locationElevation": "", "locationKmzUrl": "", "submissionDate": "2016-10-08",
-                          "pi": "http://testserver/api/v1/contacts/3/",
+                          "pi": "http://testserver/api/v1/people/3/",
                           "site": "http://testserver/api/v1/sites/1/",
-                          "submission": "http://testserver/api/v1/contacts/4/"})
+                          "submission": "http://testserver/api/v1/people/4/"})
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_client_post(self):
@@ -164,28 +378,28 @@ class ContactClientTestCase(APITestCase):
         self.client.force_login(user)
 
     def test_client_list(self):
-        response = self.client.get('/api/v1/contacts/')
+        response = self.client.get('/api/v1/people/')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_client_get(self):
-        response = self.client.get('/api/v1/contacts/2/')
+        response = self.client.get('/api/v1/people/2/')
         self.assertEqual(json.loads(response.content.decode('utf-8')),
-                         {"url": "http://testserver/api/v1/contacts/2/", "firstName": "Luke",
+                         {"url": "http://testserver/api/v1/people/2/", "firstName": "Luke",
                           "lastName": "Cage", "email": "lcage@foobar.baz", "institutionAffiliation": "POWER"})
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_client_post(self):
-        response = self.client.post('/api/v1/contacts/',
+        response = self.client.post('/api/v1/people/',
                                     data='{"firstName":"Killer","lastName":"Frost","email":"kfrost@earth2.baz","institutionAffiliation":"ZOOM"}',
                                     content_type='application/json')
         self.assertEqual(json.loads(response.content.decode('utf-8')),
-                         {"url": "http://testserver/api/v1/contacts/6/", "firstName": "Killer", "lastName": "Frost",
+                         {"url": "http://testserver/api/v1/people/6/", "firstName": "Killer", "lastName": "Frost",
                           "email": "kfrost@earth2.baz", "institutionAffiliation": "ZOOM"})
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
 
     def test_client_put(self):
-        response = self.client.put('/api/v1/contacts/2/',
-                                   data='{"url": "http://testserver/api/v1/contacts/2/", "firstName": "Luke", "lastName": "Cage", "email": "lcage@foobar.baz", "institutionAffiliation": "POW"}',
+        response = self.client.put('/api/v1/people/2/',
+                                   data='{"url": "http://testserver/api/v1/people/2/", "firstName": "Luke", "lastName": "Cage", "email": "lcage@foobar.baz", "institutionAffiliation": "POW"}',
                                    content_type='application/json')
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
 
