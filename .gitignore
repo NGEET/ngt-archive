@@ -2,11 +2,13 @@
 *.py[cod]
 .env.idea/
 .idea
+.menv/
 .vagrant/
 .venv/
 __pycache__/
 db.sqlite3
 local.py
+local*.py
 main.yml
 ngt-archive.log
 ngt_archive.egg-info/

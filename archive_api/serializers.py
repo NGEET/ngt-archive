@@ -42,8 +42,8 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
                   'submission_date', 'contact', 'sites', 'authors', 'plots', 'variables',
                   'owner', 'created_date', 'modified_by', 'modified_date')
         readonly_fields = (
-        'url', 'owner', 'created_date', 'modified_by', 'modified_date', 'status', 'submission_contact',
-        'submission_date')
+            'url', 'owner', 'created_date', 'modified_by', 'modified_date', 'status', 'submission_contact',
+            'submission_date')
 
     def validate(self, data):
         """
@@ -80,6 +80,7 @@ class MeasurementVariableSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = MeasurementVariable
+        fields = '__all__'
 
 
 class SiteSerializer(serializers.HyperlinkedModelSerializer):
@@ -89,6 +90,7 @@ class SiteSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Site
+        fields = '__all__'
 
 
 class PersonSerializer(serializers.HyperlinkedModelSerializer):
@@ -98,6 +100,7 @@ class PersonSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Person
+        fields = '__all__'
 
 
 class PlotSerializer(serializers.HyperlinkedModelSerializer):
@@ -107,3 +110,4 @@ class PlotSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Plot
+        fields = '__all__'
