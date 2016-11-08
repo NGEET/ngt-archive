@@ -10,5 +10,20 @@
         <main>
             <h2>Datasets</h2>
         </main>
+        {% if user.is_authenticated %}
+            <p class="js-auth" data-auth="true">{{ user.get_username }} Logged in</p>
+        {% else %} 
+            <p class="js-auth" data-auth="false">Not logged in</p>
+        {% endif %}
+        <a href="/api/api-auth/logout/?next=/">Logout</a>
+        <input type="text" class="js-dataset-name" name="">
+        <input type="text" class="js-dataset-desc" name="">
+        <button class="js-create-dataset">Create dataset</button>
+        <br>
+        <input type="text" class="js-contact-fname" name="">
+        <input type="text" class="js-contact-lname" name="">
+        <input type="text" class="js-contact-email" name="">
+        <input type="text" class="js-contact-institute" name="">
+        <button class="js-create-contact">Create contact</button>
     </body>
 </html>
