@@ -1,4 +1,41 @@
 body {
+    background-color: #efefef;
+    margin: 0;
     
+    main {
+        article {
+            background-color: #fff;
+            max-width: 1200px;
+            margin: 0 auto !important;
+            padding: 0 32px 32px;
+
+            code {
+                display: block;
+                min-height: 40px;
+            }
+        }
+
+        nav.menu {
+                max-width: 1200px;
+                margin: 0 auto;
+                line-height: 48px;
+                background-color: indianred;
+                color: white;
+                padding: 0 20px;
+
+            .user {
+                margin-right: 32px;
+                font-weight: 600;
+            }
+
+            a{
+                color: white;
+
+                &:hover {
+                    color: white;
+                }
+            }
+        }
+    }
 }
 

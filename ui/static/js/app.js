@@ -5,25 +5,25 @@ $(document).ready(function(){
         window.location = '/api/api-auth/login/?next=/';
     }
 
-    $.when(getDataSets()).then(function(data) {
+    /*$.when(getDataSets()).then(function(data) {
         console.log(data);
         for(var i=0;i<data.length;i++) {
-            $('body').append('<p>' + data[i].dataSetId + '</p>');
-            $('body').append('<p>' + data[i].description + '</p>');
+            $('main').append('<p>' + data[i].dataSetId + '</p>');
+            $('main').append('<p>' + data[i].description + '</p>');
         }
     });
 
     $.when(getVariables()).then(function(data) {
         console.log(data);
         for(var i=0;i<data.length;i++) {
-            $('body').append('<p>' + data[i].name + '</p>');
+            $('main').append('<p>' + data[i].name + '</p>');
         }
     });
 
     $.when(getSites()).then(function(data) {
         console.log(data);
         for(var i=0;i<data.length;i++) {
-            $('body').append('<p>' + data[i].name + '<br>')
+            $('main').append('<p>' + data[i].name + '<br>')
                 .append(data[i].siteId + '<br>')
                 .append(data[i].description + '<br>')
                 .append(data[i].country + '<br>')
@@ -46,7 +46,7 @@ $(document).ready(function(){
     $.when(getContacts()).then(function(data) {
         console.log(data);
         for(var i=0;i<data.length;i++) {
-            $('body').append('<p>' + data[i].firstName + '<br>')
+            $('main').append('<p>' + data[i].firstName + '<br>')
                     .append(data[i].lastName + '<br>')
                     .append(data[i].email + '<br>')
                     .append(data[i].institutionAffiliation + '<br></p>');
@@ -56,7 +56,7 @@ $(document).ready(function(){
     $.when(getPlots()).then(function(data) {
         console.log(data);
         for(var i=0;i<data.length;i++) {
-            $('body').append('<p>' + data[i].plotId + '<br>')
+            $('main').append('<p>' + data[i].plotId + '<br>')
                     .append(data[i].name + '<br>')
                     .append(data[i].description + '<br>')
                     .append(data[i].size + '<br>')
@@ -67,15 +67,37 @@ $(document).ready(function(){
                     .append(data[i].site + '<br>')
                     .append(data[i].submission + '<br></p>');
         }
-    });
+    });*/
 
     $('body').on('click', '.js-create-dataset', function() {
-        createDataset($('.js-dataset-name').val(), $('.js-dataset-desc').val());
+        var status = createDataset($('.js-dataset-name').val(), $('.js-dataset-desc').val());
+        if(status) {
+            alert('Dataset successfully created');
+        }
+        else {
+            alert('Fail');
+        }
     });
 
     $('body').on('click', '.js-create-contact', function() {
-        createContact($('.js-contact-fname').val(), $('.js-contact-lname').val(), $('.js-contact-email').val(), $('.js-contact-institute').val());
+        var status = createContact($('.js-contact-fname').val(), $('.js-contact-lname').val(), $('.js-contact-email').val(), $('.js-contact-institute').val());
+        if(status) {
+            alert('Contact successfully created');
+        }
+        else {
+            alert('Fail');
+        }
     });
+
+    $('body').on('click', '.js-get-datasets', function() {
+        $.when(getDataSets()).then(function(data) {
+            //console.log(data);
+            for(var i=0;i<data.length;i++) {
+                $('.js-text-dump').append('ID: ' + data[i].dataSetId + '<br>')
+                                .append('Description: ' + data[i].description + '<br><br>');
+            }
+        });
+    })
    
 });
 
