@@ -77,6 +77,8 @@ $(document).ready(function(){
         else {
             alert('Fail');
         }
+
+        $('.js-clear-form').trigger('click');
     });
 
     $('body').on('click', '.js-create-contact', function() {
@@ -92,13 +94,58 @@ $(document).ready(function(){
     $('body').on('click', '.js-get-datasets', function() {
         $.when(getDataSets()).then(function(data) {
             //console.log(data);
+            $('.js-text-dump').html('');
             for(var i=0;i<data.length;i++) {
-                $('.js-text-dump').append('ID: ' + data[i].dataSetId + '<br>')
-                                .append('Description: ' + data[i].description + '<br><br>');
+                $('.js-text-dump').append('ID: ' + (data[i].dataSetId ? data[i].dataSetId : 'NA') + '<br>')
+                                .append('Description: ' + (data[i].description ? data[i].description : 'NA') + '<br><br>');
             }
         });
-    })
+    });
+
+    $('body').on('click', '.js-get-sites', function() {
+        $.when(getDataSets()).then(function(data) {
+            $('.js-text-dump').html('');
+            for(var i=0;i<data.length;i++) {
+                $('.js-text-dump').append('Site Name: ' + (data[i].name ? data[i].name : 'NA') + '<br>')
+                                .append('ID: ' + (data[i].siteId ? data[i].siteId : 'NA') + '<br>')
+                                .append('Description: ' + (data[i].description ? data[i].description : 'NA') + '<br>')
+                                .append('Country: ' + (data[i].country ? data[i].country : 'NA') + '<br>')
+                                .append('State/Province: ' + (data[i].stateProvince ? data[i].stateProvince : 'NA') + '<br>')
+                                .append('UTC Offset: ' + (data[i].utcOffset ? data[i].utcOffset : 'NA') + '<br>')
+                                .append('Latitude: ' + (data[i].locationLatitude ? data[i].locationLatitude : 'NA') + '<br>')
+                                .append('Longitude: ' + (data[i].locationLongitude ? data[i].locationLongitude : 'NA') + '<br>')
+                                .append('Elevation: ' + (data[i].locationElevation ? data[i].locationElevation : 'NA') + '<br>')
+                                .append('Location URL: ' + (data[i].locationMapUrl ? data[i].locationMapUrl : 'NA') + '<br>')
+                                .append('Bounding Box Ul Lat: ' + (data[i].locationBoundingBoxUlLatitude ? data[i].locationBoundingBoxUlLatitude : 'NA') + '<br>')
+                                .append('Bounding Box Ul Lon: ' + (data[i].locationBoundingBoxUlLongitude ? data[i].locationBoundingBoxUlLongitude : 'NA') + '<br>')
+                                .append('Bounding Box Lr Lat: ' + (data[i].locationBoundingBoxLrLatitude ? data[i].locationBoundingBoxLrLatitude : 'NA') + '<br>')
+                                .append('Bounding Box Lr Lat: ' + (data[i].locationBoundingBoxLrLongitude ? data[i].locationBoundingBoxLrLongitude : 'NA') + '<br>')
+                                .append('Site URL: ' + (data[i].siteUrls ? data[i].siteUrls : 'NA') + '<br>')
+                                .append('Submission Date: ' + (data[i].submissionDate ? data[i].submissionDate : 'NA') + '<br>')
+                                .append('Submission: ' + (data[i].submission ? data[i].submission : 'NA') + '<br><br>');
+            }
+        });
+    });
    
+    $('body').on('click', '.js-get-plots', function() {
+        $.when(getDataSets()).then(function(data) {
+            $('.js-text-dump').html('');
+            for(var i=0;i<data.length;i++) {
+                $('.js-text-dump').append('Plot ID: ' + (data[i].plotId ? data[i].plotId : 'NA') + '<br>')
+                                .append('Name: ' + (data[i].name ? data[i].name : 'NA') + '<br>')
+                                .append('Description: ' + (data[i].description ? data[i].description : 'NA') + '<br>')
+                                .append('Size: ' + (data[i].size ? data[i].size : 'NA') + '<br>')
+                                .append('Elevation: ' + (data[i].locationElevation ? data[i].locationElevation : 'NA') + '<br>')
+                                .append('KMZ URL: ' + (data[i].locationKmzUrl ? data[i].locationKmzUrl : 'NA') + '<br>')
+                                .append('Submission Date: ' + (data[i].submissionDate ? data[i].submissionDate : 'NA') + '<br>')
+                                .append('PI: ' + (data[i].pi ? data[i].pi : 'NA') + '<br>')
+                                .append('Site: ' + (data[i].site ? data[i].site : 'NA') + '<br>')
+                                .append('Submission: ' + (data[i].submission ? data[i].submission : 'NA') + '<br><br>');
+
+            }
+        });
+    });
+
 });
 
 function getCookie(name) {
