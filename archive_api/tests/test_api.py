@@ -53,7 +53,7 @@ class DataSetClientTestCase(APITestCase):
                           'createdDate': '2016-10-28T19:15:35.013361Z', 'sites': ['http://testserver/api/v1/sites/1/'],
                           'qaqcStatus': None, 'plots': ['http://testserver/api/v1/plots/1/'],
                           'doeFundingContractNumbers': '', 'status': '1', 'accessLevel': '0',
-                          'fundingOrganizations': 'A few funding organizations', 'dataSetId': 'DS-2', 'endDate': None,
+                          'fundingOrganizations': 'A few funding organizations', 'endDate': None,
                           'submissionDate': '2016-10-28T19:12:35Z',
                           'submissionContact': {'firstName': 'Merry', 'lastName': 'Yuser', 'email': 'myuser@foo.bar'},
                           'variables': ['http://testserver/api/v1/variables/1/',
@@ -91,7 +91,6 @@ class DataSetClientTestCase(APITestCase):
         self.assertEqual(value['modifiedBy'], 'auser')
         self.assertEqual(value['ngeeTropicsResources'], False)
         self.assertEqual(value['status'], '0')
-        self.assertEqual(value['dataSetId'], 'FooBarBaz')
         self.assertEqual(value['doi'], None)
         self.assertEqual(value['plots'], [])
         self.assertEqual(value['contact'], None)
@@ -146,35 +145,42 @@ class DataSetClientTestCase(APITestCase):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         response = self.client.get('/api/v1/datasets/1/')
         value = json.loads(response.content.decode('utf-8'))
-        self.assertEqual(value['dataSetId'], "FooBarBaz")
         self.assertEqual(value['description'], "A FooBarBaz DataSet")
 
-    def test_user_approve_submit(self):
+    def test_user_workflow(self):
         """
-        Test User permissions for datasets with different statuses
+        Test dataset workflow for an NGT User
         :return:
         """
         self.login_user("auser")
 
+        #########################################################################
+        # A dataset in submitted mode may not be submitted
         response = self.client.get("/api/v1/datasets/2/submit/")  # In submitted mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
         self.assertEqual({'detail': 'You do not have permission to perform this action.'}, value)
 
+        #########################################################################
+        # NGT User may not APPROVE a dataset
         response = self.client.get("/api/v1/datasets/1/approve/")  # In draft mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
         self.assertEqual({'detail': 'You do not have permission to perform this action.'}, value)
 
+        #########################################################################
+        # NGT User may not APPROVE a dataset
         response = self.client.get("/api/v1/datasets/2/approve/")  # In submitted mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
         self.assertEqual({'detail': 'You do not have permission to perform this action.'}, value)
 
+        #########################################################################
+        # NGT User may edit a dataset in DRAFT mode if they own it
         response = self.client.get("/api/v1/datasets/1/submit/")  # In draft mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
-        self.assertEqual({'missingRequiredFields': ['authors', 'name', 'funding_organizations']}, value)
+        self.assertEqual({'missingRequiredFields': ['authors', 'funding_organizations']}, value)
 
         response = self.client.put('/api/v1/datasets/1/',
                                    data='{"dataSetId":"FooBarBaz","description":"A FooBarBaz DataSet",'
@@ -203,32 +209,43 @@ class DataSetClientTestCase(APITestCase):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
+        #########################################################################
+        # NGT User may not SUBMIT a dataset in DRAFT mode if they owne it
         response = self.client.get("/api/v1/datasets/1/submit/")  # In draft mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual({'detail': 'DataSet has been submitted.', 'success': True}, value)
 
+        #########################################################################
+        # NGT User may not unsubmit a dataset
         response = self.client.get("/api/v1/datasets/1/unsubmit/")  # In draft mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
         self.assertEqual({'detail': 'You do not have permission to perform this action.'}, value)
 
-    def test_admin_approve_submit(self):
+    def test_admin_approve_workflow(self):
         """
-        Test Admin permissions for datasets with different statuses
+        Test Admin dataset workflow
         :return:
         """
         self.login_user("admin")
+
+        #########################################################################
+        # NGT Administrator my edit any DRAFT status (this will fail due to missing fields)
         response = self.client.get("/api/v1/datasets/1/submit/")  # In draft mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
-        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
-        self.assertEqual({'detail': 'You do not have permission to perform this action.'}, value)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+        self.assertEqual({'missingRequiredFields': ['authors', 'funding_organizations']}, value)
 
+        #########################################################################
+        # Cannot submit a dataset that it already in SUBMITTED status
         response = self.client.get("/api/v1/datasets/2/submit/")  # In submitted mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
         self.assertEqual({'detail': 'You do not have permission to perform this action.'}, value)
 
+        #########################################################################
+        # NGT Administrator may edit a dataset in SUBMITTED status
         response = self.client.put('/api/v1/datasets/2/',
                                    data='{"dataSetId":"FooBarBaz","description":"A FooBarBaz DataSet",'
                                         '"name": "Data Set 2", '
@@ -256,24 +273,53 @@ class DataSetClientTestCase(APITestCase):
                                    content_type='application/json')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
+        #########################################################################
+        # A dataset that is not in SUBMITTED status may not be approved
         response = self.client.get("/api/v1/datasets/1/approve/")  # In draft mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
         self.assertEqual({'detail': 'You do not have permission to perform this action.'}, value)
 
+        #########################################################################
+        # NGT Administrator my APPROVE a SUBMITTED dataset
         response = self.client.get("/api/v1/datasets/2/approve/")  # In submitted mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual({'detail': 'DataSet has been approved.', 'success': True}, value)
 
+        #########################################################################
+        # APPROVED status: Cannot be deleted by anyone
+        response = self.client.delete("/api/v1/datasets/2/")  # In submitted mode, owned by auser
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+
+        response = self.client.get("/api/v1/datasets/2/")  # should be deleted
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+
         response = self.client.get("/api/v1/datasets/2/")
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(value['status'], '2')
 
+        #########################################################################
+        # NGT Administrator can put a dataset back into DRAFT status for corrections by the Owning NGT user
         response = self.client.get("/api/v1/datasets/2/unsubmit/")  # In draft mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
         self.assertEqual({'detail': 'You do not have permission to perform this action.'}, value)
+
+        response = self.client.get("/api/v1/datasets/2/unapprove/")  # In approved mode, owned by auser
+        value = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual({'detail': 'DataSet has been unapproved.', 'success': True}, value)
+
+        #########################################################################
+        # NGT Administrator my unapproved a dataset (put back into submitted mode)
+        response = self.client.get("/api/v1/datasets/1/unapprove/")  # In approved mode, owned by auser
+        value = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+        self.assertEqual({'detail': 'You do not have permission to perform this action.'}, value)
+        response = self.client.get("/api/v1/datasets/2/")  # Check the status
+        value = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(value['status'], '1')
 
     def test_admin_unsubmit(self):
         """
@@ -282,6 +328,8 @@ class DataSetClientTestCase(APITestCase):
         """
         self.login_user("admin")
 
+        #########################################################################
+        # Adn admin may unsubmit a dataset in SUBIMITTED MODE
         response = self.client.get("/api/v1/datasets/2/unsubmit/")  # In submitted mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_200_OK, response.status_code)
@@ -289,7 +337,54 @@ class DataSetClientTestCase(APITestCase):
 
         response = self.client.get("/api/v1/datasets/2/")
         value = json.loads(response.content.decode('utf-8'))
-        self.assertEqual(value['status'], '0')
+        self.assertEqual(value['status'], '0')  # check that the status is in DRAFT
+
+    def test_user_delete(self):
+        """
+        Test Admin delete
+        :return:
+        """
+        self.login_user("auser")
+
+        #########################################################################
+        # NGT User may not delete a SUBMITTED dataset
+        response = self.client.delete("/api/v1/datasets/2/")  # In submitted mode, owned by auser
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+
+        # Confirm that it wasn't deleted
+        response = self.client.get("/api/v1/datasets/2/")  # should be deleted
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+
+        #########################################################################
+        # NGT user may delete a DRAFT dataset
+        response = self.client.delete("/api/v1/datasets/1/")  # In submitted mode, owned by auser
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
+
+        response = self.client.get("/api/v1/datasets/1/")  # should be deleted
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+
+    def test_admin_delete(self):
+        """
+        Test Admin delete
+        :return:
+        """
+        self.login_user("admin")
+
+        #########################################################################
+        # NGT User may  delete a SUBMITTED dataset
+        response = self.client.delete("/api/v1/datasets/2/")  # In submitted mode, owned by auser
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
+
+        response = self.client.get("/api/v1/datasets/2/")  # should be deleted
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+
+        #########################################################################
+        # NGT User may delete a DRAFT dataset
+        response = self.client.delete("/api/v1/datasets/1/")  # In submitted mode, owned by auser
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
+
+        response = self.client.get("/api/v1/datasets/1/")  # should be deleted
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
 
 
 class SiteClientTestCase(APITestCase):

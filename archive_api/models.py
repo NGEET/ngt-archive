@@ -108,7 +108,9 @@ class Plot(models.Model):
 
 class DataSet(models.Model):
     # TODO: understand how dataset Id is generated
-    data_set_id = models.CharField(max_length=20, blank=False)
+
+    def data_set_id(self):
+        return "NGT{}".format(self.id)
 
     description = models.TextField(blank=True, null=True)
 
@@ -152,5 +154,8 @@ class DataSet(models.Model):
         permissions = (
             ("approve_submitted_dataset", "Can approve a 'submitted' dataset"),
             ("edit_draft_dataset", "Can edit a 'draft' dataset"),
-            ("unsubmit_submitted_dataset", "Can unsubmit a 'submitted' dataset")
+            ("unsubmit_submitted_dataset", "Can unsubmit a 'submitted' dataset"),
+            ("unapprove_approved_dataset", "Can unapprove a 'approved' dataset"),
+            ("delete_draft_dataset", "Can delete a 'draft' dataset"),
+            ("delete_submitted_dataset", "Can delete a 'submitted' dataset")
         )

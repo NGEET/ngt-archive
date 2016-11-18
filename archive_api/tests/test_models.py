@@ -1,6 +1,5 @@
-from django.test import TestCase
-
 from archive_api.models import DataSet, Site, Plot, Person, MeasurementVariable
+from django.test import TestCase
 
 
 class DataSetTestCase(TestCase):
@@ -10,23 +9,23 @@ class DataSetTestCase(TestCase):
 
     def test_get(self):
         """Assert that the DataSets were created"""
-        foo = DataSet.objects.get(data_set_id="DS-1")
-        bar = DataSet.objects.get(data_set_id="DS-2")
-        self.assertEqual(foo.data_set_id, "DS-1")
-        self.assertEqual(bar.data_set_id, 'DS-2')
+        foo = DataSet.objects.get(id=1)
+        bar = DataSet.objects.get(id=2)
+        self.assertEqual(foo.name, "Data Set 1")
+        self.assertEqual(bar.name, "Data Set 2")
 
     def test_update(self):
         """ Assert that the DataSet was updated """
-        foo = DataSet.objects.get(data_set_id="DS-1")
+        foo = DataSet.objects.get(id=1)
 
-        foo.data_set_id = "FooBar"
-        foo.name = "A Foo dataset"
+        foo.name = "FooBar"
+        foo.description = "A Foo dataset"
         foo.save()
 
-        foo = DataSet.objects.get(data_set_id="FooBar")
+        foo = DataSet.objects.get(id=1)
         self.assertIsNotNone(foo)
-        self.assertEqual(foo.data_set_id, 'FooBar')
-        self.assertEqual(foo.name, 'A Foo dataset')
+        self.assertEqual(foo.name, 'FooBar')
+        self.assertEqual(foo.description, 'A Foo dataset')
 
     def test_list(self):
         """Assert that all DataSets were found"""

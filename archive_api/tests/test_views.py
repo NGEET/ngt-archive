@@ -2,11 +2,10 @@ from __future__ import print_function, unicode_literals
 
 import json
 
+from archive_api.viewsets import DataSetViewSet
 from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.test import APIRequestFactory, APITestCase, force_authenticate
-
-from archive_api.viewsets import DataSetViewSet
 
 
 class DataSetTestCase(APITestCase):
@@ -44,7 +43,6 @@ class DataSetTestCase(APITestCase):
         response.render()  # Cannot access `response.content` without this.
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(value['url'], "http://testserver/api/v1/datasets/1/")
-        self.assertEqual(value["dataSetId"], "DS-1")
         self.assertEqual(value["status"], "0")
         self.assertEqual(value["description"],
                          "Lorem ipsum dolor sit amet, impedit accusamus reprehendunt in quo, accusata voluptaria scribentur te nec. Id mel partem euismod bonorum. No modus dolore vim, per in exerci iisque persequeris, animal interesset sit ex. Vero ocurreret nam an.")

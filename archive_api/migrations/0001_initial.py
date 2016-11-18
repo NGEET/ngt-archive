@@ -8,7 +8,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -20,7 +19,6 @@ class Migration(migrations.Migration):
             name='DataSet',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('data_set_id', models.CharField(max_length=20)),
                 ('description', models.TextField(blank=True, null=True)),
                 ('status',
                  models.CharField(choices=[('0', 'Draft'), ('1', 'Submitted'), ('2', 'Approved')], default='0',
@@ -51,7 +49,10 @@ class Migration(migrations.Migration):
             options={
                 'permissions': (('approve_submitted_dataset', "Can approve a 'submitted' dataset"),
                                 ('edit_draft_dataset', "Can edit a 'draft' dataset"),
-                                ('unsubmit_submitted_dataset', "Can unsubmit a 'submitted' dataset")),
+                                ('unsubmit_submitted_dataset', "Can unsubmit a 'submitted' dataset"),
+                                ("unapprove_approved_dataset", "Can unapprove a 'approved' dataset"),
+                                ("delete_draft_dataset", "Can delete a 'draft' dataset"),
+                                ("delete_submitted_dataset", "Can delete a 'submitted' dataset")),
             },
         ),
         migrations.CreateModel(
@@ -128,7 +129,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterUniqueTogether(
             name='person',
-            unique_together=set([('first_name', 'last_name', 'institution_affiliation', 'email')]),
+            unique_together={('first_name', 'last_name', 'institution_affiliation', 'email')},
         ),
         migrations.AddField(
             model_name='dataset',

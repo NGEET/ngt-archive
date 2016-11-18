@@ -129,10 +129,10 @@
     "model": "archive_api.dataset",
     "pk": 1,
     "fields": {
-      "data_set_id": "DS-1",
       "description": "Lorem ipsum dolor sit amet, impedit accusamus reprehendunt in quo, accusata voluptaria scribentur te nec. Id mel partem euismod bonorum. No modus dolore vim, per in exerci iisque persequeris, animal interesset sit ex. Vero ocurreret nam an.",
       "status": "0",
       "status_comment": "",
+      "name": "Data Set 1",
       "doi": "",
       "start_date": "2016-10-28",
       "end_date": null,
@@ -168,7 +168,6 @@
     "model": "archive_api.dataset",
     "pk": 2,
     "fields": {
-      "data_set_id": "DS-2",
       "description": "Qui illud verear persequeris te. Vis probo nihil verear an, zril tamquam philosophia eos te, quo ne fugit movet contentiones. Quas mucius detraxit vis an, vero omnesque petentium sit ea. Id ius inimicus comprehensam.",
       "status": "1",
       "status_comment": "",

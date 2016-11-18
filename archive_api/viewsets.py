@@ -1,15 +1,14 @@
 # Create your views here.
+import archive_api
+from archive_api.models import DataSet, MeasurementVariable, Site, Person, Plot
+from archive_api.serializers import DataSetSerializer, MeasurementVariableSerializer, SiteSerializer, PersonSerializer, \
+    PlotSerializer
 from django.utils import timezone
 from rest_framework import permissions
 from rest_framework import status
 from rest_framework.decorators import detail_route
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-
-import archive_api
-from archive_api.models import DataSet, MeasurementVariable, Site, Person, Plot
-from archive_api.serializers import DataSetSerializer, MeasurementVariableSerializer, SiteSerializer, PersonSerializer, \
-    PlotSerializer
 
 
 class HasGroupPermissionOrReadonly(permissions.BasePermission):
@@ -30,6 +29,8 @@ class HasGroupPermissionOrReadonly(permissions.BasePermission):
             action = "submit"
         elif "/unsubmit" in path_info:
             action = "unsubmit"
+        elif "/unapprove" in path_info:
+            action = "unapprove"
         elif "/approve" in path_info:
             action = "approve"
 
@@ -42,16 +43,23 @@ class HasGroupPermissionOrReadonly(permissions.BasePermission):
         # Only Authenticated users my edit a dataset
         if request.user.is_authenticated:
             # Owner is either editing or submitting a draft
-            if obj.status == self.DRAFT and \
+            if request.method == "DELETE":
+                if obj.status == self.DRAFT:
+                    return request.user.has_perm('archive_api.delete_draft_dataset')
+                elif obj.status == self.SUBMITTED:
+                    return request.user.has_perm('archive_api.delete_submitted_dataset')
+            elif obj.status == self.DRAFT and \
                     request.user.has_perm('archive_api.edit_draft_dataset') \
                     and (action is None or action == "submit"):
-                return obj.owner == request.user
+                return obj.owner == request.user or request.user.groups.filter(name='NGT Administrator').exists()
             # Administrator is approving a submitted draft, the dataset meta data
             # may not be edited at this point
             elif obj.status == self.SUBMITTED and (action is None or action == "approve"):
                 return request.user.has_perm('archive_api.approve_submitted_dataset')
             elif obj.status == self.SUBMITTED and (action is None or action == "unsubmit"):
                 return request.user.has_perm('archive_api.unsubmit_submitted_dataset')
+            elif obj.status == self.APPROVED and (action is None or action == "unapprove"):
+                return request.user.has_perm('archive_api.unapprove_approved_dataset')
 
         return False
 
@@ -64,7 +72,7 @@ class DataSetViewSet(ModelViewSet):
     permission_classes = (HasGroupPermissionOrReadonly, permissions.IsAuthenticated)
     queryset = DataSet.objects.all()
     serializer_class = DataSetSerializer
-    http_method_names = ['get', 'post', 'put', 'head', 'options']
+    http_method_names = ['get', 'post', 'put', 'delete', 'head', 'options']
 
     def perform_create(self, serializer):
         """
@@ -111,6 +119,20 @@ class DataSetViewSet(ModelViewSet):
 
         self.change_status(request, HasGroupPermissionOrReadonly.DRAFT)
         return Response({'success': True, 'detail': 'DataSet has been unsubmitted.'}, status=status.HTTP_200_OK)
+
+    @detail_route(methods=['post', 'get'])
+    def unapprove(self, request, pk=None):
+        """
+        Unapprove action.  Changes the dataset from 'approved' to submitted status. User must have the
+        proper permissions for this action
+
+        :param request:
+        :param pk:
+        :return:
+        """
+
+        self.change_status(request, HasGroupPermissionOrReadonly.SUBMITTED)
+        return Response({'success': True, 'detail': 'DataSet has been unapproved.'}, status=status.HTTP_200_OK)
 
     @detail_route(methods=['post', 'get'])
     def submit(self, request, pk=None):

@@ -1,6 +1,5 @@
-from rest_framework import serializers
-
 from archive_api.models import DataSet, MeasurementVariable, Site, Person, Plot
+from rest_framework import serializers
 
 
 class SubmissionContactField(serializers.JSONField):
@@ -34,7 +33,7 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = DataSet
-        fields = ('url', 'data_set_id', 'name', 'status', 'description', 'status_comment',
+        fields = ('url', 'name', 'status', 'description', 'status_comment',
                   'doi', 'start_date', 'end_date', 'qaqc_status', 'qaqc_method_description',
                   'ngee_tropics_resources', 'funding_organizations', 'doe_funding_contract_numbers',
                   'acknowledgement', 'reference', 'additional_reference_information',
@@ -56,7 +55,7 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
         # If the dataset is approved or submitted there are an extra set of fields
         # that are required
         if self.instance and self.instance.status in ['1', '2']:
-            for field in ['data_set_id', 'sites', 'authors', 'name', 'description', 'contact', 'variables',
+            for field in ['sites', 'authors', 'name', 'description', 'contact', 'variables',
                           'ngee_tropics_resources', 'funding_organizations',
                           'access_level']:  # Check for required fields
                 if field in data.keys():
