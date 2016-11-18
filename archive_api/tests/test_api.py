@@ -40,7 +40,7 @@ class DataSetClientTestCase(APITestCase):
         self.login_user("auser")
         response = self.client.get('/api/v1/datasets/')
         self.assertEqual(len(json.loads(response.content.decode('utf-8'))),
-                         2)
+                         3)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_client_get(self):
@@ -48,7 +48,7 @@ class DataSetClientTestCase(APITestCase):
         response = self.client.get('/api/v1/datasets/2/')
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(value,
-                         {'contact': 'http://testserver/api/v1/people/2/', 'owner': 'auser', 'name': 'Data Set 2',
+                         {'contact': 'http://testserver/api/v1/people/2/', 'createdBy': 'auser', 'name': 'Data Set 2',
                           'startDate': '2016-10-28', 'acknowledgement': '',
                           'createdDate': '2016-10-28T19:15:35.013361Z', 'sites': ['http://testserver/api/v1/sites/1/'],
                           'qaqcStatus': None, 'plots': ['http://testserver/api/v1/plots/1/'],
@@ -73,13 +73,13 @@ class DataSetClientTestCase(APITestCase):
     def test_client_post(self):
         self.login_user("auser")
         response = self.client.post('/api/v1/datasets/',
-                                    data='{"dataSetId":"FooBarBaz","description":"A FooBarBaz DataSet"}',
+                                    data='{"name":"FooBarBaz","description":"A FooBarBaz DataSet"}',
                                     content_type='application/json')
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(value['accessLevel'], '0')
         self.assertEqual(value['sites'], [])
-        self.assertEqual(value['owner'], 'auser')
+        self.assertEqual(value['createdBy'], 'auser')
         self.assertEqual(value['endDate'], None)
         self.assertEqual(value['doeFundingContractNumbers'], None)
         self.assertEqual(value['fundingOrganizations'], None)
@@ -87,7 +87,7 @@ class DataSetClientTestCase(APITestCase):
         self.assertEqual(value['submissionContact'],
                          {'firstName': 'Merry', 'lastName': 'Yuser', 'email': 'myuser@foo.bar'})
         self.assertEqual(value['additionalAccessInformation'], None)
-        self.assertEqual(value['name'], None)
+        self.assertEqual(value['name'], 'FooBarBaz')
         self.assertEqual(value['modifiedBy'], 'auser')
         self.assertEqual(value['ngeeTropicsResources'], False)
         self.assertEqual(value['status'], '0')
@@ -102,16 +102,16 @@ class DataSetClientTestCase(APITestCase):
         self.assertEqual(value['statusComment'], None)
         self.assertEqual(value['submissionDate'], None)
         self.assertEqual(value['qaqcStatus'], None)
-        self.assertEqual(value['url'], 'http://testserver/api/v1/datasets/3/')
+        self.assertEqual(value['url'], 'http://testserver/api/v1/datasets/4/')
         self.assertEqual(value['qaqcMethodDescription'], None)
 
         # The submit action should fail
-        response = self.client.post('/api/v1/datasets/3/submit/')
+        response = self.client.post('/api/v1/datasets/4/submit/')
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual({'missingRequiredFields': ['sites', 'authors',
-                                                    'name', 'contact',
+                                                    'contact',
                                                     'variables',
                                                     'ngee_tropics_resources', 'funding_organizations']}, value)
 

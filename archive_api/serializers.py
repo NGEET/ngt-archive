@@ -25,9 +25,9 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
         DataSet serializer that converts models.DataSet
 
     """
-    owner = serializers.ReadOnlyField(source='owner.username')
+    created_by = serializers.ReadOnlyField(source='created_by.username')
     modified_by = serializers.ReadOnlyField(source='modified_by.username')
-    submission_contact = SubmissionContactField(source='owner', read_only=True)
+    submission_contact = SubmissionContactField(source='created_by', read_only=True)
     submission_date = serializers.ReadOnlyField()
     status = serializers.ReadOnlyField()
 
@@ -39,9 +39,9 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
                   'acknowledgement', 'reference', 'additional_reference_information',
                   'access_level', 'additional_access_information', 'submission_contact',
                   'submission_date', 'contact', 'sites', 'authors', 'plots', 'variables',
-                  'owner', 'created_date', 'modified_by', 'modified_date')
+                  'created_by', 'created_date', 'modified_by', 'modified_date')
         readonly_fields = (
-            'url', 'owner', 'created_date', 'modified_by', 'modified_date', 'status', 'submission_contact',
+            'url', 'created_by', 'created_date', 'modified_by', 'modified_date', 'status', 'submission_contact',
             'submission_date')
 
     def validate(self, data):

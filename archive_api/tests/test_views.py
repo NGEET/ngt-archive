@@ -27,7 +27,7 @@ class DataSetTestCase(APITestCase):
         force_authenticate(request,self.user)
         response = self.view_list(request)
         response.render()  # Cannot access `response.content` without this.
-        self.assertAlmostEqual(len(json.loads(response.content.decode('utf-8'))), 2)
+        self.assertAlmostEqual(len(json.loads(response.content.decode('utf-8'))), 3)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_detail(self):
@@ -72,5 +72,5 @@ class DataSetTestCase(APITestCase):
             "http://testserver/api/v1/variables/1/",
             "http://testserver/api/v1/variables/2/"
         ])
-        self.assertEqual(value["owner"], "auser")
+        self.assertEqual(value["createdBy"], "auser")
         self.assertEqual(value["modifiedBy"], "auser")
