@@ -27,8 +27,35 @@ WFSFA is a Django application which requires:
 * Django (> 1.8)
 
 ###Setup Development
-There is an option for virtual machine development and local machine 
-development using vagrant.
+There is an option for  local machine 
+development and virtual machine development using vagrant.
+
+#### Desktop
+Use these instructions for setting up development on a desktop computer.
+
+Fork the repository and then clone your fork:
+
+    # installation instructions here
+    git clone git@github.com:<your username here>/ngt-archive.git
+    cd ngt-archive
+
+Create a virtual environment for development
+    
+    virtualenv -p /Library/Frameworks/Python.framework/Versions/3.4/bin/python3.4 .menv
+    source .menv/bin/activate
+    
+Install the a django project for development
+    
+    python setup.py develop
+    ./manage.py collectstatic
+    ./manage.py migrate
+    ./manage.py loaddata test_auth.json test_archive_api.json
+    
+    
+Run the development server. Test users/passes are: `superadmin/ngeet2016`, `admin/ngeetdata`,
+`auser/ngeetdata`.
+
+    ./manage.py runserver
 
 #### Virtual Machine Development
 These instructions assume that you have [Vagrant](#vagrant) installed.
@@ -112,7 +139,7 @@ Load Archive Service Test Data
 ./manage.py loaddata test_archive_api.json 
 ```
 
-Run a develeop server
+Run a develop server
 
 ```
 ./manage.py runserver  0.0.0.0:8888

@@ -1,17 +1,23 @@
+from django.contrib.auth.models import User
 from django.db import models
 
+STATUS_CHOICES = (
+    ('0', 'Draft'),
+    ('1', 'Submitted'),
+    ('2', 'Approved'),
+)
 
-# STATUS_CHOICES = (
-#     ('0', 'Draft'),
-#     ('1', 'Submitted'),
-#     ('2', 'Approved'),
-# )
-#
-# QAQC_STATUS_CHOICES = (
-# ('0', 'None'),
-#     ('1', 'Preliminary QA-QC'),
-#     ('2', 'Full QA-QC'),
-# )
+QAQC_STATUS_CHOICES = (
+    ('0', 'None'),
+    ('1', 'Preliminary QA-QC'),
+    ('2', 'Full QA-QC'),
+)
+
+ACCESS_CHOICES = (
+    ('0', 'Private'),
+    ('1', 'NGEE Tropics'),
+    ('2', 'Public'),
+)
 
 
 class MeasurementVariable(models.Model):
@@ -27,7 +33,7 @@ class MeasurementVariable(models.Model):
         return '<Contact {}>'.format(self)
 
 
-class Contact(models.Model):
+class Person(models.Model):
     first_name = models.CharField(max_length=50, blank=False)
     last_name = models.CharField(max_length=50, blank=True)
     email = models.EmailField(blank=True)
@@ -63,9 +69,9 @@ class Site(models.Model):
     location_bounding_box_lr_latitude = models.FloatField(blank=True, null=True)
     location_bounding_box_lr_longitude = models.FloatField(blank=True, null=True)
     site_urls = models.TextField(blank=True, null=True)
-    contacts = models.ManyToManyField(Contact)
-    pis = models.ManyToManyField(Contact, related_name='+')
-    submission = models.ForeignKey(Contact, on_delete=models.DO_NOTHING, related_name='+')
+    contacts = models.ManyToManyField(Person)
+    pis = models.ManyToManyField(Person, related_name='+')
+    submission = models.ForeignKey(Person, on_delete=models.DO_NOTHING, related_name='+')
     submission_date = models.DateField(blank=True, null=True)
 
     def __str__(self):
@@ -85,9 +91,9 @@ class Plot(models.Model):
     size = models.CharField(max_length=100, blank=True, null=True, )
     location_elevation = models.CharField(blank=True, null=True, max_length=30)
     location_kmz_url = models.URLField(blank=True, null=True, )
-    pi = models.ForeignKey(Contact, on_delete=models.DO_NOTHING, blank=True, null=True)
+    pi = models.ForeignKey(Person, on_delete=models.DO_NOTHING, blank=True, null=True)
     site = models.ForeignKey(Site, on_delete=models.DO_NOTHING)
-    submission = models.ForeignKey(Contact, on_delete=models.DO_NOTHING, related_name='+')
+    submission = models.ForeignKey(Person, on_delete=models.DO_NOTHING, related_name='+')
     submission_date = models.DateField(blank=True, null=True)
 
     def __str__(self):
@@ -102,40 +108,54 @@ class Plot(models.Model):
 
 class DataSet(models.Model):
     # TODO: understand how dataset Id is generated
-    data_set_id = models.CharField(max_length=20, blank=False)
-    description = models.TextField()
 
-# status = models.CharField(max_length=1, choices=STATUS_CHOICES)  #(draft, submitted, approved)
-# status_comment = models.TextField()
-# name = models.CharField(unique=True, max_length=50)
-# doi = models.TextField()
-# contact = models.ForeignKey(Contact, on_delete=models.DO_NOTHING)
-#
-# # TODO - does this need to be a datetime?
-# start_date = models.DateField()
-# end_date = models.DateField()
-#
-# qaqc_status = models.CharField(max_length=1, choices=QAQC_STATUS_CHOICES)
-# qaqc_method_description = models.TextField()
-# ngee_tropics_tesources = models.BooleanField()
-# funding_organizations = models.TextField()
-# doe_funding_contract_numbers = models.CharField(max_length=100)
-# acknowledgement = models.TextField()
-# reference = models.TextField()
-# additional_reference_information = models.TextField()
-#
-# # TODO: Access levels: public, private, NGEE Tropics
-# #access_level = models.CharField(max_length=1, choices=)
-# additional_access_information = models.TextField()
-# submission_date = models.DateTimeField(auto_created=True)
-# lastModified_date = models.DateTimeField(auto_now=True)
-#
-# # TODO - figure out how to have created by and modified by users
-# # createdBy
-# # modifiedBy
-# file = models.FileField()
-#
-# # Relationships
-# sites = models.ManyToManyField(Site)
-# plots = models.ManyToManyField(Plot)
-# variables = models.ManyToManyField(MeasurementVariable)
+    def data_set_id(self):
+        return "NGT{}".format(self.id)
+
+    description = models.TextField(blank=True, null=True)
+
+    status = models.CharField(max_length=1, choices=STATUS_CHOICES,
+                              default='0')  # (draft [DEFAULT], submitted, approved)
+    status_comment = models.TextField(blank=True, null=True)
+    name = models.CharField(unique=True, max_length=50, blank=True, null=True)
+    doi = models.TextField(blank=True, null=True)
+    start_date = models.DateField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
+    qaqc_status = models.CharField(max_length=1, choices=QAQC_STATUS_CHOICES, blank=True, null=True)
+    qaqc_method_description = models.TextField(blank=True, null=True)
+    ngee_tropics_resources = models.BooleanField(default=False)
+    funding_organizations = models.TextField(blank=True, null=True)
+    doe_funding_contract_numbers = models.CharField(max_length=100, blank=True, null=True)
+    acknowledgement = models.TextField(blank=True, null=True)
+    reference = models.TextField(blank=True, null=True)
+    additional_reference_information = models.TextField(blank=True, null=True)
+
+    # TODO: Access levels: public, private, NGEE Tropics
+    access_level = models.CharField(max_length=1, choices=ACCESS_CHOICES, default='0')
+    additional_access_information = models.TextField(blank=True, null=True)
+    submission_date = models.DateTimeField(blank=True, null=True)
+
+    # Owner is the person who created the dataset
+    owner = models.ForeignKey(User, editable=False, related_name='+')
+    created_date = models.DateTimeField(editable=False, auto_now_add=True)
+    modified_by = models.ForeignKey(User, editable=False, related_name='+')
+    modified_date = models.DateTimeField(editable=False, auto_now=True)
+
+    # file = models.FileField()
+
+    # Relationships
+    authors = models.ManyToManyField(Person, blank=True, related_name='+')
+    contact = models.ForeignKey(Person, on_delete=models.DO_NOTHING, blank=True, null=True)
+    sites = models.ManyToManyField(Site, blank=True)
+    plots = models.ManyToManyField(Plot, blank=True)
+    variables = models.ManyToManyField(MeasurementVariable, blank=True)
+
+    class Meta:
+        permissions = (
+            ("approve_submitted_dataset", "Can approve a 'submitted' dataset"),
+            ("edit_draft_dataset", "Can edit a 'draft' dataset"),
+            ("unsubmit_submitted_dataset", "Can unsubmit a 'submitted' dataset"),
+            ("unapprove_approved_dataset", "Can unapprove a 'approved' dataset"),
+            ("delete_draft_dataset", "Can delete a 'draft' dataset"),
+            ("delete_submitted_dataset", "Can delete a 'submitted' dataset")
+        )
