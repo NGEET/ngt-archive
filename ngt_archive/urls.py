@@ -16,10 +16,12 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from archive_api import urls as api_urls
+from ui import urls as ui_urls
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
+    url(r'^', include(ui_urls)),   
     url(r'^api/', include(api_urls)),
     url(r'^admin/', admin.site.urls),
 ]

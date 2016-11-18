@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>NGEE Tropics Archive Service: Home</title>
+        <link rel="stylesheet" href="static/stylesheets/foundation.css">
+        <script type="text/javascript" src="static/js/jquery-2.1.4.min.js"></script>
+        <script type="text/javascript" src="static/js/jquery-ui.js"></script>
+        <script type="text/javascript" src="static/js/app.js"></script>
+        <link rel="stylesheet" type="text/css" href="static/stylesheets/style.css">
+        <script type="text/javascript" src="static/js/foundation.js"></script>
+        <script type="text/javascript" src="static/js/what-input.js"></script>
+    </head>
+    <body>
+        
+        <main>
+            <nav class="menu expanded">
+                <a href="/">Home</a>
+                <a href="/api/api-auth/logout/?next=/" class="float-right">Logout</a>
+                {% if user.is_authenticated %}
+                    <span class="float-right user">{{ user.get_username }}</span>
+                {% else %} 
+                    <span class="js-auth" data-auth="false"></span>
+                {% endif %}
+            </nav>
+            <article>
+                <h2>NGEE Tropics Archive</h2>
+                <form>
+                    <h4>Create a dataset</h4>
+                    <div class="small-12 medium-6">
+                        <label>Name
+                            <input class="js-dataset-name" type="text" placeholder="Dataset name">
+                        </label>
+                    </div>
+                    <div class="small-12 medium-6">
+                        <label>Description
+                            <textarea class="js-dataset-desc" placeholder="Dataset description"></textarea>
+                        </label>
+                    </div>
+                    <div class="small-12 medium-6 text-center">
+                        <button type="button" class="button small-10 medium-6 js-create-dataset">Create Dataset</button>
+                        <input type="reset" class="button secondary small-10 medium-6 js-clear-form" value="Clear form">
+                    </div>
+                </form>
+                <br>
+                <!--form>
+                    <h4>Create a contact</h4>
+                    <div class="small-12 medium-6">
+                        <label>First Name
+                            <input class="js-contact-fname" type="text" placeholder="Contact first name">
+                        </label>
+                    </div>
+                    <div class="small-12 medium-6">
+                        <label>Last Name
+                            <input class="js-contact-lname" type="text" placeholder="Contact last name">
+                        </label>
+                    </div>
+                    <div class="small-12 medium-6">
+                        <label>Email
+                            <input class="js-contact-email" type="email" placeholder="Contact email">
+                        </label>
+                    </div>
+                    <div class="small-12 medium-6">
+                        <label>Institute
+                            <input class="js-contact-institute" type="text" placeholder="Contact institute">
+                        </label>
+                    </div>
+                    <div class="small-12 medium-6 text-center">
+                        <button type="button" class="button small-10 medium-6 js-create-contact">Create Dataset</button>
+                        <input type="reset" class="button secondary small-10 medium-6" value="Clear form">
+                    </div>
+                </form-->
+                <h4>
+                    View
+                </h4> 
+                <button class="button js-get-datasets">Datasets</button>
+                <button class="button js-get-plots">Plots</button>
+                <!--button class="button js-get-vars">Variables</button>
+                <button class="button js-get-contacts">Contacts</button-->
+                <button class="button js-get-sites">Sites</button>
+                <!--div class="small-12 medium-6">
+                    <label>Description
+                        <textarea class="js-text-dump" placeholder="Dataset description"></textarea>
+                    </label>
+                </div-->
+                <code class="js-text-dump small-12 medium-6"></code>
+            </article>
+        </main>
+    </body>
+</html>

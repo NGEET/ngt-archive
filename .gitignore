@@ -17,4 +17,5 @@ ngee_tropics.sql
 sites.txt
 plots.txt
 archive_api_import.json
+!ui/static
 
