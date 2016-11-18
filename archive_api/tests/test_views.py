@@ -2,11 +2,10 @@ from __future__ import print_function, unicode_literals
 
 import json
 
+from archive_api.viewsets import DataSetViewSet
 from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.test import APIRequestFactory, APITestCase, force_authenticate
-
-from archive_api.viewsets import DataSetViewSet
 
 
 class DataSetTestCase(APITestCase):
@@ -28,19 +27,7 @@ class DataSetTestCase(APITestCase):
         force_authenticate(request,self.user)
         response = self.view_list(request)
         response.render()  # Cannot access `response.content` without this.
-        self.assertEqual(json.loads(response.content.decode('utf-8')),
-                         [
-                             {
-                                 "url": "http://testserver/api/v1/datasets/1/",
-                                 "dataSetId": "DS-1",
-                                 "description": "Lorem ipsum dolor sit amet, impedit accusamus reprehendunt in quo, accusata voluptaria scribentur te nec. Id mel partem euismod bonorum. No modus dolore vim, per in exerci iisque persequeris, animal interesset sit ex. Vero ocurreret nam an."
-                             },
-                             {
-                                 "url": "http://testserver/api/v1/datasets/2/",
-                                 "dataSetId": "DS-2",
-                                 "description": "Qui illud verear persequeris te. Vis probo nihil verear an, zril tamquam philosophia eos te, quo ne fugit movet contentiones. Quas mucius detraxit vis an, vero omnesque petentium sit ea. Id ius inimicus comprehensam."
-                             }
-                         ])
+        self.assertAlmostEqual(len(json.loads(response.content.decode('utf-8'))), 2)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_detail(self):
@@ -54,9 +41,36 @@ class DataSetTestCase(APITestCase):
         force_authenticate(request,self.user)
         response = self.view_detail(request, pk='1')
         response.render()  # Cannot access `response.content` without this.
-        self.assertEqual(json.loads(response.content.decode('utf-8')),
-                         {
-                             "url": "http://testserver/api/v1/datasets/1/",
-                             "dataSetId": "DS-1",
-                             "description": "Lorem ipsum dolor sit amet, impedit accusamus reprehendunt in quo, accusata voluptaria scribentur te nec. Id mel partem euismod bonorum. No modus dolore vim, per in exerci iisque persequeris, animal interesset sit ex. Vero ocurreret nam an."
-                         })
+        value = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(value['url'], "http://testserver/api/v1/datasets/1/")
+        self.assertEqual(value["status"], "0")
+        self.assertEqual(value["description"],
+                         "Lorem ipsum dolor sit amet, impedit accusamus reprehendunt in quo, accusata voluptaria scribentur te nec. Id mel partem euismod bonorum. No modus dolore vim, per in exerci iisque persequeris, animal interesset sit ex. Vero ocurreret nam an.")
+        self.assertEqual(value["statusComment"], "")
+        self.assertEqual(value["doi"], "")
+        self.assertEqual(value["startDate"], "2016-10-28")
+        self.assertEqual(value["endDate"], None)
+        self.assertEqual(value["qaqcStatus"], None)
+        self.assertEqual(value["qaqcMethodDescription"], "")
+        self.assertEqual(value["ngeeTropicsResources"], True)
+        self.assertEqual(value["fundingOrganizations"], "")
+        self.assertEqual(value["doeFundingContractNumbers"], "")
+        self.assertEqual(value["acknowledgement"], "")
+        self.assertEqual(value["reference"], "")
+        self.assertEqual(value["additionalReferenceInformation"], "")
+        self.assertEqual(value["accessLevel"], "0")
+        self.assertEqual(value["additionalAccessInformation"], "")
+        self.assertEqual(value["submissionDate"], None)
+        self.assertEqual(value["contact"], "http://testserver/api/v1/people/2/")
+        self.assertEqual(value["sites"], [
+            "http://testserver/api/v1/sites/1/"
+        ])
+        self.assertEqual(value["plots"], [
+            "http://testserver/api/v1/plots/1/"
+        ])
+        self.assertEqual(value["variables"], [
+            "http://testserver/api/v1/variables/1/",
+            "http://testserver/api/v1/variables/2/"
+        ])
+        self.assertEqual(value["owner"], "auser")
+        self.assertEqual(value["modifiedBy"], "auser")

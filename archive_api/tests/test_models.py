@@ -1,30 +1,30 @@
+from archive_api.models import DataSet, Site, Plot, Person, MeasurementVariable
 from django.test import TestCase
-
-from archive_api.models import DataSet, Site, Plot, Contact, MeasurementVariable
 
 
 class DataSetTestCase(TestCase):
+    fixtures = ('test_auth.json', 'test_archive_api.json',)
     def setUp(self):
-        DataSet.objects.create(data_set_id="Foo", description="A Foo dataset")
-        DataSet.objects.create(data_set_id="Bar", description="A Bar dataset")
+        pass
 
     def test_get(self):
         """Assert that the DataSets were created"""
-        foo = DataSet.objects.get(data_set_id="Foo")
-        bar = DataSet.objects.get(data_set_id="Bar")
-        self.assertEqual(bar.data_set_id, "Bar")
-        self.assertEqual(foo.data_set_id, 'Foo')
+        foo = DataSet.objects.get(id=1)
+        bar = DataSet.objects.get(id=2)
+        self.assertEqual(foo.name, "Data Set 1")
+        self.assertEqual(bar.name, "Data Set 2")
 
     def test_update(self):
         """ Assert that the DataSet was updated """
-        foo = DataSet.objects.get(data_set_id="Foo")
+        foo = DataSet.objects.get(id=1)
 
-        foo.data_set_id = "FooBar"
+        foo.name = "FooBar"
+        foo.description = "A Foo dataset"
         foo.save()
 
-        foo = DataSet.objects.get(data_set_id="FooBar")
+        foo = DataSet.objects.get(id=1)
         self.assertIsNotNone(foo)
-        self.assertEqual(foo.data_set_id, 'FooBar')
+        self.assertEqual(foo.name, 'FooBar')
         self.assertEqual(foo.description, 'A Foo dataset')
 
     def test_list(self):
@@ -33,33 +33,33 @@ class DataSetTestCase(TestCase):
         self.assertEqual(len(data_sets), 2)
 
 
-class ContactTestCase(TestCase):
+class PersonTestCase(TestCase):
     def setUp(self):
-        Contact.objects.create(first_name="Mary", last_name="Cook", email="mcook@foobar.com",
-                               institution_affiliation="FooBar")
+        Person.objects.create(first_name="Mary", last_name="Cook", email="mcook@foobar.com",
+                              institution_affiliation="FooBar")
 
     def test_get(self):
-        """Assert that the Contacts were created"""
-        foo = Contact.objects.get(first_name="Mary", last_name="Cook", email="mcook@foobar.com",
+        """Assert that the Persons were created"""
+        foo = Person.objects.get(first_name="Mary", last_name="Cook", email="mcook@foobar.com",
                                   institution_affiliation="FooBar")
         self.assertEqual(str(foo), "Cook, Mary - FooBar")
 
     def test_update(self):
-        """ Assert that the Contacts was updated """
-        foo = Contact.objects.get(first_name="Mary", last_name="Cook", email="mcook@foobar.com",
+        """ Assert that the Persons was updated """
+        foo = Person.objects.get(first_name="Mary", last_name="Cook", email="mcook@foobar.com",
                                   institution_affiliation="FooBar")
 
         foo.first_name = "Jane"
         foo.save()
 
-        foo = Contact.objects.get(first_name="Jane", last_name="Cook", email="mcook@foobar.com",
-                                  institution_affiliation="FooBar")
+        foo = Person.objects.get(first_name="Jane", last_name="Cook", email="mcook@foobar.com",
+                                 institution_affiliation="FooBar")
         self.assertIsNotNone(foo)
         self.assertEqual(str(foo), "Cook, Jane - FooBar")
 
     def test_list(self):
-        """Assert that all Contacts were found"""
-        objs = Contact.objects.all()
+        """Assert that all Persons were found"""
+        objs = Person.objects.all()
         self.assertEqual(len(objs), 1)
 
 
@@ -90,10 +90,10 @@ class MeasurementVariableTestCase(TestCase):
 
 
 class SiteTestCase(TestCase):
-    fixtures = ('test_archive_api.json',)
+    fixtures = ('test_auth.json', 'test_archive_api.json',)
 
     def setUp(self):
-        submission = Contact.objects.get(pk=1)
+        submission = Person.objects.get(pk=1)
         Site.objects.create(site_id="XXXXXXX",
                             name="The name of the site",
                             description="Lorem ipsum dolor sit amet, eu eum ludus deleniti, "
