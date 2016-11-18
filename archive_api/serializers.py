@@ -33,7 +33,7 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = DataSet
-        fields = ('url', 'name', 'status', 'description', 'status_comment',
+        fields = ('url', 'data_set_id', 'name', 'status', 'description', 'status_comment',
                   'doi', 'start_date', 'end_date', 'qaqc_status', 'qaqc_method_description',
                   'ngee_tropics_resources', 'funding_organizations', 'doe_funding_contract_numbers',
                   'acknowledgement', 'reference', 'additional_reference_information',
@@ -42,7 +42,7 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
                   'created_by', 'created_date', 'modified_by', 'modified_date')
         readonly_fields = (
             'url', 'created_by', 'created_date', 'modified_by', 'modified_date', 'status', 'submission_contact',
-            'submission_date')
+            'submission_date', 'data_set_id')
 
     def validate(self, data):
         """
