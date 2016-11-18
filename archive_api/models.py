@@ -136,7 +136,7 @@ class DataSet(models.Model):
     submission_date = models.DateTimeField(blank=True, null=True)
 
     # Owner is the person who created the dataset
-    owner = models.ForeignKey(User, editable=False, related_name='+')
+    created_by = models.ForeignKey(User, editable=False, related_name='+')
     created_date = models.DateTimeField(editable=False, auto_now_add=True)
     modified_by = models.ForeignKey(User, editable=False, related_name='+')
     modified_date = models.DateTimeField(editable=False, auto_now=True)

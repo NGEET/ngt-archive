@@ -158,7 +158,7 @@
         1,
         2
       ],
-      "owner_id": 3,
+      "created_by_id": 3,
       "created_date": "2016-10-28T19:15:35.013361Z",
       "modified_by_id": 3,
       "modified_date": "2016-10-28T23:01:20.066913Z"
@@ -201,10 +201,53 @@
         2,
         3
       ],
-      "owner_id": 3,
+      "created_by_id": 3,
       "created_date": "2016-10-28T19:15:35.013361Z",
       "modified_by_id": 3,
       "modified_date": "2016-10-28T23:01:20.066913Z"
+    }
+  },
+  {
+    "model": "archive_api.dataset",
+    "pk": 3,
+    "fields": {
+      "description": "Qui illud verear persequeris te. Vis probo nihil verear an, zril tamquam philosophia eos te, quo ne fugit movet contentiones. Quas mucius detraxit vis an, vero omnesque petentium sit ea. Id ius inimicus comprehensam.",
+      "status": "1",
+      "status_comment": "",
+      "name": "Data Set 3",
+      "doi": "",
+      "start_date": "2016-10-29",
+      "end_date": null,
+      "qaqc_status": null,
+      "qaqc_method_description": "",
+      "ngee_tropics_resources": true,
+      "funding_organizations": "A few funding organizations for my self",
+      "doe_funding_contract_numbers": "",
+      "acknowledgement": "",
+      "reference": "",
+      "additional_reference_information": "",
+      "access_level": "0",
+      "additional_access_information": "",
+      "submission_date": "2016-10-29T19:12:35Z",
+      "contact": 2,
+      "authors": [
+        2
+      ],
+      "sites": [
+        1
+      ],
+      "plots": [
+        1
+      ],
+      "variables": [
+        1,
+        2,
+        3
+      ],
+      "created_by_id": 2,
+      "created_date": "2016-10-29T19:15:35.013361Z",
+      "modified_by_id": 3,
+      "modified_date": "2016-10-29T23:01:20.066913Z"
     }
   }
 ]
