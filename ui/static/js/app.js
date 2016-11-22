@@ -1,4 +1,7 @@
+var dataObj = {};
 $(document).ready(function(){
+    $(document).foundation();
+    var popup = new Foundation.Reveal($('#myModal'));
     console.log('here');
 
     if($('.js-auth').attr('data-auth') == 'false') {
@@ -93,17 +96,43 @@ $(document).ready(function(){
 
     $('body').on('click', '.js-get-datasets', function() {
         $.when(getDataSets()).then(function(data) {
+            dataObj.datasets = data;
             //console.log(data);
             $('.js-text-dump').html('');
+            $('.js-datasets').html('');
             for(var i=0;i<data.length;i++) {
-                $('.js-text-dump').append('ID: ' + (data[i].dataSetId ? data[i].dataSetId : 'NA') + '<br>')
+                $('.js-text-dump').append('Name: ' + (data[i].name ? data[i].name : 'NA') + '<br>')
                                 .append('Description: ' + (data[i].description ? data[i].description : 'NA') + '<br><br>');
+
+                $('.js-datasets').append('Name: ' + (data[i].name ? data[i].name : 'NA') + '<br>')
+                                .append('Description: ' + (data[i].description ? data[i].description : 'NA') + '<br>')
+                                .append('<button class="js-view-dataset button" data-id="' + data[i].dataSetId + '" data-index="' + i + '">View</button>' + '<br><br>');
             }
         });
     });
 
+    $('body').on('click', '.js-view-dataset', function() {
+        var index = $(this).attr('data-index');
+        
+        $('#myModal #modalTitle').html('')
+                                .html(dataObj.datasets[index]['name']);
+        $('#myModal .js-modal-body').html('');
+        //if(dataObj.datasets[index].dataSetId == $(this).attr('data-id')) {
+            for(var prop in dataObj.datasets[index]) {
+                $('#myModal .js-modal-body').append('<b>' + prop + '</b>: ' + dataObj.datasets[index][prop] + '<br>');
+            }
+        //}
+        popup.open();
+    
+    });
+
+    $('body').on('click', '.js-close-modal', function() {
+        popup.close();
+    });
+
     $('body').on('click', '.js-get-sites', function() {
-        $.when(getDataSets()).then(function(data) {
+        $.when(getSites()).then(function(data) {
+            dataObj.sites = data;
             $('.js-text-dump').html('');
             for(var i=0;i<data.length;i++) {
                 $('.js-text-dump').append('Site Name: ' + (data[i].name ? data[i].name : 'NA') + '<br>')
@@ -128,7 +157,8 @@ $(document).ready(function(){
     });
    
     $('body').on('click', '.js-get-plots', function() {
-        $.when(getDataSets()).then(function(data) {
+        $.when(getPlots()).then(function(data) {
+            dataObj.plots = data;
             $('.js-text-dump').html('');
             for(var i=0;i<data.length;i++) {
                 $('.js-text-dump').append('Plot ID: ' + (data[i].plotId ? data[i].plotId : 'NA') + '<br>')

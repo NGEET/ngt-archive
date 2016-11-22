@@ -1,6 +1,22 @@
 body {
     background-color: #efefef;
     margin: 0;
+
+    #myModal {
+        display: none;
+        width: 50%;
+        background-color: #fff;
+        left: 50%;
+        position: relative;
+        transform: translateX(-50%);
+        padding: 20px 15px 10px;
+
+        .close-reveal-modal {
+            position: absolute;
+            top: 5px;
+            right: 12px;
+        }
+    }
     
     main {
         article {

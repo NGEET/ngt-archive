@@ -1,0 +1,82 @@
+Metadata-Version: 1.1
+Name: djangorestframework-camel-case
+Version: 0.2.0
+Summary: Camel case JSON support for Django REST framework.
+Home-page: https://github.com/vbabiy/djangorestframework_camel_case
+Author: Vitaly Babiy
+Author-email: vbabiy86@gmail.com
+License: BSD
+Description: ===============================
+        Django REST Framework JSON CamelCase
+        ===============================
+        
+        .. image:: https://badge.fury.io/py/djangorestframework-camel-case.png
+            :target: http://badge.fury.io/py/djangorestframework-camel-case
+            
+        .. image:: https://travis-ci.org/vbabiy/djangorestframework-camel-case.png?branch=master
+                :target: https://travis-ci.org/vbabiy/djangorestframework-camel-case
+        
+        .. image:: https://pypip.in/d/djangorestframework-camel-case/badge.png
+                :target: https://crate.io/packages/djangorestframework-camel-case?version=latest
+        
+        
+        Camel case JSON support for Django REST framework.
+        
+        ============
+        Installation
+        ============
+        
+        At the command line::
+        
+            $ pip install djangorestframework-camel-case
+        
+        Add the render and parser to your django settings file.
+        
+            # ...
+            REST_FRAMEWORK = {
+        
+                'DEFAULT_RENDERER_CLASSES': (
+                    'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
+                    # Any other renders
+                ),
+        
+                'DEFAULT_PARSER_CLASSES': (
+                    'djangorestframework_camel_case.parser.CamelCaseJSONParser',
+                    # Any other parsers
+                ),
+            }
+            # ...
+        
+        =============
+        Running Tests
+        =============
+        
+        To run the current test suite, execute the following from the root of he project::
+        
+            $ python -m unittest discover
+        
+        
+        
+        * Free software: BSD license
+        
+        
+        
+        History
+        -------
+        
+        0.1.0 (2013-12-20)
+        ++++++++++++++++++
+        
+        * First release on PyPI.
+        
+Keywords: djangorestframework_camel_case
+Platform: UNKNOWN
+Classifier: Development Status :: 2 - Pre-Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Natural Language :: English
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 2.6
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.3
