@@ -42,7 +42,7 @@ class Migration(migrations.Migration):
                  models.CharField(choices=[('0', 'Private'), ('1', 'NGEE Tropics'), ('2', 'Public')], default='0',
                                   max_length=1)),
                 ('additional_access_information', models.TextField(blank=True, null=True)),
-                ('submission_date', models.DateTimeField(blank=True, null=True)),
+                ('submission_date', models.DateField(blank=True, null=True)),
                 ('created_date', models.DateTimeField(auto_now_add=True)),
                 ('modified_date', models.DateTimeField(auto_now=True)),
             ],

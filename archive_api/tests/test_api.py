@@ -55,7 +55,7 @@ class DataSetClientTestCase(APITestCase):
                           'qaqcStatus': None, 'plots': ['http://testserver/api/v1/plots/1/'],
                           'doeFundingContractNumbers': '', 'status': '1', 'accessLevel': '0',
                           'fundingOrganizations': 'A few funding organizations', 'endDate': None,
-                          'submissionDate': '2016-10-28T19:12:35Z',
+                          'submissionDate': '2016-10-28',
                           'submissionContact': {'firstName': 'Merry', 'lastName': 'Yuser', 'email': 'myuser@foo.bar'},
                           'variables': ['http://testserver/api/v1/variables/1/',
                                         'http://testserver/api/v1/variables/2/',
