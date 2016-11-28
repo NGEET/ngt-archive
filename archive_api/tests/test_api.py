@@ -50,6 +50,7 @@ class DataSetClientTestCase(APITestCase):
         self.assertEqual(value,
                          {'contact': 'http://testserver/api/v1/people/2/', 'createdBy': 'auser', 'name': 'Data Set 2',
                           'dataSetId': 'NGT2',
+                          'version': '1.0',
                           'startDate': '2016-10-28', 'acknowledgement': '',
                           'createdDate': '2016-10-28T19:15:35.013361Z', 'sites': ['http://testserver/api/v1/sites/1/'],
                           'qaqcStatus': None, 'plots': ['http://testserver/api/v1/plots/1/'],
