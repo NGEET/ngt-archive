@@ -107,7 +107,6 @@ class Plot(models.Model):
 
 
 class DataSet(models.Model):
-    # TODO: understand how dataset Id is generated
 
     def data_set_id(self):
         return "NGT{}".format(self.id)
@@ -130,10 +129,9 @@ class DataSet(models.Model):
     reference = models.TextField(blank=True, null=True)
     additional_reference_information = models.TextField(blank=True, null=True)
 
-    # TODO: Access levels: public, private, NGEE Tropics
     access_level = models.CharField(max_length=1, choices=ACCESS_CHOICES, default='0')
     additional_access_information = models.TextField(blank=True, null=True)
-    submission_date = models.DateTimeField(blank=True, null=True)
+    submission_date = models.DateField(blank=True, null=True)
 
     # Owner is the person who created the dataset
     created_by = models.ForeignKey(User, editable=False, related_name='+')
