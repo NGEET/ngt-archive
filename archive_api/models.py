@@ -112,6 +112,7 @@ class DataSet(models.Model):
         return "NGT{}".format(self.id)
 
     description = models.TextField(blank=True, null=True)
+    version = models.CharField(max_length=15, default="1.0")
 
     status = models.CharField(max_length=1, choices=STATUS_CHOICES,
                               default='0')  # (draft [DEFAULT], submitted, approved)
