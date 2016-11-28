@@ -48,25 +48,23 @@ class DataSetClientTestCase(APITestCase):
         response = self.client.get('/api/v1/datasets/2/')
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(value,
-                         {'contact': 'http://testserver/api/v1/people/2/', 'createdBy': 'auser', 'name': 'Data Set 2',
-                          'dataSetId': 'NGT2',
-                          'version': '1.0',
-                          'startDate': '2016-10-28', 'acknowledgement': '',
-                          'createdDate': '2016-10-28T19:15:35.013361Z', 'sites': ['http://testserver/api/v1/sites/1/'],
-                          'qaqcStatus': None, 'plots': ['http://testserver/api/v1/plots/1/'],
-                          'doeFundingContractNumbers': '', 'status': '1', 'accessLevel': '0',
-                          'fundingOrganizations': 'A few funding organizations', 'endDate': None,
-                          'submissionDate': '2016-10-28',
-                          'submissionContact': {'firstName': 'Merry', 'lastName': 'Yuser', 'email': 'myuser@foo.bar'},
+                         {'fundingOrganizations': 'A few funding organizations', 'ngeeTropicsResources': True,
+                          'plots': ['http://testserver/api/v1/plots/1/'], 'startDate': '2016-10-28',
+                          'description': 'Qui illud verear persequeris te. Vis probo nihil verear an, zril tamquam philosophia eos te, quo ne fugit movet contentiones. Quas mucius detraxit vis an, vero omnesque petentium sit ea. Id ius inimicus comprehensam.',
+                          'acknowledgement': '', 'statusComment': '', 'doi': '',
+                          'modifiedDate': '2016-10-28T23:01:20.066913Z', 'modifiedBy': 'auser', 'qaqcStatus': None,
+                          'sites': ['http://testserver/api/v1/sites/1/'], 'dataSetId': 'NGT2',
+                          'qaqcMethodDescription': '', 'contact': 'http://testserver/api/v1/people/2/',
                           'variables': ['http://testserver/api/v1/variables/1/',
                                         'http://testserver/api/v1/variables/2/',
-                                        'http://testserver/api/v1/variables/3/'], 'additionalAccessInformation': '',
-                          'modifiedDate': '2016-10-28T23:01:20.066913Z', 'reference': '',
-                          'authors': ["http://testserver/api/v1/people/2/"],
-                          'modifiedBy': 'auser', 'ngeeTropicsResources': True,
-                          'url': 'http://testserver/api/v1/datasets/2/', 'statusComment': '',
-                          'qaqcMethodDescription': '', 'additionalReferenceInformation': '', 'doi': '',
-                          'description': 'Qui illud verear persequeris te. Vis probo nihil verear an, zril tamquam philosophia eos te, quo ne fugit movet contentiones. Quas mucius detraxit vis an, vero omnesque petentium sit ea. Id ius inimicus comprehensam.'}
+                                        'http://testserver/api/v1/variables/3/'], 'version': '1.0',
+                          'doeFundingContractNumbers': '', 'submissionDate': '2016-10-28',
+                          'authors': ['http://testserver/api/v1/people/2/'], 'originatingInstitution': None,
+                          'reference': '', 'additionalAccessInformation': '',
+                          'url': 'http://testserver/api/v1/datasets/2/', 'createdBy': 'auser', 'endDate': None,
+                          'additionalReferenceInformation': '', 'createdDate': '2016-10-28T19:15:35.013361Z',
+                          'name': 'Data Set 2', 'status': '1', 'accessLevel': '0',
+                          'submissionContact': {'email': 'myuser@foo.bar', 'firstName': 'Merry', 'lastName': 'Yuser'}}
 
                          )
 
@@ -115,7 +113,8 @@ class DataSetClientTestCase(APITestCase):
         self.assertEqual({'missingRequiredFields': ['sites', 'authors',
                                                     'contact',
                                                     'variables',
-                                                    'ngee_tropics_resources', 'funding_organizations']}, value)
+                                                    'ngee_tropics_resources', 'funding_organizations',
+                                                    'originating_institution']}, value)
 
     def test_client_put(self):
         self.login_user("auser")
@@ -182,7 +181,8 @@ class DataSetClientTestCase(APITestCase):
         response = self.client.get("/api/v1/datasets/1/submit/")  # In draft mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
-        self.assertEqual({'missingRequiredFields': ['authors', 'funding_organizations']}, value)
+        self.assertEqual({'missingRequiredFields': ['authors', 'funding_organizations', 'originating_institution']},
+                         value)
 
         response = self.client.put('/api/v1/datasets/1/',
                                    data='{"dataSetId":"FooBarBaz","description":"A FooBarBaz DataSet",'
@@ -199,6 +199,7 @@ class DataSetClientTestCase(APITestCase):
                                         '"acknowledgement": "",'
                                         '"reference": "",'
                                         '"additionalReferenceInformation": "",'
+                                        '"originatingInstitution": "Lawrence Berkeley National Lab",'
                                         '"additionalAccessInformation": "",'
                                         '"submissionDate": "2016-10-28T19:12:35Z",'
                                         '"contact": "http://0.0.0.0:8888/api/v1/people/4/",'
@@ -237,7 +238,8 @@ class DataSetClientTestCase(APITestCase):
         response = self.client.get("/api/v1/datasets/1/submit/")  # In draft mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
-        self.assertEqual({'missingRequiredFields': ['authors', 'funding_organizations']}, value)
+        self.assertEqual({'missingRequiredFields': ['authors', 'funding_organizations', 'originating_institution']},
+                         value)
 
         #########################################################################
         # Cannot submit a dataset that it already in SUBMITTED status
@@ -253,6 +255,7 @@ class DataSetClientTestCase(APITestCase):
                                         '"name": "Data Set 2", '
                                         '"statusComment": "",'
                                         '"doi": "",'
+                                        '"originatingInstitution": "Lawrence Berkeley National Lab",'
                                         '"startDate": "2016-10-28",'
                                         '"endDate": null,'
                                         '"qaqcStatus": null,'

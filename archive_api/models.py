@@ -129,6 +129,7 @@ class DataSet(models.Model):
     acknowledgement = models.TextField(blank=True, null=True)
     reference = models.TextField(blank=True, null=True)
     additional_reference_information = models.TextField(blank=True, null=True)
+    originating_institution = models.TextField(blank=True, null=True)
 
     access_level = models.CharField(max_length=1, choices=ACCESS_CHOICES, default='0')
     additional_access_information = models.TextField(blank=True, null=True)

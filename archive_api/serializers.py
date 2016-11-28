@@ -37,7 +37,7 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
                   'doi', 'start_date', 'end_date', 'qaqc_status', 'qaqc_method_description',
                   'ngee_tropics_resources', 'funding_organizations', 'doe_funding_contract_numbers',
                   'acknowledgement', 'reference', 'additional_reference_information',
-                  'access_level', 'additional_access_information', 'submission_contact',
+                  'access_level', 'additional_access_information', 'originating_institution', 'submission_contact',
                   'submission_date', 'contact', 'sites', 'authors', 'plots', 'variables',
                   'created_by', 'created_date', 'modified_by', 'modified_date')
         readonly_fields = (
@@ -57,7 +57,7 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
         # that are required
         if self.instance and self.instance.status in ['1', '2']:
             for field in ['sites', 'authors', 'name', 'description', 'contact', 'variables',
-                          'ngee_tropics_resources', 'funding_organizations',
+                          'ngee_tropics_resources', 'funding_organizations', 'originating_institution',
                           'access_level']:  # Check for required fields
                 if field in data.keys():
                     if not data[field]:
