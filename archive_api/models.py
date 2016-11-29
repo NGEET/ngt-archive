@@ -107,12 +107,12 @@ class Plot(models.Model):
 
 
 class DataSet(models.Model):
-    # TODO: understand how dataset Id is generated
 
     def data_set_id(self):
         return "NGT{}".format(self.id)
 
     description = models.TextField(blank=True, null=True)
+    version = models.CharField(max_length=15, default="1.0")
 
     status = models.CharField(max_length=1, choices=STATUS_CHOICES,
                               default='0')  # (draft [DEFAULT], submitted, approved)
@@ -129,14 +129,14 @@ class DataSet(models.Model):
     acknowledgement = models.TextField(blank=True, null=True)
     reference = models.TextField(blank=True, null=True)
     additional_reference_information = models.TextField(blank=True, null=True)
+    originating_institution = models.TextField(blank=True, null=True)
 
-    # TODO: Access levels: public, private, NGEE Tropics
     access_level = models.CharField(max_length=1, choices=ACCESS_CHOICES, default='0')
     additional_access_information = models.TextField(blank=True, null=True)
-    submission_date = models.DateTimeField(blank=True, null=True)
+    submission_date = models.DateField(blank=True, null=True)
 
     # Owner is the person who created the dataset
-    owner = models.ForeignKey(User, editable=False, related_name='+')
+    created_by = models.ForeignKey(User, editable=False, related_name='+')
     created_date = models.DateTimeField(editable=False, auto_now_add=True)
     modified_by = models.ForeignKey(User, editable=False, related_name='+')
     modified_date = models.DateTimeField(editable=False, auto_now=True)
@@ -144,7 +144,7 @@ class DataSet(models.Model):
     # file = models.FileField()
 
     # Relationships
-    authors = models.ManyToManyField(Person, blank=True, related_name='+')
+    authors = models.ManyToManyField(Person, blank=True, related_name='+', through='Author')
     contact = models.ForeignKey(Person, on_delete=models.DO_NOTHING, blank=True, null=True)
     sites = models.ManyToManyField(Site, blank=True)
     plots = models.ManyToManyField(Plot, blank=True)
@@ -159,3 +159,14 @@ class DataSet(models.Model):
             ("delete_draft_dataset", "Can delete a 'draft' dataset"),
             ("delete_submitted_dataset", "Can delete a 'submitted' dataset")
         )
+
+
+class Author(models.Model):
+    """ Model for storing data about the Author relationship between DataSet and Person """
+    author = models.ForeignKey(Person)
+    dataset = models.ForeignKey(DataSet)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        unique_together = ('dataset', 'order', 'author')
+        ordering = ('dataset', 'order')

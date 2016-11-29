@@ -51,7 +51,7 @@ class HasGroupPermissionOrReadonly(permissions.BasePermission):
             elif obj.status == self.DRAFT and \
                     request.user.has_perm('archive_api.edit_draft_dataset') \
                     and (action is None or action == "submit"):
-                return obj.owner == request.user or request.user.groups.filter(name='NGT Administrator').exists()
+                return obj.created_by == request.user or request.user.groups.filter(name='NGT Administrator').exists()
             # Administrator is approving a submitted draft, the dataset meta data
             # may not be edited at this point
             elif obj.status == self.SUBMITTED and (action is None or action == "approve"):
@@ -76,12 +76,12 @@ class DataSetViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         """
-        Override the update method to update the owner and modified by fields.
+        Override the update method to update the created_by and modified by fields.
         :param serializer:
         :return:
         """
         if self.request.user.is_authenticated and serializer.is_valid():
-            serializer.save(owner=self.request.user, modified_by=self.request.user)
+            serializer.save(created_by=self.request.user, modified_by=self.request.user)
 
     def perform_update(self, serializer):
         """
