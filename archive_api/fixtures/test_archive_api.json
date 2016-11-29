@@ -187,9 +187,6 @@
       "additional_access_information": "",
       "submission_date": "2016-10-28",
       "contact": 2,
-      "authors": [
-        2
-      ],
       "sites": [
         1
       ],
@@ -230,9 +227,6 @@
       "additional_access_information": "",
       "submission_date": "2016-10-29",
       "contact": 2,
-      "authors": [
-        2
-      ],
       "sites": [
         1
       ],
@@ -248,6 +242,24 @@
       "created_date": "2016-10-29T19:15:35.013361Z",
       "modified_by_id": 3,
       "modified_date": "2016-10-29T23:01:20.066913Z"
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 1,
+    "fields": {
+      "author": 2,
+      "dataset": 2,
+      "order": 0
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 2,
+    "fields": {
+      "author": 2,
+      "dataset": 3,
+      "order": 0
     }
   }
 ]

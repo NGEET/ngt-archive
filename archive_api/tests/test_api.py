@@ -48,32 +48,32 @@ class DataSetClientTestCase(APITestCase):
         response = self.client.get('/api/v1/datasets/2/')
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(value,
-                         {'fundingOrganizations': 'A few funding organizations', 'ngeeTropicsResources': True,
-                          'plots': ['http://testserver/api/v1/plots/1/'], 'startDate': '2016-10-28',
+                         {'doeFundingContractNumbers': '', 'createdDate': '2016-10-28T19:15:35.013361Z', 'status': '1',
+                          'additionalAccessInformation': '', 'startDate': '2016-10-28', 'dataSetId': 'NGT2',
+                          'endDate': None, 'createdBy': 'auser', 'additionalReferenceInformation': '',
+                          'contact': 'http://testserver/api/v1/people/2/',
+                          'url': 'http://testserver/api/v1/datasets/2/', 'ngeeTropicsResources': True,
+                          'accessLevel': '0', 'plots': ['http://testserver/api/v1/plots/1/'],
                           'description': 'Qui illud verear persequeris te. Vis probo nihil verear an, zril tamquam philosophia eos te, quo ne fugit movet contentiones. Quas mucius detraxit vis an, vero omnesque petentium sit ea. Id ius inimicus comprehensam.',
-                          'acknowledgement': '', 'statusComment': '', 'doi': '',
-                          'modifiedDate': '2016-10-28T23:01:20.066913Z', 'modifiedBy': 'auser', 'qaqcStatus': None,
-                          'sites': ['http://testserver/api/v1/sites/1/'], 'dataSetId': 'NGT2',
-                          'qaqcMethodDescription': '', 'contact': 'http://testserver/api/v1/people/2/',
+                          'version': '1.0', 'reference': '', 'acknowledgement': '', 'statusComment': '',
                           'variables': ['http://testserver/api/v1/variables/1/',
                                         'http://testserver/api/v1/variables/2/',
-                                        'http://testserver/api/v1/variables/3/'], 'version': '1.0',
-                          'doeFundingContractNumbers': '', 'submissionDate': '2016-10-28',
-                          'authors': ['http://testserver/api/v1/people/2/'], 'originatingInstitution': None,
-                          'reference': '', 'additionalAccessInformation': '',
-                          'url': 'http://testserver/api/v1/datasets/2/', 'createdBy': 'auser', 'endDate': None,
-                          'additionalReferenceInformation': '', 'createdDate': '2016-10-28T19:15:35.013361Z',
-                          'name': 'Data Set 2', 'status': '1', 'accessLevel': '0',
-                          'submissionContact': {'email': 'myuser@foo.bar', 'firstName': 'Merry', 'lastName': 'Yuser'}}
+                                        'http://testserver/api/v1/variables/3/'],
+                          'authors': ['http://testserver/api/v1/people/2/'], 'qaqcStatus': None,
+                          'originatingInstitution': None, 'fundingOrganizations': 'A few funding organizations',
+                          'doi': '',
+                          'submissionContact': {'lastName': 'Yuser', 'firstName': 'Merry', 'email': 'myuser@foo.bar'},
+                          'modifiedDate': '2016-10-28T23:01:20.066913Z', 'submissionDate': '2016-10-28',
+                          'qaqcMethodDescription': '', 'name': 'Data Set 2',
+                          'sites': ['http://testserver/api/v1/sites/1/'], 'modifiedBy': 'auser'}
 
                          )
-
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_client_post(self):
         self.login_user("auser")
         response = self.client.post('/api/v1/datasets/',
-                                    data='{"name":"FooBarBaz","description":"A FooBarBaz DataSet"}',
+                                    data='{"name":"FooBarBaz","description":"A FooBarBaz DataSet","authors":["http://testserver/api/v1/people/2/"] }',
                                     content_type='application/json')
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         value = json.loads(response.content.decode('utf-8'))
@@ -102,6 +102,7 @@ class DataSetClientTestCase(APITestCase):
         self.assertEqual(value['statusComment'], None)
         self.assertEqual(value['submissionDate'], None)
         self.assertEqual(value['qaqcStatus'], None)
+        self.assertEqual(value['authors'], ["http://testserver/api/v1/people/2/"])
         self.assertEqual(value['url'], 'http://testserver/api/v1/datasets/4/')
         self.assertEqual(value['qaqcMethodDescription'], None)
 
@@ -110,7 +111,7 @@ class DataSetClientTestCase(APITestCase):
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
         value = json.loads(response.content.decode('utf-8'))
-        self.assertEqual({'missingRequiredFields': ['sites', 'authors',
+        self.assertEqual({'missingRequiredFields': ['sites',
                                                     'contact',
                                                     'variables',
                                                     'ngee_tropics_resources', 'funding_organizations',
@@ -135,12 +136,12 @@ class DataSetClientTestCase(APITestCase):
                                         '"additionalReferenceInformation": "",'
                                         '"additionalAccessInformation": "",'
                                         '"submissionDate": "2016-10-28T19:12:35Z",'
-                                        '"contact": "http://0.0.0.0:8888/api/v1/people/4/",'
-                                        '"authors": ["http://0.0.0.0:8888/api/v1/people/1/"],'
-                                        '"sites": ["http://0.0.0.0:8888/api/v1/sites/1/"],'
-                                        '"plots": ["http://0.0.0.0:8888/api/v1/plots/1/"],'
-                                        '"variables": ["http://0.0.0.0:8888/api/v1/variables/1/", '
-                                        '"http://0.0.0.0:8888/api/v1/variables/2/"]}',
+                                        '"contact": "http://testserver/api/v1/people/4/",'
+                                        '"authors": ["http://testserver/api/v1/people/1/"],'
+                                        '"sites": ["http://testserver/api/v1/sites/1/"],'
+                                        '"plots": ["http://testserver/api/v1/plots/1/"],'
+                                        '"variables": ["http://testserver/api/v1/variables/1/", '
+                                        '"http://testserver/api/v1/variables/2/"]}',
                                    content_type='application/json')
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
@@ -202,12 +203,12 @@ class DataSetClientTestCase(APITestCase):
                                         '"originatingInstitution": "Lawrence Berkeley National Lab",'
                                         '"additionalAccessInformation": "",'
                                         '"submissionDate": "2016-10-28T19:12:35Z",'
-                                        '"contact": "http://0.0.0.0:8888/api/v1/people/4/",'
-                                        '"authors": ["http://0.0.0.0:8888/api/v1/people/1/"],'
-                                        '"sites": ["http://0.0.0.0:8888/api/v1/sites/1/"],'
-                                        '"plots": ["http://0.0.0.0:8888/api/v1/plots/1/"],'
-                                        '"variables": ["http://0.0.0.0:8888/api/v1/variables/1/", '
-                                        '"http://0.0.0.0:8888/api/v1/variables/2/"]}',
+                                        '"contact": "http://testserver/api/v1/people/4/",'
+                                        '"authors": ["http://testserver/api/v1/people/1/"],'
+                                        '"sites": ["http://testserver/api/v1/sites/1/"],'
+                                        '"plots": ["http://testserver/api/v1/plots/1/"],'
+                                        '"variables": ["http://testserver/api/v1/variables/1/", '
+                                        '"http://testserver/api/v1/variables/2/"]}',
                                    content_type='application/json')
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
@@ -251,7 +252,7 @@ class DataSetClientTestCase(APITestCase):
         #########################################################################
         # NGT Administrator may edit a dataset in SUBMITTED status
         response = self.client.put('/api/v1/datasets/2/',
-                                   data='{"dataSetId":"FooBarBaz","description":"A FooBarBaz DataSet",'
+                                   data='{"description":"A FooBarBaz DataSet",'
                                         '"name": "Data Set 2", '
                                         '"statusComment": "",'
                                         '"doi": "",'
@@ -269,14 +270,40 @@ class DataSetClientTestCase(APITestCase):
                                         '"additionalReferenceInformation": "",'
                                         '"additionalAccessInformation": "",'
                                         '"submissionDate": "2016-10-28T19:12:35Z",'
-                                        '"contact": "http://0.0.0.0:8888/api/v1/people/4/",'
-                                        '"authors": ["http://0.0.0.0:8888/api/v1/people/4/"],'
-                                        '"sites": ["http://0.0.0.0:8888/api/v1/sites/1/"],'
-                                        '"plots": ["http://0.0.0.0:8888/api/v1/plots/1/"],'
-                                        '"variables": ["http://0.0.0.0:8888/api/v1/variables/1/", '
-                                        '"http://0.0.0.0:8888/api/v1/variables/2/"]}',
+                                        '"contact": "http://testserver/api/v1/people/4/",'
+                                        '"authors": ["http://testserver/api/v1/people/4/","http://testserver/api/v1/people/3/"],'
+                                        '"sites": ["http://testserver/api/v1/sites/1/"],'
+                                        '"plots": ["http://testserver/api/v1/plots/1/"],'
+                                        '"variables": ["http://testserver/api/v1/variables/1/", '
+                                        '"http://testserver/api/v1/variables/2/"]}',
                                    content_type='application/json')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
+        response = self.client.get("/api/v1/datasets/2/")  # check authors
+        value = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(value["description"], "A FooBarBaz DataSet")
+        self.assertEqual(value["name"], "Data Set 2")
+        self.assertEqual(value["statusComment"], "")
+        self.assertEqual(value["doi"], "")
+        self.assertEqual(value["originatingInstitution"], "Lawrence Berkeley National Lab")
+        self.assertEqual(value["startDate"], "2016-10-28")
+        self.assertEqual(value["endDate"], None)
+        self.assertEqual(value["qaqcStatus"], None)
+        self.assertEqual(value["qaqcMethodDescription"], "")
+        self.assertEqual(value["ngeeTropicsResources"], True)
+        self.assertEqual(value["fundingOrganizations"], "The funding organizations for my dataset")
+        self.assertEqual(value["doeFundingContractNumbers"], "")
+        self.assertEqual(value["acknowledgement"], "")
+        self.assertEqual(value["reference"], "")
+        self.assertEqual(value["accessLevel"], "0")
+        self.assertEqual(value["additionalReferenceInformation"], "")
+        self.assertEqual(value["additionalAccessInformation"], "")
+        self.assertEqual(value["contact"], "http://testserver/api/v1/people/4/")
+        self.assertEqual(value["authors"], ["http://testserver/api/v1/people/4/", "http://testserver/api/v1/people/3/"])
+        self.assertEqual(value["sites"], ["http://testserver/api/v1/sites/1/"])
+        self.assertEqual(value["plots"], ["http://testserver/api/v1/plots/1/"])
+        self.assertEqual(value["variables"],
+                         ["http://testserver/api/v1/variables/1/", "http://testserver/api/v1/variables/2/"])
 
         #########################################################################
         # A dataset that is not in SUBMITTED status may not be approved
