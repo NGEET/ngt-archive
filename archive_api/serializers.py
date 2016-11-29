@@ -6,22 +6,6 @@ from django.db import transaction
 from rest_framework import serializers
 
 
-class SubmissionContactField(serializers.JSONField):
-    """
-    The submission contact for an entity owner (auth.User) should be
-    displayed with first, last and email
-    """
-
-    def to_representation(self, obj):
-        return {'first_name': obj.first_name,
-                'last_name': obj.last_name,
-                'email': obj.email}
-
-    def to_internal_value(self, data):
-        return {'first_name': data['first_name'],
-                'last_name': data['last_name'],
-                'email': data['email']}
-
 
 class AuthorsField(serializers.SerializerMethodField):
     """
@@ -52,7 +36,6 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
     """
     created_by = serializers.ReadOnlyField(source='created_by.username')
     modified_by = serializers.ReadOnlyField(source='modified_by.username')
-    submission_contact = SubmissionContactField(source='created_by', read_only=True)
     submission_date = serializers.ReadOnlyField()
     status = serializers.ReadOnlyField()
     authors = AuthorsField()
@@ -79,12 +62,11 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
                   'doi', 'start_date', 'end_date', 'qaqc_status', 'qaqc_method_description',
                   'ngee_tropics_resources', 'funding_organizations', 'doe_funding_contract_numbers',
                   'acknowledgement', 'reference', 'additional_reference_information',
-                  'access_level', 'additional_access_information', 'originating_institution', 'submission_contact',
+                  'access_level', 'additional_access_information', 'originating_institution',
                   'submission_date', 'contact', 'sites', 'authors', 'plots', 'variables',
                   'created_by', 'created_date', 'modified_by', 'modified_date')
         readonly_fields = (
             'url', 'version', 'created_by', 'created_date', 'modified_by', 'modified_date', 'status',
-            'submission_contact',
             'submission_date', 'data_set_id')
 
     def validate(self, data):

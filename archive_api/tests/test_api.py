@@ -62,7 +62,6 @@ class DataSetClientTestCase(APITestCase):
                           'authors': ['http://testserver/api/v1/people/2/'], 'qaqcStatus': None,
                           'originatingInstitution': None, 'fundingOrganizations': 'A few funding organizations',
                           'doi': '',
-                          'submissionContact': {'lastName': 'Yuser', 'firstName': 'Merry', 'email': 'myuser@foo.bar'},
                           'modifiedDate': '2016-10-28T23:01:20.066913Z', 'submissionDate': '2016-10-28',
                           'qaqcMethodDescription': '', 'name': 'Data Set 2',
                           'sites': ['http://testserver/api/v1/sites/1/'], 'modifiedBy': 'auser'}
@@ -84,8 +83,6 @@ class DataSetClientTestCase(APITestCase):
         self.assertEqual(value['doeFundingContractNumbers'], None)
         self.assertEqual(value['fundingOrganizations'], None)
         self.assertEqual(value['description'], 'A FooBarBaz DataSet')
-        self.assertEqual(value['submissionContact'],
-                         {'firstName': 'Merry', 'lastName': 'Yuser', 'email': 'myuser@foo.bar'})
         self.assertEqual(value['additionalAccessInformation'], None)
         self.assertEqual(value['name'], 'FooBarBaz')
         self.assertEqual(value['modifiedBy'], 'auser')
