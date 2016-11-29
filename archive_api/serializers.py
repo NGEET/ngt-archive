@@ -1,4 +1,8 @@
-from archive_api.models import DataSet, MeasurementVariable, Site, Person, Plot
+from urllib.parse import urlparse
+
+from archive_api.models import DataSet, MeasurementVariable, Site, Person, Plot, Author
+from django.core.urlresolvers import resolve
+from django.db import transaction
 from rest_framework import serializers
 
 
@@ -19,6 +23,27 @@ class SubmissionContactField(serializers.JSONField):
                 'email': data['email']}
 
 
+class AuthorsField(serializers.SerializerMethodField):
+    """
+    Author objects are serialized and deserialized for reading and writing
+    """
+
+    def __init__(self, **kwargs):
+        super(AuthorsField, self).__init__(**kwargs)
+
+        self.read_only = False
+
+    def to_internal_value(self, data):
+        authors = []
+        for author in data:
+            path = urlparse(author).path
+            resolved_func, __, resolved_kwargs = resolve(path)
+            person = resolved_func.cls.queryset.get(pk=resolved_kwargs['pk'])
+            authors.append(person)
+
+        return {'authors': authors}
+
+
 class DataSetSerializer(serializers.HyperlinkedModelSerializer):
     """
 
@@ -30,6 +55,23 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
     submission_contact = SubmissionContactField(source='created_by', read_only=True)
     submission_date = serializers.ReadOnlyField()
     status = serializers.ReadOnlyField()
+    authors = AuthorsField()
+
+    def get_authors(self, instance):
+        """
+        Serialize the authors.  This should be an ordered list  of authors
+        :param instance:
+        :return:
+        """
+        author_order = Author.objects \
+            .filter(dataset_id=instance.id) \
+            .order_by('order')
+
+        authors = [a.author for a in author_order]
+
+        # Return a list of person urls
+        serializers = PersonSerializer(authors, many=True, context={'request': self.context['request']}).data
+        return [p["url"] for p in serializers]
 
     class Meta:
         model = DataSet
@@ -71,6 +113,46 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
             raise serializers.ValidationError(errors)
 
         return data
+
+    def create(self, validated_data):
+
+        # Use an atomic transaction for managing dataset and authors
+        with transaction.atomic():
+            # Pop off authors data, if exists
+            author_data = []
+            if "authors" in validated_data.keys():
+                author_data = validated_data.pop('authors')
+
+            # Create dataset first
+            dataset = DataSet.objects.create(**validated_data)
+            dataset.clean()
+            dataset.save()
+
+            # save the author data
+            self.add_authors(author_data, dataset)
+
+        return dataset
+
+    def update(self, instance, validated_data):
+
+        # Use an atomic transaction for managing dataset and authors
+        with transaction.atomic():
+            # pop off the authors data
+            if "authors" in validated_data.keys():
+                author_data = validated_data.pop('authors')
+
+                # remove the existing authors
+                Author.objects.filter(dataset_id=instance.id).delete()  # delete first
+                self.add_authors(author_data, instance)
+
+            # Update Dataset metadata
+            super(self.__class__, self).update(instance=instance, validated_data=validated_data)
+
+        return instance
+
+    def add_authors(self, author_data, instance):
+        for idx, author in enumerate(author_data):
+            Author.objects.create(dataset=instance, order=idx, author=author)
 
 
 class MeasurementVariableSerializer(serializers.HyperlinkedModelSerializer):

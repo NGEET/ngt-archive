@@ -144,7 +144,7 @@ class DataSet(models.Model):
     # file = models.FileField()
 
     # Relationships
-    authors = models.ManyToManyField(Person, blank=True, related_name='+')
+    authors = models.ManyToManyField(Person, blank=True, related_name='+', through='Author')
     contact = models.ForeignKey(Person, on_delete=models.DO_NOTHING, blank=True, null=True)
     sites = models.ManyToManyField(Site, blank=True)
     plots = models.ManyToManyField(Plot, blank=True)
@@ -159,3 +159,14 @@ class DataSet(models.Model):
             ("delete_draft_dataset", "Can delete a 'draft' dataset"),
             ("delete_submitted_dataset", "Can delete a 'submitted' dataset")
         )
+
+
+class Author(models.Model):
+    """ Model for storing data about the Author relationship between DataSet and Person """
+    author = models.ForeignKey(Person)
+    dataset = models.ForeignKey(DataSet)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        unique_together = ('dataset', 'order', 'author')
+        ordering = ('dataset', 'order')
