@@ -1,5 +1,78 @@
+import mimetypes
+
+import os
+
 from django.contrib.auth.models import User
+from django.core.files.storage import FileSystemStorage
 from django.db import models
+from rest_framework.exceptions import ValidationError
+
+
+class DatasetArchiveField( models.FileField):
+
+        def __init__(self, *args, **kwargs):
+            """
+            Override the parent constructor to set the allowed content_types
+
+            :param args:
+            :param kwargs:
+            """
+
+            self.content_types = ["application/zip"]
+            super(DatasetArchiveField,self).__init__(*args,**kwargs)
+
+        def clean(self, *args, **kwargs):
+            """
+            Override parent method to add checking for content type
+
+            Parent method converts the value's type and run validation. Validation errors
+            from to_python and validate are propagated. The correct value is
+            returned if no error is raised.
+            """
+            data = super(DatasetArchiveField,self).clean(*args,**kwargs)
+
+            try:
+                content_type = mimetypes.guess_type(data.name)
+                if content_type[0] not in self.content_types:
+                    raise ValidationError('Filetype {} not supported. Allowed types: {}'.format(content_type[0],
+                                                                                              ",".join(
+                                                                                                  self.content_types)))
+            except AttributeError:
+                raise ValidationError('Filetype unknown. Allowed types: {}'.format(",".join(self.content_types)))
+
+        def save(self, **kwargs):
+            """
+            Override parent to call the custom clean method
+
+            :param kwargs:
+            :return:
+            """
+            return super(DatasetArchiveField, self).save(**kwargs)
+
+
+class DatasetArchiveStorage(FileSystemStorage):
+
+    def __init__(self,*args, **kwargs):
+        """
+        Override parent constructor. If location is not set, set the
+        `DATASET_ARCHIVE_ROOT`
+
+        See `django.core.files.storage.FileSystemStorage` for more details.
+
+        :param args:
+        :param kwargs:
+        """
+
+        from django.conf import settings
+        if "location" not in kwargs:
+            kwargs["location"]=settings.DATASET_ARCHIVE_ROOT
+        if "base_url" not in kwargs:
+            kwargs["base_url"] = settings.DATASET_ARCHIVE_URL
+        super(DatasetArchiveStorage, self).__init__(*args, **kwargs)
+
+
+dataset_archive_storage = DatasetArchiveStorage()
+
 
 STATUS_CHOICES = (
     ('0', 'Draft'),
@@ -18,6 +91,18 @@ ACCESS_CHOICES = (
     ('1', 'NGEE Tropics'),
     ('2', 'Public'),
 )
+
+
+def get_upload_path(instance, filename):
+    """
+    This generates the file upload path
+    :param instance:
+    :param filename:
+    :return:
+    """
+    _, file_extension = os.path.splitext(filename)
+    return os.path.join(
+        "{}_{}{}".format(instance.data_set_id(), instance.version, file_extension))
 
 
 class MeasurementVariable(models.Model):
@@ -86,7 +171,7 @@ class Site(models.Model):
 
 class Plot(models.Model):
     plot_id = models.CharField(max_length=30, unique=True)
-    name = models.CharField(unique=True, max_length=50)
+    name = models.CharField(unique=True, max_length=150)
     description = models.TextField()
     size = models.CharField(max_length=100, blank=True, null=True, )
     location_elevation = models.CharField(blank=True, null=True, max_length=30)
@@ -109,7 +194,7 @@ class Plot(models.Model):
 class DataSet(models.Model):
 
     def data_set_id(self):
-        return "NGT{}".format(self.id)
+        return "NGT{:04}".format(self.id)
 
     description = models.TextField(blank=True, null=True)
     version = models.CharField(max_length=15, default="1.0")
@@ -117,7 +202,7 @@ class DataSet(models.Model):
     status = models.CharField(max_length=1, choices=STATUS_CHOICES,
                               default='0')  # (draft [DEFAULT], submitted, approved)
     status_comment = models.TextField(blank=True, null=True)
-    name = models.CharField(unique=True, max_length=50, blank=True, null=True)
+    name = models.CharField(unique=True, max_length=150, blank=True, null=True)
     doi = models.TextField(blank=True, null=True)
     start_date = models.DateField(blank=True, null=True)
     end_date = models.DateField(blank=True, null=True)
@@ -141,14 +226,19 @@ class DataSet(models.Model):
     modified_by = models.ForeignKey(User, editable=False, related_name='+')
     modified_date = models.DateTimeField(editable=False, auto_now=True)
 
-    # file = models.FileField()
-
     # Relationships
     authors = models.ManyToManyField(Person, blank=True, related_name='+', through='Author')
     contact = models.ForeignKey(Person, on_delete=models.DO_NOTHING, blank=True, null=True)
     sites = models.ManyToManyField(Site, blank=True)
     plots = models.ManyToManyField(Plot, blank=True)
     variables = models.ManyToManyField(MeasurementVariable, blank=True)
+
+    # CDIAC Import Fields
+    cdiac_import = models.BooleanField(default=False)
+    cdiac_submission_contact = models.ForeignKey(Person, related_name='+', on_delete=models.DO_NOTHING, blank=True,
+                                                 null=True)
+
+    archive = DatasetArchiveField(upload_to=get_upload_path, storage=dataset_archive_storage, null=True)
 
     class Meta:
         permissions = (
