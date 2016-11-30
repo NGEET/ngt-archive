@@ -1,5 +1,11 @@
+import os
+
 from django.contrib.auth.models import User
+from django.core.files.storage import FileSystemStorage
 from django.db import models
+
+fs = FileSystemStorage(location='/tmp')
+
 
 STATUS_CHOICES = (
     ('0', 'Draft'),
@@ -18,6 +24,17 @@ ACCESS_CHOICES = (
     ('1', 'NGEE Tropics'),
     ('2', 'Public'),
 )
+
+
+def get_upload_path(instance, filename):
+    """
+    This generates the file upload path
+    :param instance:
+    :param filename:
+    :return:
+    """
+    return os.path.join(
+        "archives/{}_{}".format(instance.data_set_id(), filename))
 
 
 class MeasurementVariable(models.Model):
@@ -141,14 +158,14 @@ class DataSet(models.Model):
     modified_by = models.ForeignKey(User, editable=False, related_name='+')
     modified_date = models.DateTimeField(editable=False, auto_now=True)
 
-    # file = models.FileField()
-
     # Relationships
     authors = models.ManyToManyField(Person, blank=True, related_name='+', through='Author')
     contact = models.ForeignKey(Person, on_delete=models.DO_NOTHING, blank=True, null=True)
     sites = models.ManyToManyField(Site, blank=True)
     plots = models.ManyToManyField(Plot, blank=True)
     variables = models.ManyToManyField(MeasurementVariable, blank=True)
+
+    archive = models.FileField(upload_to=get_upload_path, storage=fs, null=True)
 
     class Meta:
         permissions = (
