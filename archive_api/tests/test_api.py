@@ -4,6 +4,7 @@ import json
 
 from django.contrib.auth.models import User
 from django.test import Client
+from os.path import dirname
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -48,24 +49,25 @@ class DataSetClientTestCase(APITestCase):
         response = self.client.get('/api/v1/datasets/2/')
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(value,
-                         {'doe_funding_contract_numbers': '', 'created_date': '2016-10-28T19:15:35.013361Z',
-                          'status': '1',
-                          'additional_access_information': '', 'start_date': '2016-10-28', 'data_set_id': 'NGT2',
-                          'end_date': None, 'created_by': 'auser', 'additional_reference_information': '',
-                          'contact': 'http://testserver/api/v1/people/2/',
-                          'url': 'http://testserver/api/v1/datasets/2/', 'ngee_tropics_resources': True,
-                          'access_level': '0', 'plots': ['http://testserver/api/v1/plots/1/'],
+                         {'modified_date': '2016-10-28T23:01:20.066913Z', 'doi': '', 'start_date': '2016-10-28',
+                          'status_comment': '', 'plots': ['http://testserver/api/v1/plots/1/'],
+                          'created_date': '2016-10-28T19:15:35.013361Z',
+                          'funding_organizations': 'A few funding organizations',
+                          'authors': ['http://testserver/api/v1/people/2/'], 'cdiac_import': False,
+                          'doe_funding_contract_numbers': '',
                           'description': 'Qui illud verear persequeris te. Vis probo nihil verear an, zril tamquam philosophia eos te, quo ne fugit movet contentiones. Quas mucius detraxit vis an, vero omnesque petentium sit ea. Id ius inimicus comprehensam.',
-                          'version': '1.0', 'reference': '', 'acknowledgement': '', 'status_comment': '',
+                          'submission_date': '2016-10-28', 'qaqc_method_description': '',
                           'variables': ['http://testserver/api/v1/variables/1/',
                                         'http://testserver/api/v1/variables/2/',
-                                        'http://testserver/api/v1/variables/3/'],
-                          'authors': ['http://testserver/api/v1/people/2/'], 'qaqc_status': None,
-                          'originating_institution': None, 'funding_organizations': 'A few funding organizations',
-                          'doi': '',
-                          'modified_date': '2016-10-28T23:01:20.066913Z', 'submission_date': '2016-10-28',
-                          'qaqc_method_description': '', 'name': 'Data Set 2',
-                          'sites': ['http://testserver/api/v1/sites/1/'], 'modified_by': 'auser'}
+                                        'http://testserver/api/v1/variables/3/'], 'archive': None,
+                          'cdiac_submission_contact': None, 'reference': '', 'additional_access_information': '',
+                          'contact': 'http://testserver/api/v1/people/2/', 'acknowledgement': '',
+                          'data_set_id': 'NGT0002',
+                          'modified_by': 'auser', 'status': '1', 'ngee_tropics_resources': True, 'qaqc_status': None,
+                          'end_date': None, 'additional_reference_information': '', 'name': 'Data Set 2',
+                          'created_by': 'auser', 'sites': ['http://testserver/api/v1/sites/1/'],
+                          'originating_institution': None, 'version': '1.0',
+                          'url': 'http://testserver/api/v1/datasets/2/', 'access_level': '0'}
 
                          )
         self.assertEqual(status.HTTP_200_OK, response.status_code)
@@ -112,7 +114,8 @@ class DataSetClientTestCase(APITestCase):
         self.assertEqual({'missingRequiredFields': ['sites',
                                                     'contact',
                                                     'variables',
-                                                    'ngee_tropics_resources', 'funding_organizations',
+                                                    'ngee_tropics_resources',
+                                                    'funding_organizations',
                                                     'originating_institution']}, value)
 
     def test_client_put(self):
@@ -159,7 +162,7 @@ class DataSetClientTestCase(APITestCase):
         response = self.client.get("/api/v1/datasets/2/submit/")  # In submitted mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
-        self.assertEqual({'detail': 'You do not have permission to perform this action.'}, value)
+        self.assertEqual({'detail': 'Only a data set in DRAFT status may be submitted'}, value)
 
         #########################################################################
         # NGT User may not APPROVE a dataset
@@ -233,19 +236,19 @@ class DataSetClientTestCase(APITestCase):
         self.login_user("admin")
 
         #########################################################################
-        # NGT Administrator my edit any DRAFT status (this will fail due to missing fields)
+        # NGT Administrator may edit any DRAFT status (this will fail due to missing fields)
         response = self.client.get("/api/v1/datasets/1/submit/")  # In draft mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
-        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
         self.assertEqual({'missingRequiredFields': ['authors', 'funding_organizations', 'originating_institution']},
                          value)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
         #########################################################################
         # Cannot submit a dataset that it already in SUBMITTED status
         response = self.client.get("/api/v1/datasets/2/submit/")  # In submitted mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
-        self.assertEqual({'detail': 'You do not have permission to perform this action.'}, value)
+        self.assertEqual({'detail': 'Only a data set in DRAFT status may be submitted'}, value)
 
         #########################################################################
         # NGT Administrator may edit a dataset in SUBMITTED status
@@ -308,7 +311,7 @@ class DataSetClientTestCase(APITestCase):
         response = self.client.get("/api/v1/datasets/1/approve/")  # In draft mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
-        self.assertEqual({'detail': 'You do not have permission to perform this action.'}, value)
+        self.assertEqual({'detail': 'Only a data set in SUBMITTED status may be approved'}, value)
 
         #########################################################################
         # NGT Administrator my APPROVE a SUBMITTED dataset
@@ -334,7 +337,7 @@ class DataSetClientTestCase(APITestCase):
         response = self.client.get("/api/v1/datasets/2/unsubmit/")  # In draft mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
-        self.assertEqual({'detail': 'You do not have permission to perform this action.'}, value)
+        self.assertEqual({'detail': 'Only a data set in SUBMITTED status may be un-submitted'}, value)
 
         response = self.client.get("/api/v1/datasets/2/unapprove/")  # In approved mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
@@ -346,7 +349,7 @@ class DataSetClientTestCase(APITestCase):
         response = self.client.get("/api/v1/datasets/1/unapprove/")  # In approved mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
-        self.assertEqual({'detail': 'You do not have permission to perform this action.'}, value)
+        self.assertEqual({'detail': 'Only a data set in APPROVED status may be unapproved'}, value)
         response = self.client.get("/api/v1/datasets/2/")  # Check the status
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(value['status'], '1')
@@ -414,6 +417,90 @@ class DataSetClientTestCase(APITestCase):
         self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
 
         response = self.client.get("/api/v1/datasets/1/")  # should be deleted
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+
+    def test_upload(self):
+        """
+        Test Dataset Archive Upload
+        :return:
+        """
+        self.login_user("admin")
+        with open('{}/Archive.zip'.format(dirname(__file__)), 'rb') as fp:
+            response = self.client.post('/api/v1/datasets/1/upload/', {'attachment': fp})
+            self.assertContains(response, '"success":true',
+                                status_code=status.HTTP_201_CREATED)
+
+        response = self.client.get('/api/v1/datasets/1/')
+        self.assertContains(response, 'http://testserver/api/v1/datasets/1/archive/',
+                            status_code=status.HTTP_200_OK)
+
+        response = self.client.get('/api/v1/datasets/1/archive/')
+        self.assertContains(response, '')
+        self.assertTrue("X-Sendfile" in response)
+        self.assertTrue(response["X-Sendfile"].find("archives/NGT1_1.0_"))
+        self.assertTrue("Content-Disposition" in response)
+        self.assertEqual("attachment; filename=NGT0001_1.0_Data_Set_1.zip", response['Content-Disposition'])
+
+        # Now try to upload and invalid file
+        with open('{}/invalid_upload.txt'.format(dirname(__file__)), 'r') as fp:
+            response = self.client.post('/api/v1/datasets/1/upload/', {'attachment': fp})
+            self.assertContains(response, '"success":false',
+                                status_code=status.HTTP_400_BAD_REQUEST)
+            self.assertContains(response, 'Filetype text/plain not supported. Allowed types: application/zip',
+                                status_code=status.HTTP_400_BAD_REQUEST)
+
+        response = self.client.get('/api/v1/datasets/1/')
+        self.assertContains(response, 'http://testserver/api/v1/datasets/1/archive/',
+                            status_code=status.HTTP_200_OK)
+
+        response = self.client.get('/api/v1/datasets/1/archive/')
+        self.assertContains(response, '')
+        self.assertTrue("X-Sendfile" in response)
+        self.assertTrue(response["X-Sendfile"].find("archives/NGT1_1.0"))
+        self.assertTrue("Content-Disposition" in response)
+        self.assertEqual("attachment; filename=NGT0001_1.0_Data_Set_1.zip", response['Content-Disposition'])
+
+        from archive_api.models import DataSet
+        import os
+        dataset = DataSet.objects.get(id=1)
+        os.remove(dataset.archive.path)
+
+    def test_upload_permission_denied(self):
+        """
+        Test Dataset Archive Upload
+        :return:
+        """
+        self.login_user("auser") # auser does not own Dataset 3
+        with open('{}/invalid_upload.txt'.format(dirname(__file__)), 'r') as fp:
+            response = self.client.post('/api/v1/datasets/3/upload/', {'attachment': fp})
+            self.assertContains(response, '"detail":"You do not have permission to perform this action."',
+                                status_code=status.HTTP_403_FORBIDDEN)
+
+        response = self.client.get('/api/v1/datasets/3/')
+        self.assertNotContains(response, 'http://testserver/api/v1/datasets/3/archive/',
+                               status_code=status.HTTP_200_OK)
+
+        response = self.client.get('http://testserver/api/v1/datasets/3/archive/')
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+
+    def test_upload_invalid(self):
+        """
+        Test Dataset Archive Upload
+        :return:
+        """
+        self.login_user("admin")
+        with open('{}/invalid_upload.txt'.format(dirname(__file__)), 'r') as fp:
+            response = self.client.post('/api/v1/datasets/1/upload/', {'attachment': fp})
+            self.assertContains(response, '"success":false',
+                                status_code=status.HTTP_400_BAD_REQUEST)
+            self.assertContains(response, 'Filetype text/plain not supported. Allowed types: application/zip',
+                                status_code=status.HTTP_400_BAD_REQUEST)
+
+        response = self.client.get('/api/v1/datasets/1/')
+        self.assertNotContains(response, 'http://testserver/api/v1/datasets/1/archive/',
+                               status_code=status.HTTP_200_OK)
+
+        response = self.client.get('http://testserver/api/v1/datasets/1/archive/')
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
 
 
