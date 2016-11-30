@@ -6,32 +6,34 @@ body {
 /* line 5, ../sass/style.scss */
 body #myModal {
   display: none;
-  width: 50%;
+  width: 75%;
+  max-height: 640px;
+  overflow: scroll;
   background-color: #fff;
   left: 50%;
   position: relative;
   transform: translateX(-50%);
   padding: 20px 15px 10px;
 }
-/* line 14, ../sass/style.scss */
+/* line 16, ../sass/style.scss */
 body #myModal .close-reveal-modal {
   position: absolute;
   top: 5px;
   right: 12px;
 }
-/* line 22, ../sass/style.scss */
+/* line 24, ../sass/style.scss */
 body main article {
   background-color: #fff;
   max-width: 1200px;
   margin: 0 auto !important;
   padding: 0 32px 32px;
 }
-/* line 28, ../sass/style.scss */
+/* line 30, ../sass/style.scss */
 body main article code {
   display: block;
   min-height: 40px;
 }
-/* line 34, ../sass/style.scss */
+/* line 36, ../sass/style.scss */
 body main nav.menu {
   max-width: 1200px;
   margin: 0 auto;
@@ -40,16 +42,16 @@ body main nav.menu {
   color: white;
   padding: 0 20px;
 }
-/* line 42, ../sass/style.scss */
+/* line 44, ../sass/style.scss */
 body main nav.menu .user {
   margin-right: 32px;
   font-weight: 600;
 }
-/* line 47, ../sass/style.scss */
+/* line 49, ../sass/style.scss */
 body main nav.menu a {
   color: white;
 }
-/* line 50, ../sass/style.scss */
+/* line 52, ../sass/style.scss */
 body main nav.menu a:hover {
   color: white;
 }

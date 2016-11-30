@@ -4,7 +4,9 @@ body {
 
     #myModal {
         display: none;
-        width: 50%;
+        width: 75%;
+        max-height: 640px;
+        overflow: scroll;
         background-color: #fff;
         left: 50%;
         position: relative;
