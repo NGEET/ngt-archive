@@ -6,7 +6,6 @@ from django.db import transaction
 from rest_framework import serializers
 
 
-
 class AuthorsField(serializers.SerializerMethodField):
     """
     Author objects are serialized and deserialized for reading and writing
@@ -18,6 +17,12 @@ class AuthorsField(serializers.SerializerMethodField):
         self.read_only = False
 
     def to_internal_value(self, data):
+        """
+        Resolve person Urls into Person objects
+        :param data: list of Person urls
+        :type data: list
+        :return: dict with 'authors' key containing a list of Person objects
+        """
         authors = []
         for author in data:
             path = urlparse(author).path
@@ -46,10 +51,13 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
         :param instance:
         :return:
         """
+
+        # Get Authors in the specified order
         author_order = Author.objects \
             .filter(dataset_id=instance.id) \
             .order_by('order')
 
+        # Put in a list
         authors = [a.author for a in author_order]
 
         # Return a list of person urls
@@ -63,10 +71,10 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
                   'ngee_tropics_resources', 'funding_organizations', 'doe_funding_contract_numbers',
                   'acknowledgement', 'reference', 'additional_reference_information',
                   'access_level', 'additional_access_information', 'originating_institution',
-                  'submission_date', 'contact', 'sites', 'authors', 'plots', 'variables',
+                  'submission_date', 'contact', 'sites', 'authors', 'plots', 'variables', 'archive',
                   'created_by', 'created_date', 'modified_by', 'modified_date')
         readonly_fields = (
-            'url', 'version', 'created_by', 'created_date', 'modified_by', 'modified_date', 'status',
+            'url', 'version', 'created_by', 'created_date', 'modified_by', 'modified_date', 'status', 'archive',
             'submission_date', 'data_set_id')
 
     def validate(self, data):
@@ -97,6 +105,13 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
         return data
 
     def create(self, validated_data):
+        """
+        Override the serializer create method to handle Dataset and Author
+        creation in an atomic transaction
+
+        :param validated_data:
+        :return: dataset
+        """
 
         # Use an atomic transaction for managing dataset and authors
         with transaction.atomic():
@@ -116,6 +131,13 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
         return dataset
 
     def update(self, instance, validated_data):
+        """
+       Override the serializer update method to handle Dataset and Author
+       update in an atomic transaction
+
+       :param validated_data:
+       :return: dataset
+       """
 
         # Use an atomic transaction for managing dataset and authors
         with transaction.atomic():
@@ -133,6 +155,14 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
         return instance
 
     def add_authors(self, author_data, instance):
+        """
+        Enumerate over author data and create ordered author objects
+
+        :param author_data: Person objects
+        :type author_data: list
+        :param instance: dataset to add authors to
+        :type instance: DataSet
+        """
         for idx, author in enumerate(author_data):
             Author.objects.create(dataset=instance, order=idx, author=author)
 
