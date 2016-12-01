@@ -26,7 +26,7 @@
             </nav>
             <article>
                 <h2>NGEE Tropics Archive</h2>
-                <form>
+                <form class="js-dataset-form">
                     <h4>Create a dataset</h4>
                     <div class="small-12 medium-6">
                         <label>Name
@@ -71,6 +71,7 @@
                         <input type="reset" class="button secondary small-10 medium-6" value="Clear form">
                     </div>
                 </form-->
+                <button class="button js-test-dataset">Test</button>
                 <h4>
                     View
                 </h4> 
@@ -96,7 +97,14 @@
               <section class="js-modal-body modal-body">
                   
               </section>
-
+              <section class="js-input-section hide">
+                  <div class="js-editable-section"></div>
+                  <div class="js-button-bar">
+                      <button class="button js-save-btn">Save</button>
+                      <button class="button js-cancel-btn">Cancel</button>
+                  </div>
+              </section>
+              <button class="button edit-btn js-edit-btn">Edit</button>
               <a class="close-reveal-modal js-close-modal" aria-label="Close">&#215;</a>
             </div>
 
