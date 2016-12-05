@@ -1,8 +1,11 @@
+import os
 import sys
 
-from archive_api.models import DataSet, Person, Site, Plot, MeasurementVariable, Author
+from archive_api.models import DataSet, Person, Site, Plot, MeasurementVariable, Author, get_upload_path
 from django.contrib.auth.models import User
+from django.core.files import File
 from django.core.management.base import BaseCommand
+import glob
 from django.utils.datetime_safe import datetime
 
 
@@ -10,31 +13,55 @@ class Command(BaseCommand):
     help = 'Import the CDIAC metadata file into NGT Archive service.'
 
     def add_arguments(self, parser):
-        parser.add_argument('metadata-xml', type=str)
+        parser.add_argument('ornl-backup-dir', type=str)
         parser.add_argument('username', type=str)
-        parser.add_argument('id', type=str)
 
     def handle(self, *args, **options):
 
         # Get the xml file
-        xml_file = options['metadata-xml']
+        backup_dir = options['ornl-backup-dir']
+        if os.path.exists(backup_dir):
+            metadata_files = glob.glob("{}/Metadata/*.xml".format(backup_dir))
+            datafiles_dir = "{}/DataFiles".format(backup_dir)
+
+            for xml_file in metadata_files:
+                filename, filename_extension = os.path.splitext(xml_file)
+                ngt_id = filename.split("_")[-1].replace("NGT","")
+                dataset = self.extract_metadata(options, ngt_id, xml_file)
+
+                datafiles = glob.glob('{}/*NGT{}*'.format(datafiles_dir,ngt_id))
+                if not datafiles:
+                    datafiles = glob.glob('{}/NGT{}*'.format(datafiles_dir, ngt_id))
+
+                if not datafiles:
+                    print("\t - NGT{} does not have a single datafile directory".format(ngt_id))
+                else:
+
+                    import shutil
+                    archive_file_base = "/tmp/NGT{}".format(ngt_id)
+                    archive_file = shutil.make_archive(archive_file_base, 'zip', datafiles[0])
+                    filename = get_upload_path(dataset,archive_file)
+                    with open(archive_file,'rb') as f:
+                        dataset.archive.save(filename,
+                                         File(f))
+                    dataset.save()
+
+    def extract_metadata(self, options, ngt_id,xml_file):
 
         # Access the metadata elements
         from xml.dom import minidom
         xmldoc = minidom.parse(xml_file)
         metadata = xmldoc.getElementsByTagName('metadata')[0]
         ptcontac = xmldoc.getElementsByTagName('ptcontac')[0]
-
         # Get the username for created_by and modified by
         create_by = User.objects.get(username=options['username'])
-
         # Determine if the dataset already exists
         try:
-            dataset = DataSet.objects.get(id=options['id'])
+            dataset = DataSet.objects.get(id=ngt_id)
             dataset.modified_by = create_by
         except DataSet.DoesNotExist:
 
-            dataset = DataSet(id=int(options['id']), created_by=create_by, modified_by=create_by)
+            dataset = DataSet(id=int(ngt_id), created_by=create_by, modified_by=create_by)
             dataset.save()
 
         # Origin are the authors in order of precedence
@@ -80,30 +107,23 @@ class Command(BaseCommand):
         except Person.DoesNotExist:
             people = Person(first_name=fname, last_name=lname, email=email)
             people.save()
-
         if people:
             dataset.contact = people
             dataset.save()
-
         dataset.name = metadata.getElementsByTagName("title")[0].childNodes[0].data
         print("** " + dataset.name)
-
         # Version
         # metadata.idinfo.citation.citeinfo.edition
-
         # Data to upload
         # metadata.idinfo.citation.citeinfo.onlink
-
         ###########
         # Abstract
         # metadata.idinfo.descript.abstract
         dataset.description = metadata.getElementsByTagName("abstract")[0].childNodes[0].data
-
         ################
         # Start Date
         # metadata.idinfo.timeperd.rngdates.begindate
         dataset.start_date = metadata.getElementsByTagName("begdate")[0].childNodes[0].data
-
         ################
         # End Date
         # metadata.idinfo.timeperd.rngdates.enddate
@@ -136,8 +156,6 @@ class Command(BaseCommand):
         # but this is the description on it: "Choices are Preliminary, Accepted, Retired”.
         # I believe this was going to be used in the future workflow, or we decided to
         # remove it from the workflow.
-
-
         ##################
         # Site ID
         #   Using this to look up the site in the DB. All other site fields in the
@@ -208,24 +226,20 @@ class Command(BaseCommand):
         # Originating Institution
         org = metadata.getElementsByTagName("dsoriginst")[0].childNodes[0].data
         dataset.originating_institution = org
-
         ##################
         # Submission contact/ the person who logged in and saved the record
         #   metadata.mercury.topics.dataset.authfn
         fname = metadata.getElementsByTagName("authfn")[0].childNodes[0].data
         lname = metadata.getElementsByTagName("authln")[0].childNodes[0].data
-
         # save them as a contact
         try:
             cdiac_contact = Person.objects.get(first_name=fname, last_name=lname)
         except Person.DoesNotExist:
             cdiac_contact = Person(first_name=fname, last_name=lname)
             cdiac_contact.save()
-
         dataset.cdiac_submission_contact = cdiac_contact
         dataset.cdiac_import = True
         dataset.save()
-
         ##################
         # NGEE tropics resources
         #
@@ -247,7 +261,6 @@ class Command(BaseCommand):
         # Funding Organizations
         #   dsfundcntr
         dataset.funding_organizations = metadata.getElementsByTagName("dsfundcntr")[0].childNodes[0].data
-
         # ome_file_status
         status = metadata.getElementsByTagName("ome_file_status")[0].childNodes[0].data
         if status == 'finalApproved':
@@ -277,5 +290,6 @@ class Command(BaseCommand):
                 dataset.variables.add(mv)
         except MeasurementVariable.DoesNotExist:
             print("Variable '{}' does not exist".format(v), file=sys.stderr)
-
         dataset.save()
+
+        return dataset

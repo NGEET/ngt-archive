@@ -4,7 +4,26 @@ from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
 from django.db import models
 
-fs = FileSystemStorage(location='/tmp')
+
+class ArchiveStorage(FileSystemStorage):
+
+    def get_available_name(self, name, max_length=None):
+        """
+        Overwrite the existing file
+        :param name:
+        :param max_length:
+        :return:
+        """
+        # Remove the existing file
+        if self.exists(name):
+            os.remove(self.path(name))
+
+        # Call the parent method to use its checking
+        name = super(ArchiveStorage, self).get_available_name(name, max_length=max_length)
+
+        return name
+
+fs = ArchiveStorage()
 
 
 STATUS_CHOICES = (
@@ -33,8 +52,11 @@ def get_upload_path(instance, filename):
     :param filename:
     :return:
     """
+    dataset_name = instance.name.replace(" ", "_")
+    dataset_name = ''.join([i for i in dataset_name if i.isalnum() or i == "_"])
+    _, file_extension = os.path.splitext(filename)
     return os.path.join(
-        "archives/{}_{}".format(instance.data_set_id(), filename))
+        "{}_{}{}".format(instance.data_set_id(), dataset_name,file_extension))
 
 
 class MeasurementVariable(models.Model):
@@ -103,7 +125,7 @@ class Site(models.Model):
 
 class Plot(models.Model):
     plot_id = models.CharField(max_length=30, unique=True)
-    name = models.CharField(unique=True, max_length=50)
+    name = models.CharField(unique=True, max_length=150)
     description = models.TextField()
     size = models.CharField(max_length=100, blank=True, null=True, )
     location_elevation = models.CharField(blank=True, null=True, max_length=30)

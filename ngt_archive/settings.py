@@ -147,6 +147,9 @@ REST_FRAMEWORK = {
 STATIC_ROOT = "static/"
 STATIC_URL = '/static/'
 
+MEDIA_ROOT = "archives/"
+MEDIA_URL = '/archives/'
+
 try:
     try:
         from ngt_archive.local import *

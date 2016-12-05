@@ -425,11 +425,17 @@ class DataSetClientTestCase(APITestCase):
         self.login_user("admin")
         with open('{}/Archive.zip'.format(dirname(__file__)), 'rb') as fp:
             response = self.client.post('/api/v1/datasets/1/archive/', {'attachment': fp})
-            self.assertEqual(status.HTTP_201_CREATED, response.status_code)
+            self.assertContains(response, '"success":true',
+                                status_code=status.HTTP_201_CREATED)
 
         response = self.client.get('/api/v1/datasets/1/')
+        self.assertContains(response, 'http://testserver/archives/NGT1_Data_Set_1.zip',
+                        status_code=status.HTTP_200_OK)
 
-        self.assertContains(response, 'http://testserver/api/v1/datasets/1/archives/NGT1_Archive')
+        from archive_api.models import DataSet
+        import os
+        dataset = DataSet.objects.get(id = 1)
+        os.remove(dataset.archive.path)
 
 
 class SiteClientTestCase(APITestCase):
