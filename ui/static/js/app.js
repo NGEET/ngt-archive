@@ -72,6 +72,74 @@ $(document).ready(function(){
         }
     });*/
 
+    $('body').on('click', '.js-delete-dataset', function() {
+        var csrftoken = getCookie('csrftoken');
+        var url = $(this).attr('data-url');
+
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        });
+
+        $.ajax({
+            method: "DELETE",
+            headers: { 
+                'Accept': 'application/json',
+                'Content-Type': 'application/json' 
+            },
+            url: url,
+            dataType: "json",
+            success: function(data) {
+                alert('Dataset deleted');
+            },
+
+            fail: function(data) {
+                alert('Fail');
+            },
+
+            error: function(data, errorThrown) {
+                alert('Error: ' + data.statusText);
+            },
+        });
+    });
+
+    $('body').on('click', '.js-save-btn', function() {
+        var url = $(this).attr('data-url');
+        var id = $(this).attr('data-id');
+
+        var jsonObj = {};
+
+        $('.js-editable-section .js-attr').each(function() {
+            var attr = $(this).find('.js-attr-name').html();
+            if($(this).find('.js-attr-val').length > 1) {
+                jsonObj[attr] = [];
+                $(this).find('.js-attr-val').each(function() {
+                    jsonObj[attr].push($(this).val());
+                });
+
+            }
+            else if($(this).find('.js-attr-val').length == 1) {
+                jsonObj[attr] = $(this).find('.js-attr-val').val();
+            }
+            else if($(this).find('.js-attr-val').length == 0) {
+                jsonObj[attr] = null;
+            }
+
+        });
+        console.log(jsonObj);
+        $.when(editDataset(jsonObj, url)).done(function(status) {
+            if(status) {
+                alert('Your changes have been saved');
+            }
+            else {
+                alert('Fail');
+            }
+        });
+
+        
+    })
+
     $('body').on('click', '.js-create-dataset', function() {
         var status = createDataset($('.js-dataset-name').val(), $('.js-dataset-desc').val());
         if(status) {
@@ -118,9 +186,43 @@ $(document).ready(function(){
                                 .html(dataObj.datasets[index]['name']);
         $('#myModal .js-modal-body').html('');
         //if(dataObj.datasets[index].dataSetId == $(this).attr('data-id')) {
+
+            var inputString = '';
+            //inputString += 'Name: ' + '<input type="text" class="js-dataset-name" value="' + dataObj.datasets[index]['name'] + '">' + '<br>';
+            //inputString += 'Description: ' + '<textarea class="js-dataset-desc">' + dataObj.datasets[index]['description'] + '</textarea>';
+
             for(var prop in dataObj.datasets[index]) {
-                $('#myModal .js-modal-body').append('<b>' + prop + '</b>: ' + dataObj.datasets[index][prop] + '<br>');
+                if(dataObj.datasets[index][prop] == null) {
+                    inputString += '<div class="js-attr"><span class="js-attr-name ' + prop + '">' + prop + '</span><br>' + '<textarea class="' + prop + ' js-attr-val">' + '</textarea>' + '</div>';
+                    $('#myModal .js-modal-body').append('<b>' + prop + '</b>: ' + '' + '<br>');
+                }
+
+                else if(typeof dataObj.datasets[index][prop] == 'object') {
+
+                    var substring = '<b>' + prop + '</b>:<br>';
+                    inputString += '<div class="js-attr"><span class="js-attr-name ' + prop + '">' + prop + '</span><br>';
+                    for(var subprop in dataObj.datasets[index][prop]) {
+                        if(dataObj.datasets[index][prop][subprop] == null) {
+                            console.log('null');
+                        }
+                        
+
+                        substring += '&nbsp;&nbsp;' + dataObj.datasets[index][prop][subprop] + '<br>';
+                        inputString += '&nbsp;&nbsp;' + '<textarea class="' + prop + ' js-attr-val">' + dataObj.datasets[index][prop][subprop] + '</textarea>' + '<br>';
+                        $('#myModal .js-modal-body').append(substring);
+                    }
+                    inputString += '</div>';
+                }
+                else {
+                    inputString += '<div class="js-attr"><span class="js-attr-name ' + prop + '">' + prop + '</span><br>' + '<textarea class="' + prop + ' js-attr-val">' + dataObj.datasets[index][prop] + '</textarea>' + '</div>';
+                    $('#myModal .js-modal-body').append('<b>' + prop + '</b>: ' + dataObj.datasets[index][prop] + '<br>');
+                }
             }
+
+
+            $('#myModal .js-editable-section').append(inputString);
+            $('#myModal .js-save-btn').attr('data-url', dataObj.datasets[index]['url'])
+                                    .attr('data-id', dataObj.datasets[index]['dataSetId']);
         //}
         popup.open();
     
@@ -228,6 +330,48 @@ function createDataset(name, desc) {
         error: function(jqXHR, textStatus, errorThrown) {
             console.log(textStatus);
             deferObj.resolve(data);
+        },
+
+    });
+
+    return deferObj.promise();
+}
+
+function editDataset(submissionObj, url) {
+    var deferObj = jQuery.Deferred();
+    var data = { id: "NGT 2",
+        name: "blah",
+        description: "b;ah" };
+    var csrftoken = getCookie('csrftoken');
+
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    });
+
+    //data = JSON.stringify(data);
+    $.ajax({
+        method: "PUT",
+        headers: { 
+            'Accept': 'application/json',
+            'Content-Type': 'application/json' 
+        },
+        url: url,
+        dataType: "json",
+        data: JSON.stringify(data),
+        success: function(data) {
+            deferObj.resolve(data);
+        },
+
+        fail: function(jqXHR, textStatus, errorThrown) {
+            console.log(textStatus);
+            deferObj.resolve(false);
+        },
+
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.log(textStatus);
+            deferObj.resolve(false);
         },
 
     });
