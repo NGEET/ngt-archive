@@ -42,7 +42,6 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
     created_by = serializers.ReadOnlyField(source='created_by.username')
     modified_by = serializers.ReadOnlyField(source='modified_by.username')
     submission_date = serializers.ReadOnlyField()
-    status = serializers.ReadOnlyField()
     authors = AuthorsField()
 
     def get_authors(self, instance):
@@ -72,8 +71,9 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
                   'acknowledgement', 'reference', 'additional_reference_information',
                   'access_level', 'additional_access_information', 'originating_institution',
                   'submission_date', 'contact', 'sites', 'authors', 'plots', 'variables', 'archive',
-                  'created_by', 'created_date', 'modified_by', 'modified_date')
-        readonly_fields = (
+                  'created_by', 'created_date', 'modified_by', 'modified_date'
+                  , 'cdiac_import', 'cdiac_submission_contact')
+        read_only_fields = ('cdiac_import', 'cdiac_submission_contact',
             'url', 'version', 'created_by', 'created_date', 'modified_by', 'modified_date', 'status', 'archive',
             'submission_date', 'data_set_id')
 
