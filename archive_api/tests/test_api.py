@@ -48,23 +48,24 @@ class DataSetClientTestCase(APITestCase):
         response = self.client.get('/api/v1/datasets/2/')
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(value,
-                         {'doeFundingContractNumbers': '', 'createdDate': '2016-10-28T19:15:35.013361Z', 'status': '1',
-                          'additionalAccessInformation': '', 'startDate': '2016-10-28', 'dataSetId': 'NGT2',
-                          'endDate': None, 'createdBy': 'auser', 'additionalReferenceInformation': '',
+                         {'doe_funding_contract_numbers': '', 'created_date': '2016-10-28T19:15:35.013361Z',
+                          'status': '1',
+                          'additional_access_information': '', 'start_date': '2016-10-28', 'data_set_id': 'NGT2',
+                          'end_date': None, 'created_by': 'auser', 'additional_reference_information': '',
                           'contact': 'http://testserver/api/v1/people/2/',
-                          'url': 'http://testserver/api/v1/datasets/2/', 'ngeeTropicsResources': True,
-                          'accessLevel': '0', 'plots': ['http://testserver/api/v1/plots/1/'],
+                          'url': 'http://testserver/api/v1/datasets/2/', 'ngee_tropics_resources': True,
+                          'access_level': '0', 'plots': ['http://testserver/api/v1/plots/1/'],
                           'description': 'Qui illud verear persequeris te. Vis probo nihil verear an, zril tamquam philosophia eos te, quo ne fugit movet contentiones. Quas mucius detraxit vis an, vero omnesque petentium sit ea. Id ius inimicus comprehensam.',
-                          'version': '1.0', 'reference': '', 'acknowledgement': '', 'statusComment': '',
+                          'version': '1.0', 'reference': '', 'acknowledgement': '', 'status_comment': '',
                           'variables': ['http://testserver/api/v1/variables/1/',
                                         'http://testserver/api/v1/variables/2/',
                                         'http://testserver/api/v1/variables/3/'],
-                          'authors': ['http://testserver/api/v1/people/2/'], 'qaqcStatus': None,
-                          'originatingInstitution': None, 'fundingOrganizations': 'A few funding organizations',
+                          'authors': ['http://testserver/api/v1/people/2/'], 'qaqc_status': None,
+                          'originating_institution': None, 'funding_organizations': 'A few funding organizations',
                           'doi': '',
-                          'modifiedDate': '2016-10-28T23:01:20.066913Z', 'submissionDate': '2016-10-28',
-                          'qaqcMethodDescription': '', 'name': 'Data Set 2',
-                          'sites': ['http://testserver/api/v1/sites/1/'], 'modifiedBy': 'auser'}
+                          'modified_date': '2016-10-28T23:01:20.066913Z', 'submission_date': '2016-10-28',
+                          'qaqc_method_description': '', 'name': 'Data Set 2',
+                          'sites': ['http://testserver/api/v1/sites/1/'], 'modified_by': 'auser'}
 
                          )
         self.assertEqual(status.HTTP_200_OK, response.status_code)
@@ -76,32 +77,32 @@ class DataSetClientTestCase(APITestCase):
                                     content_type='application/json')
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         value = json.loads(response.content.decode('utf-8'))
-        self.assertEqual(value['accessLevel'], '0')
+        self.assertEqual(value['access_level'], '0')
         self.assertEqual(value['sites'], [])
-        self.assertEqual(value['createdBy'], 'auser')
-        self.assertEqual(value['endDate'], None)
-        self.assertEqual(value['doeFundingContractNumbers'], None)
-        self.assertEqual(value['fundingOrganizations'], None)
+        self.assertEqual(value['created_by'], 'auser')
+        self.assertEqual(value['end_date'], None)
+        self.assertEqual(value['doe_funding_contract_numbers'], None)
+        self.assertEqual(value['funding_organizations'], None)
         self.assertEqual(value['description'], 'A FooBarBaz DataSet')
-        self.assertEqual(value['additionalAccessInformation'], None)
+        self.assertEqual(value['additional_access_information'], None)
         self.assertEqual(value['name'], 'FooBarBaz')
-        self.assertEqual(value['modifiedBy'], 'auser')
-        self.assertEqual(value['ngeeTropicsResources'], False)
+        self.assertEqual(value['modified_by'], 'auser')
+        self.assertEqual(value['ngee_tropics_resources'], False)
         self.assertEqual(value['status'], '0')
         self.assertEqual(value['doi'], None)
         self.assertEqual(value['plots'], [])
         self.assertEqual(value['contact'], None)
         self.assertEqual(value['reference'], None)
         self.assertEqual(value['variables'], [])
-        self.assertEqual(value['additionalReferenceInformation'], None)
-        self.assertEqual(value['startDate'], None)
+        self.assertEqual(value['additional_reference_information'], None)
+        self.assertEqual(value['start_date'], None)
         self.assertEqual(value['acknowledgement'], None)
-        self.assertEqual(value['statusComment'], None)
-        self.assertEqual(value['submissionDate'], None)
-        self.assertEqual(value['qaqcStatus'], None)
+        self.assertEqual(value['status_comment'], None)
+        self.assertEqual(value['submission_date'], None)
+        self.assertEqual(value['qaqc_status'], None)
         self.assertEqual(value['authors'], ["http://testserver/api/v1/people/2/"])
         self.assertEqual(value['url'], 'http://testserver/api/v1/datasets/4/')
-        self.assertEqual(value['qaqcMethodDescription'], None)
+        self.assertEqual(value['qaqc_method_description'], None)
 
         # The submit action should fail
         response = self.client.post('/api/v1/datasets/4/submit/')
@@ -117,22 +118,22 @@ class DataSetClientTestCase(APITestCase):
     def test_client_put(self):
         self.login_user("auser")
         response = self.client.put('/api/v1/datasets/1/',
-                                   data='{"dataSetId":"FooBarBaz","description":"A FooBarBaz DataSet",'
+                                   data='{"data_set_id":"FooBarBaz","description":"A FooBarBaz DataSet",'
                                         '"name": "Data Set 1", '
-                                        '"statusComment": "",'
+                                        '"status_comment": "",'
                                         '"doi": "",'
-                                        '"startDate": "2016-10-28",'
-                                        '"endDate": null,'
-                                        '"qaqcStatus": null,'
-                                        '"qaqcMethodDescription": "",'
-                                        '"ngeeTropicsResources": true,'
-                                        '"fundingOrganizations": "",'
-                                        '"doeFundingContractNumbers": "",'
+                                        '"start_date": "2016-10-28",'
+                                        '"end_date": null,'
+                                        '"qaqc_status": null,'
+                                        '"qaqc_method_description": "",'
+                                        '"ngee_tropics_resources": true,'
+                                        '"funding_organizations": "",'
+                                        '"doe_funding_contract_numbers": "",'
                                         '"acknowledgement": "",'
                                         '"reference": "",'
-                                        '"additionalReferenceInformation": "",'
-                                        '"additionalAccessInformation": "",'
-                                        '"submissionDate": "2016-10-28T19:12:35Z",'
+                                        '"additional_reference_information": "",'
+                                        '"additional_access_information": "",'
+                                        '"submission_date": "2016-10-28T19:12:35Z",'
                                         '"contact": "http://testserver/api/v1/people/4/",'
                                         '"authors": ["http://testserver/api/v1/people/1/"],'
                                         '"sites": ["http://testserver/api/v1/sites/1/"],'
@@ -183,23 +184,23 @@ class DataSetClientTestCase(APITestCase):
                          value)
 
         response = self.client.put('/api/v1/datasets/1/',
-                                   data='{"dataSetId":"FooBarBaz","description":"A FooBarBaz DataSet",'
+                                   data='{"data_set_id":"FooBarBaz","description":"A FooBarBaz DataSet",'
                                         '"name": "Data Set 1", '
-                                        '"statusComment": "",'
+                                        '"status_comment": "",'
                                         '"doi": "",'
-                                        '"startDate": "2016-10-28",'
-                                        '"endDate": null,'
-                                        '"qaqcStatus": null,'
-                                        '"qaqcMethodDescription": "",'
-                                        '"ngeeTropicsResources": true,'
-                                        '"fundingOrganizations": "The funding organizations for my dataset",'
-                                        '"doeFundingContractNumbers": "",'
+                                        '"start_date": "2016-10-28",'
+                                        '"end_date": null,'
+                                        '"qaqc_status": null,'
+                                        '"qaqc_method_description": "",'
+                                        '"ngee_tropics_resources": true,'
+                                        '"funding_organizations": "The funding organizations for my dataset",'
+                                        '"doe_funding_contract_numbers": "",'
                                         '"acknowledgement": "",'
                                         '"reference": "",'
-                                        '"additionalReferenceInformation": "",'
-                                        '"originatingInstitution": "Lawrence Berkeley National Lab",'
-                                        '"additionalAccessInformation": "",'
-                                        '"submissionDate": "2016-10-28T19:12:35Z",'
+                                        '"additional_reference_information": "",'
+                                        '"originating_institution": "Lawrence Berkeley National Lab",'
+                                        '"additional_access_information": "",'
+                                        '"submission_date": "2016-10-28T19:12:35Z",'
                                         '"contact": "http://testserver/api/v1/people/4/",'
                                         '"authors": ["http://testserver/api/v1/people/1/"],'
                                         '"sites": ["http://testserver/api/v1/sites/1/"],'
@@ -251,22 +252,22 @@ class DataSetClientTestCase(APITestCase):
         response = self.client.put('/api/v1/datasets/2/',
                                    data='{"description":"A FooBarBaz DataSet",'
                                         '"name": "Data Set 2", '
-                                        '"statusComment": "",'
+                                        '"status_comment": "",'
                                         '"doi": "",'
-                                        '"originatingInstitution": "Lawrence Berkeley National Lab",'
-                                        '"startDate": "2016-10-28",'
-                                        '"endDate": null,'
-                                        '"qaqcStatus": null,'
-                                        '"qaqcMethodDescription": "",'
-                                        '"ngeeTropicsResources": true,'
-                                        '"fundingOrganizations": "The funding organizations for my dataset",'
-                                        '"doeFundingContractNumbers": "",'
+                                        '"originating_institution": "Lawrence Berkeley National Lab",'
+                                        '"start_date": "2016-10-28",'
+                                        '"end_date": null,'
+                                        '"qaqc_status": null,'
+                                        '"qaqc_method_description": "",'
+                                        '"ngee_tropics_resources": true,'
+                                        '"funding_organizations": "The funding organizations for my dataset",'
+                                        '"doe_funding_contract_numbers": "",'
                                         '"acknowledgement": "",'
                                         '"reference": "",'
-                                        '"accessLevel": "0",'
-                                        '"additionalReferenceInformation": "",'
-                                        '"additionalAccessInformation": "",'
-                                        '"submissionDate": "2016-10-28T19:12:35Z",'
+                                        '"access_level": "0",'
+                                        '"additional_reference_information": "",'
+                                        '"additional_access_information": "",'
+                                        '"submission_date": "2016-10-28T19:12:35Z",'
                                         '"contact": "http://testserver/api/v1/people/4/",'
                                         '"authors": ["http://testserver/api/v1/people/4/","http://testserver/api/v1/people/3/"],'
                                         '"sites": ["http://testserver/api/v1/sites/1/"],'
@@ -280,21 +281,21 @@ class DataSetClientTestCase(APITestCase):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual(value["description"], "A FooBarBaz DataSet")
         self.assertEqual(value["name"], "Data Set 2")
-        self.assertEqual(value["statusComment"], "")
+        self.assertEqual(value["status_comment"], "")
         self.assertEqual(value["doi"], "")
-        self.assertEqual(value["originatingInstitution"], "Lawrence Berkeley National Lab")
-        self.assertEqual(value["startDate"], "2016-10-28")
-        self.assertEqual(value["endDate"], None)
-        self.assertEqual(value["qaqcStatus"], None)
-        self.assertEqual(value["qaqcMethodDescription"], "")
-        self.assertEqual(value["ngeeTropicsResources"], True)
-        self.assertEqual(value["fundingOrganizations"], "The funding organizations for my dataset")
-        self.assertEqual(value["doeFundingContractNumbers"], "")
+        self.assertEqual(value["originating_institution"], "Lawrence Berkeley National Lab")
+        self.assertEqual(value["start_date"], "2016-10-28")
+        self.assertEqual(value["end_date"], None)
+        self.assertEqual(value["qaqc_status"], None)
+        self.assertEqual(value["qaqc_method_description"], "")
+        self.assertEqual(value["ngee_tropics_resources"], True)
+        self.assertEqual(value["funding_organizations"], "The funding organizations for my dataset")
+        self.assertEqual(value["doe_funding_contract_numbers"], "")
         self.assertEqual(value["acknowledgement"], "")
         self.assertEqual(value["reference"], "")
-        self.assertEqual(value["accessLevel"], "0")
-        self.assertEqual(value["additionalReferenceInformation"], "")
-        self.assertEqual(value["additionalAccessInformation"], "")
+        self.assertEqual(value["access_level"], "0")
+        self.assertEqual(value["additional_reference_information"], "")
+        self.assertEqual(value["additional_access_information"], "")
         self.assertEqual(value["contact"], "http://testserver/api/v1/people/4/")
         self.assertEqual(value["authors"], ["http://testserver/api/v1/people/4/", "http://testserver/api/v1/people/3/"])
         self.assertEqual(value["sites"], ["http://testserver/api/v1/sites/1/"])
@@ -431,27 +432,28 @@ class SiteClientTestCase(APITestCase):
     def test_client_get(self):
         response = self.client.get('/api/v1/sites/1/')
         self.assertEqual(json.loads(response.content.decode('utf-8')),
-                         {"url": "http://testserver/api/v1/sites/1/", "siteId": "CC-CCPD",
+                         {"url": "http://testserver/api/v1/sites/1/", "site_id": "CC-CCPD",
                           "name": "Central City CCPD",
                           "description": "Et doming epicurei posidonium has, an sit sanctus intellegebat. Ne malis reprehendunt mea. Iisque dolorem vel cu. Ut nam sapientem appellantur definitiones, copiosae placerat inimicus per ei. Cu pro reque putant, cu perfecto urbanitas posidonium eum, pri probo laoreet cu. Ei duo cetero concludaturque, ei adhuc facilis sit.\r\n\r\nAn aeque harum ius, mea ut erant verear salutandi. Eligendi recusabo usu ad. Ad modo vero consequat his, ne aperiam alienum suscipiantur his. Altera laoreet petentium pro ut. His option vocibus at. Vix no semper omnesque maluisset, accusata qualisque ut pro. Eos sint constituto temporibus in.",
-                          "country": "United States", "stateProvince": "", "utcOffset": -9,
-                          "locationLatitude": -8.983987234, "locationLongitude": 5.9832932847,
-                          "locationElevation": "100-400", "locationMapUrl": "", "locationBoundingBoxUlLatitude": None,
-                          "locationBoundingBoxUlLongitude": None, "locationBoundingBoxLrLatitude": None,
-                          "locationBoundingBoxLrLongitude": None, "siteUrls": "http://centralcityccpd.baz",
-                          "submissionDate": "2016-10-01", "contacts": [], "pis": [],
+                          "country": "United States", "state_province": "", "utc_offset": -9,
+                          "location_latitude": -8.983987234, "location_longitude": 5.9832932847,
+                          "location_elevation": "100-400", "location_map_url": "",
+                          "location_bounding_box_ul_latitude": None,
+                          "location_bounding_box_ul_longitude": None, "location_bounding_box_lr_latitude": None,
+                          "location_bounding_box_lr_longitude": None, "site_urls": "http://centralcityccpd.baz",
+                          "submission_date": "2016-10-01", "contacts": [], "pis": [],
                           "submission": "http://testserver/api/v1/people/3/"})
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_client_post(self):
         response = self.client.post('/api/v1/sites/',
-                                    data='{"dataSetId":"FooBarBaz","description":"A FooBarBaz DataSet"}',
+                                    data='{"data_set_id":"FooBarBaz","description":"A FooBarBaz DataSet"}',
                                     content_type='application/json')
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
 
     def test_client_put(self):
         response = self.client.put('/api/v1/sites/2/',
-                                   data='{"dataSetId":"FooBarBaz","description":"A FooBarBaz DataSet"}',
+                                   data='{"data_set_id":"FooBarBaz","description":"A FooBarBaz DataSet"}',
                                    content_type='application/json')
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
 
@@ -471,10 +473,10 @@ class PlotClientTestCase(APITestCase):
     def test_client_get(self):
         response = self.client.get('/api/v1/plots/1/')
         self.assertEqual(json.loads(response.content.decode('utf-8')),
-                         {"url": "http://testserver/api/v1/plots/1/", "plotId": "CC-CCPD1",
+                         {"url": "http://testserver/api/v1/plots/1/", "plot_id": "CC-CCPD1",
                           "name": "Central City CCPD Plot 1",
                           "description": "Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo. Nemo enim ipsam voluptatem, quia voluptas sit, aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos, qui ratione voluptatem sequi nesciunt, neque porro quisquam est, qui dolorem ipsum, quia dolor sit amet, consectetur, adipisci[ng] velit, sed quia non numquam [do] eius modi tempora inci[di]dunt, ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit, qui in ea voluptate velit esse, quam nihil molestiae consequatur, vel illum, qui dolorem eum fugiat, quo voluptas nulla pariatur",
-                          "size": "", "locationElevation": "", "locationKmzUrl": "", "submissionDate": "2016-10-08",
+                          "size": "", "location_elevation": "", "location_kmz_url": "", "submission_date": "2016-10-08",
                           "pi": "http://testserver/api/v1/people/3/",
                           "site": "http://testserver/api/v1/sites/1/",
                           "submission": "http://testserver/api/v1/people/4/"})
@@ -482,13 +484,13 @@ class PlotClientTestCase(APITestCase):
 
     def test_client_post(self):
         response = self.client.post('/api/v1/plots/',
-                                    data='{"dataSetId":"FooBarBaz","description":"A FooBarBaz DataSet"}',
+                                    data='{"data_set_id":"FooBarBaz","description":"A FooBarBaz DataSet"}',
                                     content_type='application/json')
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
 
     def test_client_put(self):
         response = self.client.put('/api/v1/plots/1/',
-                                   data='{"dataSetId":"FooBarBaz","description":"A FooBarBaz DataSet"}',
+                                   data='{"data_set_id":"FooBarBaz","description":"A FooBarBaz DataSet"}',
                                    content_type='application/json')
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
 
@@ -508,22 +510,22 @@ class ContactClientTestCase(APITestCase):
     def test_client_get(self):
         response = self.client.get('/api/v1/people/2/')
         self.assertEqual(json.loads(response.content.decode('utf-8')),
-                         {"url": "http://testserver/api/v1/people/2/", "firstName": "Luke",
-                          "lastName": "Cage", "email": "lcage@foobar.baz", "institutionAffiliation": "POWER"})
+                         {"url": "http://testserver/api/v1/people/2/", "first_name": "Luke",
+                          "last_name": "Cage", "email": "lcage@foobar.baz", "institution_affiliation": "POWER"})
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_client_post(self):
         response = self.client.post('/api/v1/people/',
-                                    data='{"firstName":"Killer","lastName":"Frost","email":"kfrost@earth2.baz","institutionAffiliation":"ZOOM"}',
+                                    data='{"first_name":"Killer","last_name":"Frost","email":"kfrost@earth2.baz","institution_affiliation":"ZOOM"}',
                                     content_type='application/json')
         self.assertEqual(json.loads(response.content.decode('utf-8')),
-                         {"url": "http://testserver/api/v1/people/6/", "firstName": "Killer", "lastName": "Frost",
-                          "email": "kfrost@earth2.baz", "institutionAffiliation": "ZOOM"})
+                         {"url": "http://testserver/api/v1/people/6/", "first_name": "Killer", "last_name": "Frost",
+                          "email": "kfrost@earth2.baz", "institution_affiliation": "ZOOM"})
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
 
     def test_client_put(self):
         response = self.client.put('/api/v1/people/2/',
-                                   data='{"url": "http://testserver/api/v1/people/2/", "firstName": "Luke", "lastName": "Cage", "email": "lcage@foobar.baz", "institutionAffiliation": "POW"}',
+                                   data='{"url": "http://testserver/api/v1/people/2/", "first_name": "Luke", "last_name": "Cage", "email": "lcage@foobar.baz", "institution_affiliation": "POW"}',
                                    content_type='application/json')
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
 
