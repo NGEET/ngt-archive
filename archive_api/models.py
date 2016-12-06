@@ -1,5 +1,30 @@
+import os
+
 from django.contrib.auth.models import User
+from django.core.files.storage import FileSystemStorage
 from django.db import models
+
+
+class ArchiveStorage(FileSystemStorage):
+
+    def get_available_name(self, name, max_length=None):
+        """
+        Overwrite the existing file
+        :param name:
+        :param max_length:
+        :return:
+        """
+        # Remove the existing file
+        if self.exists(name):
+            os.remove(self.path(name))
+
+        # Call the parent method to use its checking
+        name = super(ArchiveStorage, self).get_available_name(name, max_length=max_length)
+
+        return name
+
+fs = ArchiveStorage()
+
 
 STATUS_CHOICES = (
     ('0', 'Draft'),
@@ -18,6 +43,20 @@ ACCESS_CHOICES = (
     ('1', 'NGEE Tropics'),
     ('2', 'Public'),
 )
+
+
+def get_upload_path(instance, filename):
+    """
+    This generates the file upload path
+    :param instance:
+    :param filename:
+    :return:
+    """
+    dataset_name = instance.name.replace(" ", "_")
+    dataset_name = ''.join([i for i in dataset_name if i.isalnum() or i == "_"])
+    _, file_extension = os.path.splitext(filename)
+    return os.path.join(
+        "{}_{}{}".format(instance.data_set_id(), dataset_name,file_extension))
 
 
 class MeasurementVariable(models.Model):
@@ -86,7 +125,7 @@ class Site(models.Model):
 
 class Plot(models.Model):
     plot_id = models.CharField(max_length=30, unique=True)
-    name = models.CharField(unique=True, max_length=50)
+    name = models.CharField(unique=True, max_length=150)
     description = models.TextField()
     size = models.CharField(max_length=100, blank=True, null=True, )
     location_elevation = models.CharField(blank=True, null=True, max_length=30)
@@ -141,14 +180,19 @@ class DataSet(models.Model):
     modified_by = models.ForeignKey(User, editable=False, related_name='+')
     modified_date = models.DateTimeField(editable=False, auto_now=True)
 
-    # file = models.FileField()
-
     # Relationships
     authors = models.ManyToManyField(Person, blank=True, related_name='+', through='Author')
     contact = models.ForeignKey(Person, on_delete=models.DO_NOTHING, blank=True, null=True)
     sites = models.ManyToManyField(Site, blank=True)
     plots = models.ManyToManyField(Plot, blank=True)
     variables = models.ManyToManyField(MeasurementVariable, blank=True)
+
+    # CDIAC Import Fields
+    cdiac_import = models.BooleanField(default=False)
+    cdiac_submission_contact = models.ForeignKey(Person, related_name='+', on_delete=models.DO_NOTHING, blank=True,
+                                                 null=True)
+
+    archive = models.FileField(upload_to=get_upload_path, storage=fs, null=True)
 
     class Meta:
         permissions = (

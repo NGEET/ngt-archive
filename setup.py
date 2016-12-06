@@ -20,7 +20,6 @@ setup(name='ngt_archive',
             "djangorestframework == 3.4.3",
             "django-filter ==  0.13.0",
             "pyldap",
-            "django-auth-ldap == 1.2.8",
-            "djangorestframework-camel-case"
+            "django-auth-ldap == 1.2.8"
       ]
      )
