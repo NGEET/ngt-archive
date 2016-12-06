@@ -4,9 +4,11 @@ from archive_api.models import DataSet, MeasurementVariable, Site, Person, Plot
 from archive_api.serializers import DataSetSerializer, MeasurementVariableSerializer, SiteSerializer, PersonSerializer, \
     PlotSerializer
 from django.utils import timezone
+from djangorestframework_camel_case.parser import CamelCaseJSONParser
 from rest_framework import permissions
 from rest_framework import status
 from rest_framework.decorators import detail_route
+from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
@@ -73,6 +75,7 @@ class DataSetViewSet(ModelViewSet):
     queryset = DataSet.objects.all()
     serializer_class = DataSetSerializer
     http_method_names = ['get', 'post', 'put', 'delete', 'head', 'options']
+    parser_classes = (CamelCaseJSONParser, MultiPartParser, FormParser)
 
     def perform_create(self, serializer):
         """
@@ -91,6 +94,31 @@ class DataSetViewSet(ModelViewSet):
         """
         if self.request.user.is_authenticated and serializer.is_valid():
             serializer.save(modified_by=self.request.user)
+
+    @detail_route(methods=['POST'])
+    def archive(self, request, *args, **kwargs):
+        """
+        Upload and archive file to the Dataset
+
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        if 'attachment' in request.data:
+            dataset = self.get_object()
+            dataset.archive.delete()
+
+            upload = request.data['attachment']
+
+            dataset.archive.save(upload.name, upload)
+
+            return Response({'success': True, 'detail': 'File uploaded'},
+                            status=status.HTTP_201_CREATED, headers={'Location':
+                                                                         dataset.archive.url})
+        else:
+            return Response({'success': False, 'detail': 'There is no file to upload'},
+                            status=status.HTTP_400_BAD_REQUEST)
 
     @detail_route(methods=['post', 'get'])
     def approve(self, request, pk=None):
