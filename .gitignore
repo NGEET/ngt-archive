@@ -8,7 +8,6 @@
 .vagrant/
 .venv/
 __pycache__/
-archives
 archive_api_import.json
 archive_api_import_with_datasets.json
 db.sqlite3
