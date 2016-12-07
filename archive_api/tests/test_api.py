@@ -1,7 +1,6 @@
 from __future__ import print_function, unicode_literals
 
 import json
-from os.path import dirname
 
 from django.contrib.auth.models import User
 from django.test import Client
@@ -48,24 +47,25 @@ class DataSetClientTestCase(APITestCase):
         self.login_user("auser")
         response = self.client.get('/api/v1/datasets/2/')
         value = json.loads(response.content.decode('utf-8'))
-        print(value)
         self.assertEqual(value,
-                         {'doe_funding_contract_numbers': '', 'status': '1',
-                          'contact': 'http://testserver/api/v1/people/2/', 'created_by': 'auser',
+                         {'doe_funding_contract_numbers': '', 'created_date': '2016-10-28T19:15:35.013361Z',
+                          'status': '1',
+                          'additional_access_information': '', 'start_date': '2016-10-28', 'data_set_id': 'NGT2',
+                          'end_date': None, 'created_by': 'auser', 'additional_reference_information': '',
+                          'contact': 'http://testserver/api/v1/people/2/',
+                          'url': 'http://testserver/api/v1/datasets/2/', 'ngee_tropics_resources': True,
+                          'access_level': '0', 'plots': ['http://testserver/api/v1/plots/1/'],
                           'description': 'Qui illud verear persequeris te. Vis probo nihil verear an, zril tamquam philosophia eos te, quo ne fugit movet contentiones. Quas mucius detraxit vis an, vero omnesque petentium sit ea. Id ius inimicus comprehensam.',
-                          'funding_organizations': 'A few funding organizations', 'originating_institution': None,
+                          'version': '1.0', 'reference': '', 'acknowledgement': '', 'status_comment': '',
                           'variables': ['http://testserver/api/v1/variables/1/',
                                         'http://testserver/api/v1/variables/2/',
-                                        'http://testserver/api/v1/variables/3/'], 'submission_date': '2016-10-28',
-                          'access_level': '0', 'status_comment': '', 'start_date': '2016-10-28', 'name': 'Data Set 2',
-                          'version': '1.0', 'reference': '', 'data_set_id': 'NGT2', 'qaqc_status': None,
-                          'qaqc_method_description': '', 'additional_reference_information': '', 'archive': None,
-                          'doi': '', 'end_date': None, 'ngee_tropics_resources': True,
-                          'sites': ['http://testserver/api/v1/sites/1/'], 'modified_by': 'auser',
-                          'additional_access_information': '', 'authors': ['http://testserver/api/v1/people/2/'],
-                          'plots': ['http://testserver/api/v1/plots/1/'], 'acknowledgement': '',
-                          'modified_date': '2016-10-28T23:01:20.066913Z', 'created_date': '2016-10-28T19:15:35.013361Z',
-                          'url': 'http://testserver/api/v1/datasets/2/'}
+                                        'http://testserver/api/v1/variables/3/'],
+                          'authors': ['http://testserver/api/v1/people/2/'], 'qaqc_status': None,
+                          'originating_institution': None, 'funding_organizations': 'A few funding organizations',
+                          'doi': '',
+                          'modified_date': '2016-10-28T23:01:20.066913Z', 'submission_date': '2016-10-28',
+                          'qaqc_method_description': '', 'name': 'Data Set 2',
+                          'sites': ['http://testserver/api/v1/sites/1/'], 'modified_by': 'auser'}
 
                          )
         self.assertEqual(status.HTTP_200_OK, response.status_code)
@@ -415,20 +415,6 @@ class DataSetClientTestCase(APITestCase):
 
         response = self.client.get("/api/v1/datasets/1/")  # should be deleted
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
-
-    def test_upload(self):
-        """
-        Test Dataset Archive Upload
-        :return:
-        """
-        self.login_user("admin")
-        with open('{}/Archive.zip'.format(dirname(__file__)), 'rb') as fp:
-            response = self.client.post('/api/v1/datasets/1/archive/', {'attachment': fp})
-            self.assertEqual(status.HTTP_201_CREATED, response.status_code)
-
-        response = self.client.get('/api/v1/datasets/1/')
-
-        self.assertContains(response, 'http://testserver/api/v1/datasets/1/archives/NGT1_Archive')
 
 
 class SiteClientTestCase(APITestCase):
