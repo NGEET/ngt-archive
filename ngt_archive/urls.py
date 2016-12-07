@@ -18,13 +18,10 @@ from django.contrib import admin
 from archive_api import urls as api_urls
 from ui import urls as ui_urls
 
-from django.conf import settings
-from django.conf.urls.static import static
-
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     url(r'^', include(ui_urls)),   
     url(r'^api/', include(api_urls)),
     url(r'^admin/', admin.site.urls),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
