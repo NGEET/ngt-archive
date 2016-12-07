@@ -48,25 +48,24 @@ class DataSetClientTestCase(APITestCase):
         self.login_user("auser")
         response = self.client.get('/api/v1/datasets/2/')
         value = json.loads(response.content.decode('utf-8'))
+        print(value)
         self.assertEqual(value,
-                         {'modified_date': '2016-10-28T23:01:20.066913Z', 'doi': '', 'start_date': '2016-10-28',
-                          'status_comment': '', 'plots': ['http://testserver/api/v1/plots/1/'],
-                          'created_date': '2016-10-28T19:15:35.013361Z',
-                          'funding_organizations': 'A few funding organizations',
-                          'authors': ['http://testserver/api/v1/people/2/'], 'cdiac_import': False,
-                          'doe_funding_contract_numbers': '',
+                         {'doe_funding_contract_numbers': '', 'status': '1',
+                          'contact': 'http://testserver/api/v1/people/2/', 'created_by': 'auser',
                           'description': 'Qui illud verear persequeris te. Vis probo nihil verear an, zril tamquam philosophia eos te, quo ne fugit movet contentiones. Quas mucius detraxit vis an, vero omnesque petentium sit ea. Id ius inimicus comprehensam.',
-                          'submission_date': '2016-10-28', 'qaqc_method_description': '',
+                          'funding_organizations': 'A few funding organizations', 'originating_institution': None,
                           'variables': ['http://testserver/api/v1/variables/1/',
                                         'http://testserver/api/v1/variables/2/',
-                                        'http://testserver/api/v1/variables/3/'], 'archive': None,
-                          'cdiac_submission_contact': None, 'reference': '', 'additional_access_information': '',
-                          'contact': 'http://testserver/api/v1/people/2/', 'acknowledgement': '', 'data_set_id': 'NGT2',
-                          'modified_by': 'auser', 'status': '1', 'ngee_tropics_resources': True, 'qaqc_status': None,
-                          'end_date': None, 'additional_reference_information': '', 'name': 'Data Set 2',
-                          'created_by': 'auser', 'sites': ['http://testserver/api/v1/sites/1/'],
-                          'originating_institution': None, 'version': '1.0',
-                          'url': 'http://testserver/api/v1/datasets/2/', 'access_level': '0'}
+                                        'http://testserver/api/v1/variables/3/'], 'submission_date': '2016-10-28',
+                          'access_level': '0', 'status_comment': '', 'start_date': '2016-10-28', 'name': 'Data Set 2',
+                          'version': '1.0', 'reference': '', 'data_set_id': 'NGT2', 'qaqc_status': None,
+                          'qaqc_method_description': '', 'additional_reference_information': '', 'archive': None,
+                          'doi': '', 'end_date': None, 'ngee_tropics_resources': True,
+                          'sites': ['http://testserver/api/v1/sites/1/'], 'modified_by': 'auser',
+                          'additional_access_information': '', 'authors': ['http://testserver/api/v1/people/2/'],
+                          'plots': ['http://testserver/api/v1/plots/1/'], 'acknowledgement': '',
+                          'modified_date': '2016-10-28T23:01:20.066913Z', 'created_date': '2016-10-28T19:15:35.013361Z',
+                          'url': 'http://testserver/api/v1/datasets/2/'}
 
                          )
         self.assertEqual(status.HTTP_200_OK, response.status_code)

@@ -165,11 +165,6 @@ class DataSet(models.Model):
     plots = models.ManyToManyField(Plot, blank=True)
     variables = models.ManyToManyField(MeasurementVariable, blank=True)
 
-    # CDIAC Import Fields
-    cdiac_import = models.BooleanField(default=False)
-    cdiac_submission_contact = models.ForeignKey(Person, related_name='+', on_delete=models.DO_NOTHING, blank=True,
-                                                 null=True)
-
     archive = models.FileField(upload_to=get_upload_path, storage=fs, null=True)
 
     class Meta:
