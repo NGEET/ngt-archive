@@ -5,6 +5,8 @@ from django.core.urlresolvers import resolve
 from django.db import transaction
 from rest_framework import serializers
 
+from rest_framework.reverse import reverse
+
 
 class AuthorsField(serializers.SerializerMethodField):
     """
@@ -43,6 +45,21 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
     modified_by = serializers.ReadOnlyField(source='modified_by.username')
     submission_date = serializers.ReadOnlyField()
     authors = AuthorsField()
+    archive = serializers.SerializerMethodField()
+
+    def get_archive(self, instance):
+        """ Returns the archive access url"""
+        if instance.archive:
+            url_kwargs = {
+                'pk': instance.pk,
+
+            }
+
+            url = reverse('dataset-detail', kwargs=url_kwargs, request=self.context["request"])
+            url += "archive/"
+
+            return url
+        return None
 
     def get_authors(self, instance):
         """

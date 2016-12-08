@@ -147,8 +147,8 @@ REST_FRAMEWORK = {
 STATIC_ROOT = "static/"
 STATIC_URL = '/static/'
 
-MEDIA_ROOT = "archives/"
-MEDIA_URL = '/archives/'
+DATASET_ARCHIVE_ROOT = "archives/"
+DATASET_ARCHIVE_URL = '/archives/' # not used
 
 try:
     try:
