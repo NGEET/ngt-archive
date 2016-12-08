@@ -4,12 +4,11 @@ from django.db import transaction
 from django.http import HttpResponse
 from django.utils import timezone
 from django.utils.encoding import smart_str
-from djangorestframework_camel_case.parser import CamelCaseJSONParser
 from rest_framework import permissions
 from rest_framework import status
 from rest_framework.decorators import detail_route
 from rest_framework.exceptions import ValidationError, PermissionDenied
-from rest_framework.parsers import FormParser, MultiPartParser
+from rest_framework.parsers import FormParser, MultiPartParser, JSONParser
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
@@ -52,7 +51,7 @@ class HasSubmitPermission(permissions.BasePermission):
 
         if obj.status != DRAFT:
             if obj.created_by == request.user or request.user.groups.filter(name='NGT Administrator').exists():
-                raise PermissionDenied(detail='Only a data set in DRAFT status may be submitted',code= status.HTTP_403_FORBIDDEN)
+                raise PermissionDenied(detail='Only a data set in DRAFT status may be submitted')
         elif obj.status == DRAFT and \
                 request.user.has_perm('archive_api.edit_draft_dataset'):
             return obj.created_by == request.user or request.user.groups.filter(name='NGT Administrator').exists()
@@ -68,8 +67,7 @@ class HasApprovePermission(permissions.BasePermission):
 
         if request.user.has_perm('archive_api.approve_submitted_dataset'):
             if obj.status != SUBMITTED:
-                raise PermissionDenied(detail='Only a data set in SUBMITTED status may be approved',
-                                       code=status.HTTP_403_FORBIDDEN)
+                raise PermissionDenied(detail='Only a data set in SUBMITTED status may be approved')
             elif obj.status == SUBMITTED:
                 return request.user.has_perm('archive_api.approve_submitted_dataset')
 
@@ -84,8 +82,7 @@ class HasUnsubmitPermission(permissions.BasePermission):
 
         if request.user.has_perm('archive_api.unsubmit_submitted_dataset'):
             if obj.status != SUBMITTED:
-                raise PermissionDenied(detail='Only a data set in SUBMITTED status may be un-submitted',
-                                       code=status.HTTP_403_FORBIDDEN)
+                raise PermissionDenied(detail='Only a data set in SUBMITTED status may be un-submitted')
 
             elif obj.status == SUBMITTED:
                 return True
@@ -101,8 +98,7 @@ class HasUnapprovePermission(permissions.BasePermission):
 
         if request.user.has_perm('archive_api.unapprove_approved_dataset'):
             if obj.status != APPROVED:
-                raise PermissionDenied(detail='Only a data set in APPROVED status may be unapproved',
-                                       code=status.HTTP_403_FORBIDDEN)
+                raise PermissionDenied(detail='Only a data set in APPROVED status may be unapproved')
 
             if obj.status == APPROVED:
                 return True
@@ -148,8 +144,7 @@ class HasEditPermissionOrReadonly(permissions.BasePermission):
         elif obj.status == SUBMITTED:
             return request.user.groups.filter(name='NGT Administrator').exists()
         elif obj.status == APPROVED and request.user.groups.filter(name='NGT Administrator').exists():
-            raise PermissionDenied(detail='A data set in APPROVED status may not be edited',
-                                   code=status.HTTP_403_FORBIDDEN)
+            raise PermissionDenied(detail='A data set in APPROVED status may not be edited')
 
         return False
 
@@ -163,7 +158,7 @@ class DataSetViewSet(ModelViewSet):
     queryset = DataSet.objects.all()
     serializer_class = DataSetSerializer
     http_method_names = ['get', 'post', 'put', 'delete', 'head', 'options']
-    parser_classes = (CamelCaseJSONParser, MultiPartParser, FormParser)
+    parser_classes = (JSONParser, MultiPartParser, FormParser)
 
     def perform_create(self, serializer):
         """
