@@ -17,6 +17,10 @@ $(document).ready(function(){
         window.location = '/api/api-auth/login/?next=/';
     }
 
+    $('.js-template.date').datepicker({
+        dateFormat: "yy-mm-dd"
+    });
+
     /*$.when(getDataSets()).then(function(data) {
         console.log(data);
         for(var i=0;i<data.length;i++) {

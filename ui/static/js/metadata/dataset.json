@@ -1,0 +1,237 @@
+{
+    "url": {
+        "display_name": "URL",
+        "datatype": "string",
+        "editable": "0",
+        "multiple": "0"
+    },
+    "data_set_id": {
+        "display_name": "ID",
+        "datatype": "string",
+        "editable": "0",
+        "multiple": "0"
+    },
+    "name": {
+        "display_name": "Name",
+        "datatype": "string",
+        "editable": "1",
+        "multiple": "0"
+    },
+    "version": {
+        "display_name": "Version",
+        "datatype": "string",
+        "editable": "1",
+        "multiple": "0"
+    },
+    "status": {
+        "display_name": "Status",
+        "datatype": "string",
+        "editable": "0",
+        "multiple": "0"
+    },
+    "description": {
+        "display_name": "Description",
+        "datatype": "string",
+        "editable": "1",
+        "multiple": "0"
+    },
+    "status_comment": {
+        "display_name": "Status Comment",
+        "datatype": "string",
+        "editable": "1",
+        "multiple": "0"
+    },
+    "doi": {
+        "display_name": "DOI",
+        "datatype": "string",
+        "editable": "1",
+        "multiple": "0"
+    },
+    "start_date": {
+        "display_name": "Start Date",
+        "datatype": "date",
+        "editable": "1",
+        "format": "yy-mm-dd",
+        "multiple": "0"
+    },
+    "end_date": {
+        "display_name": "End Date",
+        "datatype": "date",
+        "editable": "1",
+        "format": "yy-mm-dd",
+        "multiple": "0"
+    },
+    "qaqc_status": {
+        "display_name": "QA/QC Status",
+        "datatype": "list",
+        "editable": "1",
+        "searchable_list": "0",
+        "add_new": "0",
+        "multiple": "0",
+        "list_options": [{
+                "display_string": "None",
+                "value": "0"
+            },
+
+            {
+                "display_string": "Preliminary QA-QC",
+                "value": "1"
+            },
+
+            {
+                "display_string": "Full QA-QC",
+                "value": "2"
+            }
+        ]
+    },
+    "qaqc_method_description": {
+        "display_name": "QA/QC Method Description",
+        "datatype": "string",
+        "editable": "1",
+        "multiple": "0"
+    },
+    "ngee_tropics_resources": {
+        "display_name": "NGEE Tropics Resources",
+        "datatype": "boolean",
+        "editable": "1",
+        "multiple": "0"
+    },
+    "funding_organizations": {
+        "display_name": "Funding Organizations",
+        "datatype": "string",
+        "editable": "1",
+        "multiple": "0"
+    },
+    "doe_funding_contract_numbers": {
+        "display_name": "DOE Funding Contract Numbers",
+        "datatype": "string",
+        "editable": "1",
+        "multiple": "0"
+    },
+    "acknowledgement": {
+        "display_name": "Acknowledgement",
+        "datatype": "string",
+        "editable": "1",
+        "multiple": "0"
+    },
+    "reference": {
+        "display_name": "Reference",
+        "datatype": "string",
+        "editable": "1",
+        "multiple": "0"
+    },
+    "additional_reference_information": {
+        "display_name": "Additional Reference Information",
+        "datatype": "string",
+        "editable": "1",
+        "multiple": "0"
+    },
+    "access_level": {
+        "display_name": "Access Level",
+        "datatype": "list",
+        "editable": "1",
+        "searchable_list": "0",
+        "add_new": "0",
+        "multiple": "0",
+        "list_options": [{
+                "display_string": "Private",
+                "value": "0"
+            },
+
+            {
+                "display_string": "NGEE Tropics",
+                "value": "1"
+            },
+
+            {
+                "display_string": "Public",
+                "value": "2"
+            }
+        ]
+    },
+    "additional_access_information": {
+        "display_name": "Additional Access Information",
+        "datatype": "string",
+        "editable": "1",
+        "multiple": "0"
+    },
+    "originating_institution": {
+        "display_name": "Originating Institution",
+        "datatype": "string",
+        "editable": "1",
+        "multiple": "0"
+    },
+    "submission_date": {
+        "display_name": "Submission Date",
+        "datatype": "date",
+        "editable": "1",
+        "format": "yy-mm-dd",
+        "multiple": "0"
+    },
+    "contact": {
+        "display_name": "Contact",
+        "datatype": "reference_list",
+        "editable": "1",
+        "searchable_list": "1",
+        "add_new": "1",
+        "multiple": "0"
+    },
+    "sites": {
+        "display_name": "Sites",
+        "datatype": "reference_list",
+        "editable": "1",
+        "searchable_list": "1",
+        "add_new": "0",
+        "multiple": "1"
+    },
+    "authors": {
+        "display_name": "Authors",
+        "datatype": "reference_list",
+        "editable": "1",
+        "searchable_list": "1",
+        "add_new": "0",
+        "multiple": "1"
+    },
+    "plots": {
+        "display_name": "Plots",
+        "datatype": "reference_list",
+        "editable": "1",
+        "searchable_list": "1",
+        "add_new": "0",
+        "multiple": "1"
+    },
+    "variables": {
+        "display_name": "Variables",
+        "datatype": "reference_list",
+        "editable": "1",
+        "searchable_list": "1",
+        "add_new": "0",
+        "multiple": "1"
+    },
+    "created_by": {
+        "display_name": "Created By",
+        "datatype": "string",
+        "editable": "0",
+        "multiple": "0"
+    },
+    "created_date": {
+        "display_name": "Created Date",
+        "datatype": "timestamp",
+        "editable": "0",
+        "format": "ISO",
+        "multiple": "0"
+    },
+    "modified_by": {
+        "display_name": "Modified By",
+        "datatype": "string",
+        "editable": "0",
+        "multiple": "0"
+    },
+    "modified_date": {
+        "display_name": "Modified Date",
+        "datatype": "timestamp",
+        "editable": "0",
+        "format": "ISO",
+        "multiple": "0"
+    }
+}
