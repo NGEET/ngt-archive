@@ -35,6 +35,6 @@ script
         --module=ngt_archive.wsgi --chdir {{ project_root }} \
         --static-map /static={{ project_root }}/static/ --enable-threads \
         --virtualenv {{ project_root }}/.venv --uid vagrant --gid vagrant \
-        --logto {{ project_root }}/ngt-archive.log
+        --logto {{ project_root }}/ngt-archive.log --die-on-term
 
 end script
