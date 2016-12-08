@@ -1,6 +1,15 @@
 var dataObj = {};
+var templates = {};
 $(document).ready(function(){
     $(document).foundation();
+
+    $.getJSON( "/static/js/metadata/dataset.json", function( data ) {  
+        templates.dataset = data;
+        //console.log(templates.dataset);
+        console.log(data);
+        createEditForm('dataset');
+    });
+
     var popup = new Foundation.Reveal($('#myModal'));
     console.log('here');
 
@@ -123,7 +132,7 @@ $(document).ready(function(){
                 jsonObj[attr] = $(this).find('.js-attr-val').val();
             }
             else if($(this).find('.js-attr-val').length == 0) {
-                jsonObj[attr] = null;
+                jsonObj[attr] = "";
             }
 
         });
@@ -280,6 +289,21 @@ $(document).ready(function(){
 
 });
 
+function createEditForm(templateType) {
+    var formHTML = $('<div/>');
+    var paramHTML = '';
+    for(var param in templates[templateType]) {
+        paramHTML = $('<div class="js-param param"></div>');
+        paramHTML.append($('<span class="js-display-name display-name"></span>').html(templates[templateType][param].display_name));
+        paramHTML.append($('.js-template' + '.' + templates[templateType][param].datatype).clone());
+        $(formHTML).append(paramHTML);
+        if(templates[templateType][param].multiple == 1) {
+            $(formHTML).append('<button class="js-add-param-btn button '+ templates[templateType][param].datatype + '">' + 'Add New' + '</button>');
+        }
+    }
+    $('.js-edit-form').append(formHTML);
+}
+
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie != '') {
@@ -339,9 +363,32 @@ function createDataset(name, desc) {
 
 function editDataset(submissionObj, url) {
     var deferObj = jQuery.Deferred();
-    var data = { id: "NGT 2",
-        name: "blah",
-        description: "b;ah" };
+    /*var data = {
+        name: "bla 3454 768 h",
+        description: "b76 90 57ah" };
+   /* var data = {"data_set_id":"FooBarBaz",
+                "description":"A FooBarBaz DataSet",
+                "name": "Data Set 1", 
+                "status_comment": "",
+                "doi": "",
+                "start_date": "2016-10-28",
+                "end_date": null,
+                "qaqc_status": null,
+                "qaqc_method_description": "",
+                "ngee_tropics_resources": true,
+                "funding_organizations": "",
+                "doe_funding_contract_numbers": "",
+                "acknowledgement": "",
+                "reference": "",
+                "additional_reference_information": "",
+                "additional_access_information": "",
+                "submission_date": "2016-10-28T19:12:35Z",
+                "contact": "http://testserver/api/v1/people/4/",
+                "authors": ["http://testserver/api/v1/people/1/"],
+                "sites": ["http://testserver/api/v1/sites/1/"],
+                "plots": ["http://testserver/api/v1/plots/1/"],
+                "variables": ["http://testserver/api/v1/variables/1/", 
+                "http://testserver/api/v1/variables/2/"]};*/
     var csrftoken = getCookie('csrftoken');
 
     $.ajaxSetup({
@@ -359,7 +406,7 @@ function editDataset(submissionObj, url) {
         },
         url: url,
         dataType: "json",
-        data: JSON.stringify(data),
+        data: JSON.stringify(submissionObj),
         success: function(data) {
             deferObj.resolve(data);
         },
