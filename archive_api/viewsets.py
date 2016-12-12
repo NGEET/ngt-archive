@@ -17,7 +17,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from types import FunctionType
 
-from archive_api.models import DataSet, MeasurementVariable, Site, Person, Plot
+from archive_api.models import DataSet, MeasurementVariable, Site, Person, Plot, DatasetArchiveField
 from archive_api.permissions import HasArchivePermission, HasSubmitPermission, HasApprovePermission, \
     HasUnsubmitPermission, \
     HasUnapprovePermission, HasUploadPermission, HasEditPermissionOrReadonly, APPROVED, DRAFT, SUBMITTED
@@ -43,7 +43,7 @@ class DataSetMetadata(SimpleMetadata):
         upload_route["parameters"] = {"attachment": {
             "type": "file",
             "required": True,
-            "allowed_mime_types": ["application/zip"]
+            "allowed_mime_types": DatasetArchiveField.CONTENT_TYPES
         }}
 
         return data
