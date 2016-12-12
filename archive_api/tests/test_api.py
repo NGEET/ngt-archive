@@ -44,6 +44,17 @@ class DataSetClientTestCase(APITestCase):
                          3)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
+    def test_options(self):
+        self.login_user("auser")
+        response = self.client.options('/api/v1/datasets/')
+        self.assertContains(response, "detail_routes")
+        self.assertContains(response, "allowed_mime_types")
+        self.assertContains(response, "upload")
+        self.assertContains(response, "submit")
+        self.assertContains(response, "approve")
+        self.assertContains(response, "unapprove")
+        self.assertContains(response, "unsubmit")
+
     def test_client_get(self):
         self.login_user("auser")
         response = self.client.get('/api/v1/datasets/2/')
