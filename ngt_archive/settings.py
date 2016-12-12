@@ -144,7 +144,7 @@ REST_FRAMEWORK = {
 STATIC_ROOT = "static/"
 STATIC_URL = '/static/'
 
-DATASET_ARCHIVE_ROOT = "archives/"
+DATASET_ARCHIVE_ROOT = os.path.join(BASE_DIR, "archives/")
 DATASET_ARCHIVE_URL = '/archives/' # not used
 
 try:
