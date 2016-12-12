@@ -8,7 +8,9 @@ from rest_framework.exceptions import ValidationError
 
 
 class DatasetArchiveField( models.FileField):
-    CONTENT_TYPES = ["application/zip", "application/x-bzip2",
+
+
+        CONTENT_TYPES = ["application/zip", "application/x-bzip2",
                      "application/gzip", "application/x-lzip", "application/x-lzma",
                      "application/x-xz", "application/x-compress",
                      "application/x-compress", "application/x-7z-compressed",
