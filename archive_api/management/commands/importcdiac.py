@@ -64,8 +64,6 @@ class Command(BaseCommand):
                                                  File(f))
                         dataset.save()
 
-
-
     def extract_metadata(self, options, ngt_id,xml_file):
 
         # Access the metadata elements
@@ -213,12 +211,12 @@ class Command(BaseCommand):
         # Access Level
         #  metadata.idinfo.keywords.acconst
         try:
-            access_level = metadata.getElementsByTagName("acconst")[0].childNodes[0].data
+            access_level = metadata.getElementsByTagName("accconst")[0].childNodes[0].data
             if access_level.lower() == 'private':
                 dataset.access_level = 0
-            elif access_level.lower() == 'preliminary qa-qc':
+            elif access_level.lower() == 'ngee tropics':
                 dataset.access_level = 1
-            elif access_level.lower() == 'full qa-qc':
+            elif access_level.lower() == 'public':
                 dataset.access_level = 2
         except IndexError:
             pass
@@ -229,10 +227,10 @@ class Command(BaseCommand):
         try:
             qaqc_status = metadata.getElementsByTagName("attraccr")[0].childNodes[0].data
             dataset.qaqc_status = 0
-            if qaqc_status == 'Full QA-QC':
-                dataset.qaqc_status = 2
-            elif qaqc_status == 'Preliminary QA-QC':
+            if qaqc_status.lower() == 'preliminary qa-qc':
                 dataset.qaqc_status = 1
+            elif qaqc_status.lower() == 'full qa-qc':
+                dataset.qaqc_status = 2
         except:
             pass
 
