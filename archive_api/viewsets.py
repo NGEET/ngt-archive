@@ -1,4 +1,7 @@
 # Create your views here.
+import inspect
+from collections import OrderedDict
+
 import os
 from django.db import transaction
 from django.http import HttpResponse
@@ -7,164 +10,59 @@ from django.utils.encoding import smart_str
 from rest_framework import permissions
 from rest_framework import status
 from rest_framework.decorators import detail_route
-from rest_framework.exceptions import ValidationError, PermissionDenied
+from rest_framework.exceptions import ValidationError
+from rest_framework.metadata import SimpleMetadata
 from rest_framework.parsers import FormParser, MultiPartParser, JSONParser
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
+from types import FunctionType
 
-import archive_api
 from archive_api.models import DataSet, MeasurementVariable, Site, Person, Plot
+from archive_api.permissions import HasArchivePermission, HasSubmitPermission, HasApprovePermission, \
+    HasUnsubmitPermission, \
+    HasUnapprovePermission, HasUploadPermission, HasEditPermissionOrReadonly, APPROVED, DRAFT, SUBMITTED
 from archive_api.serializers import DataSetSerializer, MeasurementVariableSerializer, SiteSerializer, PersonSerializer, \
     PlotSerializer
 
-DRAFT = archive_api.models.STATUS_CHOICES[0][0]
-SUBMITTED = archive_api.models.STATUS_CHOICES[1][0]
-APPROVED = archive_api.models.STATUS_CHOICES[2][0]
 
-PRIVATE = archive_api.models.ACCESS_CHOICES[0][0]
-NGEET = archive_api.models.ACCESS_CHOICES[1][0]
-PUBLIC = archive_api.models.ACCESS_CHOICES[2][0]
+class DataSetMetadata(SimpleMetadata):
+    def determine_metadata(self, request, view):
+        """ Customize metadata from OPTIONS method to add detail_route information"""
 
+        data = super(DataSetMetadata, self).determine_metadata(request, view)
 
-class HasArchivePermission(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
-        path_info = request.path_info
-        if "/archive" not in path_info:
-            return False
+        for x, y in view.__class__.__dict__.items():
+            if type(y) == FunctionType and hasattr(y, "detail"):
+                data.setdefault("detail_routes", default=OrderedDict())
+                data["detail_routes"].setdefault(x, default=OrderedDict())
+                detail_route = data["detail_routes"][x]
+                detail_route["allowed_methods"] = y.bind_to_methods
+                detail_route["description"] = inspect.getdoc(y)  # get clean text
 
-        if request.user.groups.filter(name='NGT Administrator').exists():
-            return True # Admin always has access
-        elif obj.access_level == PRIVATE:
-            return obj.created_by == request.user # owner always has access
-        elif obj.access_level == NGEET:
-            return request.user.groups.filter(name='NGT User').exists() # All NGT User has access
-        else:
-            # This is public, All have access
-            return True
+        upload_route = data["detail_routes"]["upload"]
+        upload_route["parameters"] = {"attachment": {
+            "type": "file",
+            "required": True,
+            "allowed_mime_types": ["application/zip"]
+        }}
 
-
-class HasSubmitPermission(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
-        path_info = request.path_info
-        if "/submit" not in path_info:
-            return False
-
-        if obj.status != DRAFT:
-            if obj.created_by == request.user or request.user.groups.filter(name='NGT Administrator').exists():
-                raise PermissionDenied(detail='Only a data set in DRAFT status may be submitted')
-        elif obj.status == DRAFT and \
-                request.user.has_perm('archive_api.edit_draft_dataset'):
-            return obj.created_by == request.user or request.user.groups.filter(name='NGT Administrator').exists()
-
-        return False
-
-
-class HasApprovePermission(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
-        path_info = request.path_info
-        if "/approve" not in path_info:
-            return False
-
-        if request.user.has_perm('archive_api.approve_submitted_dataset'):
-            if obj.status != SUBMITTED:
-                raise PermissionDenied(detail='Only a data set in SUBMITTED status may be approved')
-            elif obj.status == SUBMITTED:
-                return request.user.has_perm('archive_api.approve_submitted_dataset')
-
-        return False
-
-
-class HasUnsubmitPermission(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
-        path_info = request.path_info
-        if "/unsubmit" not in path_info:
-            return False
-
-        if request.user.has_perm('archive_api.unsubmit_submitted_dataset'):
-            if obj.status != SUBMITTED:
-                raise PermissionDenied(detail='Only a data set in SUBMITTED status may be un-submitted')
-
-            elif obj.status == SUBMITTED:
-                return True
-
-        return False
-
-
-class HasUnapprovePermission(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
-        path_info = request.path_info
-        if "/unapprove" not in path_info:
-            return False
-
-        if request.user.has_perm('archive_api.unapprove_approved_dataset'):
-            if obj.status != APPROVED:
-                raise PermissionDenied(detail='Only a data set in APPROVED status may be unapproved')
-
-            if obj.status == APPROVED:
-                return True
-
-        return False
-
-
-class HasUploadPermission(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
-        path_info = request.path_info
-        if "/upload" not in path_info:
-            return False
-
-        if obj.status == DRAFT and \
-                request.user.has_perm('archive_api.edit_draft_dataset'):
-            return obj.created_by == request.user or request.user.groups.filter(name='NGT Administrator').exists()
-
-        return False
-
-
-class HasEditPermissionOrReadonly(permissions.BasePermission):
-    """
-       Object-level permission to only allow owners of an object  or administrators to edit it.
-       Assumes the model instance has an `created_by` attribute.
-    """
-
-    def has_object_permission(self, request, view, obj):
-
-        # Read permissions are allowed to any request,
-        # so we'll always allow GET, HEAD or OPTIONS requests.
-        if request.method in permissions.SAFE_METHODS:
-            return True
-
-        # Owner is either editing or submitting a draft
-        if request.method == "DELETE":
-            if obj.status == DRAFT:
-                return request.user.has_perm('archive_api.delete_draft_dataset')
-            elif obj.status == SUBMITTED:
-                return request.user.has_perm('archive_api.delete_submitted_dataset')
-        elif obj.status == DRAFT and \
-                request.user.has_perm('archive_api.edit_draft_dataset'):
-            return obj.created_by == request.user or request.user.groups.filter(name='NGT Administrator').exists()
-        elif obj.status == SUBMITTED:
-            return request.user.groups.filter(name='NGT Administrator').exists()
-        elif obj.status == APPROVED and request.user.groups.filter(name='NGT Administrator').exists():
-            raise PermissionDenied(detail='A data set in APPROVED status may not be edited')
-
-        return False
+        return data
 
 
 class DataSetViewSet(ModelViewSet):
     """
         Returns a list of all  DataSets available to the archive_api service
-
     """
     permission_classes = (HasEditPermissionOrReadonly, permissions.IsAuthenticated)
     queryset = DataSet.objects.all()
     serializer_class = DataSetSerializer
     http_method_names = ['get', 'post', 'put', 'delete', 'head', 'options']
     parser_classes = (JSONParser, MultiPartParser, FormParser)
+    metadata_class = DataSetMetadata
 
     def perform_create(self, serializer):
         """
-        Override the update method to update the created_by and modified by fields.
-        :param serializer:
-        :return:
+        Override the update method to update the created_by and modified by fields.]
         """
         if self.request.user.is_authenticated and serializer.is_valid():
             serializer.save(created_by=self.request.user, modified_by=self.request.user)
@@ -172,8 +70,6 @@ class DataSetViewSet(ModelViewSet):
     def perform_update(self, serializer):
         """
         Override the update method to update the modified by fields.
-        :param serializer:
-        :return:
         """
         if self.request.user.is_authenticated and serializer.is_valid():
             serializer.save(modified_by=self.request.user)
@@ -202,16 +98,11 @@ class DataSetViewSet(ModelViewSet):
             dataset.data_set_id(), dataset.version, dataset_name, file_extension)
         return response
 
-    @detail_route(methods=['POST'],
+    @detail_route(methods=['post'],
                   permission_classes=(HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasUploadPermission))
     def upload(self, request, *args, **kwargs):
         """
         Upload an archive file to the Dataset
-
-        :param request:
-        :param args:
-        :param kwargs:
-        :return:
         """
         if 'attachment' in request.data:
             dataset = self.get_object()
@@ -238,12 +129,7 @@ class DataSetViewSet(ModelViewSet):
                   permission_classes=(HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasApprovePermission))
     def approve(self, request, pk=None):
         """
-        Approve action.  Changes the dataset from 'submitted' to approved status. User must have the
-        proper permissions for this action
-
-        :param request:
-        :param pk:
-        :return:
+        Approve action.  Changes the dataset from SUBMITTED to APPROVED status. User must permissions for this action
         """
 
         self.change_status(request, APPROVED)
@@ -253,12 +139,7 @@ class DataSetViewSet(ModelViewSet):
                   permission_classes=(HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasUnsubmitPermission))
     def unsubmit(self, request, pk=None):
         """
-        Unsubmit action.  Changes the dataset from 'submitted' to draft status. User must have the
-        proper permissions for this action
-
-        :param request:
-        :param pk:
-        :return:
+        Unsubmit action.  Changes the dataset from SUBMITTED to DRAFT status. User must have permissions for this action
         """
 
         self.change_status(request, DRAFT)
@@ -266,15 +147,10 @@ class DataSetViewSet(ModelViewSet):
 
     @detail_route(methods=['post', 'get'],
                   permission_classes=(
-                  HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasUnapprovePermission))
+                          HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasUnapprovePermission))
     def unapprove(self, request, pk=None):
         """
-        Unapprove action.  Changes the dataset from 'approved' to submitted status. User must have the
-        proper permissions for this action
-
-        :param request:
-        :param pk:
-        :return:
+        Unapprove action.  Changes the dataset from APPROVED to SUBMITTED status. User must have permissions for this action
         """
 
         self.change_status(request, SUBMITTED)
@@ -284,12 +160,7 @@ class DataSetViewSet(ModelViewSet):
                   permission_classes=(HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasSubmitPermission))
     def submit(self, request, pk=None):
         """
-        Submit action. Changes the dataset from 'draft' to 'submitted' status. User must have
-        the proper permissions for this action.
-
-        :param request:
-        :param pk:
-        :return:
+        Submit action. Changes the dataset from DRAFT to SUBMITTED status. User must have permissions for this action.
         """
         self.change_status(request, SUBMITTED)
         return Response({'success': True, 'detail': 'DataSet has been submitted.'}, status=status.HTTP_200_OK)
@@ -298,9 +169,6 @@ class DataSetViewSet(ModelViewSet):
         """
         Change the status of the dataset. This will raise and exception on ValidationErrors and
         invalid permissions.
-        :param request:
-        :param status:
-        :return:
         """
         dataset = self.get_object()  # this will initiate a permissions check
         dataset.status = status
