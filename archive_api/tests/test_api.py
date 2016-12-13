@@ -8,6 +8,8 @@ from os.path import dirname
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from archive_api.models import DatasetArchiveField
+
 
 class ApiRootClientTestCase(APITestCase):
     fixtures = ('test_archive_api.json', 'test_auth.json',)
@@ -43,6 +45,19 @@ class DataSetClientTestCase(APITestCase):
         self.assertEqual(len(json.loads(response.content.decode('utf-8'))),
                          3)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
+
+    def test_options(self):
+        self.login_user("auser")
+        response = self.client.options('/api/v1/datasets/')
+        self.assertContains(response, "detail_routes")
+        self.assertContains(response, "allowed_mime_types")
+        self.assertContains(response, "upload")
+        self.assertContains(response, "submit")
+        self.assertContains(response, "approve")
+        self.assertContains(response, "unapprove")
+        self.assertContains(response, "unsubmit")
+        for mime_type in DatasetArchiveField.CONTENT_TYPES:
+            self.assertContains(response, mime_type)
 
     def test_client_get(self):
         self.login_user("auser")
@@ -446,7 +461,7 @@ class DataSetClientTestCase(APITestCase):
             response = self.client.post('/api/v1/datasets/1/upload/', {'attachment': fp})
             self.assertContains(response, '"success":false',
                                 status_code=status.HTTP_400_BAD_REQUEST)
-            self.assertContains(response, 'Filetype text/plain not supported. Allowed types: application/zip',
+            self.assertContains(response, 'Filetype text/plain not supported. Allowed types: application/zip, ',
                                 status_code=status.HTTP_400_BAD_REQUEST)
 
         response = self.client.get('/api/v1/datasets/1/')
