@@ -68,4 +68,4 @@ AUTHENTICATION_BACKENDS = (
 # django app running behind a reverse proxy
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-DATASET_ARCHIVE_ROOT="/vagrant/archives"
+DATASET_ARCHIVE_ROOT="{{ project_root }}/archives"
