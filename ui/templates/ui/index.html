@@ -9,6 +9,7 @@
         <script type="text/javascript" src="static/js/app.js"></script>
         <link rel="stylesheet" type="text/css" href="static/stylesheets/style.css">
         <script type="text/javascript" src="static/js/foundation.js"></script>
+        <!--script type="text/javascript" src="static/js/foundation.reveal.js"></script-->
         <script type="text/javascript" src="static/js/what-input.js"></script>
     </head>
     <body>
@@ -16,7 +17,7 @@
         <main>
             <nav class="menu expanded">
                 <a href="/">Home</a>
-                <a href="/api/api-auth/logout/?next=/" class="float-right">Logout</a>
+                <a href="api/api-auth/logout/?next=/" class="float-right">Logout</a>
                 {% if user.is_authenticated %}
                     <span class="float-right user">{{ user.get_username }}</span>
                 {% else %} 
@@ -25,7 +26,7 @@
             </nav>
             <article>
                 <h2>NGEE Tropics Archive</h2>
-                <form>
+                <form class="js-dataset-form">
                     <h4>Create a dataset</h4>
                     <div class="small-12 medium-6">
                         <label>Name
@@ -70,6 +71,14 @@
                         <input type="reset" class="button secondary small-10 medium-6" value="Clear form">
                     </div>
                 </form-->
+
+                <h4>Enter ID of the dataset you want to upload a file to</h4>
+                <div class="small-6">
+                <input type="text" name="" class="js-upload-dataset-id">
+                </div>
+                <button class="button js-file-upload-btn">Choose File to Upload</button>
+                <input type="file" name="" class="js-file-input-btn hide">
+
                 <h4>
                     View
                 </h4> 
@@ -84,7 +93,42 @@
                     </label>
                 </div-->
                 <code class="js-text-dump small-12 medium-6"></code>
+
+                <section class="js-datasets">
+                    
+                </section>
+
+                <!--div class="js-edit-form dataset">
+                    
+                </div-->
+
+                <div class="js-data-templates hide">
+                    <textarea class="js-template string"></textarea>
+                    <input type="checkbox" class="boolean js-template" name="">
+                    <select class="js-template list"></select>
+                    <input type="text" class="js-template date" name="">
+                    <input type="text" class="js-template timestamp" name="">
+                    <select class="js-template reference_list"></select>
+                    <input type="text" class="js-template searchable" name="">
+                </div>
             </article>
+            <div class="reveal-modal-bg" style="display: none"></div>
+            <div id="myModal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
+              <h3 id="modalTitle">Awesome. I have it.</h3>
+              <section class="js-modal-body modal-body">
+                  
+              </section>
+              <section class="js-input-section hide">
+                  <div class="js-editable-section"></div>
+                  <div class="js-button-bar">
+                      <button class="button js-save-btn">Save</button>
+                      <button class="button js-cancel-btn">Cancel</button>
+                  </div>
+              </section>
+              <button class="button edit-btn js-edit-btn">Edit</button>
+              <a class="close-reveal-modal js-close-modal" aria-label="Close">&#215;</a>
+            </div>
+
         </main>
     </body>
 </html>

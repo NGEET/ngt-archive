@@ -1,6 +1,35 @@
 body {
     background-color: #efefef;
     margin: 0;
+
+    #myModal {
+        display: none;
+        width: 75%;
+        max-height: 640px;
+        overflow: scroll;
+        background-color: #fff;
+        left: 50%;
+        position: relative;
+        transform: translateX(-50%);
+        padding: 20px 15px 10px;
+
+        .close-reveal-modal {
+            position: absolute;
+            top: 5px;
+            right: 12px;
+            font-size: 22px;
+        }
+
+        .edit-btn {
+            position: absolute;
+            top: 16px;
+            right: 50px;
+        }
+
+        textarea {
+            min-height: 80px;
+        }
+    }
     
     main {
         article {
