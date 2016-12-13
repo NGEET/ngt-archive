@@ -85,7 +85,6 @@ $(document).ready(function(){
         }
     });*/
 
-
     $('body').on('click', '.js-file-upload-btn', function() {
         $('.js-file-input-btn').trigger('click');
     });
@@ -147,7 +146,6 @@ $(document).ready(function(){
         }
         //console.log(this);
     });    
-
 
     $('body').on('click', '.js-delete-dataset', function() {
         var csrftoken = getCookie('csrftoken');
@@ -218,9 +216,9 @@ $(document).ready(function(){
     })
 
     $('body').on('click', '.js-create-dataset', function() {
-        var status = createDataset($('.js-dataset-name').val(), $('.js-dataset-desc').val());
+        var status = createDataset($('.js-dataset-form .js-dataset-name').val(), $('.js-dataset-form .js-dataset-desc').val());
         if(status) {
-            alert('Dataset successfully created');
+            alert('Your changes have been saved');
         }
         else {
             alert('Fail');
@@ -239,6 +237,11 @@ $(document).ready(function(){
         }
     });
 
+    $('body').on('click', '.js-edit-btn', function() {
+        $('#myModal .js-modal-body').hide();
+        $('#myModal .js-input-section').removeClass('hide');
+    });
+
     $('body').on('click', '.js-get-datasets', function() {
         $.when(getDataSets()).then(function(data) {
             dataObj.datasets = data;
@@ -251,7 +254,8 @@ $(document).ready(function(){
 
                 $('.js-datasets').append('Name: ' + (data[i].name ? data[i].name : 'NA') + '<br>')
                                 .append('Description: ' + (data[i].description ? data[i].description : 'NA') + '<br>')
-                                .append('<button class="js-view-dataset button" data-id="' + data[i].dataSetId + '" data-index="' + i + '">View</button>' + '<br><br>');
+                                .append('<button class="js-view-dataset button" data-id="' + data[i].dataSetId + '" data-index="' + i + '">View</button>')
+                                .append('&nbsp;' + '<button class="js-delete-dataset button" data-url="' + data[i].url + '" data-index="' + i + '">Delete</button>' + '<br><br>');
             }
         });
     });
@@ -263,7 +267,6 @@ $(document).ready(function(){
                                 .html(dataObj.datasets[index]['name']);
         $('#myModal .js-modal-body').html('');
         //if(dataObj.datasets[index].dataSetId == $(this).attr('data-id')) {
-
             var inputString = '';
             //inputString += 'Name: ' + '<input type="text" class="js-dataset-name" value="' + dataObj.datasets[index]['name'] + '">' + '<br>';
             //inputString += 'Description: ' + '<textarea class="js-dataset-desc">' + dataObj.datasets[index]['description'] + '</textarea>';
@@ -390,7 +393,7 @@ function getCookie(name) {
 
 function createDataset(name, desc) {
     var deferObj = jQuery.Deferred();
-    var data = { dataSetId: name,
+    var data = { name: name,
         description: desc };
     var csrftoken = getCookie('csrftoken');
 
@@ -535,6 +538,31 @@ function createContact(fname, lname, email, institute) {
     });
 
     return deferObj.promise();
+}
+
+function headDataSets() {
+    var deferObj = jQuery.Deferred();
+    $.ajax({
+        method: "OPTIONS",
+        url: "api/v1/datasets/",
+        dataType: "json",
+        success: function(data) {
+            deferObj.resolve(data);
+        },
+
+        fail: function(data) {
+            console.log(data);
+            deferObj.resolve(data);
+        },
+
+        error: function(data, errorThrown) {
+            console.log(data);
+            deferObj.resolve(data);
+        },
+
+    });
+
+    return deferObj.promise();    
 }
 
 function getDataSets() {

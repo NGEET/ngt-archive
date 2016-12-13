@@ -26,7 +26,7 @@
             </nav>
             <article>
                 <h2>NGEE Tropics Archive</h2>
-                <form>
+                <form class="js-dataset-form">
                     <h4>Create a dataset</h4>
                     <div class="small-12 medium-6">
                         <label>Name
@@ -101,6 +101,7 @@
                 <!--div class="js-edit-form dataset">
                     
                 </div-->
+
                 <div class="js-data-templates hide">
                     <textarea class="js-template string"></textarea>
                     <input type="checkbox" class="boolean js-template" name="">
@@ -117,7 +118,14 @@
               <section class="js-modal-body modal-body">
                   
               </section>
-
+              <section class="js-input-section hide">
+                  <div class="js-editable-section"></div>
+                  <div class="js-button-bar">
+                      <button class="button js-save-btn">Save</button>
+                      <button class="button js-cancel-btn">Cancel</button>
+                  </div>
+              </section>
+              <button class="button edit-btn js-edit-btn">Edit</button>
               <a class="close-reveal-modal js-close-modal" aria-label="Close">&#215;</a>
             </div>
 

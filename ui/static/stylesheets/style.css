@@ -20,20 +20,31 @@ body #myModal .close-reveal-modal {
   position: absolute;
   top: 5px;
   right: 12px;
+  font-size: 22px;
 }
-/* line 24, ../sass/style.scss */
+/* line 23, ../sass/style.scss */
+body #myModal .edit-btn {
+  position: absolute;
+  top: 16px;
+  right: 50px;
+}
+/* line 29, ../sass/style.scss */
+body #myModal textarea {
+  min-height: 80px;
+}
+/* line 35, ../sass/style.scss */
 body main article {
   background-color: #fff;
   max-width: 1200px;
   margin: 0 auto !important;
   padding: 0 32px 32px;
 }
-/* line 30, ../sass/style.scss */
+/* line 41, ../sass/style.scss */
 body main article code {
   display: block;
   min-height: 40px;
 }
-/* line 36, ../sass/style.scss */
+/* line 47, ../sass/style.scss */
 body main nav.menu {
   max-width: 1200px;
   margin: 0 auto;
@@ -42,16 +53,16 @@ body main nav.menu {
   color: white;
   padding: 0 20px;
 }
-/* line 44, ../sass/style.scss */
+/* line 55, ../sass/style.scss */
 body main nav.menu .user {
   margin-right: 32px;
   font-weight: 600;
 }
-/* line 49, ../sass/style.scss */
+/* line 60, ../sass/style.scss */
 body main nav.menu a {
   color: white;
 }
-/* line 52, ../sass/style.scss */
+/* line 63, ../sass/style.scss */
 body main nav.menu a:hover {
   color: white;
 }
