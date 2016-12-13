@@ -174,8 +174,18 @@
         notify: restart apache2
         tags:
            - webserver
-      - name: Links /vagrant with /var/www/localhost
-        file: src=/vagrant dest=/var/www/localhost state=link
+      - name: Create /var/www/localhost
+        file: path=/var/www/localhost state=directory
+        tags:
+           - webserver
+      - name: Create /var/www/localhost/doi
+        file: path=/var/www/localhost/doi state=directory
+        tags:
+           - webserver
+      - name: Copy doi.html to location
+        copy:
+          src: doi.html
+          dest: /var/www/localhost/doi/index.html
         tags:
            - webserver
       - name: Creates SSL certificate directory
@@ -199,8 +209,12 @@
 #           - webserver
       - name: create virtual host file
         template: src=virtualhost.conf dest=/etc/apache2/sites-available/{{ domain }}.conf
+        notify:
+          - restart apache2
         tags:
            - webserver
+           - app
+           - httpconf
       - name: a2ensite {{ domain }}
         command: a2ensite {{ domain }}
         args:
@@ -209,6 +223,8 @@
           - restart apache2
         tags:
            - webserver
+           - app
+           - httpconf
 
 
   handlers:
