@@ -1,7 +1,6 @@
 import mimetypes
 
 import os
-
 from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
 from django.db import models
@@ -9,6 +8,13 @@ from rest_framework.exceptions import ValidationError
 
 
 class DatasetArchiveField( models.FileField):
+
+
+        CONTENT_TYPES = ["application/zip", "application/x-bzip2",
+                     "application/gzip", "application/x-lzip", "application/x-lzma",
+                     "application/x-xz", "application/x-compress",
+                     "application/x-compress", "application/x-7z-compressed",
+                     "application/x-gtar", "application/x-rar-compressed"]
 
         def __init__(self, *args, **kwargs):
             """
@@ -18,7 +24,7 @@ class DatasetArchiveField( models.FileField):
             :param kwargs:
             """
 
-            self.content_types = ["application/zip"]
+            self.content_types = self.CONTENT_TYPES
             super(DatasetArchiveField,self).__init__(*args,**kwargs)
 
         def clean(self, *args, **kwargs):
@@ -35,10 +41,10 @@ class DatasetArchiveField( models.FileField):
                 content_type = mimetypes.guess_type(data.name)
                 if content_type[0] not in self.content_types:
                     raise ValidationError('Filetype {} not supported. Allowed types: {}'.format(content_type[0],
-                                                                                              ",".join(
+                                                                                                ", ".join(
                                                                                                   self.content_types)))
             except AttributeError:
-                raise ValidationError('Filetype unknown. Allowed types: {}'.format(",".join(self.content_types)))
+                raise ValidationError('Filetype unknown. Allowed types: {}'.format(", ".join(self.content_types)))
 
         def save(self, **kwargs):
             """

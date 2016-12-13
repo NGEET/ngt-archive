@@ -1,12 +1,15 @@
-import os
+import glob
+import mimetypes
 import sys
 
-from archive_api.models import DataSet, Person, Site, Plot, MeasurementVariable, Author, get_upload_path
+import os
 from django.contrib.auth.models import User
 from django.core.files import File
 from django.core.management.base import BaseCommand
-import glob
 from django.utils.datetime_safe import datetime
+
+from archive_api.models import DataSet, Person, Site, Plot, MeasurementVariable, Author, get_upload_path, \
+    DatasetArchiveField
 
 
 class Command(BaseCommand):
@@ -37,14 +40,29 @@ class Command(BaseCommand):
                     print("\t - NGT{} does not have a single datafile directory".format(ngt_id))
                 else:
 
-                    import shutil
-                    archive_file_base = "/tmp/NGT{}".format(ngt_id)
-                    archive_file = shutil.make_archive(archive_file_base, 'zip', datafiles[0])
-                    filename = get_upload_path(dataset,archive_file)
-                    with open(archive_file,'rb') as f:
-                        dataset.archive.save(filename,
-                                         File(f))
-                    dataset.save()
+                    archive_files = os.listdir(datafiles[0])
+                    archived = False
+                    # Check to see if this is an archive file already
+                    if len(archive_files) == 1:
+                        content_type = mimetypes.guess_type(archive_files[0])
+                        archive_file = os.path.join(datafiles[0], archive_files[0])
+                        if content_type[0] in DatasetArchiveField.CONTENT_TYPES:
+                            filename = get_upload_path(dataset, archive_file)
+                            with open(archive_file, 'rb') as f:
+                                dataset.archive.save(filename,
+                                                     File(f))
+                            dataset.save()
+                            archived = True
+
+                    if not archived:  # if not, zip files up and upload
+                        import shutil
+                        archive_file_base = "/tmp/NGT{}".format(ngt_id)
+                        archive_file = shutil.make_archive(archive_file_base, 'zip', datafiles[0])
+                        filename = get_upload_path(dataset, archive_file)
+                        with open(archive_file, 'rb') as f:
+                            dataset.archive.save(filename,
+                                                 File(f))
+                        dataset.save()
 
     def extract_metadata(self, options, ngt_id,xml_file):
 
@@ -193,12 +211,12 @@ class Command(BaseCommand):
         # Access Level
         #  metadata.idinfo.keywords.acconst
         try:
-            access_level = metadata.getElementsByTagName("acconst")[0].childNodes[0].data
+            access_level = metadata.getElementsByTagName("accconst")[0].childNodes[0].data
             if access_level.lower() == 'private':
                 dataset.access_level = 0
-            elif access_level.lower() == 'preliminary qa-qc':
+            elif access_level.lower() == 'ngee tropics':
                 dataset.access_level = 1
-            elif access_level.lower() == 'full qa-qc':
+            elif access_level.lower() == 'public':
                 dataset.access_level = 2
         except IndexError:
             pass
@@ -209,10 +227,10 @@ class Command(BaseCommand):
         try:
             qaqc_status = metadata.getElementsByTagName("attraccr")[0].childNodes[0].data
             dataset.qaqc_status = 0
-            if qaqc_status == 'Full QA-QC':
-                dataset.qaqc_status = 2
-            elif qaqc_status == 'Preliminary QA-QC':
+            if qaqc_status.lower() == 'preliminary qa-qc':
                 dataset.qaqc_status = 1
+            elif qaqc_status.lower() == 'full qa-qc':
+                dataset.qaqc_status = 2
         except:
             pass
 
