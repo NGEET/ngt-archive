@@ -18,6 +18,10 @@ from django.contrib import admin
 from archive_api import urls as api_urls
 from ui import urls as ui_urls
 
+
+admin.site.site_header = 'NGEE Tropics Admin Site'
+admin.site.site_title = 'NGEET Administration'
+
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
