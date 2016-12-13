@@ -17,7 +17,7 @@
         <main>
             <nav class="menu expanded">
                 <a href="/">Home</a>
-                <a href="/api/api-auth/logout/?next=/" class="float-right">Logout</a>
+                <a href="api/api-auth/logout/?next=/" class="float-right">Logout</a>
                 {% if user.is_authenticated %}
                     <span class="float-right user">{{ user.get_username }}</span>
                 {% else %} 

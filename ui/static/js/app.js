@@ -3,7 +3,7 @@ var templates = {};
 $(document).ready(function(){
     $(document).foundation();
 
-    $.getJSON( "/static/js/metadata/dataset.json", function( data ) {  
+    $.getJSON( "static/js/metadata/dataset.json", function( data ) {  
         templates.dataset = data;
         //console.log(templates.dataset);
         console.log(data);
@@ -14,7 +14,7 @@ $(document).ready(function(){
     console.log('here');
 
     if($('.js-auth').attr('data-auth') == 'false') {
-        window.location = '/api/api-auth/login/?next=/';
+        window.location = 'api/api-auth/login/?next=/';
     }
 
     $('.js-template.date').datepicker({
