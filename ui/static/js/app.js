@@ -3,11 +3,16 @@ var templates = {};
 $(document).ready(function(){
     $(document).foundation();
 
-    $.getJSON( "static/js/metadata/dataset.json", function( data ) {  
+    /*$.getJSON( "static/js/metadata/dataset.json", function( data ) {  
         templates.dataset = data;
         //console.log(templates.dataset);
         console.log(data);
         createEditForm('dataset');
+    });*/
+
+    $.when(getMetadata('datasets')).done(function(datasetMetadata) {
+        templates.datasets = datasetMetadata;
+        createEditForm('datasets');
     });
 
     var popup = new Foundation.Reveal($('#myModal'));
@@ -360,13 +365,63 @@ function createEditForm(templateType) {
     var formHTML = $('<div/>');
     var paramHTML = '';
     for(var param in templates[templateType]) {
-        paramHTML = $('<div class="js-param param"></div>');
+        /*paramHTML = $('<div class="js-param param"></div>');
         paramHTML.append($('<span class="js-display-name display-name"></span>').html(templates[templateType][param].display_name));
         paramHTML.append($('.js-template' + '.' + templates[templateType][param].datatype).clone());
         $(formHTML).append(paramHTML);
         if(templates[templateType][param].multiple == 1) {
             $(formHTML).append('<button class="js-add-param-btn button '+ templates[templateType][param].datatype + '">' + 'Add New' + '</button>');
+        }*/
+        if(templates[templateType][param].read_only) {
+            paramHTML = $('<input type="hidden">').addClass(param + (templates[templateType][param].required ? "required" : "") + ' js-param')
+                                                .val(templates[templateType][param].value);
         }
+        else {
+            paramHTML = $('<div class="js-param ' + (templates[templateType][param].required ? 'required' : '') + ' param"></div>').addClass(param );
+            var label = templates[templateType][param].label;
+            if(templates[templateType][param].required) {
+                label += '<i class="required">*</i>';
+            }
+            paramHTML.append($('<span class="js-display-name display-name"></span>').html(label));
+            switch(templates[templateType][param].type) {
+                case "string":
+                var tag = $('.js-template' + '.' + templates[templateType][param].type).clone();
+                if(templates[templateType][param].max_length) {
+                    tag.attr('maxlength', templates[templateType][param].max_length);
+                }
+                paramHTML.append(tag);
+                break;
+
+                case "date":
+                var tag = $('.js-template' + '.' + templates[templateType][param].type).clone();
+                paramHTML.append(tag);
+                break;
+
+                case "datetime":
+                var tag = $('.js-template' + '.' + templates[templateType][param].type).clone();
+                paramHTML.append(tag);
+                break;
+
+                case "choice":
+                var tag = $('.js-template' + '.' + templates[templateType][param].type).clone();
+
+                for (var choice in templates[templateType][param].choices) {
+                    var option = $('<option/>').val(templates[templateType][param].choices[choice].value)
+                                                .html(templates[templateType][param].choices[choice].display_name);
+                    tag.append(option);
+                }
+                paramHTML.append(tag);
+                break;
+
+                default:
+                var tag = $('<textarea/>')
+                paramHTML.append(tag);
+                break;
+            }
+            
+        }
+
+        $(formHTML).append(paramHTML);
     }
     $('.js-edit-form').append(formHTML);
 }
@@ -389,7 +444,7 @@ function getCookie(name) {
 
 function createDataset(name, desc) {
     var deferObj = jQuery.Deferred();
-    var data = { dataSetId: name,
+    var data = { name: name,
         description: desc };
     var csrftoken = getCookie('csrftoken');
 
@@ -724,4 +779,33 @@ function getPlots() {
     });
 
     return deferObj.promise();    
+}
+
+function getMetadata(templateType) {
+    var deferObj = jQuery.Deferred();
+    $.ajax({
+        method: "OPTIONS",
+        headers: { 
+            'Accept': 'application/json',
+            'Content-Type': 'application/json' 
+        },
+        url: "api/v1/"+templateType+"/",
+        dataType: "json",
+        success: function(data) {
+            console.log(data.actions.POST);
+            deferObj.resolve(data.actions.POST);
+        },
+
+        fail: function(jqXHR, textStatus, errorThrown) {
+            console.log(textStatus);
+            deferObj.resolve(data);
+        },
+
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.log(textStatus);
+            deferObj.resolve(data);
+        },
+
+    });
+    return deferObj.promise();  
 }
