@@ -1,0 +1,9 @@
+include LICENSE.md
+include docs/prerequisites.rst
+include docs/quickstart.rst README.md
+recursive-include docs/_build/latex *.pdf
+recursive-include docs/_build/html *
+recursive-include archive_api/templates *
+recursive-include ui/templates *
+prune archive_api/tests
+prune ui/tests
