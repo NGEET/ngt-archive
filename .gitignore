@@ -1,5 +1,4 @@
 !ui/static
-!ui/static
 *.egg-info/
 *.py[cod]
 .DS_Store
@@ -13,6 +12,7 @@ archive_api_import.json
 archive_api_import_with_datasets.json
 archives
 db.sqlite3
+dist/
 local*.py
 local.py
 main.yml
