@@ -6,6 +6,7 @@ import os
 from django.contrib.auth.models import User
 from django.core.files import File
 from django.core.management.base import BaseCommand
+from django.db import connection
 from django.utils.datetime_safe import datetime
 
 from archive_api.models import DataSet, Person, Site, Plot, MeasurementVariable, Author, get_upload_path, \
@@ -63,6 +64,12 @@ class Command(BaseCommand):
                             dataset.archive.save(filename,
                                                  File(f))
                         dataset.save()
+            self.update_sequences()
+
+    def update_sequences(self):
+        if connection.vendor == 'postgresql':
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT setval(pg_get_serial_sequence('\"archive_api_dataset\"','id'), coalesce(max(\"id\"), 1), max(\"id\") IS NOT null) FROM \"archive_api_dataset\"")
 
     def extract_metadata(self, options, ngt_id,xml_file):
 
