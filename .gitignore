@@ -1,4 +1,5 @@
 !ui/static
+!ui/static
 *.egg-info/
 *.py[cod]
 .DS_Store
@@ -8,9 +9,9 @@
 .vagrant/
 .venv/
 __pycache__/
-archives
 archive_api_import.json
 archive_api_import_with_datasets.json
+archives
 db.sqlite3
 local*.py
 local.py
