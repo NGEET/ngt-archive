@@ -22,10 +22,6 @@ $(document).ready(function(){
         window.location = 'api/api-auth/login/?next=/';
     }
 
-    $('.js-template.date').datepicker({
-        dateFormat: "yy-mm-dd"
-    });
-
     /*$.when(getDataSets()).then(function(data) {
         console.log(data);
         for(var i=0;i<data.length;i++) {
@@ -223,7 +219,20 @@ $(document).ready(function(){
     })
 
     $('body').on('click', '.js-create-dataset', function() {
-        $.when(createDataset($('.js-dataset-name').val(), $('.js-dataset-desc').val())).done(function(status) {
+        var submissionObj = {};
+
+        $('.js-edit-form .js-param').each(function() {
+            var param = $(this).attr('data-param');
+            $(this).find('textarea, input[type="text"], select').each(function() {
+                if($(this).val().trim()) {
+                    submissionObj[param] = $(this).val().trim();
+                }
+            });
+        });
+
+        console.log(submissionObj);
+
+        $.when(createDataset(submissionObj)).done(function(status) {
             if(status) {
                 alert('Dataset successfully created.');
             }
@@ -234,6 +243,10 @@ $(document).ready(function(){
             $('.js-clear-form').trigger('click');
         });
         
+    });
+
+    $('body').on('click', '.js-edit-dataset-btn', function() {
+        //$('')
     });
 
     $('body').on('click', '.js-create-contact', function() {
@@ -258,56 +271,61 @@ $(document).ready(function(){
 
                 $('.js-datasets').append('Name: ' + (data[i].name ? data[i].name : 'NA') + '<br>')
                                 .append('Description: ' + (data[i].description ? data[i].description : 'NA') + '<br>')
-                                .append('<button class="js-view-dataset button" data-id="' + data[i].dataSetId + '" data-index="' + i + '">View</button>' + '<br><br>');
+                                .append('<button class="js-view-dataset button" data-url="' + data[i].url + '" data-index="' + i + '">View</button>')
+                                .append('&nbsp;' + '<button class="js-delete-dataset button" data-url="' + data[i].url + '" data-index="' + i + '">Delete</button>' + '<br><br>');
             }
         });
     });
 
     $('body').on('click', '.js-view-dataset', function() {
         var index = $(this).attr('data-index');
-        
-        $('#myModal #modalTitle').html('')
-                                .html(dataObj.datasets[index]['name']);
-        $('#myModal .js-modal-body').html('');
-        //if(dataObj.datasets[index].dataSetId == $(this).attr('data-id')) {
-            var inputString = '';
-            //inputString += 'Name: ' + '<input type="text" class="js-dataset-name" value="' + dataObj.datasets[index]['name'] + '">' + '<br>';
-            //inputString += 'Description: ' + '<textarea class="js-dataset-desc">' + dataObj.datasets[index]['description'] + '</textarea>';
+        var url = $(this).attr('data-url');
 
-            for(var prop in dataObj.datasets[index]) {
-                if(dataObj.datasets[index][prop] == null) {
-                    inputString += '<div class="js-attr"><span class="js-attr-name ' + prop + '">' + prop + '</span><br>' + '<textarea class="' + prop + ' js-attr-val">' + '</textarea>' + '</div>';
-                    $('#myModal .js-modal-body').append('<b>' + prop + '</b>: ' + '' + '<br>');
-                }
+        $.when(getDataSets(url)).done(function(datasetObj) {
+            //console.log(data);
+            $('#myModal #modalTitle').html('')
+                                    .html(dataObj.datasets[index]['name']);
+            $('#myModal .js-modal-body').html('');
+            //if(dataObj.datasets[index].dataSetId == $(this).attr('data-id')) {
+                var inputString = '';
+                //inputString += 'Name: ' + '<input type="text" class="js-dataset-name" value="' + dataObj.datasets[index]['name'] + '">' + '<br>';
+                //inputString += 'Description: ' + '<textarea class="js-dataset-desc">' + dataObj.datasets[index]['description'] + '</textarea>';
 
-                else if(typeof dataObj.datasets[index][prop] == 'object') {
-
-                    var substring = '<b>' + prop + '</b>:<br>';
-                    inputString += '<div class="js-attr"><span class="js-attr-name ' + prop + '">' + prop + '</span><br>';
-                    for(var subprop in dataObj.datasets[index][prop]) {
-                        if(dataObj.datasets[index][prop][subprop] == null) {
-                            console.log('null');
-                        }
-                        
-
-                        substring += '&nbsp;&nbsp;' + dataObj.datasets[index][prop][subprop] + '<br>';
-                        inputString += '&nbsp;&nbsp;' + '<textarea class="' + prop + ' js-attr-val">' + dataObj.datasets[index][prop][subprop] + '</textarea>' + '<br>';
-                        $('#myModal .js-modal-body').append(substring);
+                for(var prop in datasetObj) {
+                    /*if(datasetObj[prop] == null || !datasetObj[prop]) {
+                        inputString += '<div class="js-attr"><span class="js-attr-name ' + prop + '">' + prop + '</span><br>' + '<textarea class="' + prop + ' js-attr-val">' + '</textarea>' + '</div>';
+                        $('#myModal .js-modal-body').append('<b>' + prop + '</b>: ' + '' + '<br>');
                     }
-                    inputString += '</div>';
+
+                    else if(typeof dataObj.datasets[index][prop] == 'object') {
+
+                        var substring = '<b class="js-param-name">' + prop + '</b>:<br>';
+                        inputString += '<div class="js-attr"><span class="js-attr-name ' + prop + '">' + prop + '</span><br>';
+                        for(var subprop in dataObj.datasets[index][prop]) {
+                            if(dataObj.datasets[index][prop][subprop] == null) {
+                                console.log('null');
+                            }
+                            
+
+                            substring += '&nbsp;&nbsp;' + dataObj.datasets[index][prop][subprop] + '<br>';
+                            inputString += '&nbsp;&nbsp;' + '<textarea class="' + prop + ' js-attr-val">' + dataObj.datasets[index][prop][subprop] + '</textarea>' + '<br>';
+                            $('#myModal .js-modal-body').append(substring);
+                        }
+                        inputString += '</div>';
+                    }
+                    else {
+                        inputString += '<div class="js-attr"><span class="js-attr-name ' + prop + '">' + prop + '</span><br>' + '<textarea class="' + prop + ' js-attr-val">' + dataObj.datasets[index][prop] + '</textarea>' + '</div>';
+                        $('#myModal .js-modal-body').append('<b>' + prop + '</b>: ' + dataObj.datasets[index][prop] + '<br>');
+                    }*/
                 }
-                else {
-                    inputString += '<div class="js-attr"><span class="js-attr-name ' + prop + '">' + prop + '</span><br>' + '<textarea class="' + prop + ' js-attr-val">' + dataObj.datasets[index][prop] + '</textarea>' + '</div>';
-                    $('#myModal .js-modal-body').append('<b>' + prop + '</b>: ' + dataObj.datasets[index][prop] + '<br>');
-                }
-            }
 
 
-            $('#myModal .js-editable-section').append(inputString);
-            $('#myModal .js-save-btn').attr('data-url', dataObj.datasets[index]['url'])
-                                    .attr('data-id', dataObj.datasets[index]['dataSetId']);
-        //}
-        popup.open();
+                $('#myModal .js-editable-section').append(inputString);
+                $('#myModal .js-save-btn').attr('data-url', dataObj.datasets[index]['url'])
+                                        .attr('data-id', dataObj.datasets[index]['dataSetId']);
+            //}
+            popup.open();
+        });
     
     });
 
@@ -376,10 +394,12 @@ function createEditForm(templateType) {
         }*/
         if(templates[templateType][param].read_only) {
             paramHTML = $('<input type="hidden">').addClass(param + (templates[templateType][param].required ? "required" : "") + ' js-param')
-                                                .val(templates[templateType][param].value);
+                                                .val(templates[templateType][param].value)
+                                                .attr('data-param', param);
         }
         else {
-            paramHTML = $('<div class="js-param ' + (templates[templateType][param].required ? 'required' : '') + ' param"></div>').addClass(param );
+            paramHTML = $('<div class="js-param ' + (templates[templateType][param].required ? 'required' : '') + ' param"></div>').addClass(param)
+                        .attr('data-param', param);
             var label = templates[templateType][param].label;
             if(templates[templateType][param].required) {
                 label += '<i class="required">*</i>';
@@ -391,16 +411,19 @@ function createEditForm(templateType) {
                 if(templates[templateType][param].max_length) {
                     tag.attr('maxlength', templates[templateType][param].max_length);
                 }
+                tag.removeClass('js-template').addClass('js-input');
                 paramHTML.append(tag);
                 break;
 
                 case "date":
                 var tag = $('.js-template' + '.' + templates[templateType][param].type).clone();
+                tag.removeClass('js-template').addClass('js-input');
                 paramHTML.append(tag);
                 break;
 
                 case "datetime":
                 var tag = $('.js-template' + '.' + templates[templateType][param].type).clone();
+                tag.removeClass('js-template').addClass('js-input');
                 paramHTML.append(tag);
                 break;
 
@@ -412,11 +435,12 @@ function createEditForm(templateType) {
                                                 .html(templates[templateType][param].choices[choice].display_name);
                     tag.append(option);
                 }
+                tag.removeClass('js-template').addClass('js-input');
                 paramHTML.append(tag);
                 break;
 
                 default:
-                var tag = $('<textarea/>')
+                var tag = $('<textarea/>').addClass('js-input');
                 paramHTML.append(tag);
                 break;
             }
@@ -425,7 +449,10 @@ function createEditForm(templateType) {
 
         $(formHTML).append(paramHTML);
     }
-    $('.js-edit-form').append(formHTML);
+    $('.js-edit-form').prepend(formHTML);
+    $('.js-input.date').datepicker({
+        dateFormat: "yy-mm-dd"
+    });
 }
 
 function getCookie(name) {
@@ -444,10 +471,8 @@ function getCookie(name) {
     return cookieValue;
 }
 
-function createDataset(name, desc) {
+function createDataset(submissionObj) {
     var deferObj = jQuery.Deferred();
-    var data = { name: name,
-        description: desc };
     var csrftoken = getCookie('csrftoken');
 
     $.ajaxSetup({
@@ -465,7 +490,7 @@ function createDataset(name, desc) {
         },
         url: "api/v1/datasets/",
         dataType: "json",
-        data: JSON.stringify(data),
+        data: JSON.stringify(submissionObj),
         success: function(data) {
             deferObj.resolve(data);
         },
@@ -658,11 +683,11 @@ function createContact(fname, lname, email, institute) {
     return deferObj.promise();
 }
 
-function getDataSets() {
+function getDataSets(url) {
     var deferObj = jQuery.Deferred();
     $.ajax({
         method: "GET",
-        url: "api/v1/datasets/",
+        url: (url ? url : "api/v1/datasets/"),
         dataType: "json",
         success: function(data) {
             deferObj.resolve(data);

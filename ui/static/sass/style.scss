@@ -18,6 +18,16 @@ body {
             top: 5px;
             right: 12px;
         }
+
+        .edit-btn {
+            position: absolute;
+            top: 16px;
+            right: 50px;
+        }
+
+        textarea {
+            min-height: 80px;
+        }
     }
     
     main {
