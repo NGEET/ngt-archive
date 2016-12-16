@@ -223,15 +223,17 @@ $(document).ready(function(){
     })
 
     $('body').on('click', '.js-create-dataset', function() {
-        var status = createDataset($('.js-dataset-name').val(), $('.js-dataset-desc').val());
-        if(status) {
-            alert('Dataset successfully created');
-        }
-        else {
-            alert('Fail');
-        }
+        $.when(createDataset($('.js-dataset-name').val(), $('.js-dataset-desc').val())).done(function(status) {
+            if(status) {
+                alert('Dataset successfully created.');
+            }
+            else {
+                alert('There was an error. Please try again later.');
+            }
 
-        $('.js-clear-form').trigger('click');
+            $('.js-clear-form').trigger('click');
+        });
+        
     });
 
     $('body').on('click', '.js-create-contact', function() {
@@ -470,12 +472,12 @@ function createDataset(name, desc) {
 
         fail: function(jqXHR, textStatus, errorThrown) {
             console.log(textStatus);
-            deferObj.resolve(data);
+            deferObj.resolve(false);
         },
 
         error: function(jqXHR, textStatus, errorThrown) {
             console.log(textStatus);
-            deferObj.resolve(data);
+            deferObj.resolve(false);
         },
 
     });
