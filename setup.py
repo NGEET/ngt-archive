@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+from setuptools import setup, find_packages
 import sys
 import subprocess
 import os
@@ -24,8 +24,8 @@ with open(version_py) as f:
     exec(code)
 
 
+packages = find_packages(exclude=["*.tests",])
 
-from setuptools import setup
 if sys.version_info < (2,6):
     sys.exit('Sorry, Python < 2.6 is not supported')
 elif sys.version_info < (2,7):
@@ -36,8 +36,9 @@ setup(name='ngt_archive',
       description='NGEE Tropics Archive Service',
       author='Val Hendrix',
       author_email='vchendrix@lbl.gov',
-      packages = ['ngt_archive'],
+      packages = packages,
       py_modules = ['manage'],
+      include_package_data=True,
       install_requires=[
             "django >= 1.8",
             "djangorestframework == 3.4.3",
