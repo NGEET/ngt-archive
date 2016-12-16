@@ -7,3 +7,4 @@ recursive-include archive_api/templates *
 recursive-include ui/templates *
 prune archive_api/tests
 prune ui/tests
+exclude ngt_archive/local*
