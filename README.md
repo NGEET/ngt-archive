@@ -25,6 +25,7 @@ WFSFA is a Django application which requires:
 
 * Python (>= 3.4, 3.5)
 * Django (> 1.8)
+* Platform (Mac, Linux)
 
 ###Setup Development
 There is an option for  local machine 
@@ -87,7 +88,14 @@ The project directory is mounted into the VM at /vagrant.
     $ cd /vagrant
     
 The web application has been deployed to apache on your VM.
-You may access the web application at http://localhost:9999
+Use the *ngt_archive* service on ubuntu. This
+service starts up at http://0.0.0.0:9999
+
+```
+sudo initctl start ngt_archive
+sudo initctl stop ngt_archive
+sudo initctl list | grep ngt_archive
+```
 
 When you are done for the day, you may shut your VM down:
 
@@ -151,14 +159,6 @@ Django version 1.9.8, using settings 'wfsfa_broker.settings'
 Starting development server at http://127.0.0.1:8888/
 Quit the server with CONTROL-C.
 ```
-**OR** use the *ngt_archive* service on ubuntu. This
-service starts up at http://0.0.0.0:9999
-
-```
-sudo initctl start ngt_archive
-sudo initctl stop ngt_archive
-sudo initctl list | grep ngt_archive
-```
 
 
 ## Running the tests
@@ -170,13 +170,53 @@ Automated tests are run using `manage.py`:
 ```
 
 ## Deployment
+Guidelines for preparing the application for deployment.
+Database and operating system are up to the user.
 
-Deployment notes to come.
+Prepare django application distribution for deployment.
+
+    $ python setup.py sdist
+    Writing ngt_archive-<version>/setup.cfg
+    Creating tar archive
+    removing 'ngt_archive-<version>' (and everything under it)
+
+Create deployment directory with a Python 3 virtual environment
+
+    $ mkdir <deploy_dir>
+    $ cd <deploy_dir>
+    $ virtualenv -p python3 .
+    
+Install NGT Archive service and its dependencies.
+
+    $ <deploy_dir>/bin/pip install ngt_archive-<version>.tar.gz
+    $ <deploy_dir>/bin/pip install psycopg2 (For Postgres DB)
+    
+Link to the Django applications `manange.py` script
+
+    $ cd <deploy_dir>
+    $ ln -s lib/python3.4/site-packages/manage.py manage.py
+    
+Create custom Django settings in `<deploy_dir>/settings/local.py`. Use
+[settings_local_py.jinja2](settings_local_py.jinja2) as an example. Replace
+template variables in curly braces with your configuration.
+
+Initialize the application
+
+    $ <deploy_dir>/manage.py migrate
+    $ <deploy_dir>/manage.py collectstatic
+    
 
 ## Versioning
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 see the [tags on this repository](https://github.com/NGEET/ngt-archive/tags). 
+
+Workflow for tagging and building release:
+
+1. checkout the version to tag from `master`
+1. `git -a v[version]-[release] -m "Tagging release v[version]-[release]"`
+1. build distribution with `setup.py`
+1. `git push origin v[version]-[release]`
 
 ## Authors
 
@@ -188,7 +228,7 @@ See also the list of [contributors](https://github.com/NGEET/ngt-archive/contrib
 
 ## License
 
-This project is licensed under ... - see the [LICENSE.md](LICENSE.md) file for details
+See [LICENSE.md](LICENSE.md) file for details
 
 ## Acknowledgments
 
