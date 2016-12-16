@@ -7,6 +7,7 @@
 .menv/
 .vagrant/
 .venv/
+/static
 __pycache__/
 archive_api_import.json
 archive_api_import_with_datasets.json
@@ -22,5 +23,4 @@ ngt_archive.egg-info/
 ngt_archive/__pycache__/
 plots.txt
 sites.txt
-static
 vagrant.retry
