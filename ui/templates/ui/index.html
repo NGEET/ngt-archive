@@ -11,6 +11,9 @@
         <script type="text/javascript" src="static/js/foundation.js"></script>
         <!--script type="text/javascript" src="static/js/foundation.reveal.js"></script-->
         <script type="text/javascript" src="static/js/what-input.js"></script>
+        <link rel="stylesheet" type="text/css" href="static/js/jquery-ui/jquery-ui.css">
+        <link rel="stylesheet" type="text/css" href="static/js/jquery-ui/jquery-ui.theme.css">
+        <link rel="stylesheet" type="text/css" href="static/js/jquery-ui/jquery-ui.structure.css">
     </head>
     <body>
         
@@ -98,9 +101,13 @@
                     
                 </section>
 
-                <div class="js-edit-form dataset">
-                    
-                </div>
+                <form class="js-edit-form dataset small-12 medium-6">
+                    <div class="small-12 text-center">
+                        <button type="button" class="button small-10 medium-6 js-create-dataset">Create Dataset</button>
+                        <button type="button" class="button small-10 medium-6 js-edit-dataset hide">Save</button>
+                        <input type="reset" class="button secondary small-10 medium-6 js-clear-form" value="Clear form">
+                    </div>
+                </form>
                 <div class="js-data-templates hide">
                     <textarea class="js-template string"></textarea>
                     <input type="checkbox" class="boolean js-template" name="">
@@ -109,6 +116,7 @@
                     <input type="text" class="js-template datetime" name="">
                     <select class="js-template reference_list"></select>
                     <input type="text" class="js-template searchable" name="">
+
                 </div>
             </article>
             <div class="reveal-modal-bg" style="display: none"></div>
@@ -117,7 +125,7 @@
               <section class="js-modal-body modal-body">
                   
               </section>
-
+              <button class="button edit-btn js-edit-dataset-btn">Edit</button>
               <a class="close-reveal-modal js-close-modal" aria-label="Close">&#215;</a>
             </div>
 
