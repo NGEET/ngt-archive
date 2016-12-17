@@ -221,7 +221,7 @@ $(document).ready(function(){
     $('body').on('click', '.js-create-dataset', function() {
         var submissionObj = {};
 
-        $('.js-edit-form .js-param').each(function() {
+        $('.js-create-form .js-param').each(function() {
             var param = $(this).attr('data-param');
             $(this).find('textarea, input[type="text"], select').each(function() {
                 if($(this).val().trim()) {
@@ -247,6 +247,22 @@ $(document).ready(function(){
 
     $('body').on('click', '.js-edit-dataset-btn', function() {
         //$('')
+        $('.js-edit-form').removeClass('hide');
+        $('.js-display-section').addClass('hide');
+    });
+
+    $('body').on('click', '.js-save-dataset', function() {
+        var url = $('.js-edit-form').attr('data-url');
+        var submissionObj = {};
+        $('.js-edit-form .js-param').each(function() {
+            var param = $(this).attr('data-param');
+            var value = $(this).find('.js-input').val();
+            if(value) {
+                submissionObj[param] = value;
+            }
+        });
+
+        console.log(submissionObj);
     });
 
     $('body').on('click', '.js-create-contact', function() {
@@ -282,45 +298,30 @@ $(document).ready(function(){
         var url = $(this).attr('data-url');
 
         $.when(getDataSets(url)).done(function(datasetObj) {
-            //console.log(data);
+            console.log(datasetObj);
             $('#myModal #modalTitle').html('')
                                     .html(dataObj.datasets[index]['name']);
             $('#myModal .js-modal-body').html('');
-            //if(dataObj.datasets[index].dataSetId == $(this).attr('data-id')) {
                 var inputString = '';
-                //inputString += 'Name: ' + '<input type="text" class="js-dataset-name" value="' + dataObj.datasets[index]['name'] + '">' + '<br>';
-                //inputString += 'Description: ' + '<textarea class="js-dataset-desc">' + dataObj.datasets[index]['description'] + '</textarea>';
-
+                var editForm = $('.js-create-form.dataset').clone()
+                        .attr('data-url', url)
+                        .addClass('hide')
+                        .removeClass('js-create-form')
+                        .addClass('js-edit-form');
+                editForm.find('.js-create-dataset').addClass('hide');
+                editForm.find('.js-save-dataset').removeClass('hide');
+                $('#myModal .js-modal-body').append(editForm);
+                
                 for(var prop in datasetObj) {
-                    /*if(datasetObj[prop] == null || !datasetObj[prop]) {
-                        inputString += '<div class="js-attr"><span class="js-attr-name ' + prop + '">' + prop + '</span><br>' + '<textarea class="' + prop + ' js-attr-val">' + '</textarea>' + '</div>';
-                        $('#myModal .js-modal-body').append('<b>' + prop + '</b>: ' + '' + '<br>');
+                    if(!templates.datasets[prop].read_only) {
+                        var substring = '<b class="js-param-name">' + templates.datasets[prop].label + '</b>:';
+                        substring += '&nbsp;<span class="js-param-val">' + datasetObj[prop] + '</span><br>';
+                        $('#myModal .js-modal-body').append($('<div/>').append(substring).addClass('js-display-section'));
                     }
 
-                    else if(typeof dataObj.datasets[index][prop] == 'object') {
-
-                        var substring = '<b class="js-param-name">' + prop + '</b>:<br>';
-                        inputString += '<div class="js-attr"><span class="js-attr-name ' + prop + '">' + prop + '</span><br>';
-                        for(var subprop in dataObj.datasets[index][prop]) {
-                            if(dataObj.datasets[index][prop][subprop] == null) {
-                                console.log('null');
-                            }
-                            
-
-                            substring += '&nbsp;&nbsp;' + dataObj.datasets[index][prop][subprop] + '<br>';
-                            inputString += '&nbsp;&nbsp;' + '<textarea class="' + prop + ' js-attr-val">' + dataObj.datasets[index][prop][subprop] + '</textarea>' + '<br>';
-                            $('#myModal .js-modal-body').append(substring);
-                        }
-                        inputString += '</div>';
-                    }
-                    else {
-                        inputString += '<div class="js-attr"><span class="js-attr-name ' + prop + '">' + prop + '</span><br>' + '<textarea class="' + prop + ' js-attr-val">' + dataObj.datasets[index][prop] + '</textarea>' + '</div>';
-                        $('#myModal .js-modal-body').append('<b>' + prop + '</b>: ' + dataObj.datasets[index][prop] + '<br>');
-                    }*/
+                    $('.js-edit-form .' + prop).find('.js-input').val(datasetObj[prop]);
                 }
-
-
-                $('#myModal .js-editable-section').append(inputString);
+                
                 $('#myModal .js-save-btn').attr('data-url', dataObj.datasets[index]['url'])
                                         .attr('data-id', dataObj.datasets[index]['dataSetId']);
             //}
@@ -427,6 +428,12 @@ function createEditForm(templateType) {
                 paramHTML.append(tag);
                 break;
 
+                case "boolean":
+                var tag = $('.js-template' + '.' + templates[templateType][param].type).clone();
+                tag.removeClass('js-template').addClass('js-input');
+                paramHTML.append(tag);
+                break;
+
                 case "choice":
                 var tag = $('.js-template' + '.' + templates[templateType][param].type).clone();
 
@@ -449,7 +456,7 @@ function createEditForm(templateType) {
 
         $(formHTML).append(paramHTML);
     }
-    $('.js-edit-form').prepend(formHTML);
+    $('.js-create-form').prepend(formHTML);
     $('.js-input.date').datepicker({
         dateFormat: "yy-mm-dd"
     });
