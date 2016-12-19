@@ -256,13 +256,30 @@ $(document).ready(function(){
         var submissionObj = {};
         $('.js-edit-form .js-param').each(function() {
             var param = $(this).attr('data-param');
-            var value = $(this).find('.js-input').val();
-            if(value) {
-                submissionObj[param] = value;
+            if($(this).find('.js-input').length == 1) {
+                var value = $(this).find('.js-input').val();
+                if(value) {
+                    submissionObj[param] = value;
+                }
+            }
+            else if($(this).find('.js-input').length > 1) {
+                var value = [];
+                $(this).find('.js-input').each(function() {
+                    if($(this).val().trim()) {
+                        value.push($(this).val().trim());
+                    }
+                });
+                if(value.length > 0) {
+                    submissionObj[param] = value;
+                }
             }
         });
 
         console.log(submissionObj);
+
+        $.when(editDataset(submissionObj, url)).done(function(data) {
+            console.log(data);
+        });
     });
 
     $('body').on('click', '.js-create-contact', function() {
@@ -318,8 +335,18 @@ $(document).ready(function(){
                         substring += '&nbsp;<span class="js-param-val">' + datasetObj[prop] + '</span><br>';
                         $('#myModal .js-modal-body').append($('<div/>').append(substring).addClass('js-display-section'));
                     }
-
-                    $('.js-edit-form .' + prop).find('.js-input').val(datasetObj[prop]);
+                    if(Array.isArray(datasetObj[prop]) && datasetObj[prop].length > 1) {
+                        var position = $('.js-edit-form .' + prop).find('.js-input');
+                        for(var j=0; j < datasetObj[prop].length - 1; j++) {
+                            $('.js-edit-form .' + prop).find('.js-input').clone().insertAfter(position);
+                        }
+                        for(var k=0;k<datasetObj[prop].length;k++) {
+                            $($('.js-edit-form .' + prop).find('.js-input')[k]).val(datasetObj[prop][k]);
+                        }
+                    }
+                    else {
+                        $('.js-edit-form .' + prop).find('.js-input').val(datasetObj[prop]);
+                    }
                 }
                 
                 $('#myModal .js-save-btn').attr('data-url', dataObj.datasets[index]['url'])
