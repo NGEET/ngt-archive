@@ -22,6 +22,16 @@ $(document).ready(function(){
         window.location = 'api/api-auth/login/?next=/';
     }
 
+    $.when(getContacts()).done(function(data) {
+        var contactList = [];
+        for(var contact in data) {
+            contactList.push(data[contact].first_name + data[contact].last_name);
+        }
+        $( "#contacts" ).autocomplete({
+            source: contactList
+        });
+    });
+
     /*$.when(getDataSets()).then(function(data) {
         console.log(data);
         for(var i=0;i<data.length;i++) {
@@ -695,7 +705,7 @@ function createContact(fname, lname, email, institute) {
             'Accept': 'application/json',
             'Content-Type': 'application/json' 
         },
-        url: "api/v1/contacts/",
+        url: "api/v1/people/",
         dataType: "json",
         data: JSON.stringify(data),
         success: function(data) {
@@ -796,7 +806,7 @@ function getContacts() {
     var deferObj = jQuery.Deferred();
     $.ajax({
         method: "GET",
-        url: "api/v1/contacts/",
+        url: "api/v1/people/",
         dataType: "json",
         success: function(data) {
             deferObj.resolve(data);
