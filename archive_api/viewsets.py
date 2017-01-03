@@ -82,9 +82,12 @@ class DataSetViewSet(ModelViewSet):
 
         from django.conf import settings
         # We want the current name of the Dataset as the files name
-        dataset_name = dataset.name.replace(" ", "_")
-        dataset_name = ''.join([i for i in dataset_name if i.isalnum() or i == "_"])
-        dataset_name = dataset_name.replace("__", "_")
+        if dataset.name:
+            dataset_name = dataset.name.replace(" ", "_")
+            dataset_name = ''.join([i for i in dataset_name if i.isalnum() or i == "_"])
+            dataset_name = dataset_name.replace("__", "_")
+        else:
+            dataset_name = "Unnamed"
         dataset_id_version, file_extension = os.path.splitext(dataset.archive.name)
 
         fullpath = os.path.join(settings.DATASET_ARCHIVE_ROOT, dataset.archive.name)
