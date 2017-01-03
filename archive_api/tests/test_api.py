@@ -59,6 +59,32 @@ class DataSetClientTestCase(APITestCase):
         for mime_type in DatasetArchiveField.CONTENT_TYPES:
             self.assertContains(response, mime_type)
 
+
+    def test_client_unnamed(self):
+        self.login_user("auser")
+        response = self.client.post('/api/v1/datasets/',
+                                    data='{"description":"A FooBarBaz DataSet",'
+                                         '"authors":["http://testserver/api/v1/people/2/"] }',
+                                    content_type='application/json')
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
+
+
+        with open('{}/Archive.zip'.format(dirname(__file__)), 'rb') as fp:
+            response = self.client.post('/api/v1/datasets/4/upload/', {'attachment': fp})
+            self.assertContains(response, '"success":true',
+                                status_code=status.HTTP_201_CREATED)
+
+        response = self.client.get('/api/v1/datasets/4/')
+        self.assertContains(response, 'http://testserver/api/v1/datasets/4/archive/',
+                            status_code=status.HTTP_200_OK)
+
+        response = self.client.get('/api/v1/datasets/4/archive/')
+        self.assertContains(response, '')
+        self.assertTrue("X-Sendfile" in response)
+        self.assertTrue(response["X-Sendfile"].find("archives/NGT0004_1.0_"))
+        self.assertTrue("Content-Disposition" in response)
+        self.assertEqual("attachment; filename=NGT0004_1.0_Unnamed.zip", response['Content-Disposition'])
+
     def test_client_get(self):
         self.login_user("auser")
         response = self.client.get('/api/v1/datasets/2/')
