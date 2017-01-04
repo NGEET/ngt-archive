@@ -32,21 +32,26 @@
                 <h2>NGEE Tropics Archive</h2>
                 <form>
                     <h4>Create a dataset</h4>
-                    <div class="small-12 medium-6">
+                    <div class="small-12 medium-9">
                         <label>Name
                             <input class="js-dataset-name" type="text" placeholder="Dataset name">
                         </label>
                     </div>
-                    <div class="small-12 medium-6">
+                    <div class="small-12 medium-9">
                         <label>Description
                             <textarea class="js-dataset-desc" placeholder="Dataset description"></textarea>
                         </label>
                     </div>
-                    <div class="small-12 medium-6 text-center">
+                    <div class="small-12 medium-9 text-center">
                         <button type="button" class="button small-10 medium-6 js-create-dataset">Create Dataset</button>
                         <input type="reset" class="button secondary small-10 medium-6 js-clear-form" value="Clear form">
                     </div>
                 </form>
+                <br>
+                <div class="ui-widget">
+                    <label for="contacts">Contacts: </label>
+                    <input id="contacts">
+                </div>
                 <br>
                 <!--form>
                     <h4>Create a contact</h4>
@@ -127,14 +132,15 @@
                         <textarea class="js-text-dump" placeholder="Dataset description"></textarea>
                     </label>
                 </div-->
-                <code class="js-text-dump small-12 medium-6"></code>
+                <code class="js-text-dump small-12 medium-9"></code>
 
                 <section class="js-datasets">
                     
                 </section>
-                <br>
-                <h2>Create a dataset</h2>
-                <form class="js-create-form dataset small-12 medium-6">
+
+                <br><br>
+                <h2>Create a Dataset</h2>
+                <form class="js-create-form dataset small-12 medium-9">
                     <div class="small-12 text-center">
                         <button type="button" class="button small-10 medium-6 js-create-dataset">Create Dataset</button>
                         <button type="button" class="button small-10 medium-6 js-save-dataset hide">Save</button>
@@ -158,6 +164,7 @@
 
                 </div>
             </article>
+            
             <div class="reveal-modal-bg" style="display: none"></div>
             <div id="myModal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
               <h3 id="modalTitle">Awesome. I have it.</h3>
