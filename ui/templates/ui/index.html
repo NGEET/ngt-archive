@@ -14,6 +14,7 @@
         <link rel="stylesheet" type="text/css" href="static/js/jquery-ui/jquery-ui.css">
         <link rel="stylesheet" type="text/css" href="static/js/jquery-ui/jquery-ui.theme.css">
         <link rel="stylesheet" type="text/css" href="static/js/jquery-ui/jquery-ui.structure.css">
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAllKgUfxh6WQorM4b-vnIBjY1kRGwG86g"></script>
     </head>
     <body>
         
@@ -82,6 +83,37 @@
                 <button class="button js-file-upload-btn">Choose File to Upload</button>
                 <input type="file" name="" class="js-file-input-btn hide">
 
+                <div>
+                    <input type="text" class="searchable js-searchable js-contacts-widget" name="" placeholder="Type contact name to search">
+                    
+                    <select class="js-all-sites all-sites">
+                        <option selected disabled value="">Select site</option>
+                    </select>
+
+                    <div class="js-site-info hide">
+                        <section class="map-view js-map-view columns small-6" id="js-map-view"></section>
+                        <section class="js-params columns small-12">
+
+                        </section>
+                        <div class="columns small-12">
+                            <button class="js-view-site-btn button">View more information for <span class="js-site-id"></span></button>
+                        </div>
+                    </div>
+
+                    <div class="js-plot-info hide">
+                        <section class="js-plot-params columns small-12">
+
+                        </section>
+                        <div class="columns small-12">
+                            <button class="js-view-plot-btn button">View more information for <span class="js-plot-id"></span></button>
+                        </div>
+                    </div>
+
+                    <select class="js-all-plots all-plots">
+                        <option selected disabled value="">Select plot</option>                        
+                    </select>
+                </div>
+
                 <h4>
                     View
                 </h4> 
@@ -100,7 +132,8 @@
                 <section class="js-datasets">
                     
                 </section>
-
+                <br>
+                <h2>Create a dataset</h2>
                 <form class="js-create-form dataset small-12 medium-6">
                     <div class="small-12 text-center">
                         <button type="button" class="button small-10 medium-6 js-create-dataset">Create Dataset</button>
@@ -132,6 +165,7 @@
                   
               </section>
               <button class="button edit-btn js-edit-dataset-btn">Edit</button>
+              <a class="button download-btn js-file-download-btn">Download File</a>
               <a class="close-reveal-modal js-close-modal" aria-label="Close">&#215;</a>
             </div>
 
