@@ -19,6 +19,9 @@
     <body>
         
         <main>
+            <div class="row logo">
+                <img src="static/img/logo.png">
+            </div>
             <nav class="menu expanded">
                 <a href="/">Home</a>
                 <a href="api/api-auth/logout/?next=/" class="float-right">Logout</a>
@@ -30,6 +33,13 @@
             </nav>
             <article>
                 <h2>NGEE Tropics Archive</h2>
+                <section class="row">
+                    <div class="columns small-centered small-4">
+                        <button class="button js-create-toggle columns small-12">Create New Dataset</button>
+                        <button class="button js-edit-toggle columns small-12">Edit Drafts</button>
+                        <button class="button js-view-toggle columns small-12">View Datasets</button>
+                    </div>
+                </section>
                 <form>
                     <h4>Create a dataset</h4>
                     <div class="small-12 medium-9">
@@ -90,7 +100,16 @@
 
                 <div>
                     <input type="text" class="searchable js-searchable js-contacts-widget" name="" placeholder="Type contact name to search">
-                    
+                    <span data-tooltip="737ro7-tooltip" aria-haspopup="true" class="has-tip" data-disable-hover="false" tabindex="1" title="dfgjkfd kjfdhgkjfd " aria-describedby="q5hp54-tooltip" data-yeti-box="q5hp54-tooltip" data-toggle="q5hp54-tooltip" data-resize="q5hp54-tooltip" style="
+                        margin-bottom: 100px;
+                        background-color: #3f8fd4;
+                        color: #fff;
+                        width: 32px;
+                        text-align: center;
+                        border-radius: 64px;
+                        height: 32px;
+                        line-height: 32px;
+                    ">?</span>
                     <select class="js-all-sites all-sites">
                         <option selected disabled value="">Select site</option>
                     </select>
@@ -139,7 +158,7 @@
                 </section>
 
                 <br><br>
-                <h2>Create a Dataset</h2>
+                <h3>Create a Dataset</h3>
                 <form class="js-create-form dataset small-12 medium-9">
                     <div class="small-12 text-center">
                         <button type="button" class="button small-10 medium-6 js-create-dataset">Create Dataset</button>
@@ -163,8 +182,11 @@
                     <input type="text" class="js-template searchable" name="">
 
                 </div>
+                <footer class="row">
+                    <img src="static/img/eesa-logo.png">
+                    <p class="text-right">&copy; 2017 NGEE Tropics</p>
+                </footer>
             </article>
-            
             <div class="reveal-modal-bg" style="display: none"></div>
             <div id="myModal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
               <h3 id="modalTitle">Awesome. I have it.</h3>
@@ -175,7 +197,6 @@
               <a class="button download-btn js-file-download-btn">Download File</a>
               <a class="close-reveal-modal js-close-modal" aria-label="Close">&#215;</a>
             </div>
-
         </main>
     </body>
 </html>

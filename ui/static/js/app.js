@@ -3,17 +3,17 @@ var templates = {};
 $(document).ready(function(){
     $(document).foundation();
 
-    /*$.getJSON( "static/js/metadata/dataset.json", function( data ) {  
-        templates.dataset = data;
+    $.getJSON( "static/js/metadata/dataset.json", function( data ) {  
+        templates.datasets = data;
         //console.log(templates.dataset);
         console.log(data);
-        createEditForm('dataset');
-    });*/
-
-    $.when(getMetadata('datasets')).done(function(datasetMetadata) {
-        templates.datasets = datasetMetadata;
         createEditForm('datasets');
     });
+
+    /*$.when(getMetadata('datasets')).done(function(datasetMetadata) {
+        templates.datasets = datasetMetadata;
+        createEditForm('datasets');
+    });*/
 
     var popup = new Foundation.Reveal($('#myModal'));
     console.log('here');
@@ -328,30 +328,56 @@ $(document).ready(function(){
         
     })
 
+    $('body').on('click', '.js-clear-form', function() {
+        $('.js-param.missing').each(function() {
+            $(this).removeClass('missing');
+        });
+    });
+
     $('body').on('click', '.js-create-dataset', function() {
         var submissionObj = {};
+        var submit = true;
+
+        $('.js-param.missing').each(function() {
+            $(this).removeClass('missing');
+        });
 
         $('.js-create-form .js-param').each(function() {
             var param = $(this).attr('data-param');
+            var required = $(this).hasClass('required');
             $(this).find('textarea, input[type="text"], select').each(function() {
                 if($(this).val().trim()) {
                     submissionObj[param] = $(this).val().trim();
+                }
+                else if (required && !$(this).val().trim()) {
+                    submit = false;
+                    $(this).closest('.js-param').addClass('missing');
                 }
             });
         });
 
         console.log(submissionObj);
 
-        $.when(createDataset(submissionObj)).done(function(status) {
-            if(status) {
-                alert('Dataset successfully created.');
-            }
-            else {
-                alert('There was an error. Please try again later.');
-            }
+        if(submit) {
 
-            $('.js-clear-form').trigger('click');
-        });
+            $.when(createDataset(submissionObj)).done(function(status) {
+                if(status) {
+                    alert('Dataset successfully created.');
+                }
+                else {
+                    alert('There was an error. Please try again later.');
+                }
+
+                $('.js-clear-form').trigger('click');
+            });
+
+        }
+        else {
+            alert('Please fill in the missing fields');
+            $('body').animate({
+                scrollTop: $('.js-create-form').offset().top
+            }, 500);
+        }
         
     });
 

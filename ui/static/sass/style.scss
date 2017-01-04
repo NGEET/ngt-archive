@@ -1,5 +1,54 @@
+$tooltip-background-color:#ccc;
+$tooltip-color: #242424;
+
+$light-blue: #4fb9f9;
+$dark-blue: #0089bc;
+
+button {
+    &.button {
+        background-color: $light-blue;
+
+        &:hover {
+            background-color: $dark-blue;
+        }
+    }
+}
+
+@font-face {
+    font-family: 'Helvetica Neue';
+    src: url('../fonts/HelveticaNeue-Roman.eot');
+    src: url('../fonts/HelveticaNeue-Roman.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/HelveticaNeue-Roman.woff2') format('woff2'),
+        url('../fonts/HelveticaNeue-Roman.woff') format('woff'),
+        url('../fonts/HelveticaNeue-Roman.ttf') format('truetype'),
+        url('../fonts/HelveticaNeue-Roman.svg#HelveticaNeue-Roman') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Helvetica Neue';
+    src: url('../fonts/HelveticaNeue-Thin.eot');
+    src: url('../fonts/HelveticaNeue-Thin.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/HelveticaNeue-Thin.woff2') format('woff2'),
+        url('../fonts/HelveticaNeue-Thin.woff') format('woff'),
+        url('../fonts/HelveticaNeue-Thin.ttf') format('truetype'),
+        url('../fonts/HelveticaNeue-Thin.svg#HelveticaNeue-Thin') format('svg');
+    font-weight: 100;
+    font-style: normal;
+}
+
+i.required {
+    color: red;
+}
+
+.missing {
+    background-color: #ffc9c9;
+}
+
 body {
-    background-color: #efefef;
+    background-color: #fcfcfc;
+    font-family: 'Helvetica Neue';
     margin: 0;
 
     #myModal {
@@ -31,11 +80,13 @@ body {
     }
     
     main {
+        background-color: #fff;
         article {
             background-color: #fff;
             max-width: 1200px;
             margin: 0 auto !important;
             padding: 0 32px 32px;
+            box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.22);
 
             code {
                 display: block;
@@ -43,13 +94,23 @@ body {
             }
         }
 
+        .logo {
+            box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.22);
+
+            img {
+                max-width: 400px;
+            }
+        }
+
         nav.menu {
                 max-width: 1200px;
                 margin: 0 auto;
                 line-height: 48px;
-                background-color: indianred;
+                background-color: $dark-blue;
                 color: white;
                 padding: 0 20px;
+                box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.22);
+        
 
             .user {
                 margin-right: 32px;
@@ -67,6 +128,14 @@ body {
 
         .map-view {
             height: 400px;
+        }
+
+        footer {
+            border-top: 1px solid #ccc;
+            padding-top: 2rem;
+            img {
+                max-width: 320px;
+            }
         }
     }
 }
