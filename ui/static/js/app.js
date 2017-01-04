@@ -22,16 +22,69 @@ $(document).ready(function(){
         window.location = 'api/api-auth/login/?next=/';
     }
 
-    $.when(getContacts()).done(function(data) {
+    $.when(getContacts()).done(function(contacts) {
+        console.log(contacts);
+        dataObj.contacts = contacts;
         var contactList = [];
-        for(var contact in data) {
-            contactList.push(data[contact].first_name + data[contact].last_name);
+        for(var i=0;i<contacts.length;i++) {
+            contactList.push(contacts[i].first_name + ' ' + contacts[i].last_name);
         }
-        $( "#contacts" ).autocomplete({
-            source: contactList
+
+        $( ".js-contacts-widget" ).autocomplete({
+          source: contactList
         });
     });
 
+    $.when(getSites()).done(function(sites) {
+        console.log(sites);
+        dataObj.sites = sites;
+        for(var i=0;i<sites.length;i++) {
+            var option = $('<option value="'+ sites[i].site_id +'" data-index="' + i + '">' + sites[i].name + ': ' + (sites[i].site_id ?  sites[i].site_id : 'N/A')+ '</option>');
+            $('.js-all-sites').append(option);
+        }
+    });
+
+    $.when(getPlots()).done(function(plots) {
+        console.log(plots);
+        dataObj.plots = plots;
+        for(var i=0;i<plots.length;i++) {
+            var option = $('<option value="'+ plots[i].plot_id +'" data-index="' + i + '">' + plots[i].name + ': ' + (plots[i].plot_id ? plots[i].plot_id : 'N/A') + '</option>');
+            $('.js-all-plots').append(option);
+        }
+    });
+
+    $('body').on('change', '.js-all-sites', function() {
+        //console.log('here');
+        var index = $(this).find('option:selected').attr('data-index');
+        $('.js-view-site-btn .js-site-id').html($(this).val());
+        $('.js-site-info').removeClass('hide');
+        var location = {lat: dataObj.sites[index].location_latitude, lng: dataObj.sites[index].location_longitude};
+        var map = new google.maps.Map(document.getElementById('js-map-view'), {
+          zoom: 4,
+          center: location
+        });
+        var marker = new google.maps.Marker({
+          position: location,
+          map: map
+        });
+        $('.js-params').html('');
+        for(var prop in dataObj.sites[index]) {
+            var param = $('<p>' + prop + ': ' + dataObj.sites[index][prop] + '</p>');
+            $('.js-params').append(param);
+        }
+    });
+
+    $('body').on('change', '.js-all-plots', function() {
+        //console.log('here');
+        var index = $(this).find('option:selected').attr('data-index');
+        $('.js-view-plot-btn .js-plot-id').html($(this).val());
+        $('.js-plot-info').removeClass('hide');
+        $('.js-plot-params').html('');
+        for(var prop in dataObj.sites[index]) {
+            var param = $('<p>' + prop + ': ' + dataObj.sites[index][prop] + '</p>');
+            $('.js-plot-params').append(param);
+        }
+    });
     /*$.when(getDataSets()).then(function(data) {
         console.log(data);
         for(var i=0;i<data.length;i++) {
@@ -101,6 +154,10 @@ $(document).ready(function(){
         $('.js-file-input-btn').trigger('click');
     });
 
+    $(document).on('focus',".datepicker_recurring_start", function(){
+        $(this).datepicker();
+    });
+
     $('body').on('change', '.js-file-input-btn', function() {
         var dataFile = this.files[0];
         var dataSetId = $('.js-upload-dataset-id').val();
@@ -158,7 +215,39 @@ $(document).ready(function(){
         }
         //console.log(this);
     });    
+    
 
+    /*$('body').on('click', '.js-file-download-btn', function() {
+        var archiveUrl = $(this).attr('data-archive');
+        //        https://ngt-dev.lbl.gov/api/v1/datasets/27/archive/
+        var csrftoken = getCookie('csrftoken');
+
+        $.ajaxSetup({
+            beforeSend: function(xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        });
+
+        $.ajax({
+            method: "GET",
+            dataType: 'application/json',
+            url: archiveUrl,
+            success: function(data) {
+                alert('Success');
+            },
+
+            fail: function(data) {
+                var detailObj = JSON.parse(data.responseText);
+                alert('Fail: ' + detailObj.detail);
+            },
+
+            error: function(data, errorThrown) {
+                var detailObj = JSON.parse(data.responseText);
+                alert('Fail: ' + detailObj.detail);
+            },
+
+        });
+    });*/
 
     $('body').on('click', '.js-delete-dataset', function() {
         var csrftoken = getCookie('csrftoken');
@@ -337,11 +426,15 @@ $(document).ready(function(){
                         .addClass('js-edit-form');
                 editForm.find('.js-create-dataset').addClass('hide');
                 editForm.find('.js-save-dataset').removeClass('hide');
+                editForm.find('.js-input.date').attr('id', '');
                 $('#myModal .js-modal-body').append(editForm);
+                $('.js-input.date').datepicker({
+                    dateFormat: "yy-mm-dd"
+                });
                 
                 for(var prop in datasetObj) {
                     if(!templates.datasets[prop].read_only) {
-                        var substring = '<b class="js-param-name">' + templates.datasets[prop].label + '</b>:';
+                        var substring = '<b class="js-param-name">' + templates.datasets[prop].label + '</b>:' + '&nbsp;';
                         substring += '&nbsp;<span class="js-param-val">' + datasetObj[prop] + '</span><br>';
                         $('#myModal .js-modal-body').append($('<div/>').append(substring).addClass('js-display-section'));
                     }
@@ -360,8 +453,13 @@ $(document).ready(function(){
                 }
                 
                 $('#myModal .js-save-btn').attr('data-url', dataObj.datasets[index]['url'])
-                                        .attr('data-id', dataObj.datasets[index]['dataSetId']);
+                                        .attr('data-id', dataObj.datasets[index]['data_set_id']);
+                $('#myModal .js-file-download-btn').attr('data-url', dataObj.datasets[index]['url'])
+                                        .attr('data-archive', dataObj.datasets[index]['archive'])
+                                        .attr('href', dataObj.datasets[index]['archive']);
+
             //}
+
             popup.open();
         });
     
@@ -442,7 +540,7 @@ function createEditForm(templateType) {
             if(templates[templateType][param].required) {
                 label += '<i class="required">*</i>';
             }
-            paramHTML.append($('<span class="js-display-name display-name"></span>').html(label));
+            paramHTML.append($('<span class="js-display-name display-name"></span>').html(label + '&nbsp;'));
             switch(templates[templateType][param].type) {
                 case "string":
                 var tag = $('.js-template' + '.' + templates[templateType][param].type).clone();

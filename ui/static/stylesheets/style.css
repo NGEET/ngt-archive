@@ -65,3 +65,7 @@ body main nav.menu a {
 body main nav.menu a:hover {
   color: white;
 }
+/* line 68, ../sass/style.scss */
+body main .map-view {
+  height: 400px;
+}
