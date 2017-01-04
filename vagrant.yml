@@ -188,6 +188,16 @@
           dest: /var/www/localhost/doi/index.html
         tags:
            - webserver
+      - name: Create /var/www/localhost/error
+        file: path=/var/www/localhost/error state=directory
+        tags:
+           - webserver
+      - name: Copy maintenance.html to location
+        copy:
+          src: maintenance.html
+          dest: /var/www/localhost/error/maintenance.html
+        tags:
+           - webserver
       - name: Creates SSL certificate directory
         file: path=/etc/apache2/ssl state=directory
         tags:
