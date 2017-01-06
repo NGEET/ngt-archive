@@ -573,7 +573,7 @@ $(document).ready(function(){
                     if(!templates.datasets[prop].read_only) {
                         var substring = '<div class="row">';
                         substring += '<div class="columns small-12 medium-3"><b class="js-param-name">' + templates.datasets[prop].label + '</b>' + '&nbsp;</div>';
-                        if(prop == 'contact' || prop == 'sites' || prop == 'plots' || prop == 'authors' || prop == 'variables') {
+                        if((prop == 'contact' || prop == 'sites' || prop == 'plots' || prop == 'authors' || prop == 'variables') &&  datasetObj[prop] != null) {
                             console.log('url:' + prop);
                             if(prop == 'contact' || prop == 'authors') {
                                 for(var i=0;i<dataObj.contacts.length;i++) {
