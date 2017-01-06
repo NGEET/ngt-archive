@@ -1,237 +1,319 @@
 {
-    "url": {
-        "display_name": "URL",
-        "datatype": "string",
-        "editable": "0",
-        "multiple": "0"
-    },
-    "data_set_id": {
-        "display_name": "ID",
-        "datatype": "string",
-        "editable": "0",
-        "multiple": "0"
-    },
     "name": {
-        "display_name": "Name",
-        "datatype": "string",
-        "editable": "1",
-        "multiple": "0"
-    },
-    "version": {
-        "display_name": "Version",
-        "datatype": "string",
-        "editable": "1",
-        "multiple": "0"
-    },
-    "status": {
-        "display_name": "Status",
-        "datatype": "string",
-        "editable": "0",
-        "multiple": "0"
+        "type": "string",
+        "required": true,
+        "read_only": false,
+        "label": "Dataset Name",
+        "max_length": 120,
+        "sequence": 1,
+        "multiple": false,
+        "description": "Dataset name. 120 character limit. A  descriptive title that describes what, when and where​ ​data was collected​."
     },
     "description": {
-        "display_name": "Description",
-        "datatype": "string",
-        "editable": "1",
-        "multiple": "0"
-    },
-    "status_comment": {
-        "display_name": "Status Comment",
-        "datatype": "string",
-        "editable": "1",
-        "multiple": "0"
-    },
-    "doi": {
-        "display_name": "DOI",
-        "datatype": "string",
-        "editable": "1",
-        "multiple": "0"
-    },
-    "start_date": {
-        "display_name": "Start Date",
-        "datatype": "date",
-        "editable": "1",
-        "format": "yy-mm-dd",
-        "multiple": "0"
-    },
-    "end_date": {
-        "display_name": "End Date",
-        "datatype": "date",
-        "editable": "1",
-        "format": "yy-mm-dd",
-        "multiple": "0"
-    },
-    "qaqc_status": {
-        "display_name": "QA/QC Status",
-        "datatype": "list",
-        "editable": "1",
-        "searchable_list": "0",
-        "add_new": "0",
-        "multiple": "0",
-        "list_options": [{
-                "display_string": "None",
-                "value": "0"
-            },
-
-            {
-                "display_string": "Preliminary QA-QC",
-                "value": "1"
-            },
-
-            {
-                "display_string": "Full QA-QC",
-                "value": "2"
-            }
-        ]
-    },
-    "qaqc_method_description": {
-        "display_name": "QA/QC Method Description",
-        "datatype": "string",
-        "editable": "1",
-        "multiple": "0"
-    },
-    "ngee_tropics_resources": {
-        "display_name": "NGEE Tropics Resources",
-        "datatype": "boolean",
-        "editable": "1",
-        "multiple": "0"
-    },
-    "funding_organizations": {
-        "display_name": "Funding Organizations",
-        "datatype": "string",
-        "editable": "1",
-        "multiple": "0"
-    },
-    "doe_funding_contract_numbers": {
-        "display_name": "DOE Funding Contract Numbers",
-        "datatype": "string",
-        "editable": "1",
-        "multiple": "0"
-    },
-    "acknowledgement": {
-        "display_name": "Acknowledgement",
-        "datatype": "string",
-        "editable": "1",
-        "multiple": "0"
-    },
-    "reference": {
-        "display_name": "Reference",
-        "datatype": "string",
-        "editable": "1",
-        "multiple": "0"
-    },
-    "additional_reference_information": {
-        "display_name": "Additional Reference Information",
-        "datatype": "string",
-        "editable": "1",
-        "multiple": "0"
-    },
-    "access_level": {
-        "display_name": "Access Level",
-        "datatype": "list",
-        "editable": "1",
-        "searchable_list": "0",
-        "add_new": "0",
-        "multiple": "0",
-        "list_options": [{
-                "display_string": "Private",
-                "value": "0"
-            },
-
-            {
-                "display_string": "NGEE Tropics",
-                "value": "1"
-            },
-
-            {
-                "display_string": "Public",
-                "value": "2"
-            }
-        ]
-    },
-    "additional_access_information": {
-        "display_name": "Additional Access Information",
-        "datatype": "string",
-        "editable": "1",
-        "multiple": "0"
-    },
-    "originating_institution": {
-        "display_name": "Originating Institution",
-        "datatype": "string",
-        "editable": "1",
-        "multiple": "0"
-    },
-    "submission_date": {
-        "display_name": "Submission Date",
-        "datatype": "date",
-        "editable": "1",
-        "format": "yy-mm-dd",
-        "multiple": "0"
-    },
-    "contact": {
-        "display_name": "Contact",
-        "datatype": "reference_list",
-        "editable": "1",
-        "searchable_list": "1",
-        "add_new": "1",
-        "multiple": "0"
+        "type": "string",
+        "required": true,
+        "read_only": false,
+        "label": "Dataset Description",
+        "sequence": 2,
+        "multiple": false,
+        "description": "Dataset description and overview."
     },
     "sites": {
-        "display_name": "Sites",
-        "datatype": "reference_list",
-        "editable": "1",
-        "searchable_list": "1",
-        "add_new": "0",
-        "multiple": "1"
-    },
-    "authors": {
-        "display_name": "Authors",
-        "datatype": "reference_list",
-        "editable": "1",
-        "searchable_list": "1",
-        "add_new": "0",
-        "multiple": "1"
+        "type": "reference_list",
+        "list_name": "sites",
+        "required": true,
+        "read_only": false,
+        "label": "Dataset Site",
+        "sequence": 3,
+        "multiple": true,
+        "description": "Site this dataset was collected from."
     },
     "plots": {
-        "display_name": "Plots",
-        "datatype": "reference_list",
-        "editable": "1",
-        "searchable_list": "1",
-        "add_new": "0",
-        "multiple": "1"
+        "type": "reference_list",
+        "list_name": "plots",
+        "required": false,
+        "read_only": false,
+        "label": "Dataset Plots",
+        "sequence": 4,
+        "multiple": true,
+        "description": "Plot identification where dataset was collected."
+    },
+    "authors": {
+        "type": "reference_list",
+        "list_name": "contacts",
+        "required": true,
+        "read_only": false,
+        "label": "Dataset Author",
+        "sequence": 5,
+        "multiple": true,
+        "description": "List the main researchers involved in producing the data, or the authors of the publication who should be listed in the citation for this data."
+    },
+    "originating_institution": {
+        "type": "string",
+        "required": true,
+        "read_only": false,
+        "label": "Dataset Originating Institution",
+        "sequence": 6,
+        "multiple": false,
+        "description": "Name of the organization that performed the research or issued the dataset. Separate multiple organizations with a semicolon and a space."
+    },
+    "contact": {
+        "type": "reference_list",
+        "list_name": "contacts",
+        "required": false,
+        "read_only": false,
+        "label": "Dataset Contact",
+        "sequence": 7,
+        "multiple": true,
+        "description": "Name of contact person for the dataset."
     },
     "variables": {
-        "display_name": "Variables",
-        "datatype": "reference_list",
-        "editable": "1",
-        "searchable_list": "1",
-        "add_new": "0",
-        "multiple": "1"
+        "type": "reference_list",
+        "list_name": "variables",
+        "required": true,
+        "read_only": false,
+        "label": "Dataset Variables",
+        "sequence": 8,
+        "multiple": true,
+        "description": "Measurement Variables in Dataset (select all that apply)."
+    },
+    "start_date": {
+        "type": "date",
+        "required": true,
+        "read_only": false,
+        "label": "Dataset Start date (ISO format)",
+        "sequence": 9,
+        "multiple": false,
+        "units": "YYYYMMDD",
+        "description": "Earliest date in dataset.",
+        "format": "ISO"
+    },
+    "end_date": {
+        "type": "date",
+        "required": false,
+        "read_only": false,
+        "label": "Dataset End date (ISO format)",
+        "sequence": 10,
+        "multiple": false,
+        "units": "YYYYMMDD",
+        "description": "Last date in dataset.",
+        "format": "ISO"
+    },
+    "qaqc_status": {
+        "type": "choice",
+        "required": false,
+        "read_only": false,
+        "label": "Status of dataset QA/QC",
+        "choices": [
+            {
+                "value": "0",
+                "display_name": "None"
+            },
+            {
+                "value": "1",
+                "display_name": "Initial QA-QC"
+            },
+            {
+                "value": "2",
+                "display_name": "Final QA-QC"
+            }
+        ],
+        "sequence": 11,
+        "multiple": false,
+        "description": "Choices are None, Initial QA-QC, Final QA-QC."
+    },
+    "qaqc_method_description": {
+        "type": "string",
+        "required": false,
+        "read_only": false,
+        "label": "QA/QC Method Description",
+        "sequence": 12,
+        "multiple": false,
+        "description": "Description of QA-QC Method."
+    },
+    "ngee_tropics_resources": {
+        "type": "boolean",
+        "required": true,
+        "read_only": false,
+        "label": "Were any NGEE Tropics Resources (financial, personnel time etc.) used to obtain this dataset?",
+        "sequence": 13,
+        "multiple": false,
+        "description": "Indicate whether NGEE Tropics Resources (financial, personnel etc.) were used to obtain this dataset."
+    },
+    "funding_organizations": {
+        "type": "string",
+        "required": true,
+        "read_only": false,
+        "label": "Dataset Funding organizations",
+        "sequence": 14,
+        "multiple": false,
+        "description": "Identify the agencies and offices that funded the work in the dataset separate multiple funders with a comma and a space."
+    },
+    "doe_funding_contract_numbers": {
+        "type": "string",
+        "required": false,
+        "read_only": false,
+        "label": "DOE Funding Contract Numbers",
+        "sequence": 15,
+        "multiple": false,
+        "description": "List the numbers of any DOE contract under which the work was funded. If no DOE funding for this dataset or field is empty set as \"NONE\". If the dataset is a result of a joint effort between two or more DOE Site/Facility Management Contractors, etc., additional DOE contract numbers may be entered. The \"DE\" should not be included as a part of the number."
+    },
+    "acknowledgement": {
+        "type": "string",
+        "required": false,
+        "read_only": false,
+        "sequence": 16,
+        "multiple": false,
+        "label": "Dataset Acknowledgement",
+        "max_length": 88,
+        "description": "Acknowledgement text (88 character limit)."
+    },
+    "reference": {
+        "type": "string",
+        "required": false,
+        "read_only": false,
+        "label": "Dataset Reference",
+        "sequence": 17,
+        "multiple": false,
+        "description": "Citation (including DOI) or explanatory reference."
+    },
+    "additional_reference_information": {
+        "type": "string",
+        "required": false,
+        "read_only": false,
+        "label": "Additional Information about Dataset Reference",
+        "sequence": 18,
+        "multiple": false,
+        "description": "Brief description of paper relevance or other comments."
+    },
+    "access_level": {
+        "type": "choice",
+        "required": true,
+        "read_only": false,
+        "label": "Dataset Access level",
+        "choices": [
+            {
+                "value": "0",
+                "display_name": "Private"
+            },
+            {
+                "value": "1",
+                "display_name": "NGEE Tropics"
+            },
+            {
+                "value": "2",
+                "display_name": "Public"
+            }
+        ],
+        "sequence": 19,
+        "multiple": false,
+        "description": "Choices are Public, NGEE Tropics, Limited (provide access comments), Private.  Datasets using NGT resources will automatically be set to \"NGEE Tropics\" access within 6 months of submission (regardless of what the user specified), and to \"Public\" within 18 months of submission."
+    },
+    "additional_access_information": {
+        "type": "string",
+        "required": false,
+        "read_only": false,
+        "label": "Additional Information about Dataset Access",
+        "sequence": 20,
+        "multiple": false,
+        "description": "Provide comments, if necessary regarding data access. If access is to be limited, mention who can have access to the data."
+    },
+    "url": {
+        "type": "field",
+        "required": false,
+        "read_only": true,
+        "label": "Url",
+        "sequence": -1
+    },
+    "data_set_id": {
+        "type": "field",
+        "required": false,
+        "read_only": true,
+        "label": "Data set id",
+        "sequence": -1
+    },
+    "version": {
+        "type": "string",
+        "required": false,
+        "read_only": true,
+        "label": "Version",
+        "sequence": -1
+    },
+    "status": {
+        "type": "choice",
+        "required": false,
+        "read_only": true,
+        "label": "Status",
+        "sequence": -1
+    },
+    "status_comment": {
+        "type": "string",
+        "required": false,
+        "read_only": true,
+        "label": "Status comment",
+        "sequence": -1
+    },
+    "doi": {
+        "type": "string",
+        "required": false,
+        "read_only": true,
+        "label": "Doi",
+        "sequence": -1
+    },
+    "submission_date": {
+        "type": "field",
+        "required": false,
+        "read_only": true,
+        "label": "Submission date",
+        "sequence": -1
+    },
+    "archive": {
+        "type": "field",
+        "required": false,
+        "read_only": true,
+        "label": "Archive",
+        "sequence": -1
     },
     "created_by": {
-        "display_name": "Created By",
-        "datatype": "string",
-        "editable": "0",
-        "multiple": "0"
+        "type": "field",
+        "required": false,
+        "read_only": true,
+        "label": "Created by",
+        "sequence": -1
     },
     "created_date": {
-        "display_name": "Created Date",
-        "datatype": "timestamp",
-        "editable": "0",
-        "format": "ISO",
-        "multiple": "0"
+        "type": "datetime",
+        "required": false,
+        "read_only": true,
+        "label": "Created date",
+        "sequence": -1
     },
     "modified_by": {
-        "display_name": "Modified By",
-        "datatype": "string",
-        "editable": "0",
-        "multiple": "0"
+        "type": "field",
+        "required": false,
+        "read_only": true,
+        "label": "Modified by",
+        "sequence": -1
     },
     "modified_date": {
-        "display_name": "Modified Date",
-        "datatype": "timestamp",
-        "editable": "0",
-        "format": "ISO",
-        "multiple": "0"
+        "type": "datetime",
+        "required": false,
+        "read_only": true,
+        "label": "Modified date",
+        "sequence": -1
+    },
+    "cdiac_import": {
+        "type": "boolean",
+        "required": false,
+        "read_only": true,
+        "label": "Cdiac import",
+        "sequence": -1
+    },
+    "cdiac_submission_contact": {
+        "type": "field",
+        "required": false,
+        "read_only": true,
+        "label": "Cdiac submission contact",
+        "sequence": -1
     }
 }
