@@ -1,5 +1,40 @@
+from django.contrib.auth.models import User
+
 from archive_api.models import DataSet, Site, Plot, Person, MeasurementVariable
 from django.test import TestCase
+
+
+class DataSetTestCaseNew(TestCase):
+    fixtures = ('test_auth.json', )
+
+    def setUp(self):
+        self.user = User.objects.get(pk=1)
+
+    def test_create(self):
+
+        id1 = DataSet.objects.create(description="A Fantastic dataset", created_by=self.user, modified_by=self.user).id
+        id2=DataSet.objects.create(description="Another Fantastic dataset", created_by=self.user, modified_by=self.user).id
+        id3= DataSet.objects.create(description="A Fantastic dataset", created_by=self.user, modified_by=self.user,
+                               ngt_id=0, version="1.0").id
+
+        foo = DataSet.objects.get(pk=id1)
+        self.assertEqual(foo.ngt_id, 0)
+        self.assertEqual(foo.version,"0.0")
+        self.assertEqual(foo.description,"A Fantastic dataset")
+
+        foo = DataSet.objects.get(pk=id2)
+        self.assertEqual(foo.ngt_id, 1)
+        self.assertEqual(foo.version, "0.0")
+        self.assertEqual(foo.description, "Another Fantastic dataset")
+
+        foo = DataSet.objects.get(pk=id3)
+        self.assertEqual(foo.ngt_id, 0)
+        self.assertEqual(foo.version, "1.0")
+        self.assertEqual(foo.description, "A Fantastic dataset")
+
+        from django.db.utils import IntegrityError
+        self.assertRaises(IntegrityError,DataSet.objects.create,description="Another Fantastic dataset", created_by=self.user, modified_by=self.user,
+                               version="1.0")
 
 
 class DataSetTestCase(TestCase):
