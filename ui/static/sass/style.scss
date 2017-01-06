@@ -1,18 +1,17 @@
 $tooltip-background-color:#ccc;
 $tooltip-color: #242424;
 
-$light-blue: #4fb9f9;
-$dark-blue: #0089bc;
+$light-green: #49bb76;
+$dark-green: #3d9a61;
 
-button {
-    &.button {
-        background-color: $light-blue;
+.button {
+    background-color: $light-green;
 
-        &:hover {
-            background-color: $dark-blue;
-        }
+    &:hover {
+        background-color: $dark-green;
     }
 }
+
 
 @font-face {
     font-family: 'Helvetica Neue';
@@ -60,12 +59,14 @@ body {
         left: 50%;
         position: relative;
         transform: translateX(-50%);
-        padding: 20px 15px 10px;
+        padding: 5px 15px 10px;
 
         .close-reveal-modal {
-            position: absolute;
+            /*position: absolute;
             top: 5px;
-            right: 12px;
+            right: 12px;*/
+            font-size: 20px;
+            
         }
 
         .edit-btn {
@@ -76,6 +77,28 @@ body {
 
         textarea {
             min-height: 80px;
+        }
+
+        .modal-body {
+            .dataset-row {
+                margin-bottom: 8px;
+
+                .row {
+                    .columns.medium-9 {
+                        float:right;
+                    }
+                }
+            }
+        }
+
+        .download-wrapper {
+            .button {
+                float: right;
+            }
+        }
+
+        .row:first-child {
+            margin-bottom: 10px;
         }
     }
     
@@ -106,7 +129,7 @@ body {
                 max-width: 1200px;
                 margin: 0 auto;
                 line-height: 48px;
-                background-color: $dark-blue;
+                background-color: $dark-green;
                 color: white;
                 padding: 0 20px;
                 box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.22);
@@ -128,6 +151,19 @@ body {
 
         .map-view {
             height: 400px;
+        }
+
+        .all-datasets {
+            .dataset {
+                .title {
+                    cursor: pointer;
+                }
+
+                .desc {
+                    //max-height: 3rem;
+                    //overflow: hidden;
+                } 
+            }
         }
 
         footer {

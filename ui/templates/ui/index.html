@@ -37,7 +37,7 @@
                     <div class="columns small-centered small-4">
                         <button class="button js-view-toggle columns small-12" data-view="create">Create New Dataset</button>
                         <button class="button js-view-toggle columns small-12" data-view="edit" disabled>Edit Drafts</button>
-                        <button class="button js-view-toggle columns small-12" data-view="view">View Datasets</button>
+                        <button class="button js-view-toggle columns small-12" data-view="view">View Approved Datasets</button>
                     </div>
                 </section>
                 
@@ -128,17 +128,17 @@
 
                 <!--br><br-->
                 <section class="js-view view-dataset-view hide" data-view="view">
-                    <h4>View Datasets</h4>
-
+                    <h4>Approved Datasets</h4>
+                    <div class="all-datasets js-all-datasets"></div>
                 </section>
                 <section class="js-view create-dataset-view hide" data-view="create">
                     <h4>Create a Dataset</h4>
                     <form class="js-create-form dataset small-12 medium-9">
-                        <div class="small-12 text-center">
-                            <button type="button" class="button small-10 medium-6 js-create-dataset">Save as Draft</button>
-                            <button class="button small-10 medium-6">Submit Dataset</button>
-                            <button type="button" class="button small-10 medium-6 js-save-dataset hide">Save</button>
-                            <input type="reset" class="button secondary small-10 medium-6 js-clear-form" value="Clear form">
+                        <div class="small-12">
+                            <button type="button" class="button small-10 large-3 js-create-dataset">Save as Draft</button>
+                            <!--button class="button small-10 large-3">Submit Dataset</button-->
+                            <button type="button" class="button small-10 large-3 js-save-dataset hide">Save</button>
+                            <input type="reset" class="button secondary small-10 large-3 js-clear-form" value="Clear form">
                         </div>
                     </form>
                     <div class="js-data-templates hide">
@@ -164,7 +164,7 @@
                             <option selected disabled value="">Select site</option>
                         </select>
 
-                        <div class="js-site-info hide">
+                        <!--div class="js-site-info hide">
                             <section class="map-view js-map-view columns small-6" id="js-map-view"></section>
                             <section class="js-params columns small-12">
 
@@ -172,24 +172,29 @@
                             <div class="columns small-12">
                                 <button class="js-view-site-btn button">View more information for <span class="js-site-id"></span></button>
                             </div>
-                        </div>
+                        </div-->
                     </section>
                     <section class="contact-section js-contact-section hide js-ref-list" data-list="contacts">
+                        <select class="js-all-contacts all-contacts js-input">
+                            <option selected disabled value="">Select</option>                        
+                        </select>
+                    </section>
+                    <!--section class="contact-section js-contact-section hide js-ref-list" data-list="contacts">
                         <input type="text" class="searchable js-searchable js-contacts-widget" name="" placeholder="Type contact name to search">
                         <input type="hidden" class="js-input js-contact-url">
-                    </section>
+                    </section-->
                     <section class="plot-section js-site-section hide js-ref-list" data-list="plots">
                         <select class="js-all-plots all-plots js-input">
                             <option selected disabled value="">Select plot</option>                        
                         </select>
-                        <div class="js-plot-info hide">
+                        <!--div class="js-plot-info hide">
                             <section class="js-plot-params columns small-12">
 
                             </section>
                             <div class="columns small-12">
                                 <button class="js-view-plot-btn button">View more information for <span class="js-plot-id"></span></button>
                             </div>
-                        </div>
+                        </div-->
                     </section>
                     <section class="var-section js-var-section hide js-ref-list" data-list="variables">
                         <select class="js-all-vars all-vars js-input">
@@ -211,13 +216,15 @@
             </article>
             <div class="reveal-modal-bg" style="display: none"></div>
             <div id="myModal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
-              <h3 id="modalTitle">Awesome. I have it.</h3>
-              <section class="js-modal-body modal-body">
+                <div class="row pull-right text-right">
+                    <a class="close-reveal-modal js-close-modal pull-right" aria-label="Close">&#215;</a>
+                </div>
+                <h5 id="modalTitle">Awesome. I have it.</h5>
+                <section class="js-modal-body modal-body">
                   
-              </section>
-              <button class="button edit-btn js-edit-dataset-btn">Edit</button>
-              <a class="button download-btn js-file-download-btn">Download File</a>
-              <a class="close-reveal-modal js-close-modal" aria-label="Close">&#215;</a>
+                </section>
+              <!--button class="button edit-btn js-edit-dataset-btn">Edit</button-->
+                <a class="button download-btn js-file-download-btn hide">Download Dataset</a>
             </div>
         </main>
     </body>
