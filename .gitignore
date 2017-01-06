@@ -13,6 +13,7 @@ __pycache__/
 archive_api_import.json
 archive_api_import_with_datasets.json
 archives
+build/
 db.sqlite3
 dist/
 local*.py
@@ -22,6 +23,7 @@ ngee_tropics.sql
 ngt-archive.log
 ngt_archive.egg-info/
 ngt_archive/__pycache__/
+ornl_backup/
 plots.txt
 sites.txt
 vagrant.retry
