@@ -1,5 +1,18 @@
 var dataObj = {};
 var templates = {};
+
+function getParameterByName(name, url) {
+    if (!url) {
+      url = window.location.href;
+    }
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
 $(document).ready(function(){
     $(document).foundation();
 
@@ -14,6 +27,13 @@ $(document).ready(function(){
         templates.datasets = datasetMetadata;
         createEditForm('datasets');
     });*/
+
+    var viewParam = getParameterByName('view', window.location.href);
+
+    if(viewParam && $('.js-view[data-view="' + viewParam + '"]').length == 1) {
+        $('.js-view[data-view="' + viewParam + '"]').removeClass('hide');
+        $('.js-home-view').addClass('hide');
+    }
 
     var popup = new Foundation.Reveal($('#myModal'));
     console.log('here');
@@ -32,15 +52,48 @@ $(document).ready(function(){
 
         $( ".js-contacts-widget" ).autocomplete({
           source: contactList
-        });
+        });/*.autocomplete( "instance" )._renderItem = function( ul, item ) {
+          return $( "<li>" )
+            .append( "<div>" + item.first_name + " " + item.last_name + "</div>")
+            .appendTo( ul );
+            console.log('here');
+        };*/
+
+        /*$( ".js-contacts-widget" ).autocomplete({
+          minLength: 0,
+          source: contacts,
+          focus: function( event, ui ) {
+            $( ".js-contacts-widget" ).val( ui.item.first_name + ui.item.last_name );
+            return false;
+          },
+          select: function( event, ui ) {
+            $( ".js-contacts-widget" ).val( ui.item.first_name + ui.item.last_name );
+            $( ".js-contact-url" ).val(ui.item.url);
+            return false;
+          }
+        })
+        .autocomplete( "instance" )._renderItem = function( ul, item ) {
+          return $( "<li>" )
+            .append( "<div>" + item.first_name + " " + item.last_name + "</div>")
+            .appendTo( ul );
+        };*/
     });
 
     $.when(getSites()).done(function(sites) {
         console.log(sites);
         dataObj.sites = sites;
         for(var i=0;i<sites.length;i++) {
-            var option = $('<option value="'+ sites[i].site_id +'" data-index="' + i + '">' + sites[i].name + ': ' + (sites[i].site_id ?  sites[i].site_id : 'N/A')+ '</option>');
+            var option = $('<option value="'+ sites[i].url +'" data-index="' + i + '">' + sites[i].name + ': ' + (sites[i].site_id ?  sites[i].site_id : 'N/A')+ '</option>');
             $('.js-all-sites').append(option);
+        }
+    });
+
+    $.when(getVariables()).done(function(vars) {
+        console.log(vars);
+        dataObj.variables = vars;
+        for(var i=0;i<vars.length;i++) {
+            var option = $('<option value="'+ vars[i].url +'" data-index="' + i + '">' + vars[i].name + ': ' + (vars[i].name ?  vars[i].name : 'N/A')+ '</option>');
+            $('.js-all-vars').append(option);
         }
     });
 
@@ -48,9 +101,33 @@ $(document).ready(function(){
         console.log(plots);
         dataObj.plots = plots;
         for(var i=0;i<plots.length;i++) {
-            var option = $('<option value="'+ plots[i].plot_id +'" data-index="' + i + '">' + plots[i].name + ': ' + (plots[i].plot_id ? plots[i].plot_id : 'N/A') + '</option>');
+            var option = $('<option value="'+ plots[i].url +'" data-index="' + i + '">' + plots[i].name + ': ' + (plots[i].plot_id ? plots[i].plot_id : 'N/A') + '</option>');
             $('.js-all-plots').append(option);
         }
+    });
+
+    $('body').on('click', '.js-view-toggle', function(event) {
+        var view = $(this).attr('data-view');
+
+        switch(view) {
+            case 'create': 
+            
+            break;
+
+            case 'edit':
+
+            break;
+
+            case 'view':
+
+            break;
+
+            default: break;
+        }
+
+        $('.js-view[data-view="' + view + '"]').removeClass('hide');
+        window.location = window.location.href + '?view=' + view;
+        $('.js-home-view').addClass('hide');
     });
 
     $('body').on('change', '.js-all-sites', function() {
@@ -335,13 +412,16 @@ $(document).ready(function(){
             var param = $(this).attr('data-param');
             var required = $(this).hasClass('required');
             $(this).find('textarea, input[type="text"], select').each(function() {
-                if($(this).val().trim()) {
-                    submissionObj[param] = $(this).val().trim();
+                if($(this).val() != null) {
+                    if($(this).val().trim()) {
+                        submissionObj[param] = $(this).val().trim();
+                    }
                 }
-                else if (required && !$(this).val().trim()) {
+                //hold off on implementing required for now
+                /*else if (required && !$(this).val().trim()) {
                     submit = false;
                     $(this).closest('.js-param').addClass('missing');
-                }
+                }*/
             });
         });
 
@@ -543,6 +623,10 @@ $(document).ready(function(){
 
 });
 
+function populateDatasets(filter, container) {
+
+}
+
 function createEditForm(templateType) {
     var formHTML = $('<div/>');
     var paramHTML = '';
@@ -605,6 +689,13 @@ function createEditForm(templateType) {
                 }
                 tag.removeClass('js-template').addClass('js-input');
                 paramHTML.append(tag);
+                break;
+
+                case "reference_list":
+                var list = templates[templateType][param]['list_name'];
+                //var tag = $();
+                console.log(list);
+                $('.js-ref-list[data-list="' + list + '"]').clone().removeClass('hide').appendTo(paramHTML);
                 break;
 
                 default:
