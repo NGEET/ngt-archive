@@ -1,9 +1,11 @@
 from __future__ import print_function, unicode_literals
 
 import json
+import shutil
 
 from django.contrib.auth.models import User
 from django.test import Client
+from ngt_archive import settings
 from os.path import dirname
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -104,7 +106,7 @@ class DataSetClientTestCase(APITestCase):
         self.assertTrue("X-Sendfile" in response)
         self.assertTrue(response["X-Sendfile"].find("archives/NGT0004_1.0_"))
         self.assertTrue("Content-Disposition" in response)
-        self.assertEqual("attachment; filename=NGT0004_1.0_Unnamed.zip", response['Content-Disposition'])
+        self.assertEqual("attachment; filename=NGT0003_0.0_Unnamed.zip", response['Content-Disposition'])
 
     def test_client_get(self):
         self.login_user("auser")
@@ -124,11 +126,11 @@ class DataSetClientTestCase(APITestCase):
                                         'http://testserver/api/v1/variables/3/'], 'archive': None,
                           'cdiac_submission_contact': None, 'reference': '', 'additional_access_information': '',
                           'contact': 'http://testserver/api/v1/people/2/', 'acknowledgement': '',
-                          'data_set_id': 'NGT0002',
+                          'data_set_id': 'NGT0001',
                           'modified_by': 'auser', 'status': '1', 'ngee_tropics_resources': True, 'qaqc_status': None,
                           'end_date': None, 'additional_reference_information': '', 'name': 'Data Set 2',
                           'created_by': 'auser', 'sites': ['http://testserver/api/v1/sites/1/'],
-                          'originating_institution': None, 'version': '1.0',
+                          'originating_institution': None, 'version': '0.0',
                           'url': 'http://testserver/api/v1/datasets/2/', 'access_level': '0'}
 
                          )
@@ -137,7 +139,8 @@ class DataSetClientTestCase(APITestCase):
     def test_client_post(self):
         self.login_user("auser")
         response = self.client.post('/api/v1/datasets/',
-                                    data='{"name":"FooBarBaz","description":"A FooBarBaz DataSet","authors":["http://testserver/api/v1/people/2/"] }',
+                                    data='{"name":"FooBarBaz","description":"A FooBarBaz DataSet",'
+                                         '"authors":["http://testserver/api/v1/people/2/"] }',
                                     content_type='application/json')
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         value = json.loads(response.content.decode('utf-8'))
@@ -501,7 +504,7 @@ class DataSetClientTestCase(APITestCase):
         self.assertTrue("X-Sendfile" in response)
         self.assertTrue(response["X-Sendfile"].find("archives/NGT1_1.0_"))
         self.assertTrue("Content-Disposition" in response)
-        self.assertEqual("attachment; filename=NGT0001_1.0_Data_Set_1.zip", response['Content-Disposition'])
+        self.assertEqual("attachment; filename=NGT0000_0.0_Data_Set_1.zip", response['Content-Disposition'])
 
         # Now try to upload and invalid file
         with open('{}/invalid_upload.txt'.format(dirname(__file__)), 'r') as fp:
@@ -518,14 +521,57 @@ class DataSetClientTestCase(APITestCase):
         response = self.client.get('/api/v1/datasets/1/archive/')
         self.assertContains(response, '')
         self.assertTrue("X-Sendfile" in response)
-        self.assertTrue(response["X-Sendfile"].find("archives/NGT1_1.0"))
+        self.assertTrue(response["X-Sendfile"].find("archives/0000/0000/NGT0000/0.0/NGT0000_0.0") > -1)
         self.assertTrue("Content-Disposition" in response)
-        self.assertEqual("attachment; filename=NGT0001_1.0_Data_Set_1.zip", response['Content-Disposition'])
+        self.assertEqual("attachment; filename=NGT0000_0.0_Data_Set_1.zip", response['Content-Disposition'])
 
-        from archive_api.models import DataSet
+        response = self.client.put('/api/v1/datasets/1/',
+                                   data='{"data_set_id":"FooBarBaz","description":"A FooBarBaz DataSet",'
+                                        '"name": "Data Set 1", '
+                                        '"status_comment": "",'
+                                        '"doi": "",'
+                                        '"start_date": "2016-10-28",'
+                                        '"end_date": null,'
+                                        '"qaqc_status": null,'
+                                        '"qaqc_method_description": "",'
+                                        '"ngee_tropics_resources": true,'
+                                        '"funding_organizations": "The funding organizations for my dataset",'
+                                        '"doe_funding_contract_numbers": "",'
+                                        '"acknowledgement": "",'
+                                        '"reference": "",'
+                                        '"additional_reference_information": "",'
+                                        '"originating_institution": "Lawrence Berkeley National Lab",'
+                                        '"additional_access_information": "",'
+                                        '"submission_date": "2016-10-28T19:12:35Z",'
+                                        '"contact": "http://testserver/api/v1/people/4/",'
+                                        '"authors": ["http://testserver/api/v1/people/1/"],'
+                                        '"sites": ["http://testserver/api/v1/sites/1/"],'
+                                        '"plots": ["http://testserver/api/v1/plots/1/"],'
+                                        '"variables": ["http://testserver/api/v1/variables/1/", '
+                                        '"http://testserver/api/v1/variables/2/"]}',
+                                   content_type='application/json')
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+
+        #########################################################################
+        # NGT User may not SUBMIT a dataset in DRAFT mode if they owne it
+        response = self.client.get("/api/v1/datasets/1/submit/")  # In draft mode, owned by auser
+        value = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual({'detail': 'DataSet has been submitted.', 'success': True}, value)
+
+        response = self.client.get("/api/v1/datasets/1/")
+        self.assertContains(response,'"version":"1.0"')
+
+        response = self.client.get('/api/v1/datasets/1/archive/')
+        self.assertContains(response, '')
+        self.assertTrue("X-Sendfile" in response)
+        self.assertTrue(response["X-Sendfile"].find("archives/0000/0000/NGT0000/1.0/NGT0000_1.0") > -1)
+        self.assertTrue("Content-Disposition" in response)
+        self.assertEqual("attachment; filename=NGT0000_1.0_Data_Set_1.zip", response['Content-Disposition'])
+
         import os
-        dataset = DataSet.objects.get(id=1)
-        os.remove(dataset.archive.path)
+        shutil.rmtree(os.path.join(settings.DATASET_ARCHIVE_ROOT,"0000"))
 
     def test_upload_permission_denied(self):
         """

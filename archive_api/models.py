@@ -4,6 +4,8 @@ import os
 from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
 from django.db import models
+from django.db import transaction
+from django.db.models import Max
 from rest_framework.exceptions import ValidationError
 
 
@@ -107,8 +109,19 @@ def get_upload_path(instance, filename):
     :return:
     """
     _, file_extension = os.path.splitext(filename)
+
+    parent_dir_no = 0
+    sub_dir_no = 0
+    if instance.ngt_id > 0:
+        parent_dir_no = int(int(instance.ngt_id / 100) * 100)
+        sub_dir_no = int(int(instance.ngt_id/10) * 10)
+
     return os.path.join(
-        "{}_{}{}".format(instance.data_set_id(), instance.version, file_extension))
+        "{parent_dir_no:04}/{sub_dir_no:04}/{data_set_id}/{version}/{data_set_id}_{version}{ext}".format(**{"data_set_id":instance.data_set_id(),
+                             "parent_dir_no":parent_dir_no,
+                             "sub_dir_no":sub_dir_no,
+                             "version":instance.version,
+                             "ext":file_extension}))
 
 
 class MeasurementVariable(models.Model):
@@ -200,10 +213,11 @@ class Plot(models.Model):
 class DataSet(models.Model):
 
     def data_set_id(self):
-        return "NGT{:04}".format(self.id)
+        return "NGT{:04}".format(self.ngt_id)
 
+    ngt_id = models.IntegerField()
     description = models.TextField(blank=True, null=True)
-    version = models.CharField(max_length=15, default="1.0")
+    version = models.CharField(max_length=15, default="0.0")
 
     status = models.CharField(max_length=1, choices=STATUS_CHOICES,
                               default='0')  # (draft [DEFAULT], submitted, approved)
@@ -247,6 +261,7 @@ class DataSet(models.Model):
     archive = DatasetArchiveField(upload_to=get_upload_path, storage=dataset_archive_storage, null=True)
 
     class Meta:
+        unique_together = ('ngt_id','version')
         permissions = (
             ("approve_submitted_dataset", "Can approve a 'submitted' dataset"),
             ("edit_draft_dataset", "Can edit a 'draft' dataset"),
@@ -255,6 +270,24 @@ class DataSet(models.Model):
             ("delete_draft_dataset", "Can delete a 'draft' dataset"),
             ("delete_submitted_dataset", "Can delete a 'submitted' dataset")
         )
+
+    def save(self, *args, **kwargs):
+        """
+        Overriding save method to add logic for setting the ngt_id. Outwardly this is the derived
+        field data_set_id
+
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        # Performing an atomic transaction when determining the ngt_id
+        with transaction.atomic():
+            # if the ngt_id has not been set then we need to get the next id
+            if self.ngt_id is None and self.version == "0.0":
+                if DataSet.objects.all().count() > 0:
+                    self.ngt_id = DataSet.objects.all().aggregate(Max('ngt_id'))['ngt_id__max']+1
+                else: self.ngt_id=0 # only for the very first dataset
+            super(DataSet, self).save(*args, **kwargs)
 
 
 class Author(models.Model):
