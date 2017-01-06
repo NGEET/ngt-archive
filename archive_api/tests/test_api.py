@@ -59,12 +59,33 @@ class DataSetClientTestCase(APITestCase):
         for mime_type in DatasetArchiveField.CONTENT_TYPES:
             self.assertContains(response, mime_type)
 
+    def test_issue_74(self):
+        self.login_user("auser")
+        response = self.client.post('/api/v1/datasets/',
+                                    data='{"description":"A FooBarBaz DataSet",'
+                                         '"authors":["http://testserver/api/v1/people/2/"],'
+                                         '"sites":["http://testserver/api/v1/sites/1/"] ,'
+                                         '"plots":["http://testserver/api/v1/plots/1/"],'
+                                         '"variables":["http://testserver/api/v1/variables/1/"]  }',
+                                    content_type='application/json')
+
+        self.assertTrue(status.HTTP_201_CREATED,response.status_code)
+
+        response = self.client.get('/api/v1/datasets/4/')
+
+        self.assertContains(response,
+                            "http://testserver/api/v1/variables/1/")
+        self.assertContains(response,
+                            "http://testserver/api/v1/sites/1/")
+        self.assertContains(response,
+                            "http://testserver/api/v1/plots/1/")
+
 
     def test_client_unnamed(self):
         self.login_user("auser")
         response = self.client.post('/api/v1/datasets/',
                                     data='{"description":"A FooBarBaz DataSet",'
-                                         '"authors":["http://testserver/api/v1/people/2/"] }',
+                                         '"authors":["http://testserver/api/v1/people/2/"]  }',
                                     content_type='application/json')
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
 

@@ -134,8 +134,20 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
         with transaction.atomic():
             # Pop off authors data, if exists
             author_data = []
+            sites_data = []
+            plots_data = []
+            variables_data = []
             if "authors" in validated_data.keys():
                 author_data = validated_data.pop('authors')
+
+            if "sites" in validated_data.keys():
+                sites_data = validated_data.pop('sites')
+
+            if "plots" in validated_data.keys():
+                plots_data = validated_data.pop('plots')
+
+            if "variables" in validated_data.keys():
+                variables_data = validated_data.pop('variables')
 
             # Create dataset first
             dataset = DataSet.objects.create(**validated_data)
@@ -144,6 +156,14 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
 
             # save the author data
             self.add_authors(author_data, dataset)
+            for obj in sites_data:
+                dataset.sites.add(obj)
+            for obj in plots_data:
+                dataset.plots.add(obj)
+            for obj in variables_data:
+                dataset.variables.add(obj)
+
+            dataset.save()
 
         return dataset
 
