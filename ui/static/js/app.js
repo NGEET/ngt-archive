@@ -184,6 +184,19 @@ $(document).ready(function(){
             var param = $('<p>' + prop + ': ' + dataObj.sites[index][prop] + '</p>');
             $('.js-params').append(param);
         }
+
+    });
+
+    $('body').on('change', '.js-all-plots', function() {
+        //console.log('here');
+        var index = $(this).find('option:selected').attr('data-index');
+        $('.js-view-plot-btn .js-plot-id').html($(this).val());
+        $('.js-plot-info').removeClass('hide');
+        $('.js-plot-params').html('');
+        for(var prop in dataObj.sites[index]) {
+            var param = $('<p>' + prop + ': ' + dataObj.sites[index][prop] + '</p>');
+            $('.js-plot-params').append(param);
+        }
     });
 
     $('body').on('change', '.js-all-plots', function() {
