@@ -25,7 +25,7 @@
         "read_only": false,
         "label": "Dataset Site",
         "sequence": 3,
-        "multiple": false,
+        "multiple": true,
         "description": "Site this dataset was collected from."
     },
     "plots": {
@@ -33,7 +33,7 @@
         "list_name": "plots",
         "required": false,
         "read_only": false,
-        "label": "Dataset Plot (select all that apply)",
+        "label": "Dataset Plots",
         "sequence": 4,
         "multiple": true,
         "description": "Plot identification where dataset was collected."
