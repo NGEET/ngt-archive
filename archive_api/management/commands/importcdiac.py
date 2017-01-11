@@ -6,7 +6,6 @@ import os
 from django.contrib.auth.models import User
 from django.core.files import File
 from django.core.management.base import BaseCommand
-from django.db import connection
 from django.utils.datetime_safe import datetime
 
 from archive_api.models import DataSet, Person, Site, Plot, MeasurementVariable, Author, get_upload_path, \
@@ -33,6 +32,10 @@ class Command(BaseCommand):
                 ngt_id = filename.split("_")[-1].replace("NGT","")
                 dataset = self.extract_metadata(options, ngt_id, xml_file)
 
+                if dataset.archive:
+                    continue
+
+                print("** " + dataset.name)
                 datafiles = glob.glob('{}/*NGT{}*'.format(datafiles_dir,ngt_id))
                 if not datafiles:
                     datafiles = glob.glob('{}/NGT{}*'.format(datafiles_dir, ngt_id))
@@ -64,12 +67,6 @@ class Command(BaseCommand):
                             dataset.archive.save(filename,
                                                  File(f))
                         dataset.save()
-            self.update_sequences()
-
-    def update_sequences(self):
-        if connection.vendor == 'postgresql':
-            with connection.cursor() as cursor:
-                cursor.execute("SELECT setval(pg_get_serial_sequence('\"archive_api_dataset\"','id'), coalesce(max(\"id\"), 1), max(\"id\") IS NOT null) FROM \"archive_api_dataset\"")
 
     def extract_metadata(self, options, ngt_id,xml_file):
 
@@ -82,11 +79,13 @@ class Command(BaseCommand):
         create_by = User.objects.get(username=options['username'])
         # Determine if the dataset already exists
         try:
-            dataset = DataSet.objects.get(id=ngt_id)
-            dataset.modified_by = create_by
+            dataset = DataSet.objects.get(ngt_id=int(ngt_id),version="1.0")
+
+            # The dataset has already been imported
+            return dataset
         except DataSet.DoesNotExist:
 
-            dataset = DataSet(id=int(ngt_id), created_by=create_by, modified_by=create_by)
+            dataset = DataSet(ngt_id=int(ngt_id), created_by=create_by, modified_by=create_by,version="1.0")
             dataset.save()
 
         # Origin are the authors in order of precedence
@@ -136,7 +135,7 @@ class Command(BaseCommand):
             dataset.contact = people
             dataset.save()
         dataset.name = metadata.getElementsByTagName("title")[0].childNodes[0].data
-        print("** " + dataset.name)
+
         # Version
         # metadata.idinfo.citation.citeinfo.edition
         # Data to upload
