@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from django.utils import timezone
 from django.utils.encoding import smart_str
 from rest_framework import permissions
-from rest_framework import status
+from rest_framework import status as http_status
 from rest_framework.decorators import detail_route
 from rest_framework.exceptions import ValidationError
 from rest_framework.metadata import SimpleMetadata
@@ -93,7 +93,7 @@ class DataSetViewSet(ModelViewSet):
         fullpath = os.path.join(settings.DATASET_ARCHIVE_ROOT, dataset.archive.name)
         if not dataset.archive:
             return Response({'success': False, 'detail': 'Not found'},
-                            status=status.HTTP_404_NOT_FOUND)
+                            status=http_status.HTTP_404_NOT_FOUND)
 
         response = HttpResponse()
         response['X-Sendfile'] = smart_str(fullpath)
@@ -119,14 +119,14 @@ class DataSetViewSet(ModelViewSet):
                     dataset.archive.save(upload.name, upload)
             except ValidationError as ve:
                 return Response({'success': False, 'detail': ve.detail},
-                                status=status.HTTP_400_BAD_REQUEST)
+                                status=http_status.HTTP_400_BAD_REQUEST)
 
             return Response({'success': True, 'detail': 'File uploaded'},
-                            status=status.HTTP_201_CREATED, headers={'Location':
+                            status=http_status.HTTP_201_CREATED, headers={'Location':
                                                                          dataset.archive.url})
         else:
             return Response({'success': False, 'detail': 'There is no file to upload'},
-                            status=status.HTTP_400_BAD_REQUEST)
+                            status=http_status.HTTP_400_BAD_REQUEST)
 
     @detail_route(methods=['post', 'get'],
                   permission_classes=(HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasApprovePermission))
@@ -136,7 +136,7 @@ class DataSetViewSet(ModelViewSet):
         """
 
         self.change_status(request, APPROVED)
-        return Response({'success': True, 'detail': 'DataSet has been approved.'}, status=status.HTTP_200_OK)
+        return Response({'success': True, 'detail': 'DataSet has been approved.'}, status=http_status.HTTP_200_OK)
 
     @detail_route(methods=['post', 'get'],
                   permission_classes=(HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasUnsubmitPermission))
@@ -146,7 +146,7 @@ class DataSetViewSet(ModelViewSet):
         """
 
         self.change_status(request, DRAFT)
-        return Response({'success': True, 'detail': 'DataSet has been unsubmitted.'}, status=status.HTTP_200_OK)
+        return Response({'success': True, 'detail': 'DataSet has been unsubmitted.'}, status=http_status.HTTP_200_OK)
 
     @detail_route(methods=['post', 'get'],
                   permission_classes=(
@@ -157,7 +157,7 @@ class DataSetViewSet(ModelViewSet):
         """
 
         self.change_status(request, SUBMITTED)
-        return Response({'success': True, 'detail': 'DataSet has been unapproved.'}, status=status.HTTP_200_OK)
+        return Response({'success': True, 'detail': 'DataSet has been unapproved.'}, status=http_status.HTTP_200_OK)
 
     @detail_route(methods=['post', 'get'],
                   permission_classes=(HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasSubmitPermission))
@@ -166,7 +166,7 @@ class DataSetViewSet(ModelViewSet):
         Submit action. Changes the dataset from DRAFT to SUBMITTED status. User must have permissions for this action.
         """
         self.change_status(request, SUBMITTED)
-        return Response({'success': True, 'detail': 'DataSet has been submitted.'}, status=status.HTTP_200_OK)
+        return Response({'success': True, 'detail': 'DataSet has been submitted.'}, status=http_status.HTTP_200_OK)
 
     def change_status(self, request, status):
         """
@@ -175,11 +175,23 @@ class DataSetViewSet(ModelViewSet):
         """
         dataset = self.get_object()  # this will initiate a permissions check
         dataset.status = status
-        dataset.submission_date = timezone.now()
-        serializer = DataSetSerializer(dataset, context={'request': request})
-        deserializer = DataSetSerializer(dataset, data=serializer.data, context={'request': request})
-        deserializer.is_valid(raise_exception=True)
-        self.perform_update(deserializer)
+
+        # This will rollback the transaction on failure
+        with transaction.atomic():
+            # Validate the archive field with clean()
+            dataset.submission_date = timezone.now()
+            serializer = DataSetSerializer(dataset, context={'request': request})
+            deserializer = DataSetSerializer(dataset, data=serializer.data, context={'request': request})
+            deserializer.is_valid(raise_exception=True)
+            self.perform_update(deserializer)
+            if status == SUBMITTED and dataset.archive:
+                dataset.version = "1.0"  # FIXME:  hard coded util statemachine is implemented
+                dataset.archive.open()
+                dataset.archive.field.clean(dataset.archive, dataset)
+                dataset.archive.save(dataset.archive.name, dataset.archive)
+
+
+
 
 
 class MeasurementVariableViewSet(ModelViewSet):
