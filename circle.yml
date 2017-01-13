@@ -1,0 +1,11 @@
+## Customize the test machine
+machine:
+
+  timezone:
+    America/Los_Angeles # Set the timezone
+
+  # Version of ruby to use
+  python:
+    version:
+      3.4.3
+
