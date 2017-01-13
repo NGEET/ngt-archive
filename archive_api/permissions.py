@@ -23,7 +23,7 @@ class HasArchivePermission(permissions.BasePermission):
         elif obj.access_level == PRIVATE:
             return obj.created_by == request.user  # owner always has access
         elif obj.access_level == NGEET:
-            return request.user.groups.filter(name='NGT User').exists()  # All NGT User has access
+            return request.user.groups.filter(name__in=['NGT Team','NGT Collaborator']).exists()  # All NGT User has access
         else:
             # This is public, All have access
             return True
@@ -40,6 +40,7 @@ class HasSubmitPermission(permissions.BasePermission):
                 raise PermissionDenied(detail='Only a data set in DRAFT status may be submitted')
         elif obj.status == DRAFT and \
                 request.user.has_perm('archive_api.edit_draft_dataset'):
+
             return obj.created_by == request.user or request.user.groups.filter(name='NGT Administrator').exists()
 
         return False

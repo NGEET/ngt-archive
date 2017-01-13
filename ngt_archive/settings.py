@@ -1,3 +1,4 @@
+from __future__ import print_function
 """
 Django settings for ngt_archive project.
 
@@ -13,6 +14,9 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 import sys
 
 import os
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -103,7 +107,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
+    'archive_api.backends.ModelBackend',
 )
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
@@ -117,6 +121,7 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
@@ -150,7 +155,9 @@ DATASET_ARCHIVE_URL = '/archives/' # not used
 try:
     try:
         from ngt_archive.local import *
+        print("DJANGO loading ngt_archive.local FOUND\n", file=sys.stdout)
     except ImportError:
         from settings.local import *
+        print("DJANGO loading settings.local FOUND\n", file=sys.stdout)
 except ImportError:
     print("DJANGO local settings NOT found. Using default settings", file=sys.stdout)

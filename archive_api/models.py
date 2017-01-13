@@ -1,16 +1,15 @@
 import mimetypes
 
 import os
-from django.contrib.auth.models import User
+import django.contrib.auth.models
 from django.core.files.storage import FileSystemStorage
 from django.db import models
 from django.db import transaction
-from django.db.models import Max
+from django.conf import settings
 from rest_framework.exceptions import ValidationError
 
 
 class DatasetArchiveField( models.FileField):
-
 
         CONTENT_TYPES = ["application/zip", "application/x-bzip2",
                      "application/gzip", "application/x-lzip", "application/x-lzma",
@@ -100,6 +99,11 @@ ACCESS_CHOICES = (
     ('2', 'Public'),
 )
 
+PERSON_ROLE_CHOICES = (
+    (0, 'Team'),
+    (1, 'Collaborator'),
+)
+
 
 def get_upload_path(instance, filename):
     """
@@ -137,11 +141,30 @@ class MeasurementVariable(models.Model):
         return '<Contact {}>'.format(self)
 
 
+class NGTUser(django.contrib.auth.models.User):
+    def __unicode__(self):
+        return self.get_full_name()
+
+    class Meta:
+        proxy=True
+
+    @property
+    def is_admin(self):
+        return self.groups.filter(name='NGT Administrator').exists()
+
+    @property
+    def is_activated(self):
+        return self.groups.filter(name__in=['NGT Team', 'NGT Administrator','NGT Collaborator']).exists() or self.is_superuser
+
+
 class Person(models.Model):
     first_name = models.CharField(max_length=50, blank=False)
     last_name = models.CharField(max_length=50, blank=True)
     email = models.EmailField(blank=True)
     institution_affiliation = models.CharField(max_length=100, blank=True)
+    initial_role = models.IntegerField(choices=PERSON_ROLE_CHOICES,
+                              null=True,blank=True)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, null=True, blank=True)
 
     class Meta:
         unique_together = ('first_name', 'last_name', 'institution_affiliation', 'email')
@@ -241,9 +264,9 @@ class DataSet(models.Model):
     submission_date = models.DateField(blank=True, null=True)
 
     # Owner is the person who created the dataset
-    created_by = models.ForeignKey(User, editable=False, related_name='+')
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, editable=False, related_name='+')
     created_date = models.DateTimeField(editable=False, auto_now_add=True)
-    modified_by = models.ForeignKey(User, editable=False, related_name='+')
+    modified_by = models.ForeignKey(settings.AUTH_USER_MODEL, editable=False, related_name='+')
     modified_date = models.DateTimeField(editable=False, auto_now=True)
 
     # Relationships
@@ -291,7 +314,6 @@ class DataSet(models.Model):
                     self.ngt_id = max_dataset[0].ngt_id + 1
                 else: self.ngt_id=0 # only for the very first dataset
             super(DataSet, self).save(*args, **kwargs)
-
 
 
 class Author(models.Model):

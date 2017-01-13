@@ -3,6 +3,7 @@ from django.db.models.signals import post_migrate
 
 
 def load_groups(sender, **kwargs):
+    import archive_api.models
     from django.contrib.auth.models import Group
     from django.contrib.auth.models import Permission
     add_dataset = Permission.objects.get(codename='add_dataset')
@@ -32,13 +33,15 @@ def load_groups(sender, **kwargs):
             admin.permissions.add(perm)
         admin.save()
         print("{} group created".format(admin.name))
-    ngt_user = Group.objects.filter(name='NGT User')
-    if len(ngt_user) == 0:
-        ngt_user = Group.objects.create(name='NGT User')
-        for perm in [change_dataset, add_dataset, add_contact, can_edit_draft, can_delete_draft]:
-            ngt_user.permissions.add(perm)
-        ngt_user.save()
-        print("{} group created".format(ngt_user.name))
+
+    for id, name in archive_api.models.PERSON_ROLE_CHOICES:
+        ngt_user = Group.objects.filter(name='NGT {}'.format(name))
+        if len(ngt_user) == 0:
+            ngt_user = Group.objects.create(name='NGT {}'.format(name))
+            for perm in [change_dataset, add_dataset, add_contact, can_edit_draft, can_delete_draft]:
+                ngt_user.permissions.add(perm)
+            ngt_user.save()
+            print("{} group created".format(ngt_user.name))
 
 
 class ArchiveApiConfig(AppConfig):
@@ -46,3 +49,4 @@ class ArchiveApiConfig(AppConfig):
 
     def ready(self):
         post_migrate.connect(load_groups, sender=self)
+        import archive_api.signals
