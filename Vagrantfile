@@ -46,8 +46,10 @@ Vagrant.configure("2") do |config|
 
   # Run Ansible from the Vagrant VM
   config.vm.provision "ansible_local" do |ansible|
-      ansible.verbose = "v"
+      ansible.verbose = "vv"
       ansible.playbook = "vagrant.yml"
+      ansible.sudo = "yes"
+      ansible.tags = ['base']
   end
 
 

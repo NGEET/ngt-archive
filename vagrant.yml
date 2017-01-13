@@ -2,8 +2,7 @@
 - hosts:
     - all
     - localhost
-  become: true
-  become_user: root
+  become: yes
   become_method: sudo
   vars:
     domain: localhost
@@ -17,6 +16,8 @@
   tasks:
       - name: update apt cache
         apt: update_cache=yes
+        tags:
+          - base
 
       - name: Install Python and Sqlite3 Packages
         apt: name={{ item }} state=present
@@ -59,9 +60,11 @@
       - name: Setup Postgres DB
         become: yes
         become_user: postgres
+        become_method: sudo
         postgresql_db: name={{ db_user }} state=present login_user=postgres
         tags:
           - app
+
 
 
       # This sets up the postgres user.
@@ -106,15 +109,32 @@
           - uwsgi
           - virtualenv
 
+      # We just want to create the virtual env directory but 'name' is required
+      # Using pyyaml because it is inoccuous
       - name: Create a virtual environment
-        pip: name={{ item }} virtualenv={{ project_root }}/.venv virtualenv_python=/usr/bin/python3.4 chdir={{ project_root }}
-        with_items:
-            - django
-            - psycopg2
-            - -e .
+        pip: name=pyyaml
+          virtualenv={{ project_root }}/.venv
+          virtualenv_python=/usr/bin/python3.4
+          chdir={{ project_root }}
+          virtualenv_command=/usr/local/bin/virtualenv
+          virtualenv_site_packages=no
         tags:
          - app
          - manage
+
+      - name: Install application, django and psycopg1
+        pip: name={{ item }}
+          executable={{ project_root }}/.venv/bin/pip
+          chdir={{ project_root }}
+        with_items:
+            - -e .
+            - django
+            - psycopg2
+        tags:
+         - app
+         - manage
+
+
 
 #      # Migrate DB
 #      - name: Django migrate DB
