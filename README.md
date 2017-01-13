@@ -86,6 +86,7 @@ The project directory is mounted into the VM at /vagrant.
 
     $ vagrant ssh
     $ cd /vagrant
+    $ sudo ansible-playbook vagrant.yml
     
 The web application has been deployed to apache on your VM.
 Use the *ngt_archive* service on ubuntu. This

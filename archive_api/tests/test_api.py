@@ -1,20 +1,21 @@
 from __future__ import print_function, unicode_literals
 
 import json
-import shutil
 
+import shutil
 from django.contrib.auth.models import User
+from django.core import mail
 from django.test import Client
-from ngt_archive import settings
 from os.path import dirname
 from rest_framework import status
 from rest_framework.test import APITestCase
 
 from archive_api.models import DatasetArchiveField
+from ngt_archive import settings
 
 
 class ApiRootClientTestCase(APITestCase):
-    fixtures = ('test_archive_api.json', 'test_auth.json',)
+    fixtures = ('test_auth.json', 'test_archive_api.json',)
 
     def setUp(self):
         self.client = Client()
@@ -32,7 +33,7 @@ class ApiRootClientTestCase(APITestCase):
 
 
 class DataSetClientTestCase(APITestCase):
-    fixtures = ('test_archive_api.json', 'test_auth.json',)
+    fixtures = ('test_auth.json', 'test_archive_api.json',)
 
     def login_user(self, username):
         user = User.objects.get(username=username)
@@ -70,7 +71,7 @@ class DataSetClientTestCase(APITestCase):
                                          '"plots":["http://testserver/api/v1/plots/1/"],'
                                          '"variables":["http://testserver/api/v1/variables/1/"]  }',
                                     content_type='application/json')
-        self.assertTrue(status.HTTP_201_CREATED,response.status_code)
+        self.assertTrue(status.HTTP_201_CREATED, response.status_code)
         dataset_url = json.loads(response.content.decode('utf-8'))["url"]
 
         response = self.client.get(dataset_url)
@@ -142,6 +143,17 @@ class DataSetClientTestCase(APITestCase):
                                          '"authors":["http://testserver/api/v1/people/2/"] }',
                                     content_type='application/json')
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
+
+        # Was the notification email sent?
+        self.assertEqual(len(mail.outbox), 1)
+        email = mail.outbox[0]
+
+        self.assertEqual(email.subject,"[ngt-archive]  Dataset Draft (NGT0003)")
+        self.assertTrue(email.body.find("The dataset NGT0003:FooBarBaz has been saved as a draft in the "
+                                        "NGEE Tropics Archive. The dataset can be "
+                                        "viewed at http://testserver.") > 0)
+        self.assertEqual(email.to,['myuser@foo.bar'])
+
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(value['access_level'], '0')
         self.assertEqual(value['sites'], [])
@@ -307,12 +319,15 @@ class DataSetClientTestCase(APITestCase):
                          value)
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
+        self.assertEqual(0, len(mail.outbox))  # no notification emails sent
+
         #########################################################################
         # Cannot submit a dataset that it already in SUBMITTED status
         response = self.client.get("/api/v1/datasets/2/submit/")  # In submitted mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
         self.assertEqual({'detail': 'Only a data set in DRAFT status may be submitted'}, value)
+        self.assertEqual(0, len(mail.outbox))  # no notification emails sent
 
         #########################################################################
         # NGT Administrator may edit a dataset in SUBMITTED status
@@ -376,6 +391,7 @@ class DataSetClientTestCase(APITestCase):
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
         self.assertEqual({'detail': 'Only a data set in SUBMITTED status may be approved'}, value)
+        self.assertEqual(0, len(mail.outbox))  # no notification emails sent
 
         #########################################################################
         # NGT Administrator my APPROVE a SUBMITTED dataset
@@ -383,6 +399,15 @@ class DataSetClientTestCase(APITestCase):
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual({'detail': 'DataSet has been approved.', 'success': True}, value)
+
+        # Was the notification email sent?
+        self.assertEqual(len(mail.outbox), 1)
+        email = mail.outbox[0]
+
+        self.assertEqual(email.subject, "[ngt-archive]  Dataset Approved (NGT0001)")
+        self.assertTrue(email.body.find("The dataset NGT0001:Data Set 2  created on 10/28/2016 "
+                                        "has been approved for release. The dataset can be viewed at http://testserver.") > 0)
+        self.assertEqual(email.to, ['myuser@foo.bar'])
 
         #########################################################################
         # APPROVED status: Cannot be deleted by anyone
@@ -403,10 +428,15 @@ class DataSetClientTestCase(APITestCase):
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
         self.assertEqual({'detail': 'Only a data set in SUBMITTED status may be un-submitted'}, value)
 
+        # Make sure no additional notification was sent
+        self.assertEqual(len(mail.outbox), 1)
+
+
         response = self.client.get("/api/v1/datasets/2/unapprove/")  # In approved mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual({'detail': 'DataSet has been unapproved.', 'success': True}, value)
+        self.assertEqual(1, len(mail.outbox))  # no notification emails sent
 
         #########################################################################
         # NGT Administrator my unapproved a dataset (put back into submitted mode)
@@ -417,6 +447,7 @@ class DataSetClientTestCase(APITestCase):
         response = self.client.get("/api/v1/datasets/2/")  # Check the status
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(value['status'], '1')
+        self.assertEqual(1, len(mail.outbox))  # no notification emails sent
 
     def test_admin_unsubmit(self):
         """
@@ -554,13 +585,21 @@ class DataSetClientTestCase(APITestCase):
 
         #########################################################################
         # NGT User may not SUBMIT a dataset in DRAFT mode if they owne it
+        outbox_len = len(mail.outbox)
         response = self.client.get("/api/v1/datasets/1/submit/")  # In draft mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual({'detail': 'DataSet has been submitted.', 'success': True}, value)
+        self.assertEqual(outbox_len + 1, len(mail.outbox))  # notification emails sent
+        email = mail.outbox[0]
+        self.assertEqual(email.subject, "[ngt-archive]  Dataset Submitted (NGT0000)")
+        self.assertTrue(email.body.find("The dataset NGT0000:Data Set 1 created on 10/28/2016 was "
+                                        "submitted to the NGEE Tropics Archive. The dataset can be "
+                                        "viewed at http://testserver.") > 0)
+        self.assertEqual(email.to, ['myuser@foo.bar'])
 
         response = self.client.get("/api/v1/datasets/1/")
-        self.assertContains(response,'"version":"1.0"')
+        self.assertContains(response, '"version":"1.0"')
 
         response = self.client.get('/api/v1/datasets/1/archive/')
         self.assertContains(response, '')
@@ -570,14 +609,14 @@ class DataSetClientTestCase(APITestCase):
         self.assertEqual("attachment; filename=NGT0000_1.0_Data_Set_1.zip", response['Content-Disposition'])
 
         import os
-        shutil.rmtree(os.path.join(settings.DATASET_ARCHIVE_ROOT,"0000"))
+        shutil.rmtree(os.path.join(settings.DATASET_ARCHIVE_ROOT, "0000"))
 
     def test_upload_permission_denied(self):
         """
         Test Dataset Archive Upload
         :return:
         """
-        self.login_user("auser") # auser does not own Dataset 3
+        self.login_user("auser")  # auser does not own Dataset 3
         with open('{}/invalid_upload.txt'.format(dirname(__file__)), 'r') as fp:
             response = self.client.post('/api/v1/datasets/3/upload/', {'attachment': fp})
             self.assertContains(response, '"detail":"You do not have permission to perform this action."',
@@ -612,7 +651,7 @@ class DataSetClientTestCase(APITestCase):
 
 
 class SiteClientTestCase(APITestCase):
-    fixtures = ('test_archive_api.json', 'test_auth.json',)
+    fixtures = ('test_auth.json', 'test_archive_api.json',)
 
     def setUp(self):
         self.client = Client()
@@ -653,7 +692,7 @@ class SiteClientTestCase(APITestCase):
 
 
 class PlotClientTestCase(APITestCase):
-    fixtures = ('test_archive_api.json', 'test_auth.json',)
+    fixtures = ('test_auth.json', 'test_archive_api.json',)
 
     def setUp(self):
         self.client = Client()
@@ -690,7 +729,7 @@ class PlotClientTestCase(APITestCase):
 
 
 class ContactClientTestCase(APITestCase):
-    fixtures = ('test_archive_api.json', 'test_auth.json',)
+    fixtures = ('test_auth.json', 'test_archive_api.json',)
 
     def setUp(self):
         self.client = Client()
@@ -705,7 +744,8 @@ class ContactClientTestCase(APITestCase):
         response = self.client.get('/api/v1/people/2/')
         self.assertEqual(json.loads(response.content.decode('utf-8')),
                          {"url": "http://testserver/api/v1/people/2/", "first_name": "Luke",
-                          "last_name": "Cage", "email": "lcage@foobar.baz", "institution_affiliation": "POWER"})
+                          "last_name": "Cage", "email": "lcage@foobar.baz", "institution_affiliation": "POWER",
+                          "initial_role": 0, "user": None})
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_client_post(self):
@@ -714,6 +754,7 @@ class ContactClientTestCase(APITestCase):
                                     content_type='application/json')
         self.assertEqual(json.loads(response.content.decode('utf-8')),
                          {"url": "http://testserver/api/v1/people/6/", "first_name": "Killer", "last_name": "Frost",
+                          "initial_role": None, "user": None,
                           "email": "kfrost@earth2.baz", "institution_affiliation": "ZOOM"})
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
 
@@ -725,7 +766,7 @@ class ContactClientTestCase(APITestCase):
 
 
 class VariableClientTestCase(APITestCase):
-    fixtures = ('test_archive_api.json', 'test_auth.json',)
+    fixtures = ('test_auth.json', 'test_archive_api.json',)
 
     def setUp(self):
         self.client = Client()
