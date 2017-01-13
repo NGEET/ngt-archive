@@ -23,6 +23,7 @@ from archive_api.permissions import HasArchivePermission, HasSubmitPermission, H
     HasUnapprovePermission, HasUploadPermission, HasEditPermissionOrReadonly, APPROVED, DRAFT, SUBMITTED
 from archive_api.serializers import DataSetSerializer, MeasurementVariableSerializer, SiteSerializer, PersonSerializer, \
     PlotSerializer
+from archive_api.signals import dataset_status_change
 
 
 class DataSetMetadata(SimpleMetadata):
@@ -65,7 +66,11 @@ class DataSetViewSet(ModelViewSet):
         Override the update method to update the created_by and modified by fields.]
         """
         if self.request.user.is_authenticated and serializer.is_valid():
-            serializer.save(created_by=self.request.user, modified_by=self.request.user)
+            instance = serializer.save(created_by=self.request.user, modified_by=self.request.user)
+
+            # Send signal for the status change
+            dataset_status_change.send(sender=self.__class__, request=self.request, user=self.request.user,
+                                   instance=instance, original_status=None)
 
     def perform_update(self, serializer):
         """
@@ -174,7 +179,9 @@ class DataSetViewSet(ModelViewSet):
         invalid permissions.
         """
         dataset = self.get_object()  # this will initiate a permissions check
+        original_status = dataset.status
         dataset.status = status
+
 
         # This will rollback the transaction on failure
         with transaction.atomic():
@@ -190,8 +197,9 @@ class DataSetViewSet(ModelViewSet):
                 dataset.archive.field.clean(dataset.archive, dataset)
                 dataset.archive.save(dataset.archive.name, dataset.archive)
 
-
-
+        # Send the signal for the status change
+        dataset_status_change.send(sender=self.__class__, request=request, user=request.user,
+                                   instance=dataset, original_status=original_status)
 
 
 class MeasurementVariableViewSet(ModelViewSet):
