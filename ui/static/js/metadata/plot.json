@@ -1,0 +1,144 @@
+{
+    "name": {
+        "type": "string",
+        "required": true,
+        "read_only": false,
+        "label": "Site Name",
+        "max_length": 120,
+        "sequence": 1,
+        "multiple": false
+    },
+
+    "description": {
+        "type": "string",
+        "required": true,
+        "read_only": false,
+        "label": "Site Description",
+        "sequence": 2,
+        "multiple": false
+    },
+
+    "size": {
+        "type": "string",
+        "required": true,
+        "read_only": false,
+        "label": "Size",
+        "sequence": 2,
+        "multiple": false
+    },
+
+    "contact": {
+        "type": "reference_list",
+        "list_name": "contacts",
+        "required": false,
+        "read_only": false,
+        "label": "Site Contacts",
+        "sequence": 7,
+        "multiple": true
+    },
+
+    "location_latitude": {
+        "type": "string",
+        "required": false,
+        "read_only": true,
+        "label": "Location Latitude",
+        "sequence": 8
+    },
+
+    "location_longitude": {
+        "type": "string",
+        "required": false,
+        "read_only": true,
+        "label": "Location Longitude",
+        "sequence": 8
+    },
+
+    "location_elevation": {
+        "type": "string",
+        "required": false,
+        "read_only": true,
+        "label": "Location Elevation",
+        "sequence": 8
+    },
+
+    "site": {
+        "type": "string",
+        "required": false,
+        "read_only": true,
+        "label": "Site",
+        "sequence": -1
+    },
+
+    "country": {
+        "type": "string",
+        "required": false,
+        "read_only": true,
+        "label": "Country",
+        "sequence": 8
+    },
+
+    "state_province": {
+        "type": "string",
+        "required": false,
+        "read_only": true,
+        "label": "State/Province",
+        "sequence": 8
+    },
+
+    "location_map_url": {
+        "type": "string",
+        "required": false,
+        "read_only": true,
+        "label": "Location Map URL",
+        "sequence": 8
+    },
+
+    "submission_date": {
+        "type": "string",
+        "required": false,
+        "read_only": true,
+        "label": "Submission Date",
+        "sequence": -1
+    },
+
+    "url": {
+        "type": "field",
+        "required": false,
+        "read_only": true,
+        "label": "URL",
+        "sequence": -1
+    },
+
+    "submission": {
+        "type": "field",
+        "required": false,
+        "read_only": true,
+        "label": "Submitted By",
+        "sequence": -1
+    },
+
+    "location_kmz_url": {
+        "type": "string",
+        "required": false,
+        "read_only": true,
+        "label": "Location KMZ URL",
+        "sequence": 8
+    },
+
+    "contacts": {
+        "type": "string",
+        "required": false,
+        "read_only": false,
+        "label": "Site Contact",
+        "sequence": 8
+    },
+
+    "pi": {
+        "type": "string",
+        "required": false,
+        "read_only": false,
+        "label": "PI",
+        "sequence": 8
+    }
+
+}

@@ -1,5 +1,97 @@
+$tooltip-background-color:#ccc;
+$tooltip-color: #242424;
+
+$light-green: #49bb76;
+$dark-green: #3d9a61;
+$light-blue: #4fb9f9;
+$dark-blue: #0089bc;
+$light-orange: #ffa500;
+
+.button {
+    background-color: $light-green;
+
+    &:hover {
+        background-color: $dark-green;
+    }
+}
+
+.desc-tooltip {
+    background-color: $dark-blue;
+    width: 20px;
+    text-align: center;
+    border-radius: 32px;
+    display: inline-block;
+    color: white;
+    border: 1px solid #aaa;
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+
+.tag {
+    color: white;
+    font-size: 14px;
+    line-height: 30px;
+    vertical-align: middle;
+    height: 30px;
+    display: inline-block;
+    width: 80px;
+    text-align: center;
+    float: right;
+    cursor: default;
+
+    &.draft {
+        background-color: $light-orange;
+    }
+
+    &.submitted {
+        background-color: $light-blue;
+    }
+
+    &.approved {
+        background-color: $light-green;
+    }
+}
+
+.ui-tooltip {
+    max-width: 600px !important;
+    width: 600px !important;
+}
+
+@font-face {
+    font-family: 'Helvetica Neue';
+    src: url('../fonts/HelveticaNeue-Roman.eot');
+    src: url('../fonts/HelveticaNeue-Roman.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/HelveticaNeue-Roman.woff2') format('woff2'),
+        url('../fonts/HelveticaNeue-Roman.woff') format('woff'),
+        url('../fonts/HelveticaNeue-Roman.ttf') format('truetype'),
+        url('../fonts/HelveticaNeue-Roman.svg#HelveticaNeue-Roman') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Helvetica Neue';
+    src: url('../fonts/HelveticaNeue-Thin.eot');
+    src: url('../fonts/HelveticaNeue-Thin.eot?#iefix') format('embedded-opentype'),
+        url('../fonts/HelveticaNeue-Thin.woff2') format('woff2'),
+        url('../fonts/HelveticaNeue-Thin.woff') format('woff'),
+        url('../fonts/HelveticaNeue-Thin.ttf') format('truetype'),
+        url('../fonts/HelveticaNeue-Thin.svg#HelveticaNeue-Thin') format('svg');
+    font-weight: 100;
+    font-style: normal;
+}
+
+i.required {
+    color: red;
+}
+
+.missing {
+    background-color: #ffc9c9;
+}
+
 body {
-    background-color: #efefef;
+    background-color: #fcfcfc;
+    font-family: 'Helvetica Neue';
     margin: 0;
 
     #myModal {
@@ -11,21 +103,57 @@ body {
         left: 50%;
         position: relative;
         transform: translateX(-50%);
-        padding: 20px 15px 10px;
+        padding: 5px 15px 10px;
 
         .close-reveal-modal {
-            position: absolute;
+            /*position: absolute;
             top: 5px;
-            right: 12px;
+            right: 12px;*/
+            font-size: 20px;
+            
+        }
+
+        .edit-btn {
+            position: absolute;
+            top: 16px;
+            right: 50px;
+        }
+
+        textarea {
+            min-height: 80px;
+        }
+
+        .modal-body {
+            .dataset-row {
+                margin-bottom: 8px;
+
+                .row {
+                    .columns.medium-9 {
+                        float:right;
+                    }
+                }
+            }
+        }
+
+        .download-wrapper {
+            .button {
+                float: right;
+            }
+        }
+
+        .row:first-child {
+            margin-bottom: 10px;
         }
     }
     
     main {
+        background-color: #fff;
         article {
             background-color: #fff;
             max-width: 1200px;
             margin: 0 auto !important;
             padding: 0 32px 32px;
+            box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.22);
 
             code {
                 display: block;
@@ -33,13 +161,25 @@ body {
             }
         }
 
+        .logo {
+            box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.22);
+
+            img {
+                max-width: 800px;
+                display: block;
+                margin: 0 auto;
+            }
+        }
+
         nav.menu {
                 max-width: 1200px;
                 margin: 0 auto;
                 line-height: 48px;
-                background-color: indianred;
+                background-color: $dark-green;
                 color: white;
                 padding: 0 20px;
+                box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.22);
+        
 
             .user {
                 margin-right: 32px;
@@ -52,6 +192,94 @@ body {
                 &:hover {
                     color: white;
                 }
+            }
+        }
+
+        .create-dataset-view {
+            .file-drop-zone {
+                    text-align: center;
+                    //height: 200px;
+                    border: 2px dashed #777;
+                    padding: 2rem;
+                    position: relative;
+                    margin-bottom: 2rem;
+                    margin-top: 2rem;
+
+                    input[type="file"] {
+                            position: absolute;
+                            left: 0;
+                            top: 0;
+                            width: 100%;
+                            height: 100%;
+                            opacity: 0;
+                            z-index: -1;
+                    }
+            }
+        }
+
+        .map-view {
+            height: 400px;
+        }
+
+        .sites-container {
+            .site-info {
+                .title {
+                    border-bottom: 1px solid #ccc;
+                }
+
+                .main-params, .map-view {
+                    margin-top: 10px;
+                }
+
+                .columns {
+                    padding: 0;
+                }
+
+                .main-params {
+                    padding-right: 15px;
+                }
+
+                .site-desc {
+                    .columns {
+                        padding: 0;
+                    }
+
+                    .plot-title {
+                        margin-top: 30px;
+                    }
+
+                    .plot-info {
+                        margin-top: 10px;
+                        margin-bottom: 15px;
+                        padding: 10px 15px 15px;
+                        background-color: #f8f8f8;
+                    }
+
+                    .param {
+                        margin-bottom: 4px;
+                    }
+                }
+            }
+        }
+
+        .all-datasets {
+            .dataset {
+                .title {
+                    cursor: pointer;
+                }
+
+                .desc {
+                    //max-height: 3rem;
+                    //overflow: hidden;
+                } 
+            }
+        }
+
+        footer {
+            //border-top: 1px solid #ccc;
+            padding-top: 2rem;
+            img {
+                max-width: 320px;
             }
         }
     }
