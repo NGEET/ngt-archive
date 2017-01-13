@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>NGEE Tropics Archive Service: Home</title>
+        <title>NGEE Tropics Data Archive</title>
         <link rel="stylesheet" href="static/stylesheets/foundation.css">
         <script type="text/javascript" src="static/js/jquery-2.1.4.min.js"></script>
         <script type="text/javascript" src="static/js/jquery-ui.js"></script>
@@ -11,10 +11,19 @@
         <script type="text/javascript" src="static/js/foundation.js"></script>
         <!--script type="text/javascript" src="static/js/foundation.reveal.js"></script-->
         <script type="text/javascript" src="static/js/what-input.js"></script>
+        <link rel="stylesheet" type="text/css" href="static/js/jquery-ui/jquery-ui.css">
+        <link rel="stylesheet" type="text/css" href="static/js/jquery-ui/jquery-ui.theme.css">
+        <link rel="stylesheet" type="text/css" href="static/js/jquery-ui/jquery-ui.structure.css">
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAllKgUfxh6WQorM4b-vnIBjY1kRGwG86g"></script>
     </head>
     <body>
         
         <main>
+            <div class="row logo">
+                <a href="/">
+                    <img src="static/img/logo.png">
+                </a>
+            </div>
             <nav class="menu expanded">
                 <a href="/">Home</a>
                 <a href="api/api-auth/logout/?next=/" class="float-right">Logout</a>
@@ -24,26 +33,34 @@
                     <span class="js-auth" data-auth="false"></span>
                 {% endif %}
             </nav>
-            <article>
-                <h2>NGEE Tropics Archive</h2>
-                <form>
+            <article class="">
+                <h3>NGEE Tropics Archive</h3>
+                <section class="row js-home-view home-view">
+                    <div class="columns small-centered small-4">
+                        <button class="button js-view-toggle columns small-12" data-view="create">Create New Dataset</button>
+                        <button class="button js-view-toggle columns small-12" data-view="edit-draft" disabled>Edit Drafts</button>
+                        <button class="button js-view-toggle columns small-12" data-view="view">View Approved Datasets</button>
+                        <a class="button columns small-12" data-view="view" href="/?view=view-sites">View Sites and Plots</a>
+                    </div>
+                </section>
+                
+                <!--form>
                     <h4>Create a dataset</h4>
-                    <div class="small-12 medium-6">
+                    <div class="small-12 medium-9">
                         <label>Name
                             <input class="js-dataset-name" type="text" placeholder="Dataset name">
                         </label>
                     </div>
-                    <div class="small-12 medium-6">
+                    <div class="small-12 medium-9">
                         <label>Description
                             <textarea class="js-dataset-desc" placeholder="Dataset description"></textarea>
                         </label>
                     </div>
-                    <div class="small-12 medium-6 text-center">
+                    <div class="small-12 medium-9 text-center">
                         <button type="button" class="button small-10 medium-6 js-create-dataset">Create Dataset</button>
                         <input type="reset" class="button secondary small-10 medium-6 js-clear-form" value="Clear form">
                     </div>
-                </form>
-                <br>
+                </form-->
                 <!--form>
                     <h4>Create a contact</h4>
                     <div class="small-12 medium-6">
@@ -72,55 +89,184 @@
                     </div>
                 </form-->
 
-                <h4>Enter ID of the dataset you want to upload a file to</h4>
+                <!--h4>Enter ID of the dataset you want to upload a file to</h4>
                 <div class="small-6">
                 <input type="text" name="" class="js-upload-dataset-id">
                 </div>
                 <button class="button js-file-upload-btn">Choose File to Upload</button>
                 <input type="file" name="" class="js-file-input-btn hide">
 
-                <h4>
+                <div>
+                    <input type="text" class="searchable js-searchable js-contacts-widget" name="" placeholder="Type contact name to search">
+                    <span data-tooltip="737ro7-tooltip" aria-haspopup="true" class="has-tip" data-disable-hover="false" tabindex="1" title="dfgjkfd kjfdhgkjfd " aria-describedby="q5hp54-tooltip" data-yeti-box="q5hp54-tooltip" data-toggle="q5hp54-tooltip" data-resize="q5hp54-tooltip" style="
+                        margin-bottom: 100px;
+                        background-color: #3f8fd4;
+                        color: #fff;
+                        width: 32px;
+                        text-align: center;
+                        border-radius: 64px;
+                        height: 32px;
+                        line-height: 32px;
+                    ">?</span>
+
+                </div-->
+
+                <!--h4>
                     View
                 </h4> 
                 <button class="button js-get-datasets">Datasets</button>
                 <button class="button js-get-plots">Plots</button>
-                <!--button class="button js-get-vars">Variables</button>
+                <button class="button js-get-vars">Variables</button>
                 <button class="button js-get-contacts">Contacts</button-->
-                <button class="button js-get-sites">Sites</button>
+                <!--button class="button js-get-sites">Sites</button-->
                 <!--div class="small-12 medium-6">
                     <label>Description
                         <textarea class="js-text-dump" placeholder="Dataset description"></textarea>
                     </label>
-                </div-->
-                <code class="js-text-dump small-12 medium-6"></code>
+                </div>
+                <code class="js-text-dump small-12 medium-9"></code>
 
                 <section class="js-datasets">
-                    
-                </section>
+                </section-->
 
-                <div class="js-edit-form dataset">
-                    
-                </div>
-                <div class="js-data-templates hide">
-                    <textarea class="js-template string"></textarea>
-                    <input type="checkbox" class="boolean js-template" name="">
-                    <select class="js-template list"></select>
-                    <input type="text" class="js-template date" name="">
-                    <input type="text" class="js-template timestamp" name="">
-                    <select class="js-template reference_list"></select>
-                    <input type="text" class="js-template searchable" name="">
-                </div>
+                <!--br><br-->
+                <section class="js-view view-dataset-view hide" data-view="view">
+                    <h4>Approved Datasets</h4>
+                    <div class="all-datasets js-all-datasets"></div>
+                </section>
+                <section class="js-view view-sites-view hide" data-view="view-sites">
+                    <h4>Sites</h4>
+                    <div class="sites-container">
+                        <select class="js-all-sites all-sites">
+                            <option selected disabled value="">Select site</option>
+                        </select>
+
+                        <div class="js-site-info site-info hide">
+                            <div class="js-title title">
+
+                            </div>
+                            <section class="js-main-params main-params columns small-12 medium-6">
+
+                            </section>
+                            <section class="map-view js-map-view columns small-9 medium-6" id="js-map-view"></section>
+                            <section class="js-params site-desc columns small-12">
+
+                            </section>
+                            
+                        </div>
+                    </div>
+                </section>
+                <section class="js-view view-drafts-view hide" data-view="view-draft">
+                    <h4>Drafts</h4>
+                    <div class="all-datasets js-all-datasets"></div>
+                </section>
+                <section class="js-view create-dataset-view hide" data-view="create">
+                    <h4>Create a Dataset</h4>
+                    <form class="js-create-form dataset small-12 medium-9">
+                        <div class="small-12 medium-9 small-centered medium-centered file-drop-zone js-file-drop-zone hide">
+                            <h5>Drop data file here</h5>
+                            <h6>(Allowed file types: zip, rar, tar)</h6>
+                            <input type="file" name="" class="js-file-input-btn">
+                            <button class="button file-select-btn js-file-upload-btn">Select File</button>
+                            <div class="file-name-wrapper js-file-name-wrapper hide">
+                                <span class="js-file-name"></span>
+                                <button class="button secondary js-clear-file-btn">Clear</button>
+                            </div>
+                        </div>
+                        <div class="small-12">
+                            <button type="button" class="button small-10 large-3 js-create-dataset">Save as Draft</button>
+                            <button class="button small-10 large-3 js-submit-dataset hide">Submit Dataset</button>
+                            <button type="button" class="button small-10 large-3 js-save-dataset hide">Save</button>
+                            <input type="reset" class="button secondary small-10 large-3 js-clear-form" value="Clear form">
+                        </div>
+                    </form>
+                    <div class="js-data-templates hide">
+                        <textarea class="js-template string"></textarea>
+                        <!--input type="checkbox" class="boolean js-template" name=""-->
+                        <div class="switch boolean js-template">
+                          <input class="switch-input js-input" id="yes-no" type="checkbox" name="exampleSwitch">
+                          <label class="switch-paddle" for="yes-no">
+                            <span class="show-for-sr">Do you like me?</span>
+                            <span class="switch-active" aria-hidden="true">Yes</span>
+                            <span class="switch-inactive" aria-hidden="true">No</span>
+                          </label>
+                        </div>
+                        <select class="js-template choice">
+                            <option value="" selected disabled>Choose option</option>
+                        </select>
+                        <input type="text" class="js-template date" name="">
+                        <input type="text" class="js-template datetime" name="">
+                        <select class="js-template reference_list"></select>
+                        <input type="text" class="js-template searchable" name="">
+                        <button class="button js-add-new">Add New <span class="js-param-name"></span></button>
+                    </div>
+                    <section class="site-section js-site-section hide js-ref-list" data-list="sites">
+                        <select class="js-all-sites all-sites js-input">
+                            <option selected disabled value="">Select site</option>
+                        </select>
+
+                        <!--div class="js-site-info hide">
+                            <section class="map-view js-map-view columns small-6" id="js-map-view"></section>
+                            <section class="js-params columns small-12">
+
+                            </section>
+                            <div class="columns small-12">
+                                <button class="js-view-site-btn button">View more information for <span class="js-site-id"></span></button>
+                            </div>
+                        </div-->
+                    </section>
+                    <section class="contact-section js-contact-section hide js-ref-list" data-list="contacts">
+                        <select class="js-all-contacts all-contacts js-input">
+                            <option selected disabled value="">Select</option>                        
+                        </select>
+                    </section>
+                    <!--section class="contact-section js-contact-section hide js-ref-list" data-list="contacts">
+                        <input type="text" class="searchable js-searchable js-contacts-widget" name="" placeholder="Type contact name to search">
+                        <input type="hidden" class="js-input js-contact-url">
+                    </section-->
+                    <section class="plot-section js-site-section hide js-ref-list" data-list="plots">
+                        <select class="js-all-plots all-plots js-input">
+                            <option selected disabled value="">Select plot</option>                        
+                        </select>
+                        <!--div class="js-plot-info hide">
+                            <section class="js-plot-params columns small-12">
+
+                            </section>
+                            <div class="columns small-12">
+                                <button class="js-view-plot-btn button">View more information for <span class="js-plot-id"></span></button>
+                            </div>
+                        </div-->
+                    </section>
+                    <section class="var-section js-var-section hide js-ref-list" data-list="variables">
+                        <select class="js-all-vars all-vars js-input">
+                            <option selected disabled value="">Select variable</option>                        
+                        </select>
+                    </section>
+                </section>
+                <footer class="row">
+                    <div class="columns small-12 large-6">
+                        <img src="static/img/us-department-logo.png">
+                    </div>
+                    <div class="columns small-12 large-6 end text-right">
+                        <p class="text-right">&copy; 2017 NGEE Tropics</p>
+                        <a href="">Data Policy</a>
+                        <br>
+                        <a href="">Help and Support</a>
+                    </div>
+                </footer>
             </article>
             <div class="reveal-modal-bg" style="display: none"></div>
             <div id="myModal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
-              <h3 id="modalTitle">Awesome. I have it.</h3>
-              <section class="js-modal-body modal-body">
+                <div class="row pull-right text-right">
+                    <a class="close-reveal-modal js-close-modal pull-right" aria-label="Close">&#215;</a>
+                </div>
+                <h5 id="modalTitle"></h5>
+                <section class="js-modal-body modal-body">
                   
-              </section>
-
-              <a class="close-reveal-modal js-close-modal" aria-label="Close">&#215;</a>
+                </section>
+              <!--button class="button edit-btn js-edit-dataset-btn">Edit</button-->
+                <a class="button download-btn js-file-download-btn hide">Download Dataset</a>
             </div>
-
         </main>
     </body>
 </html>
