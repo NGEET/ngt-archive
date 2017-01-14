@@ -3,6 +3,8 @@ from django.core import mail
 from django.test import Client
 from django.test import TestCase
 
+from archive_api.models import Person
+
 
 class TestLoginSignals(TestCase):
     fixtures = ('test_auth.json', 'test_archive_api.json', )
@@ -20,6 +22,11 @@ class TestLoginSignals(TestCase):
         self.assertEqual(len(user.groups.all()), 1)
         self.assertEqual(user.groups.first().name,"NGT Team")
         self.assertEqual(len(mail.outbox), 0)
+
+        # The user object should have been assinged to the user
+        person = Person.objects.get(email="lcage@foobar.baz")
+        self.assertIsNotNone(person)
+        self.assertEqual(user, person.user)
 
     def test_signal_notify_no_person(self):
         user = User.objects.get(username="flash")
