@@ -309,7 +309,7 @@ class DataSet(models.Model):
             if self.ngt_id is None and self.version == "0.0":
                 # select_for_update Locks table for the rest of the transaction
                 # nowait is honored if the db supports it.
-                max_dataset = DataSet.objects.select_for_update(nowait=True).order_by('-id','-ngt_id')
+                max_dataset = DataSet.objects.select_for_update(nowait=True).order_by('-ngt_id','-id')
                 if max_dataset :
                     self.ngt_id = max_dataset[0].ngt_id + 1
                 else: self.ngt_id=0 # only for the very first dataset
