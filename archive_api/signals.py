@@ -46,6 +46,10 @@ def notify_admin_to_activate_user(sender, user, **kwargs):
             g = Group.objects.get(name='NGT {}'.format(person.get_initial_role_display()))
             g.user_set.add(user)
 
+            # Assign the current user to the Person found
+            person.user = user
+            person.save()
+
         else:
             EmailMessage(
             '[ngt-archive]  {} requesting activation'.format(user.get_full_name()),
