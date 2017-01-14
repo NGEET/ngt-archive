@@ -77,9 +77,6 @@ def dataset_notify_status_change(sender, **kwargs):
     original_status = kwargs['original_status']
     request = kwargs['request']
     root_url = "{}://{}".format(request.scheme, request.get_host())
-    # Add non-standard port
-    if request.get_port() not in ['443','80']:
-        root_url += ":{}".format(request.get_port())
     content = None
 
     if original_status != instance.status:
