@@ -1,4 +1,7 @@
+import django_auth_ldap.backend
+from django.conf import settings
 from django.contrib.auth.models import Group
+from django.contrib.auth.signals import user_logged_in
 from django.core.mail import EmailMessage
 from django.dispatch import Signal
 
@@ -6,11 +9,18 @@ import archive_api
 from archive_api import permissions
 from archive_api.models import DataSet, Person
 
-from django.contrib.auth.signals import user_logged_in
-import django_auth_ldap.backend
-
 # Signal for Dataset Status changes
-dataset_status_change = Signal(providing_args=['request', 'user','instance','original_status'])
+dataset_status_change = Signal(providing_args=['request', 'user', 'instance', 'original_status'])
+
+
+def get_setting(setting_name):
+    """
+    Get the settings value if it exists
+    :param setting_name:
+    :return:
+    """
+    if hasattr(settings,setting_name):
+        return getattr(settings,setting_name,'')
 
 
 def notify_admin_to_activate_user(sender, user, **kwargs):
@@ -32,7 +42,7 @@ def notify_admin_to_activate_user(sender, user, **kwargs):
 
         person = None
         try:
-            person = Person.objects.get(email=user.email, initial_role__lt=2) # Person is a collaborator or team
+            person = Person.objects.get(email=user.email, initial_role__lt=2)  # Person is a collaborator or team
             exists = True
         except Person.DoesNotExist:
 
@@ -52,15 +62,14 @@ def notify_admin_to_activate_user(sender, user, **kwargs):
 
         else:
             EmailMessage(
-            '[ngt-archive]  {} requesting activation'.format(user.get_full_name()),
-            """Dear NGEE Tropics Admins,
+                subject=' {} requesting activation'.format(get_setting("ARCHIVE_API_EMAIL_SUBJECT_PREFIX"), user.get_full_name()),
+                body="""Dear NGEE Tropics Admins,
 
 User {} is requesting access to NGEE Tropics Archive service.
 
             """.format(user.get_full_name()),
-            'ngee-tropics-archive@googlegroups.com',
-            to=['ngee-tropics-archive@googlegroups.com'],
-            reply_to=['ngee-tropics-archive@googlegroups.com']).send()
+                to=[get_setting("ARCHIVE_API_EMAIL_NGEET_TEAM")],
+                reply_to=[get_setting("ARCHIVE_API_EMAIL_NGEET_TEAM")]).send()
 
 
 # This signal is sent after users log in with default django authentication
@@ -99,7 +108,7 @@ Contact the  NGEE Tropics Archive Team (ngee-tropics-archive@googlegroups.com) f
 Sincerely
 The NGEE Tropics Archive Team
 """.format(**{"fullname": instance.created_by.get_full_name(), "dataset_id": instance.data_set_id(),
-                      "dataset_name": dataset_name,"root_url":root_url})
+              "dataset_name": dataset_name, "root_url": root_url})
         elif original_status == permissions.DRAFT and instance.status == permissions.SUBMITTED:
             content = """"Dear {},
 
@@ -126,20 +135,21 @@ Sincerely
 The NGEE Tropics Archive Team
 """
         else:
-           pass # do nothing for now
+            pass  # do nothing for now
 
         if content:
             content = content.format(instance.created_by.get_full_name(), instance.data_set_id(), instance.name,
-                                 instance.created_date,root_url)
+                                     instance.created_date, root_url)
 
     if content:
+        EmailMessage(
+            subject='{} Dataset {} ({})'.format(get_setting("ARCHIVE_API_EMAIL_SUBJECT_PREFIX"),
+                                                archive_api.models.STATUS_CHOICES[int(instance.status)][1],
+                                                           instance.data_set_id()),
+            body=content,
+            to=[instance.created_by.email],
+            cc=[get_setting("ARCHIVE_API_EMAIL_NGEET_TEAM")],
+            reply_to=[get_setting("ARCHIVE_API_EMAIL_NGEET_TEAM")]).send()
 
-        EmailMessage('[ngt-archive]  Dataset {} ({})'.format(archive_api.models.STATUS_CHOICES[int(instance.status)][1],
-                                                                   instance.data_set_id()),
-                     content,
-                     'ngee-tropics-archive@googlegroups.com',
-                     [instance.created_by.email],
-                     cc=['ngee-tropics-archive@googlegroups.com'],
-                     reply_to=['ngee-tropics-archive@googlegroups.com']).send()
 
 dataset_status_change.connect(dataset_notify_status_change)
