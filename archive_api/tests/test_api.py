@@ -417,7 +417,7 @@ class DataSetClientTestCase(APITestCase):
         #########################################################################
         # APPROVED status: Cannot be deleted by anyone
         response = self.client.delete("/api/v1/datasets/2/")  # In submitted mode, owned by auser
-        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+        self.assertEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
 
         response = self.client.get("/api/v1/datasets/2/")  # should be deleted
         self.assertEqual(status.HTTP_200_OK, response.status_code)
@@ -472,7 +472,7 @@ class DataSetClientTestCase(APITestCase):
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(value['status'], '0')  # check that the status is in DRAFT
 
-    def test_user_delete(self):
+    def test_user_delete_not_allowed(self):
         """
         Test Admin delete
         :return:
@@ -482,7 +482,7 @@ class DataSetClientTestCase(APITestCase):
         #########################################################################
         # NGT User may not delete a SUBMITTED dataset
         response = self.client.delete("/api/v1/datasets/2/")  # In submitted mode, owned by auser
-        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+        self.assertEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
 
         # Confirm that it wasn't deleted
         response = self.client.get("/api/v1/datasets/2/")  # should be deleted
@@ -491,12 +491,12 @@ class DataSetClientTestCase(APITestCase):
         #########################################################################
         # NGT user may delete a DRAFT dataset
         response = self.client.delete("/api/v1/datasets/1/")  # In submitted mode, owned by auser
-        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
+        self.assertEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
 
         response = self.client.get("/api/v1/datasets/1/")  # should be deleted
-        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
 
-    def test_admin_delete(self):
+    def test_admin_delete_not_allowed(self):
         """
         Test Admin delete
         :return:
@@ -506,18 +506,18 @@ class DataSetClientTestCase(APITestCase):
         #########################################################################
         # NGT User may  delete a SUBMITTED dataset
         response = self.client.delete("/api/v1/datasets/2/")  # In submitted mode, owned by auser
-        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
+        self.assertEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
 
         response = self.client.get("/api/v1/datasets/2/")  # should be deleted
-        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
 
         #########################################################################
         # NGT User may delete a DRAFT dataset
         response = self.client.delete("/api/v1/datasets/1/")  # In submitted mode, owned by auser
-        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
+        self.assertEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
 
         response = self.client.get("/api/v1/datasets/1/")  # should be deleted
-        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_upload(self):
         """
