@@ -57,7 +57,7 @@ class DataSetViewSet(ModelViewSet):
     permission_classes = (HasEditPermissionOrReadonly, permissions.IsAuthenticated)
     queryset = DataSet.objects.all()
     serializer_class = DataSetSerializer
-    http_method_names = ['get', 'post', 'put', 'delete', 'head', 'options']
+    http_method_names = ['get', 'post', 'put', 'head', 'options']
     parser_classes = (JSONParser, MultiPartParser, FormParser)
     metadata_class = DataSetMetadata
 
