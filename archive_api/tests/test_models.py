@@ -16,6 +16,10 @@ class DataSetTestCaseNew(TestCase):
         id2=DataSet.objects.create(description="Another Fantastic dataset", created_by=self.user, modified_by=self.user).id
         id3= DataSet.objects.create(description="A Fantastic dataset", created_by=self.user, modified_by=self.user,
                                ngt_id=0, version="1.0").id
+        id4 = DataSet.objects.create(description="A Third dataset", created_by=self.user, modified_by=self.user).ngt_id
+
+        # Test NGT increment
+        self.assertEqual(2,id4)
 
         foo = DataSet.objects.get(pk=id1)
         self.assertEqual(foo.ngt_id, 0)
