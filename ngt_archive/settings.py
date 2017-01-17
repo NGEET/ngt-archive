@@ -15,9 +15,6 @@ import sys
 
 import os
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
@@ -161,3 +158,4 @@ try:
         print("DJANGO loading settings.local FOUND\n", file=sys.stdout)
 except ImportError:
     print("DJANGO local settings NOT found. Using default settings", file=sys.stdout)
+
