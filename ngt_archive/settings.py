@@ -15,6 +15,9 @@ import sys
 
 import os
 
+
+EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
