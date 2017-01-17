@@ -6,6 +6,7 @@ import shutil
 from django.contrib.auth.models import User
 from django.core import mail
 from django.test import Client
+from django.test import override_settings
 from os.path import dirname
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -32,6 +33,8 @@ class ApiRootClientTestCase(APITestCase):
                           "plots": "http://testserver/api/v1/plots/"})
 
 
+@override_settings(ARCHIVE_API_EMAIL_NGEET_TEAM='ngeet-team@testserver',
+                   ARCHIVE_API_EMAIL_SUBJECT_PREFIX='[ngt-archive-test]')
 class DataSetClientTestCase(APITestCase):
     fixtures = ('test_auth.json', 'test_archive_api.json',)
 
@@ -148,11 +151,12 @@ class DataSetClientTestCase(APITestCase):
         self.assertEqual(len(mail.outbox), 1)
         email = mail.outbox[0]
 
-        self.assertEqual(email.subject,"[ngt-archive]  Dataset Draft (NGT0003)")
+        self.assertEqual(email.subject,"[ngt-archive-test] Dataset Draft (NGT0003)")
         self.assertTrue(email.body.find("The dataset NGT0003:FooBarBaz has been saved as a draft in the "
                                         "NGEE Tropics Archive. The dataset can be "
                                         "viewed at http://testserver.") > 0)
         self.assertEqual(email.to,['myuser@foo.bar'])
+        self.assertEqual(email.reply_to, ['ngeet-team@testserver'])
 
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(value['access_level'], '0')
@@ -404,10 +408,11 @@ class DataSetClientTestCase(APITestCase):
         self.assertEqual(len(mail.outbox), 1)
         email = mail.outbox[0]
 
-        self.assertEqual(email.subject, "[ngt-archive]  Dataset Approved (NGT0001)")
+        self.assertEqual(email.subject, "[ngt-archive-test] Dataset Approved (NGT0001)")
         self.assertTrue(email.body.find("The dataset NGT0001:Data Set 2  created on 10/28/2016 "
                                         "has been approved for release. The dataset can be viewed at http://testserver.") > 0)
         self.assertEqual(email.to, ['myuser@foo.bar'])
+        self.assertEqual(email.reply_to, ['ngeet-team@testserver'])
 
         #########################################################################
         # APPROVED status: Cannot be deleted by anyone
@@ -592,7 +597,7 @@ class DataSetClientTestCase(APITestCase):
         self.assertEqual({'detail': 'DataSet has been submitted.', 'success': True}, value)
         self.assertEqual(outbox_len + 1, len(mail.outbox))  # notification emails sent
         email = mail.outbox[0]
-        self.assertEqual(email.subject, "[ngt-archive]  Dataset Submitted (NGT0000)")
+        self.assertEqual(email.subject, "[ngt-archive-test] Dataset Submitted (NGT0000)")
         self.assertTrue(email.body.find("The dataset NGT0000:Data Set 1 created on 10/28/2016 was "
                                         "submitted to the NGEE Tropics Archive. The dataset can be "
                                         "viewed at http://testserver.") > 0)
