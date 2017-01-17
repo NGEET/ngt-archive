@@ -235,6 +235,14 @@ class Plot(models.Model):
 
 class DataSet(models.Model):
 
+    ACCESS_PRIVATE = '0'
+    ACCESS_NGEET = '1'
+    ACCESS_PUBLIC = '2'
+
+    STATUS_DRAFT = '0'
+    STATUS_SUBMITTED = '1'
+    STATUS_APPROVED = '2'
+
     def data_set_id(self):
         return "NGT{:04}".format(self.ngt_id)
 
@@ -291,7 +299,9 @@ class DataSet(models.Model):
             ("unsubmit_submitted_dataset", "Can unsubmit a 'submitted' dataset"),
             ("unapprove_approved_dataset", "Can unapprove a 'approved' dataset"),
             ("delete_draft_dataset", "Can delete a 'draft' dataset"),
-            ("delete_submitted_dataset", "Can delete a 'submitted' dataset")
+            ("delete_submitted_dataset", "Can delete a 'submitted' dataset"),
+            ("view_all_datasets", "Can view all datasets"),
+            ("view_ngeet_approved_datasets", "Can view all approved NGEE Tropics datasets")
         )
 
     def save(self, *args, **kwargs):

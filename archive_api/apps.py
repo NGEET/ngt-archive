@@ -22,6 +22,8 @@ def load_groups(sender, **kwargs):
     can_edit_draft = Permission.objects.get(codename='edit_draft_dataset')
     can_delete_draft = Permission.objects.get(codename='delete_draft_dataset')
     can_delete_submitted = Permission.objects.get(codename='delete_submitted_dataset')
+    can_view_all_datasets = Permission.objects.get(codename='view_all_datasets')
+    can_view_ngeet_approved_datasets = Permission.objects.get(codename='view_ngeet_approved_datasets')
 
     admin = Group.objects.filter(name='NGT Administrator')
     if len(admin) == 0:
@@ -29,7 +31,7 @@ def load_groups(sender, **kwargs):
         for perm in [add_measurementvariable, change_measurementvariable, change_dataset, add_dataset, add_site,
                      add_plot, add_contact, change_site, change_plot, change_contact, can_approve_submitted,
                      can_unsubmit_submitted, can_unapprove_submitted, can_delete_draft, can_delete_submitted,
-                     can_edit_draft]:
+                     can_edit_draft, can_view_all_datasets]:
             admin.permissions.add(perm)
         admin.save()
         print("{} group created".format(admin.name))
@@ -38,7 +40,8 @@ def load_groups(sender, **kwargs):
         ngt_user = Group.objects.filter(name='NGT {}'.format(name))
         if len(ngt_user) == 0:
             ngt_user = Group.objects.create(name='NGT {}'.format(name))
-            for perm in [change_dataset, add_dataset, add_contact, can_edit_draft, can_delete_draft]:
+            for perm in [change_dataset, add_dataset, add_contact, can_edit_draft, can_delete_draft,
+                         can_view_ngeet_approved_datasets]:
                 ngt_user.permissions.add(perm)
             ngt_user.save()
             print("{} group created".format(ngt_user.name))

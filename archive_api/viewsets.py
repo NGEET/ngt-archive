@@ -3,6 +3,7 @@ import inspect
 from collections import OrderedDict
 
 import os
+from archive_api import models
 from django.db import transaction
 from django.http import HttpResponse
 from django.utils import timezone
@@ -200,6 +201,26 @@ class DataSetViewSet(ModelViewSet):
         # Send the signal for the status change
         dataset_status_change.send(sender=self.__class__, request=request, user=request.user,
                                    instance=dataset, original_status=original_status)
+
+    def get_queryset(self):
+        """
+        This view should return a list of all the datasets
+        for the currently authenticated user.
+
+        NGT Administrators are allow to view all datasets
+        NGT Team and Collaborators are allow to view public, their own private and approved NGEET datasets
+        """
+        user = self.request.user
+        from django.db.models import Q # for or clause
+        if self.request.user.has_perm('archive_api.view_all_datasets'):
+            return DataSet.objects.all()
+        else:
+            where_clause = Q(access_level=DataSet.ACCESS_PRIVATE, created_by=user) | Q(
+                access_level=DataSet.ACCESS_PUBLIC, status=DataSet.STATUS_APPROVED)
+
+            if self.request.user.has_perm('archive_api.view_ngeet_approved_datasets'):
+                where_clause = where_clause | Q(access_level=DataSet.ACCESS_NGEET, status=DataSet.STATUS_APPROVED)
+            return DataSet.objects.filter(where_clause)
 
 
 class MeasurementVariableViewSet(ModelViewSet):
