@@ -231,7 +231,7 @@ class PersonSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Person
-        fields = '__all__'
+        fields = ('url','first_name','last_name','email','institution_affiliation')
 
 
 class PlotSerializer(serializers.HyperlinkedModelSerializer):
