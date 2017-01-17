@@ -10,6 +10,10 @@ $light-orange: #ffa500;
 .button {
     background-color: $light-green;
 
+    &:focus, &:active {
+        background-color: $light-green;
+    }
+
     &:hover {
         background-color: $dark-green;
     }
@@ -214,6 +218,14 @@ body {
                             opacity: 0;
                             z-index: -1;
                     }
+            }
+
+            .authors {
+                select {
+                    .add-new-option {
+                        display: none;
+                    }
+                }
             }
         }
 
