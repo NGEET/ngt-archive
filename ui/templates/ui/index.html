@@ -198,9 +198,9 @@
                         <input type="text" class="js-template datetime" name="">
                         <select class="js-template reference_list"></select>
                         <input type="text" class="js-template searchable" name="">
-                        <button class="button js-add-new">Add New <span class="js-param-name"></span></button>
+                        <button class="button js-add-new">Add New <span data-param=""></span></button>
                     </div>
-                    <section class="site-section js-site-section hide js-ref-list" data-list="sites">
+                    <section class="site-section js-site-section hide js-ref-list js-multi-container" data-list="sites">
                         <select class="js-all-sites all-sites js-input">
                             <option selected disabled value="">Select site</option>
                         </select>
@@ -215,16 +215,25 @@
                             </div>
                         </div-->
                     </section>
-                    <section class="contact-section js-contact-section hide js-ref-list" data-list="contacts">
+                    <section class="contact-section js-contact-section hide js-ref-list js-multi-container add-new" data-list="contacts">
                         <select class="js-all-contacts all-contacts js-input">
                             <option selected disabled value="">Select</option>                        
                         </select>
+                        <div class="js-new-value hide" class="row">
+                            <h6>Add new entry here</h6>
+                            <div class="columns small-6">
+                                <input class="js-first-name" type="text" name="" placeholder="First name">
+                            </div>
+                            <div class="columns small-6">
+                                <input class="js-last-name" type="text" name="" placeholder="Last name">
+                            </div>
+                        </div>
                     </section>
                     <!--section class="contact-section js-contact-section hide js-ref-list" data-list="contacts">
                         <input type="text" class="searchable js-searchable js-contacts-widget" name="" placeholder="Type contact name to search">
                         <input type="hidden" class="js-input js-contact-url">
                     </section-->
-                    <section class="plot-section js-site-section hide js-ref-list" data-list="plots">
+                    <section class="plot-section js-site-section hide js-ref-list js-multi-container" data-list="plots">
                         <select class="js-all-plots all-plots js-input">
                             <option selected disabled value="">Select plot</option>                        
                         </select>
@@ -237,7 +246,7 @@
                             </div>
                         </div-->
                     </section>
-                    <section class="var-section js-var-section hide js-ref-list" data-list="variables">
+                    <section class="var-section js-var-section hide js-ref-list js-multi-container" data-list="variables">
                         <select class="js-all-vars all-vars js-input">
                             <option selected disabled value="">Select variable</option>                        
                         </select>

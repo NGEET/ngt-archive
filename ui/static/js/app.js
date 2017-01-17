@@ -148,11 +148,15 @@ $(document).ready(function(){
         dataObj.contacts = contacts;
         var contactList = [];
 
+        $('.js-all-contacts').append('<option value="add-new" data-index="-1" class="add-new-option"> - Add New Entry - </option>');
         for(var i=0;i<contacts.length;i++) {
             var option = $('<option value="'+ contacts[i].url +'" data-index="' + i + '">' + contacts[i].first_name + ' ' + contacts[i].last_name + '</option>');
             $('.js-all-contacts').append(option);
         }
 
+        //var addNewInput = $('<div class="js-input js-new-value"><><input type="text" class="hide" placeholder="First Name">');
+
+        //addNewInput.insertAfter('.js-all-contacts');
         /*for(var i=0;i<contacts.length;i++) {
             contactList.push(contacts[i].first_name + ' ' + contacts[i].last_name);
         }
@@ -208,7 +212,7 @@ $(document).ready(function(){
         console.log(plots);
         dataObj.plots = plots;
         for(var i=0;i<plots.length;i++) {
-            var option = $('<option value="'+ plots[i].url +'" data-index="' + i + '">' + plots[i].name + ': ' + (plots[i].plot_id ? plots[i].plot_id : 'N/A') + '</option>');
+            var option = $('<option value="'+ plots[i].url +'" data-index="' + i + '">' + (plots[i].plot_id ? plots[i].plot_id : 'N/A') + ': ' + plots[i].name + '</option>');
             $('.js-all-plots').append(option);
         }
     });
@@ -328,6 +332,17 @@ $(document).ready(function(){
         for(var prop in dataObj.sites[index]) {
             var param = $('<p>' + prop + ': ' + dataObj.sites[index][prop] + '</p>');
             $('.js-plot-params').append(param);
+        }
+    });
+
+    $('body').on('change', '.js-all-contacts', function() {
+        if($(this).val() == 'add-new') {
+            $(this).closest('select').removeClass('js-input');
+            $(this).closest('select').siblings('.js-new-value').removeClass('hide').addClass('js-input');
+        }
+        else {
+            $(this).closest('select').addClass('js-input');
+            $(this).closest('select').siblings('.js-new-value').addClass('hide').removeClass('js-input');
         }
     });
 
@@ -616,64 +631,28 @@ $(document).ready(function(){
             $(this).removeClass('missing');
         });
 
-        $('.js-create-form .js-param').each(function() {
-            var param = $(this).attr('data-param');
-            var required = $(this).hasClass('required');
-            var multi = $(this).hasClass('multi')
-                
-            $(this).find('textarea, input[type="text"], input[type="checkbox"], select').each(function() {
-                if($(this).val() != null) {
-                    if($(this).val().trim()) {
-                        if($(this).hasClass('switch-input')) {
-                            if($(this).val() == 'on') {
-                                submissionObj[param] = true;
-                            }
-                            else {
-                                submissionObj[param] = false;
-                            }
-                        }
-                        else if(multi) {
-                            if(!submissionObj[param]) {
-                                submissionObj[param] = [];
-                            }
-                            submissionObj[param].push($(this).val().trim());
-                        }
-                        else {
-                            submissionObj[param] = $(this).val().trim();
-                        }
-                    }
-                }
-                //hold off on implementing required for now
-                /*else if (required && !$(this).val().trim()) {
-                    submit = false;
-                    $(this).closest('.js-param').addClass('missing');
-                }*/
-            });
-        });
-
-        console.log(submissionObj);
-
-        if(submit) {
-
-            $.when(createDataset(submissionObj)).done(function(status) {
-                if(status) {
-                    alert('Dataset successfully created.');
+        //find all the contacts and authors first before processing others
+        if($('.js-new-value.js-input').length > 0) {
+            var fname = $('.js-new-value.js-input').find('.js-first-name').val();
+            var lname = $('.js-new-value.js-input').find('.js-last-name').val();
+            $.when(createContact(fname, lname, '', '')).done(function(status) {
+                //console.log(status);
+                if(status.url) {
+                    submissionObj['contact'] = status.url;
+                    submissionObj = processForm(submissionObj);
+                    createDraft(submissionObj, submit);
                 }
                 else {
-                    alert('There was an error. Please try again later.');
+                    alert('There was a problem creating the new entry. Please try again');
                 }
-
-                $('.js-clear-form').trigger('click');
             });
-
         }
         else {
-            alert('Please fill in the missing fields');
-            $('body').animate({
-                scrollTop: $('.js-create-form').offset().top
-            }, 500);
+            submissionObj = processForm(submissionObj);
+            createDraft(submissionObj, submit);
         }
         
+        console.log(submissionObj);
     });
 
     $('body').on('click', '.js-edit-dataset-btn', function(event) {
@@ -893,10 +872,83 @@ $(document).ready(function(){
         });
     });
 
+    $('body').on('click', '.js-add-new', function(event) {
+        event.preventDefault();
+        var input = $(this).closest('.js-param').find('.js-multi-container').first().clone();
+        $(input).val('')
+            .prop('checked');
+        input.insertBefore(this);
+    });
+
 });
 
 function populateDatasets(filter, container) {
 
+}
+
+function createDraft(submissionObj, submit) {
+    if(submit) {
+
+        $.when(createDataset(submissionObj)).done(function(status) {
+            if(status) {
+                alert('Dataset successfully created.');
+            }
+            else {
+                alert('There was an error. Please try again later.');
+            }
+
+            $('.js-clear-form').trigger('click');
+        });
+
+    }
+    else {
+        alert('Please fill in the missing fields');
+        $('body').animate({
+            scrollTop: $('.js-create-form').offset().top
+        }, 500);
+    }
+}
+
+function processForm(submissionObj) {
+    $('.js-create-form .js-param').each(function() {
+        var param = $(this).attr('data-param');
+        var required = $(this).hasClass('required');
+        var multi = $(this).hasClass('multi')
+
+        $(this).find('.js-input').each(function() {
+            if($(this).val() != null) {
+                if($(this).val().trim()) {
+                    if($(this).hasClass('js-new-value')) {
+                        ;
+                    }
+                    else if($(this).hasClass('switch-input')) {
+                        if($(this).prop('checked')) {
+                            submissionObj[param] = true;
+                        }
+                        else {
+                            submissionObj[param] = false;
+                        }
+                    }
+                    else if(multi) {
+                        if(!submissionObj[param]) {
+                            submissionObj[param] = [];
+                        }
+                        submissionObj[param].push($(this).val().trim());
+                    }
+                    else {
+                        submissionObj[param] = $(this).val().trim();
+                    }
+                }
+            }
+            //hold off on implementing required for now
+            /*else if (required && !$(this).val().trim()) {
+                submit = false;
+                $(this).closest('.js-param').addClass('missing');
+            }*/
+        });
+    });
+
+    return submissionObj;
 }
 
 function createEditForm(templateType) {
@@ -977,6 +1029,12 @@ function createEditForm(templateType) {
                 var tag = $('<textarea/>').addClass('js-input');
                 paramHTML.append(tag);
                 break;
+            }
+
+            if(templates[templateType][param].multiple) {
+                var multiBtn = $('.js-add-new').clone();
+                multiBtn.attr('data-param', param);
+                paramHTML.append(multiBtn);
             }
             
         }
@@ -1110,7 +1168,7 @@ function editDataset(submissionObj, url) {
     return deferObj.promise();
 }
 
-function createContact(fname, lname, email, institute) {
+/*function createContact(fname, lname, email, institute) {
     var deferObj = jQuery.Deferred();
     /*var data = {
         name: "bla 3454 768 h",
@@ -1138,7 +1196,7 @@ function createContact(fname, lname, email, institute) {
                 "plots": ["http://testserver/api/v1/plots/1/"],
                 "variables": ["http://testserver/api/v1/variables/1/", 
                 "http://testserver/api/v1/variables/2/"]};*/
-    var csrftoken = getCookie('csrftoken');
+    /*var csrftoken = getCookie('csrftoken');
 
     $.ajaxSetup({
         beforeSend: function(xhr, settings) {
@@ -1173,14 +1231,14 @@ function createContact(fname, lname, email, institute) {
     });
 
     return deferObj.promise();
-}
+}*/
 
 function createContact(fname, lname, email, institute) {
     var deferObj = jQuery.Deferred();
-    var data = { "firstName": fname,
-        "lastName": lname,
+    var data = { "first_name": fname,
+        "last_name": lname,
         "email": email,
-        "institutionAffiliation": institute };
+        "institution_affiliation": institute };
     var csrftoken = getCookie('csrftoken');
 
     $.ajaxSetup({
