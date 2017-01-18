@@ -27,6 +27,14 @@ function isURL(str) {
 $(document).ready(function(){
     $(document).foundation();
 
+    if($('.js-auth').attr('data-auth') == 'false') {
+        window.location = 'api/api-auth/login/?next=/';
+    }
+    else if($('.js-auth').attr('data-auth') == 'fluxnet') {
+        $('.js-main-article').addClass('hide');
+        $('.js-error-article').removeClass('hide');
+    }
+
     $.getJSON( "static/js/metadata/dataset.json", function( data ) {  
         templates.datasets = data;
         //console.log(templates.dataset);
@@ -141,10 +149,6 @@ $(document).ready(function(){
     getFileTypes();
 
     console.log('here');
-
-    if($('.js-auth').attr('data-auth') == 'false') {
-        window.location = 'api/api-auth/login/?next=/';
-    }
 
     $.when(getContacts()).done(function(contacts) {
         console.log(contacts);

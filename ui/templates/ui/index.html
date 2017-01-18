@@ -29,11 +29,13 @@
                 <a href="api/api-auth/logout/?next=/" class="float-right">Logout</a>
                 {% if user.is_authenticated  and user.is_activated %}
                     <span class="float-right user">{{ user.get_username }}</span>
+                {% elif user.is_authenticated  and user.is_activated == false %}
+                    <span class="js-auth" data-auth="fluxnet"></span>
                 {% else %} 
                     <span class="js-auth" data-auth="false"></span>
                 {% endif %}
             </nav>
-            <article class="">
+            <article class="main-article js-main-article">
                 <h3>NGEE Tropics Archive</h3>
                 <section class="row js-home-view home-view">
                     <div class="columns small-centered small-4">
@@ -263,6 +265,9 @@
                         <a href="">Help and Support</a>
                     </div>
                 </footer>
+            </article>
+            <article class="error-article js-error-article hide">
+                <p>This FLUXNET account has not been authorized to access the NGEE Tropics Archive. A message has been sent to an administrator. We will be in touch with you shortly.</p>  
             </article>
             <div class="reveal-modal-bg" style="display: none"></div>
             <div id="myModal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
