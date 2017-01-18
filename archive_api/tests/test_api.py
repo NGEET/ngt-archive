@@ -49,7 +49,7 @@ class DataSetClientTestCase(APITestCase):
         self.login_user("auser")
         response = self.client.get('/api/v1/datasets/')
         self.assertEqual(len(json.loads(response.content.decode('utf-8'))),
-                         3)
+                         2)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_options(self):
@@ -616,7 +616,7 @@ class DataSetClientTestCase(APITestCase):
         import os
         shutil.rmtree(os.path.join(settings.DATASET_ARCHIVE_ROOT, "0000"))
 
-    def test_upload_permission_denied(self):
+    def test_upload_not_found(self):
         """
         Test Dataset Archive Upload
         :return:
@@ -624,15 +624,33 @@ class DataSetClientTestCase(APITestCase):
         self.login_user("auser")  # auser does not own Dataset 3
         with open('{}/invalid_upload.txt'.format(dirname(__file__)), 'r') as fp:
             response = self.client.post('/api/v1/datasets/3/upload/', {'attachment': fp})
-            self.assertContains(response, '"detail":"You do not have permission to perform this action."',
-                                status_code=status.HTTP_403_FORBIDDEN)
+            self.assertContains(response, '"detail":"Not found."',
+                                status_code=status.HTTP_404_NOT_FOUND)
 
         response = self.client.get('/api/v1/datasets/3/')
         self.assertNotContains(response, 'http://testserver/api/v1/datasets/3/archive/',
-                               status_code=status.HTTP_200_OK)
+                               status_code=status.HTTP_404_NOT_FOUND)
 
         response = self.client.get('http://testserver/api/v1/datasets/3/archive/')
-        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+
+    def test_upload_permission_denied(self):
+        """
+        Test Dataset Archive Upload
+        :return:
+        """
+        self.login_user("auser")  # auser does not own Dataset 3
+        with open('{}/invalid_upload.txt'.format(dirname(__file__)), 'r') as fp:
+            response = self.client.post('/api/v1/datasets/2/upload/', {'attachment': fp})
+            self.assertContains(response, '"detail":"You do not have permission to perform this action."',
+                                status_code=status.HTTP_403_FORBIDDEN)
+
+        response = self.client.get('/api/v1/datasets/2/')
+        self.assertNotContains(response, 'http://testserver/api/v1/datasets/2/archive/',
+                               status_code=status.HTTP_200_OK)
+
+        response = self.client.get('http://testserver/api/v1/datasets/2/archive/')
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
 
     def test_upload_invalid(self):
         """
