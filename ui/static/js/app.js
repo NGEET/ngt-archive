@@ -138,6 +138,8 @@ $(document).ready(function(){
 
 
     var popup = new Foundation.Reveal($('#myModal'));
+    getFileTypes();
+
     console.log('here');
 
     if($('.js-auth').attr('data-auth') == 'false') {
@@ -736,6 +738,14 @@ $(document).ready(function(){
                                 $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
                             }
                         }
+                        else if(prop == 'access_level') {
+                            for(var k=0;k<templates.datasets.access_level.choices.length;k++) {
+                                if(datasetObj[prop] == templates.datasets.access_level.choices[k].value) {
+                                    substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + templates.datasets.access_level.choices[k].display_name + '</span></div>';
+                                    $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
+                                }
+                            }
+                        }
                         else {
                             substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + (datasetObj[prop] == null ? 'N/A' : datasetObj[prop]) + '</span></div>';
                             $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
@@ -847,7 +857,7 @@ function createDraft(submissionObj, submit) {
         $.when(createDataset(submissionObj)).done(function(status) {
             if(status) {
                 if(fileToUpload) {
-                    if(fileToUpload.name.split('.').pop() == 'zip' || fileToUpload.type.indexOf('zip') != -1) {
+                    if(dataObj.filetypes.indexOf(fileToUpload.type) > -1) {
                         var csrftoken = getCookie('csrftoken');
 
                         $.ajaxSetup({
@@ -1401,6 +1411,30 @@ function getPlots() {
 
     });
 
+    return deferObj.promise();    
+}
+
+function getFileTypes() {
+    var deferObj = jQuery.Deferred();
+    $.ajax({
+        method: "OPTIONS",
+        headers: { 
+            'Accept': 'application/json',
+            'Content-Type': 'application/json' 
+        },
+        url: "api/v1/datasets/",
+        dataType: "json",
+        success: function(data) {
+            dataObj.filetypes = data.detail_routes.upload.parameters.attachment.allowed_mime_types;
+        },
+        fail: function(data) {
+            deferObj.resolve(false);
+        },
+
+        error: function(data, errorThrown) {
+            deferObj.resolve(false);
+        },
+    });     
     return deferObj.promise();    
 }
 
