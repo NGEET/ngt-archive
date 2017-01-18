@@ -1,5 +1,6 @@
 var dataObj = {};
 var templates = {};
+var fileToUpload = '';
 
 function getParameterByName(name, url) {
     if (!url) {
@@ -372,6 +373,7 @@ $(document).ready(function(){
         //$('.js-file-input-btn').val(files[0]);
         $('.js-file-name').html(files[0].name);
         $('.js-file-name-wrapper').removeClass('hide');
+        fileToUpload = files[0];
         console.log(files[0].name);
         alert("Dropped!");
     });
@@ -459,55 +461,9 @@ $(document).ready(function(){
     $('body').on('change', '.js-file-input-btn', function(event) {
         event.preventDefault();
         var dataFile = this.files[0];
+        fileToUpload = this.files[0];
         $('.js-file-name').html(this.files[0].name);
         $('.js-file-name-wrapper').removeClass('hide');
-
-            if(dataFile.name.split('.').pop() == 'zip' || dataFile.type.indexOf('zip') != -1) {
-                //alert('Valid file');
-                var csrftoken = getCookie('csrftoken');
-
-                $.ajaxSetup({
-                    beforeSend: function(xhr, settings) {
-                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                    }
-                });
-
-                var data = {
-                    attachment: this.files
-                };
-
-                var formData = new FormData();
-                formData.append('attachment', this.files[0]);
-
-                //data = JSON.parse(data);
-
-                $.ajax({
-                    method: "POST",
-                    contentType: false,
-                    data: formData,
-                    processData: false,
-                    url: "api/v1/datasets/" + dataSetId + "/upload/",
-                    success: function(data) {
-                        alert('Success');
-                    },
-
-                    fail: function(data) {
-                        var detailObj = JSON.parse(data.responseText);
-                        alert('Fail: ' + detailObj.detail);
-                    },
-
-                    error: function(data, errorThrown) {
-                        var detailObj = JSON.parse(data.responseText);
-                        alert('Fail: ' + detailObj.detail);
-                    },
-
-                });
-
-            }
-            else {
-                alert('Invalid file format. Please upload a zip file');
-            }
-        
         //console.log(this);
     });    
     
@@ -611,7 +567,6 @@ $(document).ready(function(){
                 alert('Fail');
             }
         });
-
         
     })
 
@@ -633,6 +588,7 @@ $(document).ready(function(){
 
         //find all the contacts and authors first before processing others
         if($('.js-new-value.js-input').length > 0) {
+
             var fname = $('.js-new-value.js-input').find('.js-first-name').val();
             var lname = $('.js-new-value.js-input').find('.js-last-name').val();
             $.when(createContact(fname, lname, '', '')).done(function(status) {
@@ -813,7 +769,6 @@ $(document).ready(function(){
                 }
 
             //}
-
             popup.open();
         });
     
@@ -891,10 +846,58 @@ function createDraft(submissionObj, submit) {
 
         $.when(createDataset(submissionObj)).done(function(status) {
             if(status) {
-                alert('Dataset successfully created.');
+                if(fileToUpload) {
+                    if(fileToUpload.name.split('.').pop() == 'zip' || fileToUpload.type.indexOf('zip') != -1) {
+                        var csrftoken = getCookie('csrftoken');
+
+                        $.ajaxSetup({
+                            beforeSend: function(xhr, settings) {
+                                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                            }
+                        });
+
+                        var data = {
+                            attachment: fileToUpload
+                        };
+
+                        var formData = new FormData();
+                        formData.append('attachment', fileToUpload);
+
+                        //data = JSON.parse(data);
+
+                        $.ajax({
+                            method: "POST",
+                            contentType: false,
+                            data: formData,
+                            processData: false,
+                            url: status.url + "upload/",
+                            success: function(data) {
+                                alert('Draft creation and file upload were successful.');
+                            },
+
+                            fail: function(data) {
+                                var detailObj = JSON.parse(data.responseText);
+                                alert('Fail: The draft was created successfully but the file could not be uploaded.');
+                            },
+
+                            error: function(data, errorThrown) {
+                                var detailObj = JSON.parse(data.responseText);
+                                alert('Error: The draft was created successfully but the file could not be uploaded.');
+                            },
+
+                        });
+
+                    }
+                    else {
+                        alert('Invalid file format. Please upload an archive file');
+                    }
+                }
+                else {
+                    alert('Dataset successfully created.');
+                }
             }
             else {
-                alert('There was an error. Please try again later.');
+                alert('There was an error creating the draft. Please try again later.');
             }
 
             $('.js-clear-form').trigger('click');
