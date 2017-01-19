@@ -237,4 +237,20 @@ class Migration(migrations.Migration):
             name='author',
             unique_together={('dataset', 'order', 'author')},
         ),
+        migrations.CreateModel(
+            name='DataSetDownloadLog',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('dataset_status',
+                 models.CharField(choices=[('0', 'Draft'), ('1', 'Submitted'), ('2', 'Approved')], default='0',
+                                  max_length=1)),
+                ('request_url', models.CharField(max_length=256)),
+                ('datetime', models.DateTimeField(auto_now_add=True)),
+                ('ip_address', models.GenericIPAddressField(blank=True, null=True)),
+                (
+                'dataset', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='archive_api.DataSet')),
+                (
+                'user', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to=settings.AUTH_USER_MODEL)),
+            ],
+        )
     ]

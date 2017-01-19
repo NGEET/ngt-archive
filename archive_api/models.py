@@ -325,6 +325,15 @@ class DataSet(models.Model):
                 else: self.ngt_id=0 # only for the very first dataset
             super(DataSet, self).save(*args, **kwargs)
 
+    def __str__(self):
+        return self.__unicode__()
+
+    def __unicode__(self):
+        return '{}-v{}: {}'.format(self.data_set_id(), self.version, self.name)
+
+    def __repr__(self):
+        return '<DataSet {}>'.format(self)
+
 
 class Author(models.Model):
     """ Model for storing data about the Author relationship between DataSet and Person """
@@ -335,3 +344,14 @@ class Author(models.Model):
     class Meta:
         unique_together = ('dataset', 'order', 'author')
         ordering = ('dataset', 'order')
+
+
+class DataSetDownloadLog(models.Model):
+    """Logs archive downloads"""
+
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.DO_NOTHING)
+    dataset = models.ForeignKey(DataSet,on_delete=models.DO_NOTHING)
+    dataset_status  = models.CharField(max_length=1, choices=STATUS_CHOICES)  # (draft [DEFAULT], submitted, approved)
+    request_url = models.CharField(max_length=256)
+    datetime = models.DateTimeField(editable=False, auto_now_add=True)
+    ip_address = models.GenericIPAddressField(blank=True, null=True)

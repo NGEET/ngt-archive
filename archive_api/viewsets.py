@@ -3,7 +3,8 @@ import inspect
 from collections import OrderedDict
 
 import os
-from archive_api import models
+from django.conf import settings
+
 from django.db import transaction
 from django.http import HttpResponse
 from django.utils import timezone
@@ -18,13 +19,27 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from types import FunctionType
 
-from archive_api.models import DataSet, MeasurementVariable, Site, Person, Plot, DatasetArchiveField
+from archive_api.models import DataSet, MeasurementVariable, Site, Person, Plot, DatasetArchiveField, DataSetDownloadLog
 from archive_api.permissions import HasArchivePermission, HasSubmitPermission, HasApprovePermission, \
     HasUnsubmitPermission, \
     HasUnapprovePermission, HasUploadPermission, HasEditPermissionOrReadonly, APPROVED, DRAFT, SUBMITTED
 from archive_api.serializers import DataSetSerializer, MeasurementVariableSerializer, SiteSerializer, PersonSerializer, \
     PlotSerializer
 from archive_api.signals import dataset_status_change
+
+
+def get_ip_address(request):
+    """
+    Get IP address from the specified request. This should handle
+    proxy requests.
+    :param request:
+    :return:
+    """
+    headers = ('HTTP_X_REAL_IP','HTTP_CLIENT_IP','HTTP_X_FORWARDED_FOR', 'REMOTE_ADDR')
+    for header in headers:
+        ip = request.META.get(header)
+        if ip:
+            return ip.split(",")[0].strip()
 
 
 class DataSetMetadata(SimpleMetadata):
@@ -49,6 +64,7 @@ class DataSetMetadata(SimpleMetadata):
         }}
 
         return data
+
 
 
 class DataSetViewSet(ModelViewSet):
@@ -105,6 +121,15 @@ class DataSetViewSet(ModelViewSet):
         response['X-Sendfile'] = smart_str(fullpath)
         response['Content-Disposition'] = 'attachment; filename={}_{}_{}{}'.format(
             dataset.data_set_id(), dataset.version, dataset_name, file_extension)
+
+        DataSetDownloadLog.objects.create(
+            user=request.user,
+            dataset=dataset,
+            dataset_status=dataset.status,
+            request_url=request.path[:255],
+            ip_address=get_ip_address(request)
+        )
+
         return response
 
     @detail_route(methods=['post'],
@@ -183,11 +208,11 @@ class DataSetViewSet(ModelViewSet):
         original_status = dataset.status
         dataset.status = status
 
-
         # This will rollback the transaction on failure
         with transaction.atomic():
             # Validate the archive field with clean()
             dataset.submission_date = timezone.now()
+            dataset.modified_by = request.user
             serializer = DataSetSerializer(dataset, context={'request': request})
             deserializer = DataSetSerializer(dataset, data=serializer.data, context={'request': request})
             deserializer.is_valid(raise_exception=True)
