@@ -109,7 +109,7 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
                           'ngee_tropics_resources', 'funding_organizations', 'originating_institution',
                           'access_level']:  # Check for required fields
                 if field in data.keys():
-                    if not data[field]:
+                    if data[field] is None or (isinstance(data[field], (list, tuple, str)) and not data[field]):
                         errors.setdefault('missingRequiredFields', [])
                         errors['missingRequiredFields'].append(field)
                 else:
