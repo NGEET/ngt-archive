@@ -17,6 +17,19 @@ $light-orange: #ffa500;
     &:hover {
         background-color: $dark-green;
     }
+
+    &.blue {
+        background-color: $dark-blue;
+
+        &:focus, &:active {
+            background-color: $dark-blue;
+        }
+
+        &:hover {
+            background-color: darken($dark-blue, 10%);
+        }
+
+    }
 }
 
 .desc-tooltip {
@@ -29,6 +42,7 @@ $light-orange: #ffa500;
     border: 1px solid #aaa;
     font-size: 12px;
     margin-bottom: 5px;
+    cursor: default;
 }
 
 .tag {
@@ -200,24 +214,29 @@ body {
         }
 
         .create-dataset-view {
-            .file-drop-zone {
-                    text-align: center;
-                    //height: 200px;
-                    border: 2px dashed #777;
-                    padding: 2rem;
-                    position: relative;
-                    margin-bottom: 2rem;
-                    margin-top: 2rem;
+            .param {
+                padding: 5px 10px;
+                margin-bottom: 5px;
+            }
 
-                    input[type="file"] {
-                            position: absolute;
-                            left: 0;
-                            top: 0;
-                            width: 100%;
-                            height: 100%;
-                            opacity: 0;
-                            z-index: -1;
-                    }
+            .file-drop-zone {
+                text-align: center;
+                //height: 200px;
+                border: 2px dashed #777;
+                padding: 2rem;
+                position: relative;
+                margin-bottom: 2rem;
+                margin-top: 2rem;
+
+                input[type="file"] {
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        width: 100%;
+                        height: 100%;
+                        opacity: 0;
+                        z-index: -1;
+                }
             }
 
             .authors {
