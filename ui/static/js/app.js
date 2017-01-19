@@ -60,20 +60,22 @@ $(document).ready(function(){
     var viewParam = getParameterByName('view', window.location.href);
 
     if(viewParam && $('.js-view[data-view="' + viewParam + '"]').length == 1) {
+        $('.js-loading').removeClass('hide');
         $('.js-view[data-view="' + viewParam + '"]').removeClass('hide');
         $('.js-home-view').addClass('hide');
     }
 
     switch(viewParam) {
         case 'create': 
-        
+        $('.js-loading').addClass('hide');
         break;
 
         case 'edit':
-
+        $('.js-loading').addClass('hide');
         break;
 
         case 'view-sites':
+        $('.js-loading').addClass('hide');
         break;
 
         case 'edit-draft':
@@ -99,6 +101,7 @@ $(document).ready(function(){
                                     .append('&nbsp;' + '<button class="js-delete-dataset button" data-url="' + data[i].url + '" data-index="' + i + '">Delete</button>' + '<br><br>');*/
                 }
             }
+            $('.js-loading').addClass('hide');
         });
         break;
 
@@ -138,6 +141,7 @@ $(document).ready(function(){
                                     .append('&nbsp;' + '<button class="js-delete-dataset button" data-url="' + data[i].url + '" data-index="' + i + '">Delete</button>' + '<br><br>');*/
                 
             }
+            $('.js-loading').addClass('hide');
         });
         break;
 
