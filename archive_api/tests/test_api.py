@@ -11,7 +11,7 @@ from os.path import dirname
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from archive_api.models import DatasetArchiveField
+from archive_api.models import DatasetArchiveField, DataSetDownloadLog
 from ngt_archive import settings
 
 
@@ -540,6 +540,10 @@ class DataSetClientTestCase(APITestCase):
         self.assertTrue(response["X-Sendfile"].find("archives/NGT1_1.0_"))
         self.assertTrue("Content-Disposition" in response)
         self.assertEqual("attachment; filename=NGT0000_0.0_Data_Set_1.zip", response['Content-Disposition'])
+
+        downloadlog = DataSetDownloadLog.objects.all()
+        self.assertEqual(len(downloadlog),1)
+
 
         # Now try to upload and invalid file
         with open('{}/invalid_upload.txt'.format(dirname(__file__)), 'r') as fp:

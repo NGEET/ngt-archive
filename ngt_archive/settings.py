@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'daterange_filter',
     'archive_api.apps.ArchiveApiConfig',
     'ui.apps.UiConfig',
     'rest_framework',
