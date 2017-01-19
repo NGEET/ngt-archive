@@ -40,7 +40,7 @@
                 <section class="row js-home-view home-view">
                     <div class="columns small-centered small-4">
                         <button class="button js-view-toggle columns small-12" data-view="create">Create New Dataset</button>
-                        <button class="button js-view-toggle columns small-12" data-view="edit-draft" disabled>Edit Drafts</button>
+                        <button class="button js-view-toggle hide columns small-12" data-view="edit-draft">Edit Drafts</button>
                         <button class="button js-view-toggle columns small-12" data-view="view">View Approved Datasets</button>
                         <a class="button columns small-12" data-view="view" href="/?view=view-sites">View Sites and Plots</a>
                     </div>
@@ -158,10 +158,11 @@
                         </div>
                     </div>
                 </section>
-                <section class="js-view view-drafts-view hide" data-view="view-draft">
+                <section class="js-view view-drafts-view hide" data-view="edit-draft">
                     <h4>Drafts</h4>
                     <div class="all-datasets js-all-datasets"></div>
                 </section>
+                <section class="js-view create-dataset-view hide" data-view="create">
                 <section class="js-view create-dataset-view hide" data-view="create">
                     <h4>Create a Dataset</h4>
                     <form class="js-create-form dataset small-12 medium-9">
@@ -188,7 +189,7 @@
                         <div class="switch boolean js-template">
                           <input class="switch-input js-input" id="yes-no" type="checkbox" name="exampleSwitch">
                           <label class="switch-paddle" for="yes-no">
-                            <span class="show-for-sr">Do you like me?</span>
+                            <span class="show-for-sr"></span>
                             <span class="switch-active" aria-hidden="true">Yes</span>
                             <span class="switch-inactive" aria-hidden="true">No</span>
                           </label>
@@ -269,6 +270,10 @@
             <article class="error-article js-error-article hide">
                 <p>This FLUXNET account has not been authorized to access the NGEE Tropics Archive. A message has been sent to an administrator. We will be in touch with you shortly.</p>  
             </article>
+            <div class="loading js-loading hide">
+                <img src="static/img/482_blk.gif">
+                <h4>Loading</h4>
+            </div>
             <div class="reveal-modal-bg" style="display: none"></div>
             <div id="myModal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
                 <div class="row pull-right text-right">
