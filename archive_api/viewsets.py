@@ -112,7 +112,7 @@ class DataSetViewSet(ModelViewSet):
             dataset_name = "Unnamed"
         dataset_id_version, file_extension = os.path.splitext(dataset.archive.name)
 
-        fullpath = os.path.join(settings.DATASET_ARCHIVE_ROOT, dataset.archive.name)
+        fullpath = os.path.join(settings.ARCHIVE_API['DATASET_ARCHIVE_ROOT'], dataset.archive.name)
         if not dataset.archive:
             return Response({'success': False, 'detail': 'Not found'},
                             status=http_status.HTTP_404_NOT_FOUND)
@@ -142,12 +142,23 @@ class DataSetViewSet(ModelViewSet):
             dataset = self.get_object()
             upload = request.data['attachment']
 
+            if request.user.is_admin and upload.size > settings.ARCHIVE_API['DATASET_ADMIN_MAX_UPLOAD_SIZE']:
+                return Response({'success': False, 'detail': 'Uploaded file size is {:.1f} MB. Max upload size is {:.1f} MB'.format(
+                    upload.size / (1024 * 1024), settings.ARCHIVE_API['DATASET_ADMIN_MAX_UPLOAD_SIZE']/(1024*1024)
+                )},status=http_status.HTTP_400_BAD_REQUEST)
+            elif upload.size > settings.ARCHIVE_API['DATASET_USER_MAX_UPLOAD_SIZE']:
+                return Response({'success': False, 'detail': 'Uploaded file size is {:.1f} MB. Max upload size is {:.1f} MB'.format(
+                    upload.size/(1024*1024), settings.ARCHIVE_API['DATASET_USER_MAX_UPLOAD_SIZE'] / (1024 * 1024)
+                )}, status=http_status.HTTP_400_BAD_REQUEST)
+
             try:
                 # This will rollback the transaction on failure
                 with transaction.atomic():
                     # Validate the archive field with clean()
                     dataset.archive.field.clean(upload, dataset)
                     dataset.archive.save(upload.name, upload)
+                    dataset.modified_by = request.user
+                    dataset.save()
             except ValidationError as ve:
                 return Response({'success': False, 'detail': ve.detail},
                                 status=http_status.HTTP_400_BAD_REQUEST)

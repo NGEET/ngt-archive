@@ -1,6 +1,8 @@
 from __future__ import print_function, unicode_literals
 
 import json
+from unittest import mock
+from unittest.mock import PropertyMock
 
 import shutil
 from django.contrib.auth.models import User
@@ -13,6 +15,15 @@ from rest_framework.test import APITestCase
 
 from archive_api.models import DatasetArchiveField, DataSetDownloadLog
 from ngt_archive import settings
+
+
+# Mock methods
+def get_max_size(size):
+    """ Return a get_size method for the size given"""
+
+    def get_size():
+        return size
+    return get_size()
 
 
 class ApiRootClientTestCase(APITestCase):
@@ -597,7 +608,7 @@ class DataSetClientTestCase(APITestCase):
         self.assertEqual("attachment; filename=NGT0000_1.0_Data_Set_1.zip", response['Content-Disposition'])
 
         import os
-        shutil.rmtree(os.path.join(settings.DATASET_ARCHIVE_ROOT, "0000"))
+        shutil.rmtree(os.path.join(settings.ARCHIVE_API['DATASET_ARCHIVE_ROOT'], "0000"))
 
     def test_upload_not_found(self):
         """
@@ -713,6 +724,28 @@ class DataSetClientTestCase(APITestCase):
                             "http://testserver/api/v1/sites/1/")
         self.assertContains(response,
                             "http://testserver/api/v1/plots/1/")
+
+
+    @mock.patch('django.core.files.uploadedfile.InMemoryUploadedFile.size', new_callable=PropertyMock)
+    def test_issue_117(self, mock_file_size):
+        """Is the backend enforcing a file size limit? Testing limits for admin and regular users"""
+        mock_file_size.return_value = 2147483648
+        self.login_user("auser")
+        with open('{}/Archive.zip'.format(dirname(__file__)), 'rb') as fp:
+            response = self.client.post('/api/v1/datasets/1/upload/', {'attachment': fp})
+            self.assertContains(response, '"success":false',
+                                status_code=status.HTTP_400_BAD_REQUEST)
+            self.assertContains(response,"Uploaded file size is 2048.0 MB. Max upload size is 1024.0 MB",
+                                status_code=status.HTTP_400_BAD_REQUEST)
+
+        mock_file_size.return_value = 3147483648
+        self.login_user("admin")
+        with open('{}/Archive.zip'.format(dirname(__file__)), 'rb') as fp:
+            response = self.client.post('/api/v1/datasets/1/upload/', {'attachment': fp})
+            self.assertContains(response, '"success":false',
+                                status_code=status.HTTP_400_BAD_REQUEST)
+            self.assertContains(response, "Uploaded file size is 3001.7 MB. Max upload size is 2048.0 MB",
+                                status_code=status.HTTP_400_BAD_REQUEST)
 
 
 
