@@ -72,9 +72,9 @@ class DatasetArchiveStorage(FileSystemStorage):
 
         from django.conf import settings
         if "location" not in kwargs:
-            kwargs["location"]=settings.DATASET_ARCHIVE_ROOT
+            kwargs["location"]=settings.ARCHIVE_API['DATASET_ARCHIVE_ROOT']
         if "base_url" not in kwargs:
-            kwargs["base_url"] = settings.DATASET_ARCHIVE_URL
+            kwargs["base_url"] = settings.ARCHIVE_API['DATASET_ARCHIVE_URL']
         super(DatasetArchiveStorage, self).__init__(*args, **kwargs)
 
 
