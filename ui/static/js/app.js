@@ -381,7 +381,6 @@ $(document).ready(function(){
         $('.js-file-name-wrapper').removeClass('hide');
         fileToUpload = files[0];
         console.log(files[0].name);
-        alert("Dropped!");
     });
 
     $('body').on('click', '.js-clear-file-btn', function(event) {
@@ -586,7 +585,12 @@ $(document).ready(function(){
     $('body').on('click', '.js-create-dataset', function(event) {
         event.preventDefault();
         var submissionObj = {};
-        var submit = true;
+        submissionObj.submit = true;
+        var submitMode = false;
+
+        if($(this).hasClass('js-submit')) {
+            submitMode = true;
+        }
 
         $('.js-param.missing').each(function() {
             $(this).removeClass('missing');
@@ -601,8 +605,8 @@ $(document).ready(function(){
                 //console.log(status);
                 if(status.url) {
                     submissionObj['contact'] = status.url;
-                    submissionObj = processForm(submissionObj);
-                    createDraft(submissionObj, submit);
+                    submissionObj = processForm(submissionObj, submitMode);
+                    createDraft(submissionObj, submitMode);
                 }
                 else {
                     alert('There was a problem creating the new entry. Please try again');
@@ -610,11 +614,10 @@ $(document).ready(function(){
             });
         }
         else {
-            submissionObj = processForm(submissionObj);
-            createDraft(submissionObj, submit);
+            submissionObj = processForm(submissionObj, submitMode);
+            createDraft(submissionObj, submitMode);
         }
         
-        console.log(submissionObj);
     });
 
     $('body').on('click', '.js-edit-dataset-btn', function(event) {
@@ -855,9 +858,9 @@ function populateDatasets(filter, container) {
 
 }
 
-function createDraft(submissionObj, submit) {
-    if(submit) {
-
+function createDraft(submissionObj, submitMode) {
+    if(submissionObj.submit) {
+        delete submissionObj.submit;
         $.when(createDataset(submissionObj)).done(function(status) {
             if(status) {
                 if(fileToUpload) {
@@ -907,7 +910,14 @@ function createDraft(submissionObj, submit) {
                     }
                 }
                 else {
-                    alert('Dataset successfully created.');
+                    if(submitMode) {
+                        $.when(submitDataset(status.url)).done(function(submitStatus) {
+                            alert(submitStatus.detail);
+                        });
+                    }
+                    else {
+                        alert('Dataset successfully created.');
+                    }
                 }
             }
             else {
@@ -919,14 +929,14 @@ function createDraft(submissionObj, submit) {
 
     }
     else {
-        alert('Please fill in the missing fields');
+        alert('Please fill all the required fields');
         $('body').animate({
             scrollTop: $('.js-create-form').offset().top
         }, 500);
     }
 }
 
-function processForm(submissionObj) {
+function processForm(submissionObj, submitMode) {
     $('.js-create-form .js-param').each(function() {
         var param = $(this).attr('data-param');
         var required = $(this).hasClass('required');
@@ -956,12 +966,19 @@ function processForm(submissionObj) {
                         submissionObj[param] = $(this).val().trim();
                     }
                 }
+
+                else if(submitMode && required) {
+                    submissionObj.submit = false;
+                    $(this).closest('.js-param').addClass('missing');
+                }
+
             }
-            //hold off on implementing required for now
-            /*else if (required && !$(this).val().trim()) {
-                submit = false;
+
+            else if ($(this).val() == null && submitMode && required) {
+                submissionObj.submit = false;
                 $(this).closest('.js-param').addClass('missing');
-            }*/
+            }
+            
         });
     });
 
@@ -1469,4 +1486,35 @@ function getMetadata(templateType) {
 
     });
     return deferObj.promise();  
+}
+
+function submitDataset(url) {
+    var csrftoken = getCookie('csrftoken');
+
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    });
+
+    var deferObj = jQuery.Deferred();
+    $.ajax({
+        method: "GET",
+        url: url + 'submit/',
+        dataType: "json",
+        success: function(data) {
+            deferObj.resolve(data);
+        },
+
+        fail: function(data) {
+            deferObj.resolve(data);
+        },
+
+        error: function(data, errorThrown) {
+            deferObj.resolve(data);
+        },
+
+    });
+
+    return deferObj.promise();   
 }
