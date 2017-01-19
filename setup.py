@@ -43,6 +43,7 @@ setup(name='ngt_archive',
             "django >= 1.8",
             "djangorestframework == 3.4.3",
             "django-filter ==  0.13.0",
+            "django-daterange-filter == 1.3.0",
             "pyldap",
             "django-auth-ldap == 1.2.8"
       ]
