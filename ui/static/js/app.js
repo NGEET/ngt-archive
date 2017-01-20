@@ -477,7 +477,7 @@ $(document).ready(function(){
     });    
     
 
-    $('body').on('click', '.js-file-download-btn', function(event) {
+    /*$('body').on('click', '.js-file-download-btn', function(event) {
         event.preventDefault();
         var archiveUrl = $(this).attr('data-archive');
         //        https://ngt-dev.lbl.gov/api/v1/datasets/27/archive/
@@ -508,7 +508,7 @@ $(document).ready(function(){
             },
 
         });
-    });
+    });*/
 
     $('body').on('click', '.js-delete-dataset', function(event) {
         event.preventDefault();
