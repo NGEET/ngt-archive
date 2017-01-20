@@ -893,7 +893,15 @@ function createDraft(submissionObj, submitMode) {
                             processData: false,
                             url: status.url + "upload/",
                             success: function(data) {
-                                alert('Draft creation and file upload were successful.');
+                                if(submitMode) {
+                                    $.when(submitDataset(status.url)).done(function(submitStatus) {
+                                        alert(submitStatus.detail);
+                                    });
+                                }
+                                else {
+                                    alert('Draft has been created with the attached file');
+                                }
+                                
                             },
 
                             fail: function(data) {
