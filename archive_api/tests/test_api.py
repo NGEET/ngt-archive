@@ -65,26 +65,6 @@ class DataSetClientTestCase(APITestCase):
         for mime_type in DatasetArchiveField.CONTENT_TYPES:
             self.assertContains(response, mime_type)
 
-    def test_issue_74(self):
-        self.login_user("auser")
-        response = self.client.post('/api/v1/datasets/',
-                                    data='{"description":"A FooBarBaz DataSet",'
-                                         '"authors":["http://testserver/api/v1/people/2/"],'
-                                         '"sites":["http://testserver/api/v1/sites/1/"] ,'
-                                         '"plots":["http://testserver/api/v1/plots/1/"],'
-                                         '"variables":["http://testserver/api/v1/variables/1/"]  }',
-                                    content_type='application/json')
-        self.assertTrue(status.HTTP_201_CREATED, response.status_code)
-        dataset_url = json.loads(response.content.decode('utf-8'))["url"]
-
-        response = self.client.get(dataset_url)
-
-        self.assertContains(response,
-                            "http://testserver/api/v1/variables/1/")
-        self.assertContains(response,
-                            "http://testserver/api/v1/sites/1/")
-        self.assertContains(response,
-                            "http://testserver/api/v1/plots/1/")
 
     def test_client_unnamed(self):
         self.login_user("auser")
@@ -194,7 +174,6 @@ class DataSetClientTestCase(APITestCase):
         self.assertEqual({'missingRequiredFields': ['sites',
                                                     'contact',
                                                     'variables',
-                                                    'ngee_tropics_resources',
                                                     'funding_organizations',
                                                     'originating_institution']}, value)
 
@@ -675,6 +654,66 @@ class DataSetClientTestCase(APITestCase):
 
         response = self.client.get('http://testserver/api/v1/datasets/1/archive/')
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+
+    def test_issue_118(self):
+        """Error when trying to submit a dataset with ngee_tropics_resources set to false #118"""
+        self.login_user("auser")
+        response = self.client.put('/api/v1/datasets/1/',
+                                   data='{"data_set_id":"FooBarBaz","description":"A FooBarBaz DataSet",'
+                                        '"name": "Data Set 1", '
+                                        '"status_comment": "",'
+                                        '"doi": "",'
+                                        '"start_date": "2016-10-28",'
+                                        '"end_date": null,'
+                                        '"qaqc_status": null,'
+                                        '"qaqc_method_description": "",'
+                                        '"ngee_tropics_resources": false,'
+                                        '"funding_organizations": "The funding organizations for my dataset",'
+                                        '"doe_funding_contract_numbers": "",'
+                                        '"acknowledgement": "",'
+                                        '"reference": "",'
+                                        '"additional_reference_information": "",'
+                                        '"originating_institution": "Lawrence Berkeley National Lab",'
+                                        '"additional_access_information": "",'
+                                        '"submission_date": "2016-10-28T19:12:35Z",'
+                                        '"contact": "http://testserver/api/v1/people/4/",'
+                                        '"authors": ["http://testserver/api/v1/people/1/"],'
+                                        '"sites": ["http://testserver/api/v1/sites/1/"],'
+                                        '"plots": ["http://testserver/api/v1/plots/1/"],'
+                                        '"variables": ["http://testserver/api/v1/variables/1/", '
+                                        '"http://testserver/api/v1/variables/2/"]}',
+                                   content_type='application/json')
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+
+        #########################################################################
+        # NGT User may not SUBMIT a dataset in DRAFT mode if they owne it
+        response = self.client.get("/api/v1/datasets/1/submit/")  # In draft mode, owned by auser
+        value = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual({'detail': 'DataSet has been submitted.', 'success': True}, value)
+
+    def test_issue_74(self):
+        self.login_user("auser")
+        response = self.client.post('/api/v1/datasets/',
+                                    data='{"description":"A FooBarBaz DataSet",'
+                                         '"authors":["http://testserver/api/v1/people/2/"],'
+                                         '"sites":["http://testserver/api/v1/sites/1/"] ,'
+                                         '"plots":["http://testserver/api/v1/plots/1/"],'
+                                         '"variables":["http://testserver/api/v1/variables/1/"]  }',
+                                    content_type='application/json')
+        self.assertTrue(status.HTTP_201_CREATED, response.status_code)
+        dataset_url = json.loads(response.content.decode('utf-8'))["url"]
+
+        response = self.client.get(dataset_url)
+
+        self.assertContains(response,
+                            "http://testserver/api/v1/variables/1/")
+        self.assertContains(response,
+                            "http://testserver/api/v1/sites/1/")
+        self.assertContains(response,
+                            "http://testserver/api/v1/plots/1/")
+
 
 
 class SiteClientTestCase(APITestCase):
