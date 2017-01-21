@@ -1,5 +1,6 @@
 var dataObj = {};
 var templates = {};
+var fileToUpload = '';
 
 function getParameterByName(name, url) {
     if (!url) {
@@ -26,6 +27,14 @@ function isURL(str) {
 $(document).ready(function(){
     $(document).foundation();
 
+    if($('.js-auth').attr('data-auth') == 'false') {
+        window.location = 'api/api-auth/login/?next=/';
+    }
+    else if($('.js-auth').attr('data-auth') == 'fluxnet') {
+        $('.js-main-article').addClass('hide');
+        $('.js-error-article').removeClass('hide');
+    }
+
     $.getJSON( "static/js/metadata/dataset.json", function( data ) {  
         templates.datasets = data;
         //console.log(templates.dataset);
@@ -51,20 +60,22 @@ $(document).ready(function(){
     var viewParam = getParameterByName('view', window.location.href);
 
     if(viewParam && $('.js-view[data-view="' + viewParam + '"]').length == 1) {
+        $('.js-loading').removeClass('hide');
         $('.js-view[data-view="' + viewParam + '"]').removeClass('hide');
         $('.js-home-view').addClass('hide');
     }
 
     switch(viewParam) {
         case 'create': 
-        
+        $('.js-loading').addClass('hide');
         break;
 
         case 'edit':
-
+        $('.js-loading').addClass('hide');
         break;
 
         case 'view-sites':
+        $('.js-loading').addClass('hide');
         break;
 
         case 'edit-draft':
@@ -90,6 +101,7 @@ $(document).ready(function(){
                                     .append('&nbsp;' + '<button class="js-delete-dataset button" data-url="' + data[i].url + '" data-index="' + i + '">Delete</button>' + '<br><br>');*/
                 }
             }
+            $('.js-loading').addClass('hide');
         });
         break;
 
@@ -129,6 +141,7 @@ $(document).ready(function(){
                                     .append('&nbsp;' + '<button class="js-delete-dataset button" data-url="' + data[i].url + '" data-index="' + i + '">Delete</button>' + '<br><br>');*/
                 
             }
+            $('.js-loading').addClass('hide');
         });
         break;
 
@@ -137,22 +150,24 @@ $(document).ready(function(){
 
 
     var popup = new Foundation.Reveal($('#myModal'));
-    console.log('here');
+    getFileTypes();
 
-    if($('.js-auth').attr('data-auth') == 'false') {
-        window.location = 'api/api-auth/login/?next=/';
-    }
+    console.log('here');
 
     $.when(getContacts()).done(function(contacts) {
         console.log(contacts);
         dataObj.contacts = contacts;
         var contactList = [];
 
+        $('.js-all-contacts').append('<option value="add-new" data-index="-1" class="add-new-option"> - Add New Entry - </option>');
         for(var i=0;i<contacts.length;i++) {
             var option = $('<option value="'+ contacts[i].url +'" data-index="' + i + '">' + contacts[i].first_name + ' ' + contacts[i].last_name + '</option>');
             $('.js-all-contacts').append(option);
         }
 
+        //var addNewInput = $('<div class="js-input js-new-value"><><input type="text" class="hide" placeholder="First Name">');
+
+        //addNewInput.insertAfter('.js-all-contacts');
         /*for(var i=0;i<contacts.length;i++) {
             contactList.push(contacts[i].first_name + ' ' + contacts[i].last_name);
         }
@@ -208,7 +223,7 @@ $(document).ready(function(){
         console.log(plots);
         dataObj.plots = plots;
         for(var i=0;i<plots.length;i++) {
-            var option = $('<option value="'+ plots[i].url +'" data-index="' + i + '">' + plots[i].name + ': ' + (plots[i].plot_id ? plots[i].plot_id : 'N/A') + '</option>');
+            var option = $('<option value="'+ plots[i].url +'" data-index="' + i + '">' + (plots[i].plot_id ? plots[i].plot_id : 'N/A') + ': ' + plots[i].name + '</option>');
             $('.js-all-plots').append(option);
         }
     });
@@ -331,6 +346,17 @@ $(document).ready(function(){
         }
     });
 
+    $('body').on('change', '.js-all-contacts', function() {
+        if($(this).val() == 'add-new') {
+            $(this).closest('select').removeClass('js-input');
+            $(this).closest('select').siblings('.js-new-value').removeClass('hide').addClass('js-input');
+        }
+        else {
+            $(this).closest('select').addClass('js-input');
+            $(this).closest('select').siblings('.js-new-value').addClass('hide').removeClass('js-input');
+        }
+    });
+
     /*$('body').on('drop', function(event) {
         //event.preventDefault();
         var files = event.originalEvent.dataTransfer.files;
@@ -357,8 +383,8 @@ $(document).ready(function(){
         //$('.js-file-input-btn').val(files[0]);
         $('.js-file-name').html(files[0].name);
         $('.js-file-name-wrapper').removeClass('hide');
+        fileToUpload = files[0];
         console.log(files[0].name);
-        alert("Dropped!");
     });
 
     $('body').on('click', '.js-clear-file-btn', function(event) {
@@ -444,60 +470,14 @@ $(document).ready(function(){
     $('body').on('change', '.js-file-input-btn', function(event) {
         event.preventDefault();
         var dataFile = this.files[0];
+        fileToUpload = this.files[0];
         $('.js-file-name').html(this.files[0].name);
         $('.js-file-name-wrapper').removeClass('hide');
-
-            if(dataFile.name.split('.').pop() == 'zip' || dataFile.type.indexOf('zip') != -1) {
-                //alert('Valid file');
-                var csrftoken = getCookie('csrftoken');
-
-                $.ajaxSetup({
-                    beforeSend: function(xhr, settings) {
-                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                    }
-                });
-
-                var data = {
-                    attachment: this.files
-                };
-
-                var formData = new FormData();
-                formData.append('attachment', this.files[0]);
-
-                //data = JSON.parse(data);
-
-                $.ajax({
-                    method: "POST",
-                    contentType: false,
-                    data: formData,
-                    processData: false,
-                    url: "api/v1/datasets/" + dataSetId + "/upload/",
-                    success: function(data) {
-                        alert('Success');
-                    },
-
-                    fail: function(data) {
-                        var detailObj = JSON.parse(data.responseText);
-                        alert('Fail: ' + detailObj.detail);
-                    },
-
-                    error: function(data, errorThrown) {
-                        var detailObj = JSON.parse(data.responseText);
-                        alert('Fail: ' + detailObj.detail);
-                    },
-
-                });
-
-            }
-            else {
-                alert('Invalid file format. Please upload a zip file');
-            }
-        
         //console.log(this);
     });    
     
 
-    $('body').on('click', '.js-file-download-btn', function(event) {
+    /*$('body').on('click', '.js-file-download-btn', function(event) {
         event.preventDefault();
         var archiveUrl = $(this).attr('data-archive');
         //        https://ngt-dev.lbl.gov/api/v1/datasets/27/archive/
@@ -528,7 +508,7 @@ $(document).ready(function(){
             },
 
         });
-    });
+    });*/
 
     $('body').on('click', '.js-delete-dataset', function(event) {
         event.preventDefault();
@@ -596,7 +576,6 @@ $(document).ready(function(){
                 alert('Fail');
             }
         });
-
         
     })
 
@@ -610,68 +589,37 @@ $(document).ready(function(){
     $('body').on('click', '.js-create-dataset', function(event) {
         event.preventDefault();
         var submissionObj = {};
-        var submit = true;
+        submissionObj.submit = true;
+        var submitMode = false;
+
+        if($(this).hasClass('js-submit')) {
+            submitMode = true;
+        }
 
         $('.js-param.missing').each(function() {
             $(this).removeClass('missing');
         });
 
-        $('.js-create-form .js-param').each(function() {
-            var param = $(this).attr('data-param');
-            var required = $(this).hasClass('required');
-            var multi = $(this).hasClass('multi')
-                
-            $(this).find('textarea, input[type="text"], input[type="checkbox"], select').each(function() {
-                if($(this).val() != null) {
-                    if($(this).val().trim()) {
-                        if($(this).hasClass('switch-input')) {
-                            if($(this).val() == 'on') {
-                                submissionObj[param] = true;
-                            }
-                            else {
-                                submissionObj[param] = false;
-                            }
-                        }
-                        else if(multi) {
-                            if(!submissionObj[param]) {
-                                submissionObj[param] = [];
-                            }
-                            submissionObj[param].push($(this).val().trim());
-                        }
-                        else {
-                            submissionObj[param] = $(this).val().trim();
-                        }
-                    }
-                }
-                //hold off on implementing required for now
-                /*else if (required && !$(this).val().trim()) {
-                    submit = false;
-                    $(this).closest('.js-param').addClass('missing');
-                }*/
-            });
-        });
+        //find all the contacts and authors first before processing others
+        if($('.js-new-value.js-input').length > 0) {
 
-        console.log(submissionObj);
-
-        if(submit) {
-
-            $.when(createDataset(submissionObj)).done(function(status) {
-                if(status) {
-                    alert('Dataset successfully created.');
+            var fname = $('.js-new-value.js-input').find('.js-first-name').val();
+            var lname = $('.js-new-value.js-input').find('.js-last-name').val();
+            $.when(createContact(fname, lname, '', '')).done(function(status) {
+                //console.log(status);
+                if(status.url) {
+                    submissionObj['contact'] = status.url;
+                    submissionObj = processForm(submissionObj, submitMode);
+                    createDraft(submissionObj, submitMode);
                 }
                 else {
-                    alert('There was an error. Please try again later.');
+                    alert('There was a problem creating the new entry. Please try again');
                 }
-
-                $('.js-clear-form').trigger('click');
             });
-
         }
         else {
-            alert('Please fill in the missing fields');
-            $('body').animate({
-                scrollTop: $('.js-create-form').offset().top
-            }, 500);
+            submissionObj = processForm(submissionObj, submitMode);
+            createDraft(submissionObj, submitMode);
         }
         
     });
@@ -801,6 +749,14 @@ $(document).ready(function(){
                                 $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
                             }
                         }
+                        else if(prop == 'access_level') {
+                            for(var k=0;k<templates.datasets.access_level.choices.length;k++) {
+                                if(datasetObj[prop] == templates.datasets.access_level.choices[k].value) {
+                                    substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + templates.datasets.access_level.choices[k].display_name + '</span></div>';
+                                    $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
+                                }
+                            }
+                        }
                         else {
                             substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + (datasetObj[prop] == null ? 'N/A' : datasetObj[prop]) + '</span></div>';
                             $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
@@ -834,7 +790,6 @@ $(document).ready(function(){
                 }
 
             //}
-
             popup.open();
         });
     
@@ -893,10 +848,153 @@ $(document).ready(function(){
         });
     });
 
+    $('body').on('click', '.js-add-new', function(event) {
+        event.preventDefault();
+        var input = $(this).closest('.js-param').find('.js-multi-container').first().clone();
+        $(input).val('')
+            .prop('checked');
+        input.insertBefore(this);
+    });
+
 });
 
 function populateDatasets(filter, container) {
 
+}
+
+function createDraft(submissionObj, submitMode) {
+    if(submissionObj.submit) {
+        delete submissionObj.submit;
+        $.when(createDataset(submissionObj)).done(function(status) {
+            if(status) {
+                if(fileToUpload) {
+                    if(dataObj.filetypes.indexOf(fileToUpload.type) > -1) {
+                        var csrftoken = getCookie('csrftoken');
+
+                        $.ajaxSetup({
+                            beforeSend: function(xhr, settings) {
+                                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                            }
+                        });
+
+                        var data = {
+                            attachment: fileToUpload
+                        };
+
+                        var formData = new FormData();
+                        formData.append('attachment', fileToUpload);
+
+                        //data = JSON.parse(data);
+
+                        $.ajax({
+                            method: "POST",
+                            contentType: false,
+                            data: formData,
+                            processData: false,
+                            url: status.url + "upload/",
+                            success: function(data) {
+                                if(submitMode) {
+                                    $.when(submitDataset(status.url)).done(function(submitStatus) {
+                                        alert(submitStatus.detail);
+                                    });
+                                }
+                                else {
+                                    alert('Draft has been created with the attached file');
+                                }
+                                
+                            },
+
+                            fail: function(data) {
+                                var detailObj = JSON.parse(data.responseText);
+                                alert('Fail: The draft was created successfully but the file could not be uploaded. ' + detailObj.detail);
+                            },
+
+                            error: function(data, errorThrown) {
+                                var detailObj = JSON.parse(data.responseText);
+                                alert('Error: The draft was created successfully but the file could not be uploaded. ' + detailObj.detail);
+                            },
+
+                        });
+
+                    }
+                    else {
+                        alert('Invalid file format. Please upload an archive file');
+                    }
+                }
+                else {
+                    if(submitMode) {
+                        $.when(submitDataset(status.url)).done(function(submitStatus) {
+                            alert(submitStatus.detail);
+                        });
+                    }
+                    else {
+                        alert('Dataset successfully created.');
+                    }
+                }
+            }
+            else {
+                alert('There was an error creating the draft. Please try again later.');
+            }
+
+            $('.js-clear-form').trigger('click');
+        });
+
+    }
+    else {
+        alert('Please fill all the required fields');
+        $('body').animate({
+            scrollTop: $('.js-create-form').offset().top
+        }, 500);
+    }
+}
+
+function processForm(submissionObj, submitMode) {
+    $('.js-create-form .js-param').each(function() {
+        var param = $(this).attr('data-param');
+        var required = $(this).hasClass('required');
+        var multi = $(this).hasClass('multi')
+
+        $(this).find('.js-input').each(function() {
+            if($(this).val() != null) {
+                if($(this).val().trim()) {
+                    if($(this).hasClass('js-new-value')) {
+                        ;
+                    }
+                    else if($(this).hasClass('switch-input')) {
+                        if($(this).prop('checked')) {
+                            submissionObj[param] = true;
+                        }
+                        else {
+                            submissionObj[param] = false;
+                        }
+                    }
+                    else if(multi) {
+                        if(!submissionObj[param]) {
+                            submissionObj[param] = [];
+                        }
+                        submissionObj[param].push($(this).val().trim());
+                    }
+                    else {
+                        submissionObj[param] = $(this).val().trim();
+                    }
+                }
+
+                else if(submitMode && required) {
+                    submissionObj.submit = false;
+                    $(this).closest('.js-param').addClass('missing');
+                }
+
+            }
+
+            else if ($(this).val() == null && submitMode && required) {
+                submissionObj.submit = false;
+                $(this).closest('.js-param').addClass('missing');
+            }
+            
+        });
+    });
+
+    return submissionObj;
 }
 
 function createEditForm(templateType) {
@@ -977,6 +1075,12 @@ function createEditForm(templateType) {
                 var tag = $('<textarea/>').addClass('js-input');
                 paramHTML.append(tag);
                 break;
+            }
+
+            if(templates[templateType][param].multiple) {
+                var multiBtn = $('.js-add-new').clone();
+                multiBtn.attr('data-param', param);
+                paramHTML.append(multiBtn);
             }
             
         }
@@ -1110,7 +1214,7 @@ function editDataset(submissionObj, url) {
     return deferObj.promise();
 }
 
-function createContact(fname, lname, email, institute) {
+/*function createContact(fname, lname, email, institute) {
     var deferObj = jQuery.Deferred();
     /*var data = {
         name: "bla 3454 768 h",
@@ -1138,7 +1242,7 @@ function createContact(fname, lname, email, institute) {
                 "plots": ["http://testserver/api/v1/plots/1/"],
                 "variables": ["http://testserver/api/v1/variables/1/", 
                 "http://testserver/api/v1/variables/2/"]};*/
-    var csrftoken = getCookie('csrftoken');
+    /*var csrftoken = getCookie('csrftoken');
 
     $.ajaxSetup({
         beforeSend: function(xhr, settings) {
@@ -1173,14 +1277,14 @@ function createContact(fname, lname, email, institute) {
     });
 
     return deferObj.promise();
-}
+}*/
 
 function createContact(fname, lname, email, institute) {
     var deferObj = jQuery.Deferred();
-    var data = { "firstName": fname,
-        "lastName": lname,
+    var data = { "first_name": fname,
+        "last_name": lname,
         "email": email,
-        "institutionAffiliation": institute };
+        "institution_affiliation": institute };
     var csrftoken = getCookie('csrftoken');
 
     $.ajaxSetup({
@@ -1343,6 +1447,30 @@ function getPlots() {
     return deferObj.promise();    
 }
 
+function getFileTypes() {
+    var deferObj = jQuery.Deferred();
+    $.ajax({
+        method: "OPTIONS",
+        headers: { 
+            'Accept': 'application/json',
+            'Content-Type': 'application/json' 
+        },
+        url: "api/v1/datasets/",
+        dataType: "json",
+        success: function(data) {
+            dataObj.filetypes = data.detail_routes.upload.parameters.attachment.allowed_mime_types;
+        },
+        fail: function(data) {
+            deferObj.resolve(false);
+        },
+
+        error: function(data, errorThrown) {
+            deferObj.resolve(false);
+        },
+    });     
+    return deferObj.promise();    
+}
+
 function getMetadata(templateType) {
     var deferObj = jQuery.Deferred();
     $.ajax({
@@ -1370,4 +1498,35 @@ function getMetadata(templateType) {
 
     });
     return deferObj.promise();  
+}
+
+function submitDataset(url) {
+    var csrftoken = getCookie('csrftoken');
+
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    });
+
+    var deferObj = jQuery.Deferred();
+    $.ajax({
+        method: "GET",
+        url: url + 'submit/',
+        dataType: "json",
+        success: function(data) {
+            deferObj.resolve(data);
+        },
+
+        fail: function(data) {
+            deferObj.resolve(data);
+        },
+
+        error: function(data, errorThrown) {
+            deferObj.resolve(data);
+        },
+
+    });
+
+    return deferObj.promise();   
 }

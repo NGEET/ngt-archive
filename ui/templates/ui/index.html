@@ -29,16 +29,18 @@
                 <a href="api/api-auth/logout/?next=/" class="float-right">Logout</a>
                 {% if user.is_authenticated  and user.is_activated %}
                     <span class="float-right user">{{ user.get_username }}</span>
+                {% elif user.is_authenticated  and user.is_activated == false %}
+                    <span class="js-auth" data-auth="fluxnet"></span>
                 {% else %} 
                     <span class="js-auth" data-auth="false"></span>
                 {% endif %}
             </nav>
-            <article class="">
+            <article class="main-article js-main-article">
                 <h3>NGEE Tropics Archive</h3>
                 <section class="row js-home-view home-view">
                     <div class="columns small-centered small-4">
                         <button class="button js-view-toggle columns small-12" data-view="create">Create New Dataset</button>
-                        <button class="button js-view-toggle columns small-12" data-view="edit-draft" disabled>Edit Drafts</button>
+                        <button class="button js-view-toggle hide columns small-12" data-view="edit-draft">Edit Drafts</button>
                         <button class="button js-view-toggle columns small-12" data-view="view">View Approved Datasets</button>
                         <a class="button columns small-12" data-view="view" href="/?view=view-sites">View Sites and Plots</a>
                     </div>
@@ -156,16 +158,16 @@
                         </div>
                     </div>
                 </section>
-                <section class="js-view view-drafts-view hide" data-view="view-draft">
+                <section class="js-view view-drafts-view hide" data-view="edit-draft">
                     <h4>Drafts</h4>
                     <div class="all-datasets js-all-datasets"></div>
                 </section>
                 <section class="js-view create-dataset-view hide" data-view="create">
                     <h4>Create a Dataset</h4>
                     <form class="js-create-form dataset small-12 medium-9">
-                        <div class="small-12 medium-9 small-centered medium-centered file-drop-zone js-file-drop-zone hide">
+                        <div class="small-12 medium-9 small-centered medium-centered file-drop-zone js-file-drop-zone">
                             <h5>Drop data file here</h5>
-                            <h6>(Allowed file types: zip, rar, tar)</h6>
+                            <h6>Allowed file types: zip, rar, tar. To download free zipping software, click <a href="http://www.7-zip.org/" target="_blank">here</a></h6>
                             <input type="file" name="" class="js-file-input-btn">
                             <button class="button file-select-btn js-file-upload-btn">Select File</button>
                             <div class="file-name-wrapper js-file-name-wrapper hide">
@@ -175,7 +177,7 @@
                         </div>
                         <div class="small-12">
                             <button type="button" class="button small-10 large-3 js-create-dataset">Save as Draft</button>
-                            <button class="button small-10 large-3 js-submit-dataset hide">Submit Dataset</button>
+                            <button class="button blue small-10 large-3 js-create-dataset js-submit">Submit Dataset</button>
                             <button type="button" class="button small-10 large-3 js-save-dataset hide">Save</button>
                             <input type="reset" class="button secondary small-10 large-3 js-clear-form" value="Clear form">
                         </div>
@@ -186,7 +188,7 @@
                         <div class="switch boolean js-template">
                           <input class="switch-input js-input" id="yes-no" type="checkbox" name="exampleSwitch">
                           <label class="switch-paddle" for="yes-no">
-                            <span class="show-for-sr">Do you like me?</span>
+                            <span class="show-for-sr"></span>
                             <span class="switch-active" aria-hidden="true">Yes</span>
                             <span class="switch-inactive" aria-hidden="true">No</span>
                           </label>
@@ -198,9 +200,9 @@
                         <input type="text" class="js-template datetime" name="">
                         <select class="js-template reference_list"></select>
                         <input type="text" class="js-template searchable" name="">
-                        <button class="button js-add-new">Add New <span class="js-param-name"></span></button>
+                        <button class="button js-add-new">+ Add<span data-param=""></span></button>
                     </div>
-                    <section class="site-section js-site-section hide js-ref-list" data-list="sites">
+                    <section class="site-section js-site-section hide js-ref-list js-multi-container" data-list="sites">
                         <select class="js-all-sites all-sites js-input">
                             <option selected disabled value="">Select site</option>
                         </select>
@@ -215,16 +217,25 @@
                             </div>
                         </div-->
                     </section>
-                    <section class="contact-section js-contact-section hide js-ref-list" data-list="contacts">
+                    <section class="contact-section js-contact-section hide js-ref-list js-multi-container add-new" data-list="contacts">
                         <select class="js-all-contacts all-contacts js-input">
                             <option selected disabled value="">Select</option>                        
                         </select>
+                        <div class="js-new-value hide" class="row">
+                            <h6>Add new entry here</h6>
+                            <div class="columns small-6">
+                                <input class="js-first-name" type="text" name="" placeholder="First name">
+                            </div>
+                            <div class="columns small-6">
+                                <input class="js-last-name" type="text" name="" placeholder="Last name">
+                            </div>
+                        </div>
                     </section>
                     <!--section class="contact-section js-contact-section hide js-ref-list" data-list="contacts">
                         <input type="text" class="searchable js-searchable js-contacts-widget" name="" placeholder="Type contact name to search">
                         <input type="hidden" class="js-input js-contact-url">
                     </section-->
-                    <section class="plot-section js-site-section hide js-ref-list" data-list="plots">
+                    <section class="plot-section js-site-section hide js-ref-list js-multi-container" data-list="plots">
                         <select class="js-all-plots all-plots js-input">
                             <option selected disabled value="">Select plot</option>                        
                         </select>
@@ -237,7 +248,7 @@
                             </div>
                         </div-->
                     </section>
-                    <section class="var-section js-var-section hide js-ref-list" data-list="variables">
+                    <section class="var-section js-var-section hide js-ref-list js-multi-container" data-list="variables">
                         <select class="js-all-vars all-vars js-input">
                             <option selected disabled value="">Select variable</option>                        
                         </select>
@@ -255,6 +266,13 @@
                     </div>
                 </footer>
             </article>
+            <article class="error-article js-error-article hide">
+                <p>This FLUXNET account has not been authorized to access the NGEE Tropics Archive. A message has been sent to an administrator. We will be in touch with you shortly.</p>  
+            </article>
+            <div class="loading js-loading hide">
+                <img src="static/img/482_blk.gif">
+                <h4>Loading</h4>
+            </div>
             <div class="reveal-modal-bg" style="display: none"></div>
             <div id="myModal" class="reveal-modal" data-reveal aria-labelledby="modalTitle" aria-hidden="true" role="dialog">
                 <div class="row pull-right text-right">
