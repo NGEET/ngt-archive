@@ -60,11 +60,11 @@
     "contact": {
         "type": "reference_list",
         "list_name": "contacts",
-        "required": false,
+        "required": true,
         "read_only": false,
         "label": "Dataset Contact",
         "sequence": 7,
-        "multiple": true,
+        "multiple": false,
         "description": "Name of contact person for the dataset."
     },
     "variables": {
