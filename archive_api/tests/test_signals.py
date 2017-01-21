@@ -17,6 +17,7 @@ class TestLoginSignals(TestCase):
 
     def test_signal_add_user_to_group(self):
         user = User.objects.get(username="lukecage")
+        self.assertEqual(user.is_active,False)
 
         self.assertEqual(len(user.groups.all()), 0)
         self.client.force_login(user)
@@ -24,6 +25,7 @@ class TestLoginSignals(TestCase):
         self.assertEqual(len(user.groups.all()), 1)
         self.assertEqual(user.groups.first().name, "NGT Team")
         self.assertEqual(len(mail.outbox), 0)
+        self.assertEqual(user.is_active, True)
 
         # The user object should have been assinged to the user
         person = Person.objects.get(email="lcage@foobar.baz")
@@ -33,11 +35,15 @@ class TestLoginSignals(TestCase):
     def test_signal_notify_no_person(self):
         user = User.objects.get(username="flash")
 
+        self.assertEqual(user.is_active,False)
+
         self.assertEqual(len(user.groups.all()), 0)
         self.client.force_login(user)
 
         self.assertEqual(len(user.groups.all()), 0)
         self.assertEqual(len(mail.outbox), 1)
+
+        self.assertEqual(user.is_active,False)
 
         email = mail.outbox[0]
 
@@ -49,11 +55,15 @@ class TestLoginSignals(TestCase):
     def test_signal_notify(self):
         user = User.objects.get(username="vibe")
 
+        self.assertEqual(user.is_active,False)
+
         self.assertEqual(len(user.groups.all()), 0)
         self.client.force_login(user)
 
         self.assertEqual(len(user.groups.all()), 0)
         self.assertEqual(len(mail.outbox), 1)
+
+        self.assertEqual(user.is_active,False)
 
         email = mail.outbox[0]
 

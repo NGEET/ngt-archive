@@ -43,7 +43,6 @@ def notify_admin_to_activate_user(sender, user, **kwargs):
         person = None
         try:
             person = Person.objects.get(email=user.email, initial_role__lt=2)  # Person is a collaborator or team
-            exists = True
         except Person.DoesNotExist:
 
             people = Person.objects.all().filter(first_name__iexact=user.first_name, last_name__iexact=user.last_name,
@@ -55,6 +54,7 @@ def notify_admin_to_activate_user(sender, user, **kwargs):
 
             g = Group.objects.get(name='NGT {}'.format(person.get_initial_role_display()))
             g.user_set.add(user)
+            user.is_active = True
 
             # Assign the current user to the Person found
             person.user = user
