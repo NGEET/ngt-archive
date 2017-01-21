@@ -244,6 +244,43 @@ body {
             .param {
                 padding: 5px 10px;
                 margin-bottom: 5px;
+
+                section:first-of-type {
+                    .del-param {
+                        display: none;
+                    }
+
+                    input, select, div {
+                        width: 100%;
+                    }
+                }
+
+                section {
+                    input, select, div {
+                        width: 90%;
+                        display: inline-block;
+                    }
+
+                    .del-param {
+                        width: 10%;
+                        display: inline-block;
+                        text-align: center;
+                        cursor: pointer;
+                        background-color: #888;
+                        height: 39px;
+                        vertical-align: top;
+                        line-height: 36px;
+                        color: #fff;
+
+                        &:hover {
+                           background-color: darken(#777, 10%); 
+                        }
+
+                        span {
+                            text-align: center;
+                        }
+                    }
+                }
             }
 
             .file-drop-zone {
@@ -267,11 +304,7 @@ body {
             }
 
             .authors {
-                select {
-                    .add-new-option {
-                        display: none;
-                    }
-                }
+                
             }
         }
 
