@@ -7,8 +7,8 @@ from django.test import override_settings
 from archive_api.models import Person
 
 
-@override_settings(ARCHIVE_API_EMAIL_NGEET_TEAM='ngeet-team@testserver',
-                   ARCHIVE_API_EMAIL_SUBJECT_PREFIX='[ngt-archive-test]')
+@override_settings(EMAIL_NGEET_TEAM='ngeet-team@testserver',
+                   EMAIL_SUBJECT_PREFIX='[ngt-archive-test]')
 class TestLoginSignals(TestCase):
     fixtures = ('test_auth.json', 'test_archive_api.json',)
 
