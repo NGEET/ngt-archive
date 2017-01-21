@@ -35,7 +35,7 @@ def notify_admin_to_activate_user(sender, user, **kwargs):
     :return:
     """
 
-    if not user.groups.all()  and not user.is_superuser:
+    if not user.groups.all() and not user.is_superuser:
         # check existing list
         # if not in any of these groups send email to admins
 
@@ -61,12 +61,12 @@ def notify_admin_to_activate_user(sender, user, **kwargs):
 
         else:
             EmailMessage(
-                subject=' {} requesting activation'.format(get_setting("EMAIL_SUBJECT_PREFIX"), user.get_full_name()),
+                subject=' {} requesting activation'.format(get_setting("EMAIL_SUBJECT_PREFIX"), user.username),
                 body="""Dear NGEE Tropics Admins,
 
-User {} is requesting access to NGEE Tropics Archive service.
+User '{}' is requesting access to NGEE Tropics Archive service.
 
-            """.format(user.get_full_name()),
+            """.format(user.username),
                 to=get_setting("EMAIL_NGEET_TEAM"),
                 reply_to=get_setting("EMAIL_NGEET_TEAM")).send()
 
