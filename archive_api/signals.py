@@ -19,8 +19,7 @@ def get_setting(setting_name):
     :param setting_name:
     :return:
     """
-    if hasattr(settings,setting_name):
-        return getattr(settings,setting_name,'')
+    return settings.ARCHIVE_API[setting_name]
 
 
 def notify_admin_to_activate_user(sender, user, **kwargs):
@@ -36,7 +35,7 @@ def notify_admin_to_activate_user(sender, user, **kwargs):
     :return:
     """
 
-    if not user.groups.all():
+    if not user.groups.all()  and not user.is_superuser:
         # check existing list
         # if not in any of these groups send email to admins
 
@@ -68,8 +67,8 @@ def notify_admin_to_activate_user(sender, user, **kwargs):
 User {} is requesting access to NGEE Tropics Archive service.
 
             """.format(user.get_full_name()),
-                to=[get_setting("EMAIL_NGEET_TEAM")],
-                reply_to=[get_setting("EMAIL_NGEET_TEAM")]).send()
+                to=get_setting("EMAIL_NGEET_TEAM"),
+                reply_to=get_setting("EMAIL_NGEET_TEAM")).send()
 
 
 # This signal is sent after users log in with default django authentication
@@ -148,8 +147,8 @@ The NGEE Tropics Archive Team
                                                            instance.data_set_id()),
             body=content,
             to=[instance.created_by.email],
-            cc=[get_setting("EMAIL_NGEET_TEAM")],
-            reply_to=[get_setting("EMAIL_NGEET_TEAM")]).send()
+            cc=get_setting("EMAIL_NGEET_TEAM"),
+            reply_to=get_setting("EMAIL_NGEET_TEAM")).send()
 
 
 dataset_status_change.connect(dataset_notify_status_change)

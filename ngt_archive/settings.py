@@ -16,9 +16,7 @@ import sys
 import os
 
 
-
 EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
@@ -158,7 +156,7 @@ ARCHIVE_API = {
     'DATASET_ARCHIVE_URL': '/archives/',  # not used
     'DATASET_ADMIN_MAX_UPLOAD_SIZE': 2147483648, # in bytes
     'DATASET_USER_MAX_UPLOAD_SIZE': 1073741824, # in bytes
-    'EMAIL_NGEET_TEAM': 'ngeet-team@testserver',
+    'EMAIL_NGEET_TEAM': ['ngeet-team@testserver'],
     'EMAIL_SUBJECT_PREFIX' : '[ngt-archive-test]'
 
 }
