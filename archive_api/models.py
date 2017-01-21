@@ -154,7 +154,7 @@ class NGTUser(django.contrib.auth.models.User):
 
     @property
     def is_activated(self):
-        return self.groups.filter(name__in=['NGT Team', 'NGT Administrator','NGT Collaborator']).exists() or self.is_superuser
+        return self.is_active or self.is_superuser
 
 
 class Person(models.Model):

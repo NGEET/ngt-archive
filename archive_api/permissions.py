@@ -1,5 +1,6 @@
 from rest_framework import permissions
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.permissions import BasePermission
 
 import archive_api
 
@@ -10,6 +11,15 @@ APPROVED = archive_api.models.STATUS_CHOICES[2][0]
 PRIVATE = archive_api.models.ACCESS_CHOICES[0][0]
 NGEET = archive_api.models.ACCESS_CHOICES[1][0]
 PUBLIC = archive_api.models.ACCESS_CHOICES[2][0]
+
+
+class IsActivated(BasePermission):
+    """
+    Allows access only to authenticated users.
+    """
+
+    def has_permission(self, request, view):
+        return request.user and request.user.is_activated
 
 
 class HasArchivePermission(permissions.BasePermission):
