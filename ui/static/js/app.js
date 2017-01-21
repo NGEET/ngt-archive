@@ -906,12 +906,12 @@ function createDraft(submissionObj, submitMode) {
 
                             fail: function(data) {
                                 var detailObj = JSON.parse(data.responseText);
-                                alert('Fail: The draft was created successfully but the file could not be uploaded.');
+                                alert('Fail: The draft was created successfully but the file could not be uploaded. ' + detailObj.detail);
                             },
 
                             error: function(data, errorThrown) {
                                 var detailObj = JSON.parse(data.responseText);
-                                alert('Error: The draft was created successfully but the file could not be uploaded.');
+                                alert('Error: The draft was created successfully but the file could not be uploaded. ' + detailObj.detail);
                             },
 
                         });
