@@ -71,3 +71,14 @@ class TestLoginSignals(TestCase):
         self.assertEqual(email.reply_to, ['ngeet-team@testserver'])
         self.assertTrue(email.subject, "[ngt-archive-test] Cisco Ramon requesting activation")
         self.assertTrue(email.body.find("User Cisco Ramon is requesting access to NGEE Tropics Archive service.") > -1)
+
+    def test_signal_no_notify(self):
+        user = User.objects.get(username="superadmin")
+
+        self.assertEqual(user.is_active,True)
+
+        self.assertEqual(len(user.groups.all()), 0)
+        self.client.force_login(user)
+
+        self.assertEqual(len(user.groups.all()), 0)
+        self.assertEqual(len(mail.outbox), 0)

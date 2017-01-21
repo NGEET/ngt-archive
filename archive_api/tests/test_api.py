@@ -158,7 +158,7 @@ class DataSetClientTestCase(APITestCase):
                                         "NGEE Tropics Archive. The dataset can be "
                                         "viewed at http://testserver.") > 0)
         self.assertEqual(email.to,['myuser@foo.bar'])
-        self.assertEqual(email.reply_to, ['ngeet-team@testserver'])
+        self.assertEqual(email.reply_to, settings.ARCHIVE_API['EMAIL_NGEET_TEAM'])
 
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(value['access_level'], '0')
@@ -413,7 +413,7 @@ class DataSetClientTestCase(APITestCase):
         self.assertTrue(email.body.find("The dataset NGT0001:Data Set 2  created on 10/28/2016 "
                                         "has been approved for release. The dataset can be viewed at http://testserver.") > 0)
         self.assertEqual(email.to, ['myuser@foo.bar'])
-        self.assertEqual(email.reply_to, ['ngeet-team@testserver'])
+        self.assertEqual(email.reply_to, settings.ARCHIVE_API['EMAIL_NGEET_TEAM'])
 
         #########################################################################
         # APPROVED status: Cannot be deleted by anyone
