@@ -57,6 +57,12 @@ class DataSetClientTestCase(APITestCase):
         self.client = Client()
 
     def test_client_list(self):
+
+        # Unauthorized user that is not in any groups
+        self.login_user("vibe")
+        response = self.client.get('/api/v1/datasets/')
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+
         self.login_user("auser")
         response = self.client.get('/api/v1/datasets/')
         self.assertEqual(len(json.loads(response.content.decode('utf-8'))),
@@ -76,8 +82,8 @@ class DataSetClientTestCase(APITestCase):
         for mime_type in DatasetArchiveField.CONTENT_TYPES:
             self.assertContains(response, mime_type)
 
-
     def test_client_unnamed(self):
+
         self.login_user("auser")
         response = self.client.post('/api/v1/datasets/',
                                     data='{"description":"A FooBarBaz DataSet",'
@@ -103,6 +109,11 @@ class DataSetClientTestCase(APITestCase):
         self.assertEqual("attachment; filename=NGT0003_0.0_Unnamed.zip", response['Content-Disposition'])
 
     def test_client_get(self):
+        # Unauthorized user that is not in any groups
+        self.login_user("vibe")
+        response = self.client.get('/api/v1/datasets/2/')
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+
         self.login_user("auser")
         response = self.client.get('/api/v1/datasets/2/')
         value = json.loads(response.content.decode('utf-8'))
@@ -407,7 +418,7 @@ class DataSetClientTestCase(APITestCase):
         #########################################################################
         # APPROVED status: Cannot be deleted by anyone
         response = self.client.delete("/api/v1/datasets/2/")  # In submitted mode, owned by auser
-        self.assertEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
 
         response = self.client.get("/api/v1/datasets/2/")  # should be deleted
         self.assertEqual(status.HTTP_200_OK, response.status_code)
@@ -472,7 +483,7 @@ class DataSetClientTestCase(APITestCase):
         #########################################################################
         # NGT User may not delete a SUBMITTED dataset
         response = self.client.delete("/api/v1/datasets/2/")  # In submitted mode, owned by auser
-        self.assertEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
 
         # Confirm that it wasn't deleted
         response = self.client.get("/api/v1/datasets/2/")  # should be deleted
@@ -481,7 +492,7 @@ class DataSetClientTestCase(APITestCase):
         #########################################################################
         # NGT user may delete a DRAFT dataset
         response = self.client.delete("/api/v1/datasets/1/")  # In submitted mode, owned by auser
-        self.assertEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
 
         response = self.client.get("/api/v1/datasets/1/")  # should be deleted
         self.assertEqual(status.HTTP_200_OK, response.status_code)
@@ -496,7 +507,7 @@ class DataSetClientTestCase(APITestCase):
         #########################################################################
         # NGT User may  delete a SUBMITTED dataset
         response = self.client.delete("/api/v1/datasets/2/")  # In submitted mode, owned by auser
-        self.assertEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
 
         response = self.client.get("/api/v1/datasets/2/")  # should be deleted
         self.assertEqual(status.HTTP_200_OK, response.status_code)
@@ -504,7 +515,7 @@ class DataSetClientTestCase(APITestCase):
         #########################################################################
         # NGT User may delete a DRAFT dataset
         response = self.client.delete("/api/v1/datasets/1/")  # In submitted mode, owned by auser
-        self.assertEqual(status.HTTP_405_METHOD_NOT_ALLOWED, response.status_code)
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
 
         response = self.client.get("/api/v1/datasets/1/")  # should be deleted
         self.assertEqual(status.HTTP_200_OK, response.status_code)
@@ -747,10 +758,12 @@ class DataSetClientTestCase(APITestCase):
             self.assertContains(response, "Uploaded file size is 3001.7 MB. Max upload size is 2048.0 MB",
                                 status_code=status.HTTP_400_BAD_REQUEST)
 
-
-
 class SiteClientTestCase(APITestCase):
     fixtures = ('test_auth.json', 'test_archive_api.json',)
+
+    def login_user(self, username):
+        user = User.objects.get(username=username)
+        self.client.force_login(user)
 
     def setUp(self):
         self.client = Client()
@@ -758,10 +771,22 @@ class SiteClientTestCase(APITestCase):
         self.client.force_login(user)
 
     def test_client_list(self):
+        # Unauthorized user that is not in any groups
+        self.login_user("vibe")
+        response = self.client.get('/api/v1/sites/')
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+
+        self.login_user("auser")
         response = self.client.get('/api/v1/sites/')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_client_get(self):
+        # Unauthorized user that is not in any groups
+        self.login_user("vibe")
+        response = self.client.get('/api/v1/sites/1/')
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+
+        self.login_user("auser")
         response = self.client.get('/api/v1/sites/1/')
         self.assertEqual(json.loads(response.content.decode('utf-8')),
                          {"url": "http://testserver/api/v1/sites/1/", "site_id": "CC-CCPD",
@@ -793,16 +818,32 @@ class SiteClientTestCase(APITestCase):
 class PlotClientTestCase(APITestCase):
     fixtures = ('test_auth.json', 'test_archive_api.json',)
 
-    def setUp(self):
-        self.client = Client()
-        user = User.objects.get(username="auser")
+    def login_user(self, username):
+        user = User.objects.get(username=username)
         self.client.force_login(user)
 
+    def setUp(self):
+        self.client = Client()
+        self.login_user("auser")
+
+
     def test_client_list(self):
+        # Unauthorized user that is not in any groups
+        self.login_user("vibe")
+        response = self.client.get('/api/v1/plots/')
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+
+        self.login_user("auser")
         response = self.client.get('/api/v1/plots/')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_client_get(self):
+        # Unauthorized user that is not in any groups
+        self.login_user("vibe")
+        response = self.client.get('/api/v1/sites/1/')
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+
+        self.login_user("auser")
         response = self.client.get('/api/v1/plots/1/')
         self.assertEqual(json.loads(response.content.decode('utf-8')),
                          {"url": "http://testserver/api/v1/plots/1/", "plot_id": "CC-CCPD1",
@@ -830,16 +871,31 @@ class PlotClientTestCase(APITestCase):
 class ContactClientTestCase(APITestCase):
     fixtures = ('test_auth.json', 'test_archive_api.json',)
 
-    def setUp(self):
-        self.client = Client()
-        user = User.objects.get(username="auser")
+    def login_user(self, username):
+        user = User.objects.get(username=username)
         self.client.force_login(user)
 
+    def setUp(self):
+        self.client = Client()
+        self.login_user("auser")
+
     def test_client_list(self):
+        # Unauthorized user that is not in any groups
+        self.login_user("vibe")
+        response = self.client.get('/api/v1/people/')
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+
+        self.login_user("auser")
         response = self.client.get('/api/v1/people/?format=api')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_client_get(self):
+        # Unauthorized user that is not in any groups
+        self.login_user("vibe")
+        response = self.client.get('/api/v1/people/2/')
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+
+        self.login_user("auser")
         response = self.client.get('/api/v1/people/2/')
         self.assertEqual(json.loads(response.content.decode('utf-8')),
                          {"url": "http://testserver/api/v1/people/2/", "first_name": "Luke",
@@ -865,16 +921,32 @@ class ContactClientTestCase(APITestCase):
 class VariableClientTestCase(APITestCase):
     fixtures = ('test_auth.json', 'test_archive_api.json',)
 
+    def login_user(self, username):
+        user = User.objects.get(username=username)
+        self.client.force_login(user)
+
     def setUp(self):
         self.client = Client()
         user = User.objects.get(username="auser")
         self.client.force_login(user)
 
     def test_client_list(self):
+        # Unauthorized user that is not in any groups
+        self.login_user("vibe")
+        response = self.client.get('/api/v1/variables/')
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+
+        self.login_user("auser")
         response = self.client.get('/api/v1/variables/')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_client_get(self):
+        # Unauthorized user that is not in any groups
+        self.login_user("vibe")
+        response = self.client.get('/api/v1/variables/2/')
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+
+        self.login_user("auser")
         response = self.client.get('/api/v1/variables/2/')
         self.assertEqual(json.loads(response.content.decode('utf-8')),
                          {"url": "http://testserver/api/v1/variables/2/", "name": "Ice"})

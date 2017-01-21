@@ -22,7 +22,7 @@ from types import FunctionType
 from archive_api.models import DataSet, MeasurementVariable, Site, Person, Plot, DatasetArchiveField, DataSetDownloadLog
 from archive_api.permissions import HasArchivePermission, HasSubmitPermission, HasApprovePermission, \
     HasUnsubmitPermission, \
-    HasUnapprovePermission, HasUploadPermission, HasEditPermissionOrReadonly, APPROVED, DRAFT, SUBMITTED
+    HasUnapprovePermission, HasUploadPermission, HasEditPermissionOrReadonly, APPROVED, DRAFT, SUBMITTED, IsActivated
 from archive_api.serializers import DataSetSerializer, MeasurementVariableSerializer, SiteSerializer, PersonSerializer, \
     PlotSerializer
 from archive_api.signals import dataset_status_change
@@ -66,12 +66,12 @@ class DataSetMetadata(SimpleMetadata):
         return data
 
 
-
 class DataSetViewSet(ModelViewSet):
     """
         Returns a list of all  DataSets available to the archive_api service
     """
-    permission_classes = (HasEditPermissionOrReadonly, permissions.IsAuthenticated)
+    permission_classes = (HasEditPermissionOrReadonly, permissions.IsAuthenticated, IsActivated,
+                          permissions.DjangoModelPermissions )
     queryset = DataSet.objects.all()
     serializer_class = DataSetSerializer
     http_method_names = ['get', 'post', 'put', 'head', 'options']
