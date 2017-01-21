@@ -1,23 +1,6 @@
 [
 
-   {
-    "model": "auth.user",
-    "pk": 6,
-    "fields": {
-      "password": "pbkdf2_sha256$30000$y73YmPuQU58i$NV244xDjN8qCyv0GRstTitb8x8EsILvR6iy0N+HC90s=",
-      "last_login": "2016-10-21T23:05:33.634Z",
-      "is_superuser": true,
-      "username": "flash",
-      "first_name": "Barry",
-      "last_name": "Allen",
-      "email": "ballen@foobar.baz",
-      "is_staff": false,
-      "is_active": false,
-      "date_joined": "2016-10-21T23:04:56.178Z",
-      "groups": [],
-      "user_permissions": []
-    }
-  },
+
   {
     "model": "archive_api.measurementvariable",
     "pk": 1,
