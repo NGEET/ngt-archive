@@ -62,14 +62,14 @@ def notify_admin_to_activate_user(sender, user, **kwargs):
 
         else:
             EmailMessage(
-                subject=' {} requesting activation'.format(get_setting("ARCHIVE_API_EMAIL_SUBJECT_PREFIX"), user.get_full_name()),
+                subject=' {} requesting activation'.format(get_setting("EMAIL_SUBJECT_PREFIX"), user.get_full_name()),
                 body="""Dear NGEE Tropics Admins,
 
 User {} is requesting access to NGEE Tropics Archive service.
 
             """.format(user.get_full_name()),
-                to=[get_setting("ARCHIVE_API_EMAIL_NGEET_TEAM")],
-                reply_to=[get_setting("ARCHIVE_API_EMAIL_NGEET_TEAM")]).send()
+                to=[get_setting("EMAIL_NGEET_TEAM")],
+                reply_to=[get_setting("EMAIL_NGEET_TEAM")]).send()
 
 
 # This signal is sent after users log in with default django authentication
@@ -143,13 +143,13 @@ The NGEE Tropics Archive Team
 
     if content:
         EmailMessage(
-            subject='{} Dataset {} ({})'.format(get_setting("ARCHIVE_API_EMAIL_SUBJECT_PREFIX"),
+            subject='{} Dataset {} ({})'.format(get_setting("EMAIL_SUBJECT_PREFIX"),
                                                 archive_api.models.STATUS_CHOICES[int(instance.status)][1],
                                                            instance.data_set_id()),
             body=content,
             to=[instance.created_by.email],
-            cc=[get_setting("ARCHIVE_API_EMAIL_NGEET_TEAM")],
-            reply_to=[get_setting("ARCHIVE_API_EMAIL_NGEET_TEAM")]).send()
+            cc=[get_setting("EMAIL_NGEET_TEAM")],
+            reply_to=[get_setting("EMAIL_NGEET_TEAM")]).send()
 
 
 dataset_status_change.connect(dataset_notify_status_change)
