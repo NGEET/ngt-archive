@@ -603,18 +603,24 @@ $(document).ready(function(){
         //find all the contacts and authors first before processing others
         if($('.js-new-value.js-input').length > 0) {
 
-            var fname = $('.js-new-value.js-input').find('.js-first-name').val();
-            var lname = $('.js-new-value.js-input').find('.js-last-name').val();
-            $.when(createContact(fname, lname, '', '')).done(function(status) {
-                //console.log(status);
-                if(status.url) {
-                    submissionObj['contact'] = status.url;
-                    submissionObj = processForm(submissionObj, submitMode);
-                    createDraft(submissionObj, submitMode);
-                }
-                else {
-                    alert('There was a problem creating the new entry. Please try again');
-                }
+            $('.js-new-value.js-input').each(function() {
+
+                var param = $(this).closest('.js-param').attr('data-param');
+
+                var fname = $(this).find('.js-first-name').val();
+                var lname = $(this).find('.js-last-name').val();
+                $.when(createContact(fname, lname, '', '')).done(function(status) {
+                    //console.log(status);
+                    if(status.url) {
+                        submissionObj[param] = status.url;
+                        submissionObj = processForm(submissionObj, submitMode);
+                        createDraft(submissionObj, submitMode);
+                    }
+                    else {
+                        alert('There was a problem creating the new entry. Please try again');
+                    }
+                });
+
             });
         }
         else {
@@ -677,6 +683,10 @@ $(document).ready(function(){
     $('body').on('click', '.js-get-datasets', function(event) {
         event.preventDefault();
         
+    });
+
+    $('body').on('click', '.js-del-param', function(event) {
+        $(this).closest('section').remove();
     });
 
     $('body').on('click', '.js-view-dataset', function(event) {
@@ -1079,8 +1089,11 @@ function createEditForm(templateType) {
 
             if(templates[templateType][param].multiple) {
                 var multiBtn = $('.js-add-new').clone();
+                var delBtn = $('.js-del-param').clone();
                 multiBtn.attr('data-param', param);
+                delBtn.attr('data-param', param);
                 paramHTML.append(multiBtn);
+                delBtn.insertAfter(paramHTML.find('.js-input'));
             }
             
         }
