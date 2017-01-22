@@ -223,25 +223,25 @@ body main nav.menu a:hover {
   color: white;
 }
 /* line 244, ../sass/style.scss */
-body main .create-dataset-view .param {
+body main .create-dataset-view .param, body main .view-drafts-view .param {
   padding: 5px 10px;
   margin-bottom: 5px;
 }
 /* line 249, ../sass/style.scss */
-body main .create-dataset-view .param section:first-of-type .del-param {
+body main .create-dataset-view .param section:first-of-type .del-param, body main .view-drafts-view .param section:first-of-type .del-param {
   display: none;
 }
 /* line 253, ../sass/style.scss */
-body main .create-dataset-view .param section:first-of-type input, body main .create-dataset-view .param section:first-of-type select, body main .create-dataset-view .param section:first-of-type div {
+body main .create-dataset-view .param section:first-of-type input, body main .create-dataset-view .param section:first-of-type select, body main .create-dataset-view .param section:first-of-type div, body main .view-drafts-view .param section:first-of-type input, body main .view-drafts-view .param section:first-of-type select, body main .view-drafts-view .param section:first-of-type div {
   width: 100%;
 }
 /* line 259, ../sass/style.scss */
-body main .create-dataset-view .param section input, body main .create-dataset-view .param section select, body main .create-dataset-view .param section div {
+body main .create-dataset-view .param section input, body main .create-dataset-view .param section select, body main .create-dataset-view .param section div, body main .view-drafts-view .param section input, body main .view-drafts-view .param section select, body main .view-drafts-view .param section div {
   width: 90%;
   display: inline-block;
 }
 /* line 264, ../sass/style.scss */
-body main .create-dataset-view .param section .del-param {
+body main .create-dataset-view .param section .del-param, body main .view-drafts-view .param section .del-param {
   width: 10%;
   display: inline-block;
   text-align: center;
@@ -253,15 +253,15 @@ body main .create-dataset-view .param section .del-param {
   color: #fff;
 }
 /* line 275, ../sass/style.scss */
-body main .create-dataset-view .param section .del-param:hover {
+body main .create-dataset-view .param section .del-param:hover, body main .view-drafts-view .param section .del-param:hover {
   background-color: #5e5e5e;
 }
 /* line 279, ../sass/style.scss */
-body main .create-dataset-view .param section .del-param span {
+body main .create-dataset-view .param section .del-param span, body main .view-drafts-view .param section .del-param span {
   text-align: center;
 }
 /* line 286, ../sass/style.scss */
-body main .create-dataset-view .file-drop-zone {
+body main .create-dataset-view .file-drop-zone, body main .view-drafts-view .file-drop-zone {
   text-align: center;
   border: 2px dashed #777;
   padding: 2rem;
@@ -270,7 +270,7 @@ body main .create-dataset-view .file-drop-zone {
   margin-top: 2rem;
 }
 /* line 295, ../sass/style.scss */
-body main .create-dataset-view .file-drop-zone input[type="file"] {
+body main .create-dataset-view .file-drop-zone input[type="file"], body main .view-drafts-view .file-drop-zone input[type="file"] {
   position: absolute;
   left: 0;
   top: 0;
