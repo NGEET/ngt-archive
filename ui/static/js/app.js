@@ -99,6 +99,7 @@ $(document).ready(function(){
                     var tag = $('<div/>').addClass('js-view-dataset dataset');
                     tag.append('<h5 class="title">' + (data[i].name ? data[i].name : 'NA') + '</h5>')
                         .append('<p class="desc">' + (data[i].description ? data[i].description.substring(0, 199) + '...' : 'NA') + '</p>')
+                        .append('<button class="button js-edit-draft">Edit</button>')
                         .attr('data-url', data[i].url)
                         .attr('data-index', i);
 
@@ -391,6 +392,20 @@ $(document).ready(function(){
         $('.js-file-name').html('')
         $('.js-file-name-wrapper').addClass('hide');
     });
+
+    $('body').on('click', '.js-edit-draft', function(event) {
+        event.preventDefault();
+        var url = $(this).closest('.js-view-dataset').attr('data-url');
+        var index = $(this).closest('.js-view-dataset').attr('data-index');
+        $('.js-view.view-drafts-view .js-all-datasets').addClass('hide');
+        $('.js-edit-form').removeClass('hide');
+
+        $('.js-edit-form .js-param').each(function() {
+            var param = $(this).attr('data-param');
+            $(this).find('.js-input').val(dataObj.datasets[index][param]);
+        });
+    });
+
     /*$.when(getDataSets()).then(function(data) {
         console.log(data);
         for(var i=0;i<data.length;i++) {
@@ -692,7 +707,7 @@ $(document).ready(function(){
         $(this).closest('section').remove();
     });
 
-    $('body').on('click', '.js-view-dataset', function(event) {
+    /*$('body').on('click', '.js-view-dataset:not(.js-edit-draft)', function(event) {
         event.preventDefault();
         var index = $(this).attr('data-index');
         var url = $(this).attr('data-url');
@@ -806,7 +821,7 @@ $(document).ready(function(){
             popup.open();
         });
     
-    });
+    });*/
 
     $('body').on('click', '.js-close-modal', function(event) {
         event.preventDefault();
@@ -1110,6 +1125,9 @@ function createEditForm(templateType) {
     $('.js-input.date').datepicker({
         dateFormat: "yy-mm-dd"
     });
+    
+    var editForm = $('.js-create-form').clone();
+    editForm.removeClass('js-create-form').addClass('js-edit-form hide').appendTo('.js-view.view-drafts-view');
     $( document ).tooltip();
 }
 
