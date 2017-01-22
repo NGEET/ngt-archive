@@ -344,18 +344,6 @@ $(document).ready(function(){
         }
     });
 
-    $('body').on('change', '.js-all-plots', function() {
-        //console.log('here');
-        var index = $(this).find('option:selected').attr('data-index');
-        $('.js-view-plot-btn .js-plot-id').html($(this).val());
-        $('.js-plot-info').removeClass('hide');
-        $('.js-plot-params').html('');
-        for(var prop in dataObj.sites[index]) {
-            var param = $('<p>' + prop + ': ' + dataObj.sites[index][prop] + '</p>');
-            $('.js-plot-params').append(param);
-        }
-    });
-
     $('body').on('change', '.js-all-contacts', function() {
         if($(this).val() == 'add-new') {
             $(this).closest('select').removeClass('js-input');
@@ -591,9 +579,14 @@ $(document).ready(function(){
 
     $('body').on('click', '.js-clear-form', function(event) {
         event.preventDefault();
+        location.reload();
+        /*$('.js-create-form .js-input').each(function() {
+            $(this).val('');
+        });
+
         $('.js-param.missing').each(function() {
             $(this).removeClass('missing');
-        });
+        });*/
     });
 
     $('body').on('click', '.js-create-dataset', function(event) {
@@ -916,10 +909,12 @@ function createDraft(submissionObj, submitMode) {
                                 if(submitMode) {
                                     $.when(submitDataset(status.url)).done(function(submitStatus) {
                                         alert(submitStatus.detail);
+                                        $('.js-clear-form').trigger('click');
                                     });
                                 }
                                 else {
                                     alert('Draft has been created with the attached file');
+                                    $('.js-clear-form').trigger('click');
                                 }
                                 
                             },
@@ -945,10 +940,12 @@ function createDraft(submissionObj, submitMode) {
                     if(submitMode) {
                         $.when(submitDataset(status.url)).done(function(submitStatus) {
                             alert(submitStatus.detail);
+                            $('.js-clear-form').trigger('click');
                         });
                     }
                     else {
                         alert('Dataset successfully created.');
+                        $('.js-clear-form').trigger('click');
                     }
                 }
             }
@@ -956,7 +953,6 @@ function createDraft(submissionObj, submitMode) {
                 alert('There was an error creating the draft. Please try again later.');
             }
 
-            $('.js-clear-form').trigger('click');
         });
 
     }
