@@ -24,6 +24,16 @@ function isURL(str) {
   return pattern.test(str);
 }
 
+function fileTypeAllowed(filetype) {
+    for(var i=0;i<dataObj.filetypes.length;i++) {
+        if(dataObj.filetypes[i].indexOf(filetype) !=-1) {
+            return dataObj.filetypes[i].indexOf(filetype);
+        } 
+    }
+
+    return -1;
+}
+
 $(document).ready(function(){
     $(document).foundation();
 
@@ -384,7 +394,7 @@ $(document).ready(function(){
         $('.js-file-name').html(files[0].name);
         $('.js-file-name-wrapper').removeClass('hide');
         fileToUpload = files[0];
-        console.log(files[0].name);
+        console.log(files[0]);
     });
 
     $('body').on('click', '.js-clear-file-btn', function(event) {
@@ -878,7 +888,7 @@ function createDraft(submissionObj, submitMode) {
         $.when(createDataset(submissionObj)).done(function(status) {
             if(status) {
                 if(fileToUpload) {
-                    if(dataObj.filetypes.indexOf(fileToUpload.type) > -1) {
+                    if(fileTypeAllowed(fileToUpload.type) > -1) {
                         var csrftoken = getCookie('csrftoken');
 
                         $.ajaxSetup({
