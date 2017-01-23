@@ -44,18 +44,7 @@
       "last_name": "Jones",
       "email": "jjones@foobar.baz",
       "institution_affiliation": "JJ",
-      "initial_role":1
-    }
-  },
-  {
-    "model": "archive_api.person",
-    "pk": 2,
-    "fields": {
-      "first_name": "Luke",
-      "last_name": "Cage",
-      "email": "lcage@foobar.baz",
-      "institution_affiliation": "POWER",
-      "initial_role":0
+      "user_role":1
     }
   },
   {
@@ -75,16 +64,6 @@
       "first_name": "Cisco",
       "last_name": "Ramon",
       "email": "cramon@foobar.baz",
-      "institution_affiliation": "Star Labs"
-    }
-  },
-  {
-    "model": "archive_api.person",
-    "pk": 5,
-    "fields": {
-      "first_name": "Harrison",
-      "last_name": "Wells",
-      "email": "hwells@foobar.baz",
       "institution_affiliation": "Star Labs"
     }
   },
@@ -267,6 +246,48 @@
       "author": 2,
       "dataset": 3,
       "order": 0
+    }
+  },
+  {
+    "model": "archive_api.dataset",
+    "pk": 4,
+    "fields": {
+      "ngt_id":3,
+      "description": "Lorem ipsum dolor sit amet, impedit accusamus reprehendunt in quo, accusata voluptaria scribentur te nec. Id mel partem euismod bonorum. No modus dolore vim, per in exerci iisque persequeris, animal interesset sit ex. Vero ocurreret nam an.",
+      "status": 0,
+      "status_comment": "",
+      "name": "Data Set 4",
+      "doi": "",
+      "start_date": "2016-10-31",
+      "end_date": null,
+      "qaqc_status": null,
+      "qaqc_method_description": "",
+      "ngee_tropics_resources": true,
+      "funding_organizations": "",
+      "doe_funding_contract_numbers": "",
+      "acknowledgement": "",
+      "reference": "",
+      "additional_reference_information": "",
+      "access_level": 0,
+      "additional_access_information": "",
+      "submission_date": null,
+      "contact": 2,
+      "sites": [
+        1
+      ],
+      "plots": [
+        1
+      ],
+      "variables": [
+        1,
+        2
+      ],
+      "created_by_id": 3,
+      "created_date": "2016-10-28T19:15:35.013361Z",
+      "modified_by_id": 3,
+      "modified_date": "2016-10-28T23:01:20.066913Z",
+      "cdiac_import":true,
+      "cdiac_submission_contact":2
     }
   }
 ]
