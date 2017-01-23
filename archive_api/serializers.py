@@ -8,10 +8,22 @@ from rest_framework import serializers
 from rest_framework.reverse import reverse
 
 
-class StringToIntChoiceField(serializers.ReadOnlyField):
+class StringToIntReadOnlyField(serializers.ReadOnlyField):
     """
-    Choice fields that are characters externally and integers internally
+    Readonly field that uses a character externally and integer internally
     """
+    def to_representation(self, obj):
+        return str(obj)
+
+
+class StringToIntField(serializers.Field):
+    """
+    field that uses a character externally and integer internally
+    """
+
+    def to_internal_value(self, data):
+        return int(data)
+
     def to_representation(self, obj):
         return str(obj)
 
@@ -56,7 +68,8 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
     submission_date = serializers.ReadOnlyField()
     authors = AuthorsField()
     archive = serializers.SerializerMethodField()
-    status = StringToIntChoiceField()
+    status = StringToIntReadOnlyField()
+    qaqc_status = StringToIntField(required=False,allow_null=True)
 
     def get_archive(self, instance):
         """ Returns the archive access url"""

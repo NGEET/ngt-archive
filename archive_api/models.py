@@ -88,9 +88,9 @@ STATUS_CHOICES = (
 )
 
 QAQC_STATUS_CHOICES = (
-    ('0', 'None'),
-    ('1', 'Preliminary QA-QC'),
-    ('2', 'Full QA-QC'),
+    (0, 'None'),
+    (1, 'Preliminary QA-QC'),
+    (2, 'Full QA-QC'),
 )
 
 ACCESS_CHOICES = (
@@ -235,9 +235,9 @@ class Plot(models.Model):
 
 class DataSet(models.Model):
 
-    ACCESS_PRIVATE = '0'
-    ACCESS_NGEET = '1'
-    ACCESS_PUBLIC = '2'
+    ACCESS_PRIVATE = 0
+    ACCESS_NGEET = 1
+    ACCESS_PUBLIC = 2
 
     STATUS_DRAFT = 0
     STATUS_SUBMITTED = 1
@@ -257,7 +257,7 @@ class DataSet(models.Model):
     doi = models.TextField(blank=True, null=True)
     start_date = models.DateField(blank=True, null=True)
     end_date = models.DateField(blank=True, null=True)
-    qaqc_status = models.CharField(max_length=1, choices=QAQC_STATUS_CHOICES, blank=True, null=True)
+    qaqc_status = models.IntegerField(choices=QAQC_STATUS_CHOICES, blank=True, null=True)
     qaqc_method_description = models.TextField(blank=True, null=True)
     ngee_tropics_resources = models.BooleanField(default=False)
     funding_organizations = models.TextField(blank=True, null=True)
