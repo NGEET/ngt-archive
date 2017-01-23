@@ -82,9 +82,9 @@ dataset_archive_storage = DatasetArchiveStorage()
 
 
 STATUS_CHOICES = (
-    ('0', 'Draft'),
-    ('1', 'Submitted'),
-    ('2', 'Approved'),
+    (0, 'Draft'),
+    (1, 'Submitted'),
+    (2, 'Approved'),
 )
 
 QAQC_STATUS_CHOICES = (
@@ -239,9 +239,9 @@ class DataSet(models.Model):
     ACCESS_NGEET = '1'
     ACCESS_PUBLIC = '2'
 
-    STATUS_DRAFT = '0'
-    STATUS_SUBMITTED = '1'
-    STATUS_APPROVED = '2'
+    STATUS_DRAFT = 0
+    STATUS_SUBMITTED = 1
+    STATUS_APPROVED = 2
 
     def data_set_id(self):
         return "NGT{:04}".format(self.ngt_id)
@@ -250,8 +250,8 @@ class DataSet(models.Model):
     description = models.TextField(blank=True, null=True)
     version = models.CharField(max_length=15, default="0.0")
 
-    status = models.CharField(max_length=1, choices=STATUS_CHOICES,
-                              default='0')  # (draft [DEFAULT], submitted, approved)
+    status = models.IntegerField(choices=STATUS_CHOICES,
+                              default=0)  # (draft [DEFAULT], submitted, approved)
     status_comment = models.TextField(blank=True, null=True)
     name = models.CharField(unique=True, max_length=150, blank=True, null=True)
     doi = models.TextField(blank=True, null=True)

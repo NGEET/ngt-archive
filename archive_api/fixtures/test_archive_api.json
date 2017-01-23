@@ -135,7 +135,7 @@
     "fields": {
       "ngt_id":0,
       "description": "Lorem ipsum dolor sit amet, impedit accusamus reprehendunt in quo, accusata voluptaria scribentur te nec. Id mel partem euismod bonorum. No modus dolore vim, per in exerci iisque persequeris, animal interesset sit ex. Vero ocurreret nam an.",
-      "status": "0",
+      "status": 0,
       "status_comment": "",
       "name": "Data Set 1",
       "doi": "",
@@ -175,7 +175,7 @@
     "fields": {
       "ngt_id":1,
       "description": "Qui illud verear persequeris te. Vis probo nihil verear an, zril tamquam philosophia eos te, quo ne fugit movet contentiones. Quas mucius detraxit vis an, vero omnesque petentium sit ea. Id ius inimicus comprehensam.",
-      "status": "1",
+      "status": 1,
       "status_comment": "",
       "name": "Data Set 2",
       "doi": "",
@@ -216,7 +216,7 @@
     "fields": {
       "ngt_id":2,
       "description": "Qui illud verear persequeris te. Vis probo nihil verear an, zril tamquam philosophia eos te, quo ne fugit movet contentiones. Quas mucius detraxit vis an, vero omnesque petentium sit ea. Id ius inimicus comprehensam.",
-      "status": "1",
+      "status": 1,
       "status_comment": "",
       "name": "Data Set 3",
       "doi": "",

@@ -13,7 +13,7 @@ from os.path import dirname
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from archive_api.models import DatasetArchiveField, DataSetDownloadLog
+from archive_api.models import DatasetArchiveField, DataSetDownloadLog, DataSet
 from ngt_archive import settings
 
 
@@ -172,7 +172,7 @@ class DataSetClientTestCase(APITestCase):
         self.assertEqual(value['name'], 'FooBarBaz')
         self.assertEqual(value['modified_by'], 'auser')
         self.assertEqual(value['ngee_tropics_resources'], False)
-        self.assertEqual(value['status'], '0')
+        self.assertEqual(value['status'], str(DataSet.STATUS_DRAFT))
         self.assertEqual(value['doi'], None)
         self.assertEqual(value['plots'], [])
         self.assertEqual(value['contact'], None)
@@ -362,6 +362,7 @@ class DataSetClientTestCase(APITestCase):
                                         '"variables": ["http://testserver/api/v1/variables/1/", '
                                         '"http://testserver/api/v1/variables/2/"]}',
                                    content_type='application/json')
+
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         response = self.client.get("/api/v1/datasets/2/")  # check authors
         value = json.loads(response.content.decode('utf-8'))
@@ -425,7 +426,7 @@ class DataSetClientTestCase(APITestCase):
 
         response = self.client.get("/api/v1/datasets/2/")
         value = json.loads(response.content.decode('utf-8'))
-        self.assertEqual(value['status'], '2')
+        self.assertEqual(value['status'], str(DataSet.STATUS_APPROVED))
 
         #########################################################################
         # NGT Administrator can put a dataset back into DRAFT status for corrections by the Owning NGT user
@@ -452,7 +453,7 @@ class DataSetClientTestCase(APITestCase):
         self.assertEqual({'detail': 'Only a data set in APPROVED status may be unapproved'}, value)
         response = self.client.get("/api/v1/datasets/2/")  # Check the status
         value = json.loads(response.content.decode('utf-8'))
-        self.assertEqual(value['status'], '1')
+        self.assertEqual(value['status'], str(DataSet.STATUS_SUBMITTED))
         self.assertEqual(1, len(mail.outbox))  # no notification emails sent
 
     def test_admin_unsubmit(self):
@@ -471,7 +472,7 @@ class DataSetClientTestCase(APITestCase):
 
         response = self.client.get("/api/v1/datasets/2/")
         value = json.loads(response.content.decode('utf-8'))
-        self.assertEqual(value['status'], '0')  # check that the status is in DRAFT
+        self.assertEqual(value['status'], str(DataSet.STATUS_DRAFT))  # check that the status is in DRAFT
 
     def test_user_delete_not_allowed(self):
         """
