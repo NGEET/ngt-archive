@@ -51,7 +51,7 @@ class Migration(migrations.Migration):
                 ('reference', models.TextField(blank=True, null=True)),
                 ('additional_reference_information', models.TextField(blank=True, null=True)),
                 ('originating_institution', models.TextField(blank=True, null=True)),
-                ('access_level', models.CharField(choices=[('0', 'Private'), ('1', 'NGEE Tropics'), ('2', 'Public')], default='0', max_length=1)),
+                ('access_level', models.IntegerField(choices=[(0, 'Private'), (1, 'NGEE Tropics'), (2, 'Public')], default=0)),
                 ('additional_access_information', models.TextField(blank=True, null=True)),
                 ('submission_date', models.DateField(blank=True, null=True)),
                 ('created_date', models.DateTimeField(auto_now_add=True)),
