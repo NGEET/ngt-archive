@@ -675,7 +675,9 @@ $(document).ready(function(){
         event.preventDefault();
         var url = $('.js-edit-form').attr('data-url');
         var submissionObj = {};
-        $('.js-edit-form .js-param').each(function() {
+
+
+        /*$('.js-edit-form .js-param').each(function() {
             var param = $(this).attr('data-param');
             if($(this).find('.js-input').length == 1) {
                 var value = $(this).find('.js-input').val();
@@ -694,12 +696,19 @@ $(document).ready(function(){
                     submissionObj[param] = value;
                 }
             }
-        });
+        });*/
+
+        submissionObj = processForm(submissionObj, false, true);
 
         console.log(submissionObj);
 
         $.when(editDataset(submissionObj, url)).done(function(data) {
-            alert(data.status);
+            if(data) {
+                alert('Your changes were successfully saved.');
+            }
+            else {
+                alert('There was an error with the update. Please try again.');
+            }
         });
     });
 
@@ -995,8 +1004,14 @@ function createDraft(submissionObj, submitMode) {
     }
 }
 
-function processForm(submissionObj, submitMode) {
-    $('.js-create-form .js-param').each(function() {
+function processForm(submissionObj, submitMode, editMode) {
+    var params = $('.js-create-form .js-param');
+
+    if(editMode) {
+        params = $('.js-edit-form .js-param');
+    }
+
+    params.each(function() {
         var param = $(this).attr('data-param');
         var required = $(this).hasClass('required');
         var multi = $(this).hasClass('multi')
