@@ -69,7 +69,7 @@ class DataSetTestCase(TestCase):
     def test_list(self):
         """Assert that all DataSets were found"""
         data_sets = DataSet.objects.all()
-        self.assertEqual(len(data_sets), 3)
+        self.assertEqual(len(data_sets), 4)
 
 
 class PersonTestCase(TestCase):
