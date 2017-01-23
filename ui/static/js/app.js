@@ -414,14 +414,22 @@ $(document).ready(function(){
                 }
             }
             else {
-                $('.js-edit-form .js-param[data-param="'+ param +'"] .js-input').val(dataObj.datasets[index][param]);
+                if($('.js-edit-form .js-param[data-param="'+ param +'"] .js-input').hasClass('switch-input')) {
+                    $('.js-edit-form .js-param[data-param="'+ param +'"] .js-input').prop('checked', dataObj.datasets[index][param]);
+                }   
+                else {
+                    $('.js-edit-form .js-param[data-param="'+ param +'"] .js-input').val(dataObj.datasets[index][param]);
+                }
             }
         }
         $('.js-edit-form').attr('data-url', url);
         $('.js-view.view-drafts-view .js-all-datasets').addClass('hide');
         $('.js-edit-form').removeClass('hide');
         $('.js-edit-form .js-edit-dataset').removeClass('hide');
-        $('.js-edit-form .js-create-dataset').first().addClass('hide');
+        $('.js-edit-form .js-create-dataset').addClass('hide');
+        $('.js-edit-form .js-clear-form').addClass('hide');
+        $('.js-edit-form .js-cancel-btn').removeClass('hide');
+        $('.js-edit-form .js-file-drop-zone').addClass('hide');
 
         /*$('.js-edit-form .js-param').each(function() {
             var param = $(this).attr('data-param');
@@ -578,6 +586,11 @@ $(document).ready(function(){
             },
         });
     });
+
+    $('body').on('click', '.js-cancel-btn', function(event) {
+        event.preventDefault();
+        location.reload();
+    })
 
     $('body').on('click', '.js-save-btn', function(event) {
         event.preventDefault();
