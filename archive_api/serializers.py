@@ -8,6 +8,16 @@ from rest_framework import serializers
 from rest_framework.reverse import reverse
 
 
+class StringToIntChoiceField(serializers.ReadOnlyField):
+    """
+    Choice fields that are characters externally and integers internally
+    """
+    def to_representation(self, obj):
+        return str(obj)
+
+
+
+
 class AuthorsField(serializers.SerializerMethodField):
     """
     Author objects are serialized and deserialized for reading and writing
@@ -46,6 +56,7 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
     submission_date = serializers.ReadOnlyField()
     authors = AuthorsField()
     archive = serializers.SerializerMethodField()
+    status = StringToIntChoiceField()
 
     def get_archive(self, instance):
         """ Returns the archive access url"""
@@ -104,7 +115,7 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
             raise serializers.ValidationError("start_date must come before end_date")
         # If the dataset is approved or submitted there are an extra set of fields
         # that are required
-        if self.instance and self.instance.status in ['1', '2']:
+        if self.instance and self.instance.status > DataSet.STATUS_DRAFT:
             for field in ['sites', 'authors', 'name', 'description', 'contact', 'variables',
                           'ngee_tropics_resources', 'funding_organizations', 'originating_institution',
                           'access_level']:  # Check for required fields
