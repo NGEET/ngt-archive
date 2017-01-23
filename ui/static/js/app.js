@@ -95,7 +95,7 @@ $(document).ready(function(){
             $('.js-text-dump').html('');
             $('.js-datasets').html('');
             for(var i=0;i<data.length;i++) {
-                if(data[i].status == 1) {
+                if(data[i].status == 0) {
                     var tag = $('<div/>').addClass('js-view-dataset dataset');
                     tag.append('<h5 class="title">' + (data[i].name ? data[i].name : 'NA') + '</h5>')
                         .append('<p class="desc">' + (data[i].description ? data[i].description.substring(0, 199) + '...' : 'NA') + '</p>')
@@ -103,9 +103,8 @@ $(document).ready(function(){
                         .attr('data-url', data[i].url)
                         .attr('data-index', i);
 
-                $('.js-all-datasets').append(tag);   
+                    $('.js-all-datasets').append(tag);   
 
-                    $('.js-all-datasets').append(tag);                
                     /*$('.js-all-datasets').append((data[i].name ? data[i].name : 'NA') + '<br>')
                                     .append((data[i].description ? data[i].description : 'NA') + '<br>')
                                     .append('<button class="js-view-dataset button" data-url="' + data[i].url + '" data-index="' + i + '">View</button>')
@@ -395,15 +394,39 @@ $(document).ready(function(){
 
     $('body').on('click', '.js-edit-draft', function(event) {
         event.preventDefault();
+        event.stopPropagation();
         var url = $(this).closest('.js-view-dataset').attr('data-url');
         var index = $(this).closest('.js-view-dataset').attr('data-index');
+        
+        for(var param in dataObj.datasets[index]) {
+            if(Array.isArray(dataObj.datasets[index][param])) {
+                console.log('arr');
+                for (var i = 0; i < dataObj.datasets[index][param].length; i++) {
+                    if(i > 0 ) {
+                        var position = $('.js-edit-form .js-param[data-param="'+ param +'"] section').last();
+                        var container = position.clone();
+                        container.find('.js-input').val(dataObj.datasets[index][param][i]);
+                        container.insertAfter(position);
+                    }
+                    else {
+                        $('.js-edit-form .js-param[data-param="'+ param +'"] .js-input').val(dataObj.datasets[index][param][i]);
+                    }
+                }
+            }
+            else {
+                $('.js-edit-form .js-param[data-param="'+ param +'"] .js-input').val(dataObj.datasets[index][param]);
+            }
+        }
+        $('.js-edit-form').attr('data-url', url);
         $('.js-view.view-drafts-view .js-all-datasets').addClass('hide');
         $('.js-edit-form').removeClass('hide');
+        $('.js-edit-form .js-edit-dataset').removeClass('hide');
+        $('.js-edit-form .js-create-dataset').first().addClass('hide');
 
-        $('.js-edit-form .js-param').each(function() {
+        /*$('.js-edit-form .js-param').each(function() {
             var param = $(this).attr('data-param');
             $(this).find('.js-input').val(dataObj.datasets[index][param]);
-        });
+        });*/
     });
 
     /*$.when(getDataSets()).then(function(data) {
@@ -648,14 +671,7 @@ $(document).ready(function(){
         
     });
 
-    $('body').on('click', '.js-edit-dataset-btn', function(event) {
-        event.preventDefault();
-        //$('')
-        $('.js-edit-form').removeClass('hide');
-        $('.js-dataset-row dataset-row').addClass('hide');
-    });
-
-    $('body').on('click', '.js-save-dataset', function(event) {
+    $('body').on('click', '.js-edit-dataset', function(event) {
         event.preventDefault();
         var url = $('.js-edit-form').attr('data-url');
         var submissionObj = {};
@@ -683,7 +699,7 @@ $(document).ready(function(){
         console.log(submissionObj);
 
         $.when(editDataset(submissionObj, url)).done(function(data) {
-            console.log(data);
+            alert(data.status);
         });
     });
 
@@ -707,7 +723,7 @@ $(document).ready(function(){
         $(this).closest('section').remove();
     });
 
-    /*$('body').on('click', '.js-view-dataset:not(.js-edit-draft)', function(event) {
+    $('body').on('click', '.js-view-dataset', function(event) {
         event.preventDefault();
         var index = $(this).attr('data-index');
         var url = $(this).attr('data-url');
@@ -718,7 +734,7 @@ $(document).ready(function(){
                                     .html('<div class="row js-title-row"><div class="columns small-12 medium-9">' + dataObj.datasets[index]['name'] + '</div><div class="columns small-12 medium-3 js-download-wrapper download-wrapper"></div></div>');
             $('#myModal .js-modal-body').html('');
                 var inputString = '';
-                var editForm = $('.js-create-form.dataset').clone()
+                /*var editForm = $('.js-create-form.dataset').clone()
                         .attr('data-url', url)
                         .addClass('hide')
                         .removeClass('js-create-form')
@@ -729,7 +745,7 @@ $(document).ready(function(){
                 $('#myModal .js-modal-body').append(editForm);
                 $('.js-input.date').datepicker({
                     dateFormat: "yy-mm-dd"
-                });
+                });*/
                 
                 for(var prop in datasetObj) {
                     if(!templates.datasets[prop].read_only) {
@@ -821,7 +837,7 @@ $(document).ready(function(){
             popup.open();
         });
     
-    });*/
+    });
 
     $('body').on('click', '.js-close-modal', function(event) {
         event.preventDefault();
@@ -1122,12 +1138,12 @@ function createEditForm(templateType) {
         $(formHTML).append(paramHTML);
     }
     $('.js-create-form').prepend(formHTML);
-    $('.js-input.date').datepicker({
-        dateFormat: "yy-mm-dd"
-    });
     
     var editForm = $('.js-create-form').clone();
     editForm.removeClass('js-create-form').addClass('js-edit-form hide').appendTo('.js-view.view-drafts-view');
+    $('.js-input.date').datepicker({
+        dateFormat: "yy-mm-dd"
+    });
     $( document ).tooltip();
 }
 
