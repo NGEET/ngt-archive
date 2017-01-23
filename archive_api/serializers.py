@@ -70,6 +70,7 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
     archive = serializers.SerializerMethodField()
     status = StringToIntReadOnlyField()
     qaqc_status = StringToIntField(required=False,allow_null=True)
+    access_level = StringToIntField(required=False, allow_null=True)
 
     def get_archive(self, instance):
         """ Returns the archive access url"""

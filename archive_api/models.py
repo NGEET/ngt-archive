@@ -94,9 +94,9 @@ QAQC_STATUS_CHOICES = (
 )
 
 ACCESS_CHOICES = (
-    ('0', 'Private'),
-    ('1', 'NGEE Tropics'),
-    ('2', 'Public'),
+    (0, 'Private'),
+    (1, 'NGEE Tropics'),
+    (2, 'Public'),
 )
 
 PERSON_ROLE_CHOICES = (
@@ -267,7 +267,7 @@ class DataSet(models.Model):
     additional_reference_information = models.TextField(blank=True, null=True)
     originating_institution = models.TextField(blank=True, null=True)
 
-    access_level = models.CharField(max_length=1, choices=ACCESS_CHOICES, default='0')
+    access_level = models.IntegerField(choices=ACCESS_CHOICES, default=0)
     additional_access_information = models.TextField(blank=True, null=True)
     submission_date = models.DateField(blank=True, null=True)
 
