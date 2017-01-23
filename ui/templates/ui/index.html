@@ -40,7 +40,7 @@
                 <section class="row js-home-view home-view">
                     <div class="columns small-centered small-4">
                         <button class="button js-view-toggle columns small-12" data-view="create">Create New Dataset</button>
-                        <button class="button js-view-toggle hide columns small-12" data-view="edit-draft">Edit Drafts</button>
+                        <button class="button js-view-toggle columns small-12" data-view="edit-draft">Edit Drafts</button>
                         <button class="button js-view-toggle columns small-12" data-view="view">View Approved Datasets</button>
                         <a class="button columns small-12" data-view="view" href="/?view=view-sites">View Sites and Plots</a>
                     </div>
@@ -161,6 +161,7 @@
                 <section class="js-view view-drafts-view hide" data-view="edit-draft">
                     <h4>Drafts</h4>
                     <div class="all-datasets js-all-datasets"></div>
+
                 </section>
                 <section class="js-view create-dataset-view hide" data-view="create">
                     <h4>Create a Dataset</h4>
@@ -177,9 +178,11 @@
                         </div>
                         <div class="small-12">
                             <button type="button" class="button small-10 large-3 js-create-dataset">Save as Draft</button>
+                            <button type="button" class="button small-10 large-3 js-edit-dataset hide">Update Draft</button>
                             <button class="button blue small-10 large-3 js-create-dataset js-submit">Submit Dataset</button>
                             <button type="button" class="button small-10 large-3 js-save-dataset hide">Save</button>
                             <input type="reset" class="button secondary small-10 large-3 js-clear-form" value="Clear form">
+                            <button class="button secondary small-10 large-3 js-cancel-btn hide">Cancel</button>
                         </div>
                     </form>
                     <div class="js-data-templates hide">
@@ -201,6 +204,9 @@
                         <select class="js-template reference_list"></select>
                         <input type="text" class="js-template searchable" name="">
                         <button class="button js-add-new">+ Add<span data-param=""></span></button>
+                        <div class="js-del-param del-param">
+                            <span>x</span>
+                        </div>
                     </div>
                     <section class="site-section js-site-section hide js-ref-list js-multi-container" data-list="sites">
                         <select class="js-all-sites all-sites js-input">
