@@ -42,7 +42,7 @@ class Migration(migrations.Migration):
                 ('doi', models.TextField(blank=True, null=True)),
                 ('start_date', models.DateField(blank=True, null=True)),
                 ('end_date', models.DateField(blank=True, null=True)),
-                ('qaqc_status', models.CharField(blank=True, choices=[('0', 'None'), ('1', 'Preliminary QA-QC'), ('2', 'Full QA-QC')], max_length=1, null=True)),
+                ('qaqc_status', models.IntegerField(blank=True, choices=[(0, 'None'), (1, 'Preliminary QA-QC'), (2, 'Full QA-QC')], null=True)),
                 ('qaqc_method_description', models.TextField(blank=True, null=True)),
                 ('ngee_tropics_resources', models.BooleanField(default=False)),
                 ('funding_organizations', models.TextField(blank=True, null=True)),
