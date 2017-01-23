@@ -75,6 +75,7 @@ class Command(BaseCommand):
         xmldoc = minidom.parse(xml_file)
         metadata = xmldoc.getElementsByTagName('metadata')[0]
         ptcontac = xmldoc.getElementsByTagName('ptcontac')[0]
+        metc = xmldoc.getElementsByTagName('metc')[0]
         # Get the username for created_by and modified by
         create_by = User.objects.get(username=options['username'])
         # Determine if the dataset already exists
@@ -253,14 +254,21 @@ class Command(BaseCommand):
         ##################
         # Submission contact/ the person who logged in and saved the record
         #   metadata.mercury.topics.dataset.authfn
-        fname = metadata.getElementsByTagName("authfn")[0].childNodes[0].data
-        lname = metadata.getElementsByTagName("authln")[0].childNodes[0].data
-        # save them as a contact
+
+        ##########################
+        # Submission Contact
+        fname, lname = metc.getElementsByTagName("cntper")[0].childNodes[0].data.split(" ")
+        email = metc.getElementsByTagName("cntemail")[0].childNodes[0].data
         try:
             cdiac_contact = Person.objects.get(first_name=fname, last_name=lname)
-        except Person.DoesNotExist:
-            cdiac_contact = Person(first_name=fname, last_name=lname)
+            cdiac_contact.email = email
             cdiac_contact.save()
+        except Person.DoesNotExist:
+            cdiac_contact = Person(first_name=fname, last_name=lname, email=email)
+            cdiac_contact.save()
+
+        dataset.name = metadata.getElementsByTagName("title")[0].childNodes[0].data
+
         dataset.cdiac_submission_contact = cdiac_contact
         dataset.cdiac_import = True
         dataset.save()

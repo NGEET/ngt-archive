@@ -82,21 +82,21 @@ dataset_archive_storage = DatasetArchiveStorage()
 
 
 STATUS_CHOICES = (
-    ('0', 'Draft'),
-    ('1', 'Submitted'),
-    ('2', 'Approved'),
+    (0, 'Draft'),
+    (1, 'Submitted'),
+    (2, 'Approved'),
 )
 
 QAQC_STATUS_CHOICES = (
-    ('0', 'None'),
-    ('1', 'Preliminary QA-QC'),
-    ('2', 'Full QA-QC'),
+    (0, 'None'),
+    (1, 'Preliminary QA-QC'),
+    (2, 'Full QA-QC'),
 )
 
 ACCESS_CHOICES = (
-    ('0', 'Private'),
-    ('1', 'NGEE Tropics'),
-    ('2', 'Public'),
+    (0, 'Private'),
+    (1, 'NGEE Tropics'),
+    (2, 'Public'),
 )
 
 PERSON_ROLE_CHOICES = (
@@ -154,7 +154,15 @@ class NGTUser(django.contrib.auth.models.User):
 
     @property
     def is_activated(self):
-        return self.is_active or self.is_superuser
+        active = (self.is_active and self.person is not None)
+        return active or self.is_superuser
+
+    @property
+    def person(self):
+        try:
+            return Person.objects.get(user=self)
+        except Person.DoesNotExist:
+            return None
 
 
 class Person(models.Model):
@@ -162,8 +170,8 @@ class Person(models.Model):
     last_name = models.CharField(max_length=50, blank=True)
     email = models.EmailField(blank=True)
     institution_affiliation = models.CharField(max_length=100, blank=True)
-    initial_role = models.IntegerField(choices=PERSON_ROLE_CHOICES,
-                              null=True,blank=True)
+    user_role = models.IntegerField(choices=PERSON_ROLE_CHOICES,
+                                    null=True, blank=True)
     user = models.OneToOneField(settings.AUTH_USER_MODEL, null=True, blank=True)
 
     class Meta:
@@ -235,13 +243,13 @@ class Plot(models.Model):
 
 class DataSet(models.Model):
 
-    ACCESS_PRIVATE = '0'
-    ACCESS_NGEET = '1'
-    ACCESS_PUBLIC = '2'
+    ACCESS_PRIVATE = 0
+    ACCESS_NGEET = 1
+    ACCESS_PUBLIC = 2
 
-    STATUS_DRAFT = '0'
-    STATUS_SUBMITTED = '1'
-    STATUS_APPROVED = '2'
+    STATUS_DRAFT = 0
+    STATUS_SUBMITTED = 1
+    STATUS_APPROVED = 2
 
     def data_set_id(self):
         return "NGT{:04}".format(self.ngt_id)
@@ -250,14 +258,14 @@ class DataSet(models.Model):
     description = models.TextField(blank=True, null=True)
     version = models.CharField(max_length=15, default="0.0")
 
-    status = models.CharField(max_length=1, choices=STATUS_CHOICES,
-                              default='0')  # (draft [DEFAULT], submitted, approved)
+    status = models.IntegerField(choices=STATUS_CHOICES,
+                              default=0)  # (draft [DEFAULT], submitted, approved)
     status_comment = models.TextField(blank=True, null=True)
     name = models.CharField(unique=True, max_length=150, blank=True, null=True)
     doi = models.TextField(blank=True, null=True)
     start_date = models.DateField(blank=True, null=True)
     end_date = models.DateField(blank=True, null=True)
-    qaqc_status = models.CharField(max_length=1, choices=QAQC_STATUS_CHOICES, blank=True, null=True)
+    qaqc_status = models.IntegerField(choices=QAQC_STATUS_CHOICES, blank=True, null=True)
     qaqc_method_description = models.TextField(blank=True, null=True)
     ngee_tropics_resources = models.BooleanField(default=False)
     funding_organizations = models.TextField(blank=True, null=True)
@@ -267,7 +275,7 @@ class DataSet(models.Model):
     additional_reference_information = models.TextField(blank=True, null=True)
     originating_institution = models.TextField(blank=True, null=True)
 
-    access_level = models.CharField(max_length=1, choices=ACCESS_CHOICES, default='0')
+    access_level = models.IntegerField(choices=ACCESS_CHOICES, default=0)
     additional_access_information = models.TextField(blank=True, null=True)
     submission_date = models.DateField(blank=True, null=True)
 

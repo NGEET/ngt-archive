@@ -247,12 +247,16 @@ class DataSetViewSet(ModelViewSet):
         NGT Team and Collaborators are allow to view public, their own private and approved NGEET datasets
         """
         user = self.request.user
+
         from django.db.models import Q # for or clause
         if self.request.user.has_perm('archive_api.view_all_datasets'):
             return DataSet.objects.all()
         else:
             where_clause = Q(access_level=DataSet.ACCESS_PRIVATE, created_by=user) | Q(
-                access_level=DataSet.ACCESS_PUBLIC, status=DataSet.STATUS_APPROVED)
+                access_level=DataSet.ACCESS_PUBLIC, status=DataSet.STATUS_APPROVED) | Q(
+                Q(access_level=DataSet.ACCESS_PRIVATE, cdiac_submission_contact__user=user,
+                  cdiac_import=True)
+            )
 
             if self.request.user.has_perm('archive_api.view_ngeet_approved_datasets'):
                 where_clause = where_clause | Q(access_level=DataSet.ACCESS_NGEET, status=DataSet.STATUS_APPROVED)
