@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib.auth.models import Group
 from django.contrib.auth.signals import user_logged_in
 from django.core.mail import EmailMessage
+from django.db import transaction
 from django.dispatch import Signal
 
 import archive_api
@@ -41,23 +42,25 @@ def notify_admin_to_activate_user(sender, user, **kwargs):
 
         person = None
         try:
-            person = Person.objects.get(email=user.email, initial_role__lt=2)  # Person is a collaborator or team
+            person = Person.objects.get(email=user.email, user_role__lt=2)  # Person is a collaborator or team
         except Person.DoesNotExist:
 
             people = Person.objects.all().filter(first_name__iexact=user.first_name, last_name__iexact=user.last_name,
-                                                 initial_role__lt=2)
+                                                 user_role__lt=2)
             if len(people) == 1:
                 person = people[0]
 
         if person:
 
-            g = Group.objects.get(name='NGT {}'.format(person.get_initial_role_display()))
-            g.user_set.add(user)
-            user.is_active = True
+            with transaction.atomic():
+                g = Group.objects.get(name='NGT {}'.format(person.get_user_role_display()))
+                g.user_set.add(user)
+                user.is_active = True
+                user.save()
 
-            # Assign the current user to the Person found
-            person.user = user
-            person.save()
+                # Assign the current user to the Person found
+                person.user = user
+                person.save()
 
         else:
             EmailMessage(

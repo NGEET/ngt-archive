@@ -154,7 +154,15 @@ class NGTUser(django.contrib.auth.models.User):
 
     @property
     def is_activated(self):
-        return self.is_active or self.is_superuser
+        active = (self.is_active and self.person is not None)
+        return active or self.is_superuser
+
+    @property
+    def person(self):
+        try:
+            return Person.objects.get(user=self)
+        except Person.DoesNotExist:
+            return None
 
 
 class Person(models.Model):
@@ -162,8 +170,8 @@ class Person(models.Model):
     last_name = models.CharField(max_length=50, blank=True)
     email = models.EmailField(blank=True)
     institution_affiliation = models.CharField(max_length=100, blank=True)
-    initial_role = models.IntegerField(choices=PERSON_ROLE_CHOICES,
-                              null=True,blank=True)
+    user_role = models.IntegerField(choices=PERSON_ROLE_CHOICES,
+                                    null=True, blank=True)
     user = models.OneToOneField(settings.AUTH_USER_MODEL, null=True, blank=True)
 
     class Meta:

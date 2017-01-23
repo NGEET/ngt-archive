@@ -66,8 +66,14 @@ class DataSetClientTestCase(APITestCase):
         self.login_user("auser")
         response = self.client.get('/api/v1/datasets/')
         self.assertEqual(len(json.loads(response.content.decode('utf-8'))),
-                         2)
+                         3)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
+
+        self.login_user("lukecage") #cdiac import
+        response = self.client.get('/api/v1/datasets/')
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(len(json.loads(response.content.decode('utf-8'))),
+                         1)
 
     def test_options(self):
         self.login_user("auser")
@@ -106,7 +112,7 @@ class DataSetClientTestCase(APITestCase):
         self.assertTrue("X-Sendfile" in response)
         self.assertTrue(response["X-Sendfile"].find("archives/NGT0004_1.0_"))
         self.assertTrue("Content-Disposition" in response)
-        self.assertEqual("attachment; filename=NGT0003_0.0_Unnamed.zip", response['Content-Disposition'])
+        self.assertEqual("attachment; filename=NGT0004_0.0_Unnamed.zip", response['Content-Disposition'])
 
     def test_client_get(self):
         # Unauthorized user that is not in any groups
@@ -153,8 +159,8 @@ class DataSetClientTestCase(APITestCase):
         self.assertEqual(len(mail.outbox), 1)
         email = mail.outbox[0]
 
-        self.assertEqual(email.subject,"[ngt-archive-test] Dataset Draft (NGT0003)")
-        self.assertTrue(email.body.find("The dataset NGT0003:FooBarBaz has been saved as a draft in the "
+        self.assertEqual(email.subject,"[ngt-archive-test] Dataset Draft (NGT0004)")
+        self.assertTrue(email.body.find("The dataset NGT0004:FooBarBaz has been saved as a draft in the "
                                         "NGEE Tropics Archive. The dataset can be "
                                         "viewed at http://testserver.") > 0)
         self.assertEqual(email.to,['myuser@foo.bar'])
@@ -185,11 +191,11 @@ class DataSetClientTestCase(APITestCase):
         self.assertEqual(value['submission_date'], None)
         self.assertEqual(value['qaqc_status'], None)
         self.assertEqual(value['authors'], ["http://testserver/api/v1/people/2/"])
-        self.assertEqual(value['url'], 'http://testserver/api/v1/datasets/4/')
+        self.assertEqual(value['url'], 'http://testserver/api/v1/datasets/5/')
         self.assertEqual(value['qaqc_method_description'], None)
 
         # The submit action should fail
-        response = self.client.post('/api/v1/datasets/4/submit/')
+        response = self.client.post('/api/v1/datasets/5/submit/')
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
         value = json.loads(response.content.decode('utf-8'))
@@ -908,7 +914,7 @@ class ContactClientTestCase(APITestCase):
                                     data='{"first_name":"Killer","last_name":"Frost","email":"kfrost@earth2.baz","institution_affiliation":"ZOOM"}',
                                     content_type='application/json')
         self.assertEqual(json.loads(response.content.decode('utf-8')),
-                         {"url": "http://testserver/api/v1/people/6/", "first_name": "Killer", "last_name": "Frost",
+                         {"url": "http://testserver/api/v1/people/7/", "first_name": "Killer", "last_name": "Frost",
                           "email": "kfrost@earth2.baz", "institution_affiliation": "ZOOM"})
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
 

@@ -89,7 +89,7 @@ class Migration(migrations.Migration):
                 ('last_name', models.CharField(blank=True, max_length=50)),
                 ('email', models.EmailField(blank=True, max_length=254)),
                 ('institution_affiliation', models.CharField(blank=True, max_length=100)),
-                ('initial_role', models.IntegerField(blank=True, choices=[(0, 'Team'), (1, 'Collaborator')], null=True)),
+                ('user_role', models.IntegerField(blank=True, choices=[(0, 'Team'), (1, 'Collaborator')], null=True)),
             ],
             options={
                 'ordering': ('last_name', 'first_name'),
