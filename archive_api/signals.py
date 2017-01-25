@@ -64,7 +64,7 @@ def notify_admin_to_activate_user(sender, user, **kwargs):
 
         else:
             EmailMessage(
-                subject=' {} requesting activation'.format(get_setting("EMAIL_SUBJECT_PREFIX"), user.username),
+                subject="{} user '{}' requesting activation".format(get_setting("EMAIL_SUBJECT_PREFIX"),user.username),
                 body="""Dear NGEE Tropics Admins,
 
 User '{}' is requesting access to NGEE Tropics Archive service.
@@ -93,6 +93,7 @@ def dataset_notify_status_change(sender, **kwargs):
     request = kwargs['request']
     root_url = "{}://{}".format(request.scheme, request.get_host())
     content = None
+    ngeet_team = ",".join(get_setting("EMAIL_NGEET_TEAM"))
 
     if original_status != instance.status:
         if original_status is None and instance.status == permissions.DRAFT:
@@ -100,26 +101,35 @@ def dataset_notify_status_change(sender, **kwargs):
             if not dataset_name:
                 dataset_name = "Unnamed"
 
+            dataset_name = dataset_name.strip()
             # this is a draft.
             content = """Dear {fullname},
 
-The dataset {dataset_id}:{dataset_name} has been saved as a draft in the NGEE Tropics Archive. The dataset can be viewed at {root_url}.
+The dataset {dataset_id}:{dataset_name} has been saved as a draft in the NGEE Tropics Archive.
+The dataset can be viewed at {root_url}.  Login with your account credentials,
+select "Edit Drafts" and then click the "Edit" button for {dataset_id}:{dataset_name}.
 
-Contact the  NGEE Tropics Archive Team (ngee-tropics-archive@googlegroups.com) for questions. Thanks for submitting your data to the NGEE Tropics Archive!
+Contact the  NGEE Tropics Archive Team ({ngeet_team}) for questions.
+Thanks for submitting your data to the NGEE Tropics Archive!
 
 Sincerely
 The NGEE Tropics Archive Team
 """.format(**{"fullname": instance.created_by.get_full_name(), "dataset_id": instance.data_set_id(),
-              "dataset_name": dataset_name, "root_url": root_url})
+              "dataset_name": dataset_name, "root_url": root_url, "ngeet_team":ngeet_team})
         elif original_status == permissions.DRAFT and instance.status == permissions.SUBMITTED:
-            content = """"Dear {},
+            content = """Dear {fullname},
 
-The dataset {}:{} created on {:%m/%d/%Y} was submitted to the NGEE Tropics Archive. The dataset can be viewed at {}.
+The dataset {dataset_id}:{dataset_name} created on {created_date:%m/%d/%Y} was submitted to the NGEE Tropics Archive.
+The dataset can be viewed at {root_url}. Login with your account credentials,
+select "View Approved Datasets" and then click the "Submitted" button for {dataset_id}:{dataset_name}.
+
 
 You will be notified once the dataset has been approved or if we have questions regarding your submission.
 Note that at this time we do not have the ability to edit the dataset once it has been approved.
 
-Contact the  NGEE Tropics Archive Team (ngee-tropics-archive@googlegroups.com) for questions or if you want to make any changes to your dataset. Thanks for submitting your data to the NGEE Tropics Archive!
+Contact the  NGEE Tropics Archive Team ({ngeet_team}) for
+questions or if you want to make any changes to your dataset.
+Thanks for submitting your data to the NGEE Tropics Archive!
 
 Sincerely
 The NGEE Tropics Archive Team
@@ -127,11 +137,14 @@ The NGEE Tropics Archive Team
 """
 
         elif original_status == permissions.SUBMITTED and instance.status == permissions.APPROVED:
-            content = """Dear {},
+            content = """Dear {fullname},
 
-The dataset {}:{}  created on {:%m/%d/%Y} has been approved for release. The dataset can be viewed at {}.
+The dataset {dataset_id}:{dataset_name} created on {created_date:%m/%d/%Y}  has been approved for release.
+The dataset can be viewed at {root_url}. Login with your account credentials,
+select "View Approved Datasets" and then click the "Approve" button for {dataset_id}:{dataset_name}.
 
-Contact the NGEE Tropics Archive Team (ngee-tropics-archive@googlegroups.com) for questions. Thanks for submitting your data to the NGEE Tropics Archive!
+Contact the NGEE Tropics Archive Team ({ngeet_team})
+for questions. Thanks for submitting your data to the NGEE Tropics Archive!
 
 Sincerely
 The NGEE Tropics Archive Team
@@ -140,8 +153,8 @@ The NGEE Tropics Archive Team
             pass  # do nothing for now
 
         if content:
-            content = content.format(instance.created_by.get_full_name(), instance.data_set_id(), instance.name,
-                                     instance.created_date, root_url)
+            content = content.format(**{"fullname": instance.created_by.get_full_name(), "dataset_id": instance.data_set_id(),
+                "dataset_name": instance.name, "root_url": root_url, "ngeet_team":ngeet_team, "created_date":instance.created_date})
 
     if content:
         EmailMessage(
