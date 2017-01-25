@@ -659,7 +659,7 @@ $(document).ready(function(){
             var validEntries = true;
 
             $('.js-new-value.js-input').each(function(index) {
-                if(!$(this).find('.js-first-name').val() || $(this).find('.js-last-name').val()) {
+                if(!$(this).find('.js-first-name').val() || !$(this).find('.js-last-name').val()) {
                     validEntries = false;
                 }
             });
@@ -716,7 +716,7 @@ $(document).ready(function(){
             }
 
             else {
-                alert('Please enter first and last names for all your new entries');
+                alert('Please enter first and last names for all new contacts/authors');
             }
         }
         else {
