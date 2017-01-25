@@ -654,6 +654,7 @@ $(document).ready(function(){
             $(this).removeClass('missing');
         });
 
+        var entryCount = 0;
         //find all the contacts and authors first before processing others
         if($('.js-new-value.js-input').length > 0) {
             var validEntries = true;
@@ -672,9 +673,10 @@ $(document).ready(function(){
 
                     var fname = $(this).find('.js-first-name').val();
                     var lname = $(this).find('.js-last-name').val();
+
                     $.when(createContact(fname, lname, '', '')).done(function(status) {
                         //console.log(status);
-                        if(status.url && index == $('.js-new-value.js-input').length - 1) {
+                        if(status.url && entryCount == $('.js-new-value.js-input').length - 1) {
                             if(!submissionObj[param] && param == 'authors') {
                                 submissionObj[param] = [];
                                 submissionObj[param].push(status.url);
@@ -685,6 +687,7 @@ $(document).ready(function(){
                             else if(param == 'authors') {
                                 submissionObj[param].push(status.url);
                             }
+                            entryCount++;
                             submissionObj = processForm(submissionObj, submitMode);
                             // no properties are specified. note that ngee tropics resources will always be set
                             // submit will also be present, which will be removed in the createDraft method
@@ -706,6 +709,7 @@ $(document).ready(function(){
                             else if(param == 'authors') {
                                 submissionObj[param].push(status.url);
                             }
+                            entryCount++;
                         }
                         else {
                             alert('There was a problem creating the new entry. Please try again');
@@ -966,6 +970,11 @@ $(document).ready(function(){
         var input = $(this).closest('.js-param').find('.js-multi-container').first().clone();
         $(input).val('')
             .prop('checked');
+        if(input.attr('data-list') == 'contacts') {
+            input.find('.js-new-value').addClass('hide').removeClass('js-input');
+            input.find('.js-first-name').val('');
+            input.find('.js-last-name').val('');
+        }
         input.insertBefore(this);
     });
 
