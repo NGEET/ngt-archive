@@ -677,7 +677,14 @@ $(document).ready(function(){
                             submissionObj[param].push(status.url);
                         }
                         submissionObj = processForm(submissionObj, submitMode);
-                        createDraft(submissionObj, submitMode);
+                        // no properties are specified. note that ngee tropics resources will always be set
+                        // submit will also be present, which will be removed in the createDraft method
+                        if(Object.keys(submissionObj).length > 2) { 
+                            createDraft(submissionObj, submitMode);
+                        }
+                        else {
+                            alert('Please enter a unique name for your new draft');
+                        }
                     }
                     else if(status.url) {
                         if(!submissionObj[param] && param == 'authors') {
@@ -700,7 +707,12 @@ $(document).ready(function(){
         }
         else {
             submissionObj = processForm(submissionObj, submitMode);
-            createDraft(submissionObj, submitMode);
+            if(Object.keys(submissionObj).length > 2) {
+                createDraft(submissionObj, submitMode);
+            }
+            else {
+                alert('Please enter a unique name for your new draft');
+            }
         }
         
     });
