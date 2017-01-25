@@ -260,7 +260,16 @@ body main .create-dataset-view .param section .del-param:hover, body main .view-
 body main .create-dataset-view .param section .del-param span, body main .view-drafts-view .param section .del-param span {
   text-align: center;
 }
-/* line 286, ../sass/style.scss */
+/* line 284, ../sass/style.scss */
+body main .create-dataset-view .param section .add-text, body main .view-drafts-view .param section .add-text {
+  padding: 0 0.9375rem;
+}
+/* line 287, ../sass/style.scss */
+body main .create-dataset-view .param section .contact-wrapper, body main .view-drafts-view .param section .contact-wrapper {
+  float: none;
+  width: 100%;
+}
+/* line 294, ../sass/style.scss */
 body main .create-dataset-view .file-drop-zone, body main .view-drafts-view .file-drop-zone {
   text-align: center;
   border: 2px dashed #777;
@@ -269,7 +278,7 @@ body main .create-dataset-view .file-drop-zone, body main .view-drafts-view .fil
   margin-bottom: 2rem;
   margin-top: 2rem;
 }
-/* line 295, ../sass/style.scss */
+/* line 303, ../sass/style.scss */
 body main .create-dataset-view .file-drop-zone input[type="file"], body main .view-drafts-view .file-drop-zone input[type="file"] {
   position: absolute;
   left: 0;
@@ -279,54 +288,54 @@ body main .create-dataset-view .file-drop-zone input[type="file"], body main .vi
   opacity: 0;
   z-index: -1;
 }
-/* line 311, ../sass/style.scss */
+/* line 319, ../sass/style.scss */
 body main .map-view {
   height: 400px;
 }
-/* line 317, ../sass/style.scss */
+/* line 325, ../sass/style.scss */
 body main .sites-container .site-info .title {
   border-bottom: 1px solid #ccc;
 }
-/* line 321, ../sass/style.scss */
+/* line 329, ../sass/style.scss */
 body main .sites-container .site-info .main-params, body main .sites-container .site-info .map-view {
   margin-top: 10px;
 }
-/* line 325, ../sass/style.scss */
+/* line 333, ../sass/style.scss */
 body main .sites-container .site-info .columns {
   padding: 0;
 }
-/* line 329, ../sass/style.scss */
+/* line 337, ../sass/style.scss */
 body main .sites-container .site-info .main-params {
   padding-right: 15px;
 }
-/* line 334, ../sass/style.scss */
+/* line 342, ../sass/style.scss */
 body main .sites-container .site-info .site-desc .columns {
   padding: 0;
 }
-/* line 338, ../sass/style.scss */
+/* line 346, ../sass/style.scss */
 body main .sites-container .site-info .site-desc .plot-title {
   margin-top: 30px;
 }
-/* line 342, ../sass/style.scss */
+/* line 350, ../sass/style.scss */
 body main .sites-container .site-info .site-desc .plot-info {
   margin-top: 10px;
   margin-bottom: 15px;
   padding: 10px 15px 15px;
   background-color: #f8f8f8;
 }
-/* line 349, ../sass/style.scss */
+/* line 357, ../sass/style.scss */
 body main .sites-container .site-info .site-desc .param {
   margin-bottom: 4px;
 }
-/* line 358, ../sass/style.scss */
+/* line 366, ../sass/style.scss */
 body main .all-datasets .dataset .title {
   cursor: pointer;
 }
-/* line 369, ../sass/style.scss */
+/* line 377, ../sass/style.scss */
 body main footer {
   padding-top: 2rem;
 }
-/* line 372, ../sass/style.scss */
+/* line 380, ../sass/style.scss */
 body main footer img {
   max-width: 320px;
 }
