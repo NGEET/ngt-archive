@@ -431,7 +431,7 @@ $(document).ready(function(){
         $('.js-edit-form .js-create-dataset').addClass('hide');
         $('.js-edit-form .js-clear-form').addClass('hide');
         $('.js-edit-form .js-cancel-btn').removeClass('hide');
-        $('.js-edit-form .js-file-drop-zone').addClass('hide');
+        //$('.js-edit-form .js-file-drop-zone').addClass('hide');
 
         /*$('.js-edit-form .js-param').each(function() {
             var param = $(this).attr('data-param');
@@ -768,14 +768,76 @@ $(document).ready(function(){
 
         console.log(submissionObj);
 
-        $.when(editDataset(submissionObj, url)).done(function(data) {
-            if(data) {
-                alert('Your changes were successfully saved.');
-            }
-            else {
-                alert('There was an error with the update. Please try again.');
-            }
-        });
+        if(Object.keys(submissionObj).length > 1) {
+
+            $.when(editDataset(submissionObj, url)).done(function(data) {
+                if(data) {
+                    
+                    if(fileToUpload) {
+                        if(fileTypeAllowed(fileToUpload.type) > -1) {
+                            var csrftoken = getCookie('csrftoken');
+
+                            $.ajaxSetup({
+                                beforeSend: function(xhr, settings) {
+                                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                                }
+                            });
+
+                            var data = {
+                                attachment: fileToUpload
+                            };
+
+                            var formData = new FormData();
+                            formData.append('attachment', fileToUpload);
+
+                            //data = JSON.parse(data);
+
+                            $.ajax({
+                                method: "POST",
+                                contentType: false,
+                                data: formData,
+                                processData: false,
+                                url: url + "upload/",
+                                success: function(data) {
+                                    /*if(submitMode) {
+                                        $.when(submitDataset(status.url)).done(function(submitStatus) {
+                                            alert(submitStatus.detail);
+                                            $('.js-clear-form').trigger('click');
+                                        });
+                                    }
+                                    else {*/
+                                        alert('Draft has been updated with the attached file');
+                                        
+                                    //}
+                                    
+                                },
+
+                                fail: function(data) {
+                                    var detailObj = JSON.parse(data.responseText);
+                                    alert('Fail: The draft was updated successfully but the file could not be uploaded. ' + detailObj.detail);
+                                },
+
+                                error: function(data, errorThrown) {
+                                    var detailObj = JSON.parse(data.responseText);
+                                    alert('Error: The draft was updated successfully but the file could not be uploaded. ' + detailObj.detail);
+                                },
+
+                            });
+
+                        }
+                        else {
+                            alert('Dataset has been updated, but the file format is Invalid. Please upload an archive file');
+                        }
+                    }
+                }
+                else {
+                    alert('There was an error with the update. Please try again.');
+                }
+            });
+        }
+        else {
+            alert('Please enter a unique name for the draft.');
+        }
     });
 
     $('body').on('click', '.js-create-contact', function(event) {
