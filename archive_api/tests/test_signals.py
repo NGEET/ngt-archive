@@ -49,7 +49,7 @@ class TestLoginSignals(TestCase):
 
         self.assertEqual(email.to, ['ngeet-team@testserver'])
         self.assertEqual(email.reply_to, ['ngeet-team@testserver'])
-        self.assertTrue(email.subject, "[ngt-archive-test] Barry Allen requesting activation")
+        self.assertEqual(email.subject, "[ngt-archive-test] user 'flash' requesting activation")
         self.assertTrue(email.body.find("User 'flash' is requesting access to NGEE Tropics Archive service.") > -1)
 
     def test_signal_notify(self):
@@ -69,7 +69,7 @@ class TestLoginSignals(TestCase):
 
         self.assertEqual(email.to, ['ngeet-team@testserver'])
         self.assertEqual(email.reply_to, ['ngeet-team@testserver'])
-        self.assertTrue(email.subject, "[ngt-archive-test] Cisco Ramon requesting activation")
+        self.assertEqual(email.subject, "[ngt-archive-test] user 'vibe' requesting activation")
         self.assertTrue(email.body.find("User 'vibe' is requesting access to NGEE Tropics Archive service.") > -1)
 
     def test_signal_no_notify(self):
