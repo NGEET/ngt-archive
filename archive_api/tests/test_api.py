@@ -160,9 +160,10 @@ class DataSetClientTestCase(APITestCase):
         email = mail.outbox[0]
 
         self.assertEqual(email.subject,"[ngt-archive-test] Dataset Draft (NGT0004)")
-        self.assertTrue(email.body.find("The dataset NGT0004:FooBarBaz has been saved as a draft in the "
-                                        "NGEE Tropics Archive. The dataset can be "
-                                        "viewed at http://testserver.") > 0)
+        self.assertTrue(email.body.find("""The dataset NGT0004:FooBarBaz has been saved as a draft in the NGEE Tropics Archive.
+The dataset can be viewed at http://testserver.  Login with your account credentials,
+select "Edit Drafts" and then click the "Edit" button for NGT0004:FooBarBaz.
+""") > 0)
         self.assertEqual(email.to,['myuser@foo.bar'])
         self.assertEqual(email.reply_to, settings.ARCHIVE_API['EMAIL_NGEET_TEAM'])
 
@@ -417,8 +418,10 @@ class DataSetClientTestCase(APITestCase):
         email = mail.outbox[0]
 
         self.assertEqual(email.subject, "[ngt-archive-test] Dataset Approved (NGT0001)")
-        self.assertTrue(email.body.find("The dataset NGT0001:Data Set 2  created on 10/28/2016 "
-                                        "has been approved for release. The dataset can be viewed at http://testserver.") > 0)
+        self.assertTrue(email.body.find("""The dataset NGT0001:Data Set 2 created on 10/28/2016  has been approved for release.
+The dataset can be viewed at http://testserver. Login with your account credentials,
+select "View Approved Datasets" and then click the "Approve" button for NGT0001:Data Set 2.
+""") > 0)
         self.assertEqual(email.to, ['myuser@foo.bar'])
         self.assertEqual(email.reply_to, settings.ARCHIVE_API['EMAIL_NGEET_TEAM'])
 
@@ -610,9 +613,11 @@ class DataSetClientTestCase(APITestCase):
         self.assertEqual(outbox_len + 1, len(mail.outbox))  # notification emails sent
         email = mail.outbox[0]
         self.assertEqual(email.subject, "[ngt-archive-test] Dataset Submitted (NGT0000)")
-        self.assertTrue(email.body.find("The dataset NGT0000:Data Set 1 created on 10/28/2016 was "
-                                        "submitted to the NGEE Tropics Archive. The dataset can be "
-                                        "viewed at http://testserver.") > 0)
+        print(email.body)
+        self.assertTrue(email.body.find("""The dataset NGT0000:Data Set 1 created on 10/28/2016 was submitted to the NGEE Tropics Archive.
+The dataset can be viewed at http://testserver. Login with your account credentials,
+select "View Approved Datasets" and then click the "Submitted" button for NGT0000:Data Set 1.
+""") > 0)
         self.assertEqual(email.to, ['myuser@foo.bar'])
 
         response = self.client.get("/api/v1/datasets/1/")
