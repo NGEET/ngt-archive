@@ -1232,6 +1232,11 @@ function createEditForm(templateType) {
     
     var editForm = $('.js-create-form').clone();
     editForm.removeClass('js-create-form').addClass('js-edit-form hide').appendTo('.js-view.view-drafts-view');
+    editForm.find('.switch-input').attr('id', 'edit-yes-no')
+                                .attr('name', 'editYesNoSwitch');
+
+    editForm.find('label').attr('for', 'edit-yes-no');
+
     $('.js-input.date').datepicker({
         dateFormat: "yy-mm-dd"
     });
