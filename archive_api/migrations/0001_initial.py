@@ -67,7 +67,7 @@ class Migration(migrations.Migration):
             name='DataSetDownloadLog',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('dataset_status', models.CharField(choices=[(0, 'Draft'), (1, 'Submitted'), (2, 'Approved')], max_length=1)),
+                ('dataset_status', models.IntegerField(choices=[(0, 'Draft'), (1, 'Submitted'), (2, 'Approved')])),
                 ('request_url', models.CharField(max_length=256)),
                 ('datetime', models.DateTimeField(auto_now_add=True)),
                 ('ip_address', models.GenericIPAddressField(blank=True, null=True)),

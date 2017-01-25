@@ -359,7 +359,7 @@ class DataSetDownloadLog(models.Model):
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.DO_NOTHING)
     dataset = models.ForeignKey(DataSet,on_delete=models.DO_NOTHING)
-    dataset_status  = models.CharField(max_length=1, choices=STATUS_CHOICES)  # (draft [DEFAULT], submitted, approved)
+    dataset_status  = models.IntegerField(choices=STATUS_CHOICES)  # (draft [DEFAULT], submitted, approved)
     request_url = models.CharField(max_length=256)
     datetime = models.DateTimeField(editable=False, auto_now_add=True)
     ip_address = models.GenericIPAddressField(blank=True, null=True)
