@@ -656,54 +656,68 @@ $(document).ready(function(){
 
         //find all the contacts and authors first before processing others
         if($('.js-new-value.js-input').length > 0) {
+            var validEntries = true;
 
             $('.js-new-value.js-input').each(function(index) {
+                if(!$(this).find('.js-first-name').val() || $(this).find('.js-last-name').val()) {
+                    validEntries = false;
+                }
+            });
 
-                var param = $(this).closest('.js-param').attr('data-param');
+            if(validEntries) {
 
-                var fname = $(this).find('.js-first-name').val();
-                var lname = $(this).find('.js-last-name').val();
-                $.when(createContact(fname, lname, '', '')).done(function(status) {
-                    //console.log(status);
-                    if(status.url && index == $('.js-new-value.js-input').length - 1) {
-                        if(!submissionObj[param] && param == 'authors') {
-                            submissionObj[param] = [];
-                            submissionObj[param].push(status.url);
+                $('.js-new-value.js-input').each(function(index) {
+
+                    var param = $(this).closest('.js-param').attr('data-param');
+
+                    var fname = $(this).find('.js-first-name').val();
+                    var lname = $(this).find('.js-last-name').val();
+                    $.when(createContact(fname, lname, '', '')).done(function(status) {
+                        //console.log(status);
+                        if(status.url && index == $('.js-new-value.js-input').length - 1) {
+                            if(!submissionObj[param] && param == 'authors') {
+                                submissionObj[param] = [];
+                                submissionObj[param].push(status.url);
+                            }
+                            else if(param == 'contact') {
+                                submissionObj[param] = status.url;
+                            }
+                            else if(param == 'authors') {
+                                submissionObj[param].push(status.url);
+                            }
+                            submissionObj = processForm(submissionObj, submitMode);
+                            // no properties are specified. note that ngee tropics resources will always be set
+                            // submit will also be present, which will be removed in the createDraft method
+                            if(Object.keys(submissionObj).length > 2) { 
+                                createDraft(submissionObj, submitMode);
+                            }
+                            else {
+                                alert('Please enter a unique name for your new draft');
+                            }
                         }
-                        else if(param == 'contact') {
-                            submissionObj[param] = status.url;
-                        }
-                        else if(param == 'authors') {
-                            submissionObj[param].push(status.url);
-                        }
-                        submissionObj = processForm(submissionObj, submitMode);
-                        // no properties are specified. note that ngee tropics resources will always be set
-                        // submit will also be present, which will be removed in the createDraft method
-                        if(Object.keys(submissionObj).length > 2) { 
-                            createDraft(submissionObj, submitMode);
+                        else if(status.url) {
+                            if(!submissionObj[param] && param == 'authors') {
+                                submissionObj[param] = [];
+                                submissionObj[param].push(status.url);
+                            }
+                            else if(param == 'contact') {
+                                submissionObj[param] = status.url;
+                            }
+                            else if(param == 'authors') {
+                                submissionObj[param].push(status.url);
+                            }
                         }
                         else {
-                            alert('Please enter a unique name for your new draft');
+                            alert('There was a problem creating the new entry. Please try again');
                         }
-                    }
-                    else if(status.url) {
-                        if(!submissionObj[param] && param == 'authors') {
-                            submissionObj[param] = [];
-                            submissionObj[param].push(status.url);
-                        }
-                        else if(param == 'contact') {
-                            submissionObj[param] = status.url;
-                        }
-                        else if(param == 'authors') {
-                            submissionObj[param].push(status.url);
-                        }
-                    }
-                    else {
-                        alert('There was a problem creating the new entry. Please try again');
-                    }
-                });
+                    });
 
-            });
+                });
+            }
+
+            else {
+                alert('Please enter first and last names for all your new entries');
+            }
         }
         else {
             submissionObj = processForm(submissionObj, submitMode);
@@ -1088,8 +1102,13 @@ function processForm(submissionObj, submitMode, editMode) {
                 }
 
                 else if(submitMode && required) {
-                    submissionObj.submit = false;
-                    $(this).closest('.js-param').addClass('missing');
+                    if($(this).hasClass('js-new-value') && submissionObj[param]) {
+                        ;
+                    }
+                    else {
+                        submissionObj.submit = false;
+                        $(this).closest('.js-param').addClass('missing');
+                    }
                 }
 
             }
