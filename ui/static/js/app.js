@@ -657,7 +657,7 @@ $(document).ready(function(){
         //find all the contacts and authors first before processing others
         if($('.js-new-value.js-input').length > 0) {
 
-            $('.js-new-value.js-input').each(function() {
+            $('.js-new-value.js-input').each(function(index) {
 
                 var param = $(this).closest('.js-param').attr('data-param');
 
@@ -665,10 +665,31 @@ $(document).ready(function(){
                 var lname = $(this).find('.js-last-name').val();
                 $.when(createContact(fname, lname, '', '')).done(function(status) {
                     //console.log(status);
-                    if(status.url) {
-                        submissionObj[param] = status.url;
+                    if(status.url && index == $('.js-new-value.js-input').length - 1) {
+                        if(!submissionObj[param] && param == 'authors') {
+                            submissionObj[param] = [];
+                            submissionObj[param].push(status.url);
+                        }
+                        else if(param == 'contact') {
+                            submissionObj[param] = status.url;
+                        }
+                        else if(param == 'authors') {
+                            submissionObj[param].push(status.url);
+                        }
                         submissionObj = processForm(submissionObj, submitMode);
                         createDraft(submissionObj, submitMode);
+                    }
+                    else if(status.url) {
+                        if(!submissionObj[param] && param == 'authors') {
+                            submissionObj[param] = [];
+                            submissionObj[param].push(status.url);
+                        }
+                        else if(param == 'contact') {
+                            submissionObj[param] = status.url;
+                        }
+                        else if(param == 'authors') {
+                            submissionObj[param].push(status.url);
+                        }
                     }
                     else {
                         alert('There was a problem creating the new entry. Please try again');
