@@ -124,6 +124,7 @@ $(document).ready(function(){
             $('.js-datasets').html('');
             for(var i=0;i<data.length;i++) {
                 
+                if(data[i].status == 2) {
                     var tag = $('<div/>').addClass('js-view-dataset dataset');
                     tag.append('<h5 class="title">' + (data[i].name ? data[i].name : 'NA') + '</h5>')
                         .append('<p class="desc">' + (data[i].description ? data[i].description.substring(0, 199) + '...' : 'NA') + '</p>')
@@ -144,7 +145,8 @@ $(document).ready(function(){
                             break;
                     }
 
-                    $('.js-all-datasets').append(tag);                
+                    $('.js-all-datasets').append(tag); 
+                }              
                     /*$('.js-all-datasets').append((data[i].name ? data[i].name : 'NA') + '<br>')
                                     .append((data[i].description ? data[i].description : 'NA') + '<br>')
                                     .append('<button class="js-view-dataset button" data-url="' + data[i].url + '" data-index="' + i + '">View</button>')
