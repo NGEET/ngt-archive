@@ -428,9 +428,10 @@ $(document).ready(function(){
         $('.js-view.view-drafts-view .js-all-datasets').addClass('hide');
         $('.js-edit-form').removeClass('hide');
         $('.js-edit-form .js-edit-dataset').removeClass('hide');
-        $('.js-edit-form .js-create-dataset').addClass('hide');
+        $('.js-edit-form .js-create-dataset').first().addClass('hide');
         $('.js-edit-form .js-clear-form').addClass('hide');
         $('.js-edit-form .js-cancel-btn').removeClass('hide');
+        $('.js-edit-back-btn').removeClass('hide');
         //$('.js-edit-form .js-file-drop-zone').addClass('hide');
 
         /*$('.js-edit-form .js-param').each(function() {
