@@ -35,14 +35,19 @@ def notify_admin_to_activate_user(sender, user, **kwargs):
     :param kwargs:
     :return:
     """
+    from archive_api.models import NGTUser
+    ngt_user = NGTUser.objects.get(id = user.id)
 
-    if not user.groups.all() and not user.is_superuser:
+    if not ngt_user.is_activated and not user.is_superuser:
         # check existing list
         # if not in any of these groups send email to admins
 
         person = None
         try:
-            person = Person.objects.get(email=user.email, user_role__lt=2)  # Person is a collaborator or team
+            try:
+                person= Person.objects.get(user = user)
+            except Person.DoesNotExist:
+                person = Person.objects.get(email=user.email, user_role__lt=2)  # Person is a collaborator or team
         except Person.DoesNotExist:
 
             people = Person.objects.all().filter(first_name__iexact=user.first_name, last_name__iexact=user.last_name,
@@ -50,11 +55,14 @@ def notify_admin_to_activate_user(sender, user, **kwargs):
             if len(people) == 1:
                 person = people[0]
 
-        if person:
+        # They can only be activated if they have been assigned a user role
+        if person and person.user_role is not None:
 
             with transaction.atomic():
-                g = Group.objects.get(name='NGT {}'.format(person.get_user_role_display()))
-                g.user_set.add(user)
+                # only add a them to a group if they don't have one
+                if len(user.groups.all()) == 0:
+                    g = Group.objects.get(name='NGT {}'.format(person.get_user_role_display()))
+                    g.user_set.add(user)
                 user.is_active = True
                 user.save()
 
