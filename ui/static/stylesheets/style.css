@@ -40,12 +40,12 @@
 /* line 48, ../sass/style.scss */
 .tag {
   color: white;
-  font-size: 14px;
-  line-height: 30px;
+  font-size: 12px;
+  line-height: 28px;
   vertical-align: middle;
-  height: 30px;
+  height: 28px;
   display: inline-block;
-  width: 120px;
+  width: 110px;
   text-align: center;
   float: right;
   cursor: default;
@@ -328,15 +328,19 @@ body main .sites-container .site-info .site-desc .plot-info {
 body main .sites-container .site-info .site-desc .param {
   margin-bottom: 4px;
 }
-/* line 367, ../sass/style.scss */
+/* line 366, ../sass/style.scss */
+body main .all-datasets .dataset {
+  margin-bottom: 20px;
+}
+/* line 369, ../sass/style.scss */
 body main .all-datasets .dataset .title {
   cursor: pointer;
 }
-/* line 378, ../sass/style.scss */
+/* line 380, ../sass/style.scss */
 body main footer {
   padding-top: 2rem;
 }
-/* line 381, ../sass/style.scss */
+/* line 383, ../sass/style.scss */
 body main footer img {
   max-width: 320px;
 }
