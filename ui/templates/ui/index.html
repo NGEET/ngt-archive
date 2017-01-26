@@ -290,7 +290,14 @@
                   
                 </section>
               <!--button class="button edit-btn js-edit-dataset-btn">Edit</button-->
-                <a class="button download-btn js-file-download-btn hide">Download Dataset</a>
+                <div class="js-download-wrapper hide row columns small-12">
+                    <span>     
+                        <input type="checkbox" name="data-policy"  id="data-policy" class="js-data-policy-check">
+                        <label for="data-policy">I have read and agree to the terms of the <a>NGEE Tropics data policy</a>.</label>
+                    </span><br>
+                    <a class="button download-btn js-file-download-btn disabled">Download Dataset</a>
+                </div>
+                
             </div>
         </main>
     </body>

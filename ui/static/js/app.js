@@ -429,6 +429,7 @@ $(document).ready(function(){
         $('.js-edit-form').removeClass('hide');
         $('.js-edit-form .js-edit-dataset').removeClass('hide');
         $('.js-edit-form .js-create-dataset').first().addClass('hide');
+        $('.js-edit-form .js-create-dataset.js-submit').addClass('js-submit-dataset').removeClass('js-create-dataset');
         $('.js-edit-form .js-clear-form').addClass('hide');
         $('.js-edit-form .js-cancel-btn').removeClass('hide');
         $('.js-edit-back-btn').removeClass('hide');
@@ -643,6 +644,150 @@ $(document).ready(function(){
         });*/
     });
 
+    $('body').on('click', '.js-submit-dataset', function(event) {
+        event.preventDefault();
+
+        if(fileToUpload) {
+            if(fileTypeAllowed(fileToUpload.type) > -1) {
+                var csrftoken = getCookie('csrftoken');
+
+                $.ajaxSetup({
+                    beforeSend: function(xhr, settings) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                });
+
+                var data = {
+                    attachment: fileToUpload
+                };
+
+                var formData = new FormData();
+                formData.append('attachment', fileToUpload);
+
+                //data = JSON.parse(data);
+
+                $.ajax({
+                    method: "POST",
+                    contentType: false,
+                    data: formData,
+                    processData: false,
+                    url: url + "upload/",
+                    success: function(data) {
+                        /*if(submitMode) {
+                            $.when(submitDataset(status.url)).done(function(submitStatus) {
+                                alert(submitStatus.detail);
+                                $('.js-clear-form').trigger('click');
+                            });
+                        }
+                        else {*/
+                        //}
+                        var submissionObj = {};
+                        submissionObj.submit = true;
+                        var submitMode = true;
+
+                        $('.js-edit-form .js-param.missing').each(function() {
+                            $(this).removeClass('missing');
+                        });
+
+                        var entryCount = 0;
+                        //find all the contacts and authors first before processing others
+                        if($('.js-new-value.js-input').length > 0) {
+                            var validEntries = true;
+
+                            $('.js-new-value.js-input').each(function(index) {
+                                if(!$(this).find('.js-first-name').val() || !$(this).find('.js-last-name').val()) {
+                                    validEntries = false;
+                                }
+                            });
+
+                            if(validEntries) {
+
+                                $('.js-edit-form .js-new-value.js-input').each(function(index) {
+
+                                    var param = $(this).closest('.js-param').attr('data-param');
+
+                                    var fname = $(this).find('.js-first-name').val();
+                                    var lname = $(this).find('.js-last-name').val();
+
+                                    $.when(createContact(fname, lname, '', '')).done(function(status) {
+                                        //console.log(status);
+                                        if(status.url && entryCount == $('.js-new-value.js-input').length - 1) {
+                                            if(!submissionObj[param] && param == 'authors') {
+                                                submissionObj[param] = [];
+                                                submissionObj[param].push(status.url);
+                                            }
+                                            else if(param == 'contact') {
+                                                submissionObj[param] = status.url;
+                                            }
+                                            else if(param == 'authors') {
+                                                submissionObj[param].push(status.url);
+                                            }
+                                            entryCount++;
+                                            submissionObj = processForm(submissionObj, submitMode, true);
+                                            if(submitMode) {
+                                                $.when(submitDataset(status.url)).done(function(submitStatus) {
+                                                    alert(submitStatus.detail);
+                                                    $('.js-clear-form').trigger('click');
+                                                });
+                                            }
+                                        }
+                                        else if(status.url) {
+                                            if(!submissionObj[param] && param == 'authors') {
+                                                submissionObj[param] = [];
+                                                submissionObj[param].push(status.url);
+                                            }
+                                            else if(param == 'contact') {
+                                                submissionObj[param] = status.url;
+                                            }
+                                            else if(param == 'authors') {
+                                                submissionObj[param].push(status.url);
+                                            }
+                                            entryCount++;
+                                        }
+                                        else {
+                                            alert('There was a problem creating the new entry. Please try again');
+                                        }
+                                    });
+
+                                });
+                            }
+
+                            else {
+                                alert('Please enter first and last names for all new contacts/authors');
+                            }
+                        }
+                        else {
+                            submissionObj = processForm(submissionObj, submitMode, true);
+                            if(submitMode) {
+                                $.when(submitDataset(status.url)).done(function(submitStatus) {
+                                    alert(submitStatus.detail);
+                                    $('.js-clear-form').trigger('click');
+                                });
+                            }
+                        }
+                        
+                    },
+
+                    fail: function(data) {
+                        var detailObj = JSON.parse(data.responseText);
+                        alert('Fail: ' + detailObj.detail);
+                    },
+
+                    error: function(data, errorThrown) {
+                        var detailObj = JSON.parse(data.responseText);
+                        alert('Error: ' + detailObj.detail);
+                    },
+
+                });
+
+            }
+            else {
+                alert('The file format is Invalid. Please upload an archive file');
+            }
+            fileToUpload = false;
+        }
+    });
+
     $('body').on('click', '.js-create-dataset', function(event) {
         event.preventDefault();
         var submissionObj = {};
@@ -829,6 +974,7 @@ $(document).ready(function(){
                         else {
                             alert('Dataset has been updated, but the file format is Invalid. Please upload an archive file');
                         }
+                        fileToUpload = false;
                     }
                 }
                 else {
@@ -886,7 +1032,7 @@ $(document).ready(function(){
                 });*/
                 
                 for(var prop in datasetObj) {
-                    if(!templates.datasets[prop].read_only) {
+                    if(templates.datasets[prop].sequence != -1) {
                         var substring = '<div class="row">';
                         substring += '<div class="columns small-12 medium-3"><b class="js-param-name">' + templates.datasets[prop].label + '</b>' + '&nbsp;</div>';
                         if((prop == 'contact' || prop == 'sites' || prop == 'plots' || prop == 'authors' || prop == 'variables') &&  datasetObj[prop] != null) {
@@ -965,16 +1111,20 @@ $(document).ready(function(){
                     $('.js-file-download-btn').attr('data-url', dataObj.datasets[index]['url'])
                                         .attr('data-archive', dataObj.datasets[index]['archive'])
                                         .attr('href', dataObj.datasets[index]['archive'])
-                                        .clone()
-                                        .appendTo('.js-download-wrapper')
-                                        .addClass('pull-right')
-                                        .removeClass('hide');
+                                        //.clone()
+                                        //.appendTo('.js-download-wrapper')
+                                        .addClass('pull-right');
+                    $('.js-download-wrapper').removeClass('hide');
                 }
 
             //}
             popup.open();
         });
     
+    });
+
+    $('body').on('click', '.js-data-policy-check', function() {
+        $('.js-file-download-btn').hasClass('disabled') ? $('.js-file-download-btn').removeClass('disabled') : $('.js-file-download-btn').addClass('disabled');
     });
 
     $('body').on('click', '.js-close-modal', function(event) {
@@ -1109,6 +1259,7 @@ function createDraft(submissionObj, submitMode) {
                     else {
                         alert('Invalid file format. Please upload an archive file');
                     }
+                    fileToUpload = false;
                 }
                 else {
                     if(submitMode) {
