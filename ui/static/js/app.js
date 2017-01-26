@@ -131,17 +131,17 @@ $(document).ready(function(){
                         .attr('data-url', data[i].url)
                         .attr('data-index', i);
 
-                    switch(data[i].status) {
+                    switch(data[i].access_level) {
                         case '0': 
-                            tag.find('.title').append('<span class="tag draft">Draft</span>');
+                            tag.find('.title').append('<span class="tag">Private</span>');
                             break;
 
                         case '1': 
-                            tag.find('.title').append('<span class="tag submitted">Submitted</span>');
+                            tag.find('.title').append('<span class="tag">NGEE Tropics</span>');
                             break;
 
                         case '2':
-                            tag.find('.title').append('<span class="tag approved">Approved</span>');
+                            tag.find('.title').append('<span class="tag">Public</span>');
                             break;
                     }
 
