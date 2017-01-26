@@ -47,12 +47,12 @@ $light-orange: #ffa500;
 
 .tag {
     color: white;
-    font-size: 14px;
-    line-height: 30px;
+    font-size: 12px;
+    line-height: 28px;
     vertical-align: middle;
-    height: 30px;
+    height: 28px;
     display: inline-block;
-    width: 120px;
+    width: 110px;
     text-align: center;
     float: right;
     cursor: default;
@@ -364,6 +364,8 @@ body {
 
         .all-datasets {
             .dataset {
+                margin-bottom: 20px;
+
                 .title {
                     cursor: pointer;
                 }
