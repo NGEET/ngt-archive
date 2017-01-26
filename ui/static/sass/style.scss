@@ -52,10 +52,11 @@ $light-orange: #ffa500;
     vertical-align: middle;
     height: 30px;
     display: inline-block;
-    width: 80px;
+    width: 120px;
     text-align: center;
     float: right;
     cursor: default;
+    background-color: $light-blue;
 
     &.draft {
         background-color: $light-orange;
