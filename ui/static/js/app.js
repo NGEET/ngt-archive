@@ -269,7 +269,7 @@ $(document).ready(function(){
                 
                 if(prop == 'description') {
                     var param = $('<div>' + dataObj.sites[index][prop] + '</div>');
-                    $('.js-main-params').append(param);
+                    $('.js-main-params').html('').append(param);
                 }
                 else {
                     var param = $('<div class="row param ' + ((templates.sites[prop] && templates.sites[prop].sequence === -1) ? 'hide' : '') +'"> <div class="columns small-12 medium-3">'  +'<b>' + (templates.sites[prop] ? templates.sites[prop].label : prop) + ' </b></div></div>');
