@@ -724,11 +724,15 @@ $(document).ready(function(){
                                             }
                                             entryCount++;
                                             submissionObj = processForm(submissionObj, submitMode, true);
-                                            if(submitMode) {
+                                            if(submissionObj.submit) {
+                                                delete submissionObj.submit;
                                                 $.when(submitDataset(status.url)).done(function(submitStatus) {
                                                     alert(submitStatus.detail);
                                                     $('.js-clear-form').trigger('click');
                                                 });
+                                            }
+                                            else {
+                                                alert('Fail');
                                             }
                                         }
                                         else if(status.url) {
@@ -758,11 +762,15 @@ $(document).ready(function(){
                         }
                         else {
                             submissionObj = processForm(submissionObj, submitMode, true);
-                            if(submitMode) {
+                            if(submissionObj.submit) {
+                                delete submissionObj.submit;
                                 $.when(submitDataset(status.url)).done(function(submitStatus) {
                                     alert(submitStatus.detail);
                                     $('.js-clear-form').trigger('click');
                                 });
+                            }
+                            else {
+                                alert('Fail');
                             }
                         }
                         
