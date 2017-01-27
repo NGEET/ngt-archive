@@ -1,5 +1,4 @@
 !ui/static
-!ui/static
 *.egg-info/
 *.py[cod]
 .DS_Store
@@ -8,7 +7,11 @@
 .menv/
 .vagrant/
 .venv/
+/archive_api/fixtures/ngt-dev-archive-api-cleaned-with-datasets.json
+/archive_api/fixtures/ngt-dev-archiveapi.json
+/archive_api/fixtures/ngt-dev-users.json
 /static
+ORNL_Archive_Backup_20160916/
 __pycache__/
 archive_api_import.json
 archive_api_import_with_datasets.json
