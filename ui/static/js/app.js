@@ -319,9 +319,11 @@ $(document).ready(function(){
                     if(prop != 'plot_id' && prop != 'name') {
                         if(prop == 'pi') {
                             for(var j=0;j<dataObj.contacts.length;j++) {
-                                if(dataObj.plots[i][prop].indexOf(dataObj.contacts[j].url) != -1) {
-                                    var param = $('<div class="row param '+ (templates.plots[prop] && templates.plots[prop].sequence === -1 ? 'hide' : '') +'"><div class="columns small-12 medium-3"><b>' + (templates.plots[prop] ? templates.plots[prop].label : prop) + ' </b></div><div class="small-12 medium-9 columns">' + dataObj.contacts[j].first_name + ' ' + dataObj.contacts[j].last_name + '</div></div>');
-                                    plotContainer.append(param);
+                                if(dataObj.plots[i][prop] != null) {
+                                    if(dataObj.plots[i][prop].indexOf(dataObj.contacts[j].url) != -1) {
+                                        var param = $('<div class="row param '+ (templates.plots[prop] && templates.plots[prop].sequence === -1 ? 'hide' : '') +'"><div class="columns small-12 medium-3"><b>' + (templates.plots[prop] ? templates.plots[prop].label : prop) + ' </b></div><div class="small-12 medium-9 columns">' + dataObj.contacts[j].first_name + ' ' + dataObj.contacts[j].last_name + '</div></div>');
+                                        plotContainer.append(param);
+                                    }
                                 }
                             }
                         }
