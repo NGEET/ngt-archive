@@ -287,7 +287,15 @@ $(document).ready(function(){
                             }
                         }
                     }
-                    else if(prop == 'site_urls' || prop == 'location_map_url') {
+                    else if(prop == 'site_urls') {
+                        var urls = dataObj.sites[index][prop].split(',');
+                        //param.append('<div class="columns small-12 medium-9 end float-right">');
+                        for (var k = 0; k < urls.length; k++) {
+                            param.append('<div class="columns small-12 medium-9 end float-right"><a href="' + urls[k] + '">' + urls[k] + '</a></div>');
+                        }
+                        //param.append('</div>');
+                    }
+                    else if(prop == 'location_map_url') {
                         param.append('<div class="columns small-12 medium-9 end float-right">' + '<a href="' + dataObj.sites[index][prop] + '">' + (dataObj.sites[index][prop] ? 'Click here' : '') + '</a>' + '</div>');
                     }
                     else {

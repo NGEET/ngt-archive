@@ -245,6 +245,7 @@ body {
             .param {
                 padding: 5px 10px;
                 margin-bottom: 5px;
+                overflow-wrap: break-word;
 
                 section:first-of-type {
                     .del-param {
