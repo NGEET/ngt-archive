@@ -1035,9 +1035,9 @@ $(document).ready(function(){
                     if(templates.datasets[prop].sequence != -1) {
                         var substring = '<div class="row">';
                         substring += '<div class="columns small-12 medium-3"><b class="js-param-name">' + templates.datasets[prop].label + '</b>' + '&nbsp;</div>';
-                        if((prop == 'contact' || prop == 'sites' || prop == 'plots' || prop == 'authors' || prop == 'variables') &&  datasetObj[prop] != null) {
+                        if((prop == 'contact' || prop == 'sites' || prop == 'plots' || prop == 'authors' || prop == 'variables' ||  prop == 'cdiac_submission_contact') &&  datasetObj[prop] != null) {
                             console.log('url:' + prop);
-                            if(prop == 'contact' || prop == 'authors') {
+                            if(prop == 'contact' || prop == 'authors' || prop == 'cdiac_submission_contact') {
                                 for(var i=0;i<dataObj.contacts.length;i++) {
 
                                     if(datasetObj[prop].indexOf(dataObj.contacts[i].url) != -1) {
@@ -1084,6 +1084,10 @@ $(document).ready(function(){
                                     $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
                                 }
                             }
+                        }
+                        else if(prop == 'doi'){
+                            substring += '<div class="columns small-12 medium-9"><a href="' + (datasetObj[prop] == null ? '' : datasetObj[prop]) + '"><span class="js-param-val">' + (datasetObj[prop] == null ? '' : datasetObj[prop]) + '</span></a></div>';
+                            $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
                         }
                         else {
                             substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + (datasetObj[prop] == null ? 'N/A' : datasetObj[prop]) + '</span></div>';

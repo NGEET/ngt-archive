@@ -232,6 +232,20 @@
         "multiple": false,
         "description": "Provide comments, if necessary regarding data access. If access is to be limited, mention who can have access to the data."
     },
+    "doi": {
+        "type": "string",
+        "required": false,
+        "read_only": true,
+        "label": "DOI",
+        "sequence": 23
+    },
+    "cdiac_submission_contact": {
+        "type": "field",
+        "required": false,
+        "read_only": true,
+        "label": "CDIAC Submission Contact",
+        "sequence": 24
+    },
     "url": {
         "type": "field",
         "required": false,
@@ -254,13 +268,7 @@
         "label": "Status comment",
         "sequence": -1
     },
-    "doi": {
-        "type": "string",
-        "required": false,
-        "read_only": true,
-        "label": "Doi",
-        "sequence": -1
-    },
+    
     "submission_date": {
         "type": "field",
         "required": false,
@@ -308,13 +316,6 @@
         "required": false,
         "read_only": true,
         "label": "Cdiac import",
-        "sequence": -1
-    },
-    "cdiac_submission_contact": {
-        "type": "field",
-        "required": false,
-        "read_only": true,
-        "label": "Cdiac submission contact",
         "sequence": -1
     }
 }
