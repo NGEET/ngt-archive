@@ -1034,6 +1034,8 @@ $(document).ready(function(){
                                     .html('<div class="row js-title-row"><div class="columns small-12 medium-9">' + dataObj.datasets[index]['name'] + '</div><div class="columns small-12 medium-3 js-download-wrapper download-wrapper"></div></div>');
             $('#myModal .js-modal-body').html('');
                 var inputString = '';
+                var citation = '';
+
                 /*var editForm = $('.js-create-form.dataset').clone()
                         .attr('data-url', url)
                         .addClass('hide')
@@ -1050,6 +1052,7 @@ $(document).ready(function(){
                 for(var prop in datasetObj) {
                     if(templates.datasets[prop].sequence != -1) {
                         var substring = '<div class="row">';
+                        
                         substring += '<div class="columns small-12 medium-3"><b class="js-param-name">' + templates.datasets[prop].label + '</b>' + '&nbsp;</div>';
                         if((prop == 'contact' || prop == 'sites' || prop == 'plots' || prop == 'authors' || prop == 'variables' ||  prop == 'cdiac_submission_contact') &&  datasetObj[prop] != null) {
                             console.log('url:' + prop);
@@ -1059,6 +1062,10 @@ $(document).ready(function(){
                                     if(datasetObj[prop].indexOf(dataObj.contacts[i].url) != -1) {
                                         substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + dataObj.contacts[i].first_name + ' ' + dataObj.contacts[i].last_name + '</span></div>';
                                         
+                                    }
+
+                                    if(prop == 'authors' && datasetObj[prop].indexOf(dataObj.contacts[i].url) != -1) {
+                                        citation += dataObj.contacts[i].first_name + ' ' + dataObj.contacts[i].last_name + ', ';
                                     }
                                 }
                                 $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
@@ -1109,6 +1116,7 @@ $(document).ready(function(){
                             substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + (datasetObj[prop] == null ? 'N/A' : datasetObj[prop]) + '</span></div>';
                             $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
                         }
+                        
                     }
                     if(Array.isArray(datasetObj[prop]) && datasetObj[prop].length > 1) {
                         var position = $('.js-edit-form .' + prop).find('.js-input');
@@ -1122,8 +1130,19 @@ $(document).ready(function(){
                     else {
                         $('.js-edit-form .' + prop).find('.js-input').val(datasetObj[prop]);
                     }
+
                 }
-                
+                if(citation.length >= 2) {
+                    citation = citation.substring(0, citation.length - 2);
+                    citation += '. ';
+                }
+                citation += datasetObj['name'] + '. ' + 'NGEE Tropics Data Collection. Accessed at <a href="' + datasetObj['doi'] + '">' + datasetObj['doi'] + '</a>.';
+                if(! datasetObj['doi']) {
+                    citation = 'Citation information not available currently. Contact dataset author(s) for citation or acknowledgement text.';
+                }
+                $('#myModal .js-modal-body').append('<div class="row js-dataset-row dataset-row"><div class="columns small-12 medium-3"><b class="js-param-name">Dataset Citation</b></div>'
+                                             + '<div class="columns small-12 medium-9">' + citation + '</div></div>');
+
                 $('#myModal .js-save-btn').attr('data-url', dataObj.datasets[index]['url'])
                                         .attr('data-id', dataObj.datasets[index]['data_set_id']);
 
