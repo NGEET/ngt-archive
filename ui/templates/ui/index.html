@@ -160,6 +160,7 @@
                 </section>
                 <section class="js-view view-drafts-view hide" data-view="edit-draft">
                     <h4>Drafts</h4>
+                    <a href="/?view=edit-draft" class="hide js-edit-back-btn">Back</a>
                     <div class="all-datasets js-all-datasets"></div>
 
                 </section>
@@ -189,9 +190,9 @@
                         <textarea class="js-template string"></textarea>
                         <!--input type="checkbox" class="boolean js-template" name=""-->
                         <div class="switch boolean js-template">
-                          <input class="switch-input js-input" id="yes-no" type="checkbox" name="exampleSwitch">
+                          <input class="switch-input js-input" id="yes-no" type="checkbox" name="yesNoSwitch">
                           <label class="switch-paddle" for="yes-no">
-                            <span class="show-for-sr"></span>
+                            <span class="show-for-sr">NGEE Tropics Resources</span>
                             <span class="switch-active" aria-hidden="true">Yes</span>
                             <span class="switch-inactive" aria-hidden="true">No</span>
                           </label>
@@ -228,11 +229,11 @@
                             <option selected disabled value="">Select</option>                        
                         </select>
                         <div class="js-new-value hide" class="row">
-                            <h6>Add new entry here</h6>
-                            <div class="columns small-6">
+                            <h6 class="add-text">Add new entry here</h6>
+                            <div class="columns small-6 contact-wrapper">
                                 <input class="js-first-name" type="text" name="" placeholder="First name">
                             </div>
-                            <div class="columns small-6">
+                            <div class="columns small-6 contact-wrapper">
                                 <input class="js-last-name" type="text" name="" placeholder="Last name">
                             </div>
                         </div>
@@ -289,7 +290,14 @@
                   
                 </section>
               <!--button class="button edit-btn js-edit-dataset-btn">Edit</button-->
-                <a class="button download-btn js-file-download-btn hide">Download Dataset</a>
+                <div class="js-download-wrapper hide row columns small-12">
+                    <span>     
+                        <input type="checkbox" name="data-policy"  id="data-policy" class="js-data-policy-check">
+                        <label for="data-policy">I have read and agree to the terms of the <a>NGEE Tropics data policy</a>.</label>
+                    </span><br>
+                    <a class="button download-btn js-file-download-btn disabled">Download Dataset</a>
+                </div>
+                
             </div>
         </main>
     </body>

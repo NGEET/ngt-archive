@@ -1,11 +1,25 @@
 {
+    "data_set_id": {
+        "type": "field",
+        "required": false,
+        "read_only": true,
+        "label": "Data set id",
+        "sequence": 1
+    },
+    "version": {
+        "type": "string",
+        "required": false,
+        "read_only": true,
+        "label": "Version",
+        "sequence": 2
+    },
     "name": {
         "type": "string",
         "required": true,
         "read_only": false,
         "label": "Dataset Name",
         "max_length": 120,
-        "sequence": 1,
+        "sequence": 3,
         "multiple": false,
         "description": "Dataset name. 120 character limit. A  descriptive title that describes what, when and where​ ​data was collected​."
     },
@@ -14,7 +28,7 @@
         "required": true,
         "read_only": false,
         "label": "Dataset Description",
-        "sequence": 2,
+        "sequence": 4,
         "multiple": false,
         "description": "Dataset description and overview."
     },
@@ -24,7 +38,7 @@
         "required": true,
         "read_only": false,
         "label": "Dataset Site",
-        "sequence": 3,
+        "sequence": 5,
         "multiple": true,
         "description": "Site this dataset was collected from."
     },
@@ -34,7 +48,7 @@
         "required": false,
         "read_only": false,
         "label": "Dataset Plots",
-        "sequence": 4,
+        "sequence": 6,
         "multiple": true,
         "description": "Plot identification where dataset was collected."
     },
@@ -44,7 +58,7 @@
         "required": true,
         "read_only": false,
         "label": "Dataset Author",
-        "sequence": 5,
+        "sequence": 7,
         "multiple": true,
         "description": "List the main researchers involved in producing the data, or the authors of the publication who should be listed in the citation for this data."
     },
@@ -53,7 +67,7 @@
         "required": true,
         "read_only": false,
         "label": "Dataset Originating Institution",
-        "sequence": 6,
+        "sequence": 8,
         "multiple": false,
         "description": "Name of the organization that performed the research or issued the dataset. Separate multiple organizations with a semicolon and a space."
     },
@@ -63,7 +77,7 @@
         "required": true,
         "read_only": false,
         "label": "Dataset Contact",
-        "sequence": 7,
+        "sequence": 9,
         "multiple": false,
         "description": "Name of contact person for the dataset."
     },
@@ -73,7 +87,7 @@
         "required": true,
         "read_only": false,
         "label": "Dataset Variables",
-        "sequence": 8,
+        "sequence": 10,
         "multiple": true,
         "description": "Measurement Variables in Dataset (select all that apply)."
     },
@@ -82,7 +96,7 @@
         "required": true,
         "read_only": false,
         "label": "Dataset Start date (ISO format)",
-        "sequence": 9,
+        "sequence": 11,
         "multiple": false,
         "units": "YYYYMMDD",
         "description": "Earliest date in dataset.",
@@ -93,7 +107,7 @@
         "required": false,
         "read_only": false,
         "label": "Dataset End date (ISO format)",
-        "sequence": 10,
+        "sequence": 12,
         "multiple": false,
         "units": "YYYYMMDD",
         "description": "Last date in dataset.",
@@ -118,7 +132,7 @@
                 "display_name": "Final QA-QC"
             }
         ],
-        "sequence": 11,
+        "sequence": 13,
         "multiple": false,
         "description": "Choices are None, Initial QA-QC, Final QA-QC."
     },
@@ -127,7 +141,7 @@
         "required": false,
         "read_only": false,
         "label": "QA/QC Method Description",
-        "sequence": 12,
+        "sequence": 14,
         "multiple": false,
         "description": "Description of QA-QC Method."
     },
@@ -136,7 +150,7 @@
         "required": true,
         "read_only": false,
         "label": "Indicate whether NGEE Tropics Resources (financial, personnel etc.) were used to obtain this dataset. The NGEE Tropics Internal Data Policy will apply, if checked 'yes'",
-        "sequence": 13,
+        "sequence": 15,
         "multiple": false,
         "description": "Datasets using NGEE Tropics resources (financial, personnel etc.) will automatically be set to 'NGEE Tropics' access within 6 months of submission (regardless of what access the user specified), and to 'Public' within 18 months of submission."
     },
@@ -145,7 +159,7 @@
         "required": true,
         "read_only": false,
         "label": "Dataset Funding organizations",
-        "sequence": 14,
+        "sequence": 16,
         "multiple": false,
         "description": "Identify the agencies and offices that funded the work in the dataset separate multiple funders with a comma and a space."
     },
@@ -154,7 +168,7 @@
         "required": false,
         "read_only": false,
         "label": "DOE Funding Contract Numbers",
-        "sequence": 15,
+        "sequence": 17,
         "multiple": false,
         "description": "List the numbers of any DOE contract under which the work was funded. If no DOE funding for this dataset or field is empty set as 'NONE'. If the dataset is a result of a joint effort between two or more DOE Site/Facility Management Contractors, etc., additional DOE contract numbers may be entered. The 'DE' should not be included as a part of the number."
     },
@@ -162,7 +176,7 @@
         "type": "string",
         "required": false,
         "read_only": false,
-        "sequence": 16,
+        "sequence": 18,
         "multiple": false,
         "label": "Dataset Acknowledgement",
         "max_length": 88,
@@ -173,7 +187,7 @@
         "required": false,
         "read_only": false,
         "label": "Dataset Reference",
-        "sequence": 17,
+        "sequence": 19,
         "multiple": false,
         "description": "Citation (including DOI) or explanatory reference."
     },
@@ -182,7 +196,7 @@
         "required": false,
         "read_only": false,
         "label": "Additional Information about Dataset Reference",
-        "sequence": 18,
+        "sequence": 20,
         "multiple": false,
         "description": "Brief description of paper relevance or other comments."
     },
@@ -205,7 +219,7 @@
                 "display_name": "Public"
             }
         ],
-        "sequence": 19,
+        "sequence": 21,
         "multiple": false,
         "description": "Choices are Public, NGEE Tropics, Limited (provide access comments), Private.  Datasets using NGT resources will automatically be set to 'NGEE Tropics' access within 6 months of submission (regardless of what the user specified), and to 'Public' within 18 months of submission."
     },
@@ -214,9 +228,23 @@
         "required": false,
         "read_only": false,
         "label": "Additional Information about Dataset Access",
-        "sequence": 20,
+        "sequence": 22,
         "multiple": false,
         "description": "Provide comments, if necessary regarding data access. If access is to be limited, mention who can have access to the data."
+    },
+    "doi": {
+        "type": "string",
+        "required": false,
+        "read_only": true,
+        "label": "DOI",
+        "sequence": 23
+    },
+    "cdiac_submission_contact": {
+        "type": "field",
+        "required": false,
+        "read_only": true,
+        "label": "CDIAC Submission Contact",
+        "sequence": 24
     },
     "url": {
         "type": "field",
@@ -225,20 +253,7 @@
         "label": "Url",
         "sequence": -1
     },
-    "data_set_id": {
-        "type": "field",
-        "required": false,
-        "read_only": true,
-        "label": "Data set id",
-        "sequence": -1
-    },
-    "version": {
-        "type": "string",
-        "required": false,
-        "read_only": true,
-        "label": "Version",
-        "sequence": -1
-    },
+    
     "status": {
         "type": "choice",
         "required": false,
@@ -253,13 +268,7 @@
         "label": "Status comment",
         "sequence": -1
     },
-    "doi": {
-        "type": "string",
-        "required": false,
-        "read_only": true,
-        "label": "Doi",
-        "sequence": -1
-    },
+    
     "submission_date": {
         "type": "field",
         "required": false,
@@ -307,13 +316,6 @@
         "required": false,
         "read_only": true,
         "label": "Cdiac import",
-        "sequence": -1
-    },
-    "cdiac_submission_contact": {
-        "type": "field",
-        "required": false,
-        "read_only": true,
-        "label": "Cdiac submission contact",
         "sequence": -1
     }
 }
