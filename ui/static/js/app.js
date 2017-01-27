@@ -981,99 +981,87 @@ $(document).ready(function(){
                 var inputString = '';
                 var citation = '';
 
-                /*var editForm = $('.js-create-form.dataset').clone()
-                        .attr('data-url', url)
-                        .addClass('hide')
-                        .removeClass('js-create-form')
-                        .addClass('js-edit-form');
-                editForm.find('.js-create-dataset').addClass('hide');
-                editForm.find('.js-save-dataset').removeClass('hide');
-                editForm.find('.js-input.date').attr('id', '');
-                $('#myModal .js-modal-body').append(editForm);
-                $('.js-input.date').datepicker({
-                    dateFormat: "yy-mm-dd"
-                });*/
-                
                 for(var prop in datasetObj) {
-                    if(templates.datasets[prop].sequence != -1) {
-                        var substring = '<div class="row">';
-                        
-                        substring += '<div class="columns small-12 medium-3"><b class="js-param-name">' + templates.datasets[prop].label + '</b>' + '&nbsp;</div>';
-                        if((prop == 'contact' || prop == 'sites' || prop == 'plots' || prop == 'authors' || prop == 'variables' ||  prop == 'cdiac_submission_contact') &&  datasetObj[prop] != null) {
-                            console.log('url:' + prop);
-                            if(prop == 'contact' || prop == 'authors' || prop == 'cdiac_submission_contact') {
-                                for(var i=0;i<dataObj.contacts.length;i++) {
+                    if(templates.datasets[prop]) {
+                        if(templates.datasets[prop].sequence != -1) {
+                            var substring = '<div class="row">';
+                            
+                            substring += '<div class="columns small-12 medium-3"><b class="js-param-name">' + templates.datasets[prop].label + '</b>' + '&nbsp;</div>';
+                            if((prop == 'contact' || prop == 'sites' || prop == 'plots' || prop == 'authors' || prop == 'variables' ||  prop == 'cdiac_submission_contact') &&  datasetObj[prop] != null) {
+                                console.log('url:' + prop);
+                                if(prop == 'contact' || prop == 'authors' || prop == 'cdiac_submission_contact') {
+                                    for(var i=0;i<dataObj.contacts.length;i++) {
 
-                                    if(datasetObj[prop].indexOf(dataObj.contacts[i].url) != -1) {
-                                        substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + dataObj.contacts[i].first_name + ' ' + dataObj.contacts[i].last_name + '</span></div>';
-                                        
-                                    }
+                                        if(datasetObj[prop].indexOf(dataObj.contacts[i].url) != -1) {
+                                            substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + dataObj.contacts[i].first_name + ' ' + dataObj.contacts[i].last_name + '</span></div>';
+                                            
+                                        }
 
-                                    if(prop == 'authors' && datasetObj[prop].indexOf(dataObj.contacts[i].url) != -1) {
-                                        citation += dataObj.contacts[i].first_name + ' ' + dataObj.contacts[i].last_name + ', ';
+                                        if(prop == 'authors' && datasetObj[prop].indexOf(dataObj.contacts[i].url) != -1) {
+                                            citation += dataObj.contacts[i].first_name + ' ' + dataObj.contacts[i].last_name + ', ';
+                                        }
                                     }
-                                }
-                                $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
-                            }
-                            else if(prop == 'sites') {
-                                for(var i=0;i<dataObj.sites.length;i++) {
-                                    if(datasetObj[prop].indexOf(dataObj.sites[i].url) != -1) {
-                                        substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + dataObj.sites[i].site_id + ': ' + dataObj.sites[i].name + '</span></div>';
-                                        
-                                    }
-                                }
-                                $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
-                            }
+                                    $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
 
-                            else if(prop == 'plots') {
-                                for(var i=0;i<dataObj.plots.length;i++) {
-                                    if(datasetObj[prop].indexOf(dataObj.plots[i].url) != -1) {
-                                        substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + dataObj.plots[i].plot_id + ': ' + dataObj.plots[i].name + '</span></div>';
-                                        
-                                    }
                                 }
-                                $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
-                            }
+                                else if(prop == 'sites') {
+                                    for(var j=0;j<dataObj.sites.length;j++) {
+                                        if(datasetObj[prop].indexOf(dataObj.sites[j].url) != -1) {
+                                            substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + dataObj.sites[j].site_id + ': ' + dataObj.sites[j].name + '</span></div>';
+                                            
+                                        }
+                                    }
+                                    $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
+                                }
 
-                            else if(prop == 'variables') {
-                                for(var i=0;i<dataObj.sites.length;i++) {
-                                    if(datasetObj[prop].indexOf(dataObj.variables[i].url) != -1) {
-                                        substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + dataObj.variables[i].name + '</span></div>';
-                                        
+                                else if(prop == 'plots') {
+                                    for(var l=0;l<dataObj.plots.length;l++) {
+                                        if(datasetObj[prop].indexOf(dataObj.plots[l].url) != -1) {
+                                            substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + dataObj.plots[l].plot_id + ': ' + dataObj.plots[l].name + '</span></div>';
+                                            
+                                        }
                                     }
+                                    $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
                                 }
-                                $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
-                            }
-                        }
-                        else if(prop == 'access_level') {
-                            for(var k=0;k<templates.datasets.access_level.choices.length;k++) {
-                                if(datasetObj[prop] == templates.datasets.access_level.choices[k].value) {
-                                    substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + templates.datasets.access_level.choices[k].display_name + '</span></div>';
+
+                                else if(prop == 'variables') {
+                                    for(var m=0;m<dataObj.sites.length;m++) {
+                                        if(datasetObj[prop].indexOf(dataObj.variables[m].url) != -1) {
+                                            substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + dataObj.variables[m].name + '</span></div>';
+                                            
+                                        }
+                                    }
                                     $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
                                 }
                             }
+                            else if(prop == 'access_level') {
+                                for(var k=0;k<templates.datasets.access_level.choices.length;k++) {
+                                    if(datasetObj[prop] == templates.datasets.access_level.choices[k].value) {
+                                        substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + templates.datasets.access_level.choices[k].display_name + '</span></div>';
+                                        $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
+                                    }
+                                }
+                            }
+                            else if(prop == 'qaqc_status') {
+                                for(var n=0;n<templates.datasets.qaqc_status.choices.length;n++) {
+                                    if(datasetObj[prop] == templates.datasets.qaqc_status.choices[n].value) {
+                                        substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + templates.datasets.qaqc_status.choices[n].display_name + '</span></div>';
+                                        $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
+                                    }
+                                }
+                            }
+                            else if(prop == 'doi'){
+                                substring += '<div class="columns small-12 medium-9"><a href="' + (datasetObj[prop] == null ? '' : datasetObj[prop]) + '"><span class="js-param-val">' + (datasetObj[prop] == null ? '' : datasetObj[prop]) + '</span></a></div>';
+                                $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
+                            }
+                            else {
+
+                                substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + (datasetObj[prop] == null ? 'N/A' : datasetObj[prop]) + '</span></div>';
+                                $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
+                            }
+                            
                         }
-                        else if(prop == 'doi'){
-                            substring += '<div class="columns small-12 medium-9"><a href="' + (datasetObj[prop] == null ? '' : datasetObj[prop]) + '"><span class="js-param-val">' + (datasetObj[prop] == null ? '' : datasetObj[prop]) + '</span></a></div>';
-                            $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
-                        }
-                        else {
-                            substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + (datasetObj[prop] == null ? 'N/A' : datasetObj[prop]) + '</span></div>';
-                            $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
-                        }
-                        
-                    }
-                    if(Array.isArray(datasetObj[prop]) && datasetObj[prop].length > 1) {
-                        var position = $('.js-edit-form .' + prop).find('.js-input');
-                        for(var j=0; j < datasetObj[prop].length - 1; j++) {
-                            $('.js-edit-form .' + prop).find('.js-input').clone().insertAfter(position);
-                        }
-                        for(var k=0;k<datasetObj[prop].length;k++) {
-                            $($('.js-edit-form .' + prop).find('.js-input')[k]).val(datasetObj[prop][k]);
-                        }
-                    }
-                    else {
-                        $('.js-edit-form .' + prop).find('.js-input').val(datasetObj[prop]);
+            
                     }
 
                 }
