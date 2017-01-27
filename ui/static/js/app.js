@@ -1677,7 +1677,7 @@ function processEditingForm(submissionObj, url) {
                                             alert(submitStatus.detail);
                                         }
                                         else {
-                                            alert('Fail');
+                                            alert('Dataset submission failed. Please check the fields and try again.');
                                         }
                                         $('.js-clear-form').trigger('click');
                                     });
@@ -1703,7 +1703,7 @@ function processEditingForm(submissionObj, url) {
                         entryCount++;
                     }
                     else {
-                        alert('There was a problem creating the new entry. Please try again');
+                        alert('There was a problem creating the new entry. Please try again.');
                     }
                 });
 
@@ -1711,7 +1711,7 @@ function processEditingForm(submissionObj, url) {
         }
 
         else {
-            alert('Please enter first and last names for all new contacts/authors');
+            alert('Please enter first and last names for all new contacts/authors.');
         }
     }
     else {
@@ -1725,7 +1725,7 @@ function processEditingForm(submissionObj, url) {
                             alert(submitStatus.detail);
                         }
                         else {
-                            alert('Fail');
+                            alert('Dataset submission failed. Please check the fields and try again.');
                         }
                         $('.js-clear-form').trigger('click');
                     });
@@ -1733,7 +1733,10 @@ function processEditingForm(submissionObj, url) {
             });
         }
         else {
-            alert('Fail');
+            alert('Please fill in all the required fields.');
+            $('body').animate({
+                scrollTop: $('.js-edit-form').offset().top
+            }, 500);
         }
     }
 }
