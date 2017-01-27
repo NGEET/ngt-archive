@@ -47,15 +47,16 @@ $light-orange: #ffa500;
 
 .tag {
     color: white;
-    font-size: 14px;
-    line-height: 30px;
+    font-size: 12px;
+    line-height: 28px;
     vertical-align: middle;
-    height: 30px;
+    height: 28px;
     display: inline-block;
-    width: 80px;
+    width: 110px;
     text-align: center;
     float: right;
     cursor: default;
+    background-color: $light-blue;
 
     &.draft {
         background-color: $light-orange;
@@ -244,6 +245,7 @@ body {
             .param {
                 padding: 5px 10px;
                 margin-bottom: 5px;
+                overflow-wrap: break-word;
 
                 section:first-of-type {
                     .del-param {
@@ -279,6 +281,14 @@ body {
                         span {
                             text-align: center;
                         }
+                    }
+
+                    .add-text {
+                        padding: 0 0.9375rem;
+                    }
+                    .contact-wrapper {
+                        float: none;
+                        width: 100%;                        
                     }
                 }
             }
@@ -355,6 +365,8 @@ body {
 
         .all-datasets {
             .dataset {
+                margin-bottom: 20px;
+
                 .title {
                     cursor: pointer;
                 }
