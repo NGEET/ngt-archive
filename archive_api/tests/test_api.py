@@ -764,6 +764,32 @@ select "View Approved Datasets" and then click the "Submitted" button for NGT000
         self.assertContains(response,
                             "http://testserver/api/v1/plots/1/")
 
+    def test_issue_180(self):
+        """
+        Dataset lost due to permissions error
+        :return:
+        """
+        self.login_user("auser")
+        response = self.client.post('/api/v1/datasets/',
+                                    data='{"description":"A FooBarBaz DataSet",'
+                                         '"authors":["http://testserver/api/v1/people/2/"],'
+                                         '"sites":["http://testserver/api/v1/sites/1/"] ,'
+                                         '"plots":["http://testserver/api/v1/plots/1/"],'
+                                         '"variables":["http://testserver/api/v1/variables/1/"],'
+                                         '"access_level":1  }',
+                                    content_type='application/json')
+        self.assertTrue(status.HTTP_201_CREATED, response.status_code)
+        dataset_url = json.loads(response.content.decode('utf-8'))["url"]
+
+        response = self.client.get(dataset_url)
+
+        self.assertContains(response,
+                            "http://testserver/api/v1/variables/1/")
+        self.assertContains(response,
+                            "http://testserver/api/v1/sites/1/")
+        self.assertContains(response,
+                            "http://testserver/api/v1/plots/1/")
+
 
     @mock.patch('django.core.files.uploadedfile.InMemoryUploadedFile.size', new_callable=PropertyMock)
     def test_issue_117(self, mock_file_size):
