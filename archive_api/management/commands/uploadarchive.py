@@ -30,8 +30,8 @@ class Command(BaseCommand):
         try:
             # Get User
             user = NGTUser.objects.get(username=username)
-            if not user.is_admin:
-                raise CommandError('User "{}" is not an NGT administrator'.format(username))
+            if not (user.has_perm("archive_api.edit_all_draft_dataset") or user.has_perm("archive_api.edit_all_submitted_dataset")):
+                raise CommandError('User "{}" does not have permissions to upload'.format(username))
         except User.DoesNotExist:
             raise CommandError('User "{}" does not exist'.format(username))
 
@@ -40,6 +40,11 @@ class Command(BaseCommand):
             try:
                 # Find the dataset with the NGT id
                 dataset = DataSet.objects.filter(ngt_id=ngt_id).order_by('-id')[0]
+                if dataset.status > DataSet.STATUS_SUBMITTED:
+                    raise CommandError('Cannot modify a dataset that is Approved')
+                if (dataset.status == DataSet.STATUS_DRAFT and not user.has_perm("archive_api.edit_all_draft_dataset")) or \
+                    (dataset.status == DataSet.STATUS_SUBMITTED and not user.has_perm("archive_api.edit_all_submitted_dataset")) :
+                    raise CommandError('User "{}" does not have permissions to upload'.format(username))
 
                 # is this a valid content type?
                 content_type, _ = mimetypes.guess_type(archive_file)
