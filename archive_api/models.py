@@ -257,7 +257,7 @@ class DataSet(models.Model):
     status = models.IntegerField(choices=STATUS_CHOICES,
                               default=0)  # (draft [DEFAULT], submitted, approved)
     status_comment = models.TextField(blank=True, null=True)
-    name = models.CharField(unique=True, max_length=150, blank=True, null=True)
+    name = models.CharField(max_length=150, blank=True, null=True)
     doi = models.TextField(blank=True, null=True)
     start_date = models.DateField(blank=True, null=True)
     end_date = models.DateField(blank=True, null=True)

@@ -743,6 +743,30 @@ select "View Approved Datasets" and then click the "Submitted" button for NGT000
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual({'detail': 'DataSet has been submitted.', 'success': True}, value)
 
+    def test_issue_173(self):
+        """DataSet.name should not be unique #173"""
+
+        self.login_user("auser")
+        response = self.client.post('/api/v1/datasets/',
+                                    data='{"name":"A FooBarBaz DataSet",'
+                                         '"authors":["http://testserver/api/v1/people/2/"],'
+                                         '"sites":["http://testserver/api/v1/sites/1/"] ,'
+                                         '"plots":["http://testserver/api/v1/plots/1/"],'
+                                         '"variables":["http://testserver/api/v1/variables/1/"]  }',
+                                    content_type='application/json')
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
+
+        response = self.client.post('/api/v1/datasets/',
+                                    data='{"name":"A FooBarBaz DataSet",'
+                                         '"authors":["http://testserver/api/v1/people/2/"],'
+                                         '"sites":["http://testserver/api/v1/sites/1/"] ,'
+                                         '"plots":["http://testserver/api/v1/plots/1/"],'
+                                         '"variables":["http://testserver/api/v1/variables/1/"]  }',
+                                    content_type='application/json')
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
+
+
+
     def test_issue_74(self):
         self.login_user("auser")
         response = self.client.post('/api/v1/datasets/',
@@ -752,7 +776,7 @@ select "View Approved Datasets" and then click the "Submitted" button for NGT000
                                          '"plots":["http://testserver/api/v1/plots/1/"],'
                                          '"variables":["http://testserver/api/v1/variables/1/"]  }',
                                     content_type='application/json')
-        self.assertTrue(status.HTTP_201_CREATED, response.status_code)
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         dataset_url = json.loads(response.content.decode('utf-8'))["url"]
 
         response = self.client.get(dataset_url)
@@ -778,7 +802,7 @@ select "View Approved Datasets" and then click the "Submitted" button for NGT000
                                          '"variables":["http://testserver/api/v1/variables/1/"],'
                                          '"access_level":1  }',
                                     content_type='application/json')
-        self.assertTrue(status.HTTP_201_CREATED, response.status_code)
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         dataset_url = json.loads(response.content.decode('utf-8'))["url"]
 
         response = self.client.get(dataset_url)
