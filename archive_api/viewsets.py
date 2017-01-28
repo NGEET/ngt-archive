@@ -252,9 +252,9 @@ class DataSetViewSet(ModelViewSet):
         if self.request.user.has_perm('archive_api.view_all_datasets'):
             return DataSet.objects.all()
         else:
-            where_clause = Q(access_level=DataSet.ACCESS_PRIVATE, created_by=user) | Q(
+            where_clause = Q(created_by=user) | Q(
                 access_level=DataSet.ACCESS_PUBLIC, status=DataSet.STATUS_APPROVED) | Q(
-                Q(access_level=DataSet.ACCESS_PRIVATE, cdiac_submission_contact__user=user,
+                Q(cdiac_submission_contact__user=user,
                   cdiac_import=True)
             )
 
