@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
                 ('version', models.CharField(default='0.0', max_length=15)),
                 ('status', models.IntegerField(choices=[(0, 'Draft'), (1, 'Submitted'), (2, 'Approved')], default=0)),
                 ('status_comment', models.TextField(blank=True, null=True)),
-                ('name', models.CharField(blank=True, max_length=150, null=True, unique=True)),
+                ('name', models.CharField(blank=True, max_length=150, null=True)),
                 ('doi', models.TextField(blank=True, null=True)),
                 ('start_date', models.DateField(blank=True, null=True)),
                 ('end_date', models.DateField(blank=True, null=True)),
