@@ -149,10 +149,6 @@ class NGTUser(django.contrib.auth.models.User):
         proxy=True
 
     @property
-    def is_admin(self):
-        return self.groups.filter(name='NGT Administrator').exists()
-
-    @property
     def is_activated(self):
         active = (self.is_active and self.person is not None)
         return active or self.is_superuser
@@ -303,13 +299,14 @@ class DataSet(models.Model):
         unique_together = ('ngt_id','version')
         permissions = (
             ("approve_submitted_dataset", "Can approve a 'submitted' dataset"),
-            ("edit_draft_dataset", "Can edit a 'draft' dataset"),
+            ("edit_own_draft_dataset", "Can edit own 'draft' dataset"),
+            ("edit_all_submitted_dataset", "Can edit any 'submitted' dataset"),
+            ("edit_all_draft_dataset", "Can edit any 'draft' dataset"),
             ("unsubmit_submitted_dataset", "Can unsubmit a 'submitted' dataset"),
             ("unapprove_approved_dataset", "Can unapprove a 'approved' dataset"),
-            ("delete_draft_dataset", "Can delete a 'draft' dataset"),
-            ("delete_submitted_dataset", "Can delete a 'submitted' dataset"),
             ("view_all_datasets", "Can view all datasets"),
-            ("view_ngeet_approved_datasets", "Can view all approved NGEE Tropics datasets")
+            ("view_ngeet_approved_datasets", "Can view all approved NGEE Tropics datasets"),
+            ("upload_large_file_dataset","Can upload a large file to a dataset")
         )
 
     def save(self, *args, **kwargs):

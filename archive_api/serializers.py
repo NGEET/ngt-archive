@@ -124,12 +124,17 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
         Validate the fields.
         """
         errors = dict()
+
         if {'start_date', 'end_date'}.issubset(data.keys()) and data['start_date'] and data['end_date'] and data[
             'start_date'] > data['end_date']:
             raise serializers.ValidationError("start_date must come before end_date")
         # If the dataset is approved or submitted there are an extra set of fields
         # that are required
         if self.instance and self.instance.status > DataSet.STATUS_DRAFT:
+            if not self.instance.archive:
+                errors.setdefault('missingRequiredFields', [])
+                errors['missingRequiredFields'].append("archive")
+
             for field in ['sites', 'authors', 'name', 'description', 'contact', 'variables',
                           'ngee_tropics_resources', 'funding_organizations', 'originating_institution',
                           'access_level']:  # Check for required fields

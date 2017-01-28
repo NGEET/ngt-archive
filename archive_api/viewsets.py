@@ -142,7 +142,7 @@ class DataSetViewSet(ModelViewSet):
             dataset = self.get_object()
             upload = request.data['attachment']
 
-            if request.user.is_admin and upload.size > settings.ARCHIVE_API['DATASET_ADMIN_MAX_UPLOAD_SIZE']:
+            if request.user.has_perm("archive_api.upload_large_file_dataset") and upload.size > settings.ARCHIVE_API['DATASET_ADMIN_MAX_UPLOAD_SIZE']:
                 return Response({'success': False, 'detail': 'Uploaded file size is {:.1f} MB. Max upload size is {:.1f} MB'.format(
                     upload.size / (1024 * 1024), settings.ARCHIVE_API['DATASET_ADMIN_MAX_UPLOAD_SIZE']/(1024*1024)
                 )},status=http_status.HTTP_400_BAD_REQUEST)
