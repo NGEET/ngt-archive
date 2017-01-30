@@ -189,13 +189,20 @@
                     <div class="js-data-templates hide">
                         <textarea class="js-template string"></textarea>
                         <!--input type="checkbox" class="boolean js-template" name=""-->
-                        <div class="switch boolean js-template">
+                        <!--div class="switch boolean js-template">
                           <input class="switch-input js-input" id="yes-no" type="checkbox" name="yesNoSwitch">
                           <label class="switch-paddle" for="yes-no">
                             <span class="show-for-sr">NGEE Tropics Resources</span>
                             <span class="switch-active" aria-hidden="true">Yes</span>
                             <span class="switch-inactive" aria-hidden="true">No</span>
                           </label>
+                        </div-->
+
+                        <div class="boolean js-template">
+                            <input type="radio" name="binary" id="yes">
+                            <label for="yes">Yes</label>
+                            <input type="radio" name="binaryƒ" id="no">
+                            <label for="no">No</label>
                         </div>
                         <select class="js-template choice">
                             <option value="" selected disabled>Choose option</option>
@@ -243,7 +250,7 @@
                         <input type="hidden" class="js-input js-contact-url">
                     </section-->
                     <section class="plot-section js-site-section hide js-ref-list js-multi-container" data-list="plots">
-                        <select class="js-all-plots all-plots js-input">
+                        <select class="js-all-plots all-plots js-input " disabled>
                             <option selected disabled value="">Select plot</option>                        
                         </select>
                         <!--div class="js-plot-info hide">
