@@ -28,12 +28,12 @@ class HasArchivePermission(permissions.BasePermission):
         if "/archive" not in path_info:
             return False
 
-        if request.user.groups.filter(name='NGT Administrator').exists():
+        if request.user.has_perm("archive_api.view_all_datasets"):
             return True  # Admin always has access
         elif obj.access_level == PRIVATE:
             return obj.created_by == request.user  # owner always has access
         elif obj.access_level == NGEET:
-            return request.user.groups.filter(name__in=['NGT Team','NGT Collaborator']).exists()  # All NGT User has access
+            return request.user.has_perm("archive_api.view_ngeet_approved_datasets")
         else:
             # This is public, All have access
             return True
@@ -46,12 +46,12 @@ class HasSubmitPermission(permissions.BasePermission):
             return False
 
         if obj.status != DRAFT:
-            if obj.created_by == request.user or request.user.groups.filter(name='NGT Administrator').exists():
+            if (obj.created_by == request.user  and request.user.has_perm('archive_api.edit_own_draft_dataset')) \
+                    or request.user.has_perm('archive_api.edit_all_draft_dataset'):
                 raise PermissionDenied(detail='Only a data set in DRAFT status may be submitted')
-        elif obj.status == DRAFT and \
-                request.user.has_perm('archive_api.edit_draft_dataset'):
-
-            return obj.created_by == request.user or request.user.groups.filter(name='NGT Administrator').exists()
+        elif obj.status == DRAFT :
+            return (obj.created_by == request.user  and request.user.has_perm('archive_api.edit_own_draft_dataset')) \
+                or request.user.has_perm('archive_api.edit_all_draft_dataset')
 
         return False
 
@@ -109,9 +109,11 @@ class HasUploadPermission(permissions.BasePermission):
         if "/upload" not in path_info:
             return False
 
-        if obj.status == DRAFT and \
-                request.user.has_perm('archive_api.edit_draft_dataset'):
-            return obj.created_by == request.user or request.user.groups.filter(name='NGT Administrator').exists()
+        if obj.status == DRAFT :
+            return (obj.created_by == request.user  and request.user.has_perm('archive_api.edit_own_draft_dataset')) \
+                or request.user.has_perm('archive_api.edit_all_draft_dataset')
+        elif obj.status  == SUBMITTED :
+            return request.user.has_perm('archive_api.edit_all_submitted_dataset')
 
         return False
 
@@ -131,16 +133,13 @@ class HasEditPermissionOrReadonly(permissions.BasePermission):
 
         # Owner is either editing or submitting a draft
         if request.method == "DELETE":
-            if obj.status == DRAFT:
-                return request.user.has_perm('archive_api.delete_draft_dataset')
-            elif obj.status == SUBMITTED:
-                return request.user.has_perm('archive_api.delete_submitted_dataset')
-        elif obj.status == DRAFT and \
-                request.user.has_perm('archive_api.edit_draft_dataset'):
-            return obj.created_by == request.user or request.user.groups.filter(name='NGT Administrator').exists()
+            return False
+        elif obj.status == DRAFT :
+            return (obj.created_by == request.user and request.user.has_perm('archive_api.edit_own_draft_dataset') )\
+                    or request.user.has_perm('archive_api.edit_all_draft_dataset')
         elif obj.status == SUBMITTED:
-            return request.user.groups.filter(name='NGT Administrator').exists()
-        elif obj.status == APPROVED and request.user.groups.filter(name='NGT Administrator').exists():
+            return request.user.has_perm('archive_api.edit_all_submitted_dataset')
+        elif obj.status == APPROVED:
             raise PermissionDenied(detail='A data set in APPROVED status may not be edited')
 
         return False
