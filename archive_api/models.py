@@ -214,6 +214,9 @@ class Site(models.Model):
     def __repr__(self):
         return '<Site {}>'.format(self)
 
+    class Meta:
+        ordering = ('site_id', 'name')
+
 
 class Plot(models.Model):
     plot_id = models.CharField(max_length=30, unique=True)
@@ -235,6 +238,9 @@ class Plot(models.Model):
 
     def __repr__(self):
         return '<Plot {}>'.format(self)
+
+    class Meta:
+        ordering = ('plot_id', 'name')
 
 
 class DataSet(models.Model):
