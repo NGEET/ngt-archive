@@ -234,6 +234,7 @@ $(document).ready(function(){
     $.when(getPlots()).done(function(plots) {
         console.log(plots);
         dataObj.plots = plots;
+        $('.js-all-plots').append('<option value="">None</option>');
         for(var i=0;i<plots.length;i++) {
             var option = $('<option value="'+ plots[i].url +'" data-index="' + i + '">' + (plots[i].plot_id ? plots[i].plot_id : 'N/A') + ': ' + plots[i].name + '</option>');
             $('.js-all-plots').append(option);
@@ -1091,6 +1092,7 @@ $(document).ready(function(){
                 }
 
             //}
+            $('.js-data-policy-check').prop('checked', false);
             popup.open();
         });
     
