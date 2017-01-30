@@ -92,6 +92,31 @@
       "submission_date": "2016-10-01"
     }
   },
+   {
+    "model": "archive_api.site",
+    "pk": 2,
+    "fields": {
+      "site_id": "E2-Earth",
+      "name": "Earth 2",
+      "description": "Et doming epicurei posidonium has, an sit sanctus intellegebat. Ne malis reprehendunt mea. Iisque dolorem vel cu. Ut nam sapientem appellantur definitiones, copiosae placerat inimicus per ei. Cu pro reque putant, cu perfecto urbanitas posidonium eum, pri probo laoreet cu. Ei duo cetero concludaturque, ei adhuc facilis sit.\r\n\r\nAn aeque harum ius, mea ut erant verear salutandi. Eligendi recusabo usu ad. Ad modo vero consequat his, ne aperiam alienum suscipiantur his. Altera laoreet petentium pro ut. His option vocibus at. Vix no semper omnesque maluisset, accusata qualisque ut pro. Eos sint constituto temporibus in.",
+      "country": "United States",
+      "state_province": "",
+      "utc_offset": -9,
+      "location_latitude": -8.983987234,
+      "location_longitude": 5.9832932847,
+      "location_elevation": "100-400",
+      "location_map_url": "",
+      "location_bounding_box_ul_latitude": null,
+      "location_bounding_box_ul_longitude": null,
+      "location_bounding_box_lr_latitude": null,
+      "location_bounding_box_lr_longitude": null,
+      "site_urls": "http://earth2.baz",
+      "contacts": [],
+      "pis": [],
+      "submission": 3,
+      "submission_date": "2015-07-01"
+    }
+  },
   {
     "model": "archive_api.plot",
     "pk": 1,

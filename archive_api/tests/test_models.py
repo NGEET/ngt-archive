@@ -223,7 +223,7 @@ class SiteTestCase(TestCase):
     def test_list_sites(self):
         """Assert that all Sites were found"""
         objects = Site.objects.all()
-        self.assertEqual(len(objects), 2)
+        self.assertEqual(len(objects), 3)
 
     def test_list_plots(self):
         """Assert that all Plots were found"""
