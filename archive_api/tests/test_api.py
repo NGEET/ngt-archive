@@ -625,8 +625,7 @@ select "View Approved Datasets" and then click the "Approve" button for NGT0001:
         email = mail.outbox[0]
         self.assertEqual(email.subject, "[ngt-archive-test] Dataset Submitted (NGT0000)")
         self.assertTrue(email.body.find("""The dataset NGT0000:Data Set 1 created on 10/28/2016 was submitted to the NGEE Tropics Archive.
-The dataset can be viewed at http://testserver. Login with your account credentials,
-select "View Approved Datasets" and then click the "Submitted" button for NGT0000:Data Set 1.
+You will not be able to view this dataset until it has been approved.
 """) > 0)
         self.assertEqual(email.to, ['myuser@foo.bar'])
 
@@ -742,6 +741,31 @@ select "View Approved Datasets" and then click the "Submitted" button for NGT000
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual({'detail': 'DataSet has been submitted.', 'success': True}, value)
+
+    def test_issue_187(self):
+        "REST API: submit check that plot matches a site #187"
+        self.login_user("auser")
+        response = self.client.post('/api/v1/datasets/',
+                                    data='{"name":"A FooBarBaz DataSet",'
+                                         '"authors":["http://testserver/api/v1/people/2/"],'
+                                         '"plots":["http://testserver/api/v1/plots/1/"],'
+                                         '"variables":["http://testserver/api/v1/variables/1/"]  }',
+                                    content_type='application/json')
+        self.assertEqual(status.HTTP_400_BAD_REQUEST,response.status_code)
+        self.assertEqual(json.loads(response.content.decode('utf-8')),
+                         {"plots": ["A site must be selected."]})
+
+        response = self.client.post('/api/v1/datasets/',
+                                    data='{"name":"A FooBarBaz DataSet",'
+                                         '"authors":["http://testserver/api/v1/people/2/"],'
+                                         '"sites":["http://testserver/api/v1/sites/2/"],'
+                                         '"plots":["http://testserver/api/v1/plots/1/"],'
+                                         '"variables":["http://testserver/api/v1/variables/1/"]  }',
+                                    content_type='application/json')
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+        self.assertEqual(json.loads(response.content.decode('utf-8')),
+                         {'plots': ['Select the site corresponding to plot CC-CCPD1:Central City '
+                                     'CCPD Plot 1']})
 
     def test_issue_173(self):
         """DataSet.name should not be unique #173"""
