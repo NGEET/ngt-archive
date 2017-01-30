@@ -200,7 +200,8 @@ select "Edit Drafts" and then click the "Edit" button for NGT0004:FooBarBaz.
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
         value = json.loads(response.content.decode('utf-8'))
-        self.assertEqual({'missingRequiredFields': ['sites',
+        self.assertEqual({'missingRequiredFields': ['archive',
+                                                    'sites',
                                                     'contact',
                                                     'variables',
                                                     'funding_organizations',
@@ -271,7 +272,7 @@ select "Edit Drafts" and then click the "Edit" button for NGT0004:FooBarBaz.
         response = self.client.get("/api/v1/datasets/1/submit/")  # In draft mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
-        self.assertEqual({'missingRequiredFields': ['authors', 'funding_organizations', 'originating_institution']},
+        self.assertEqual({'missingRequiredFields': ['archive','authors', 'funding_organizations', 'originating_institution']},
                          value)
 
         response = self.client.put('/api/v1/datasets/1/',
@@ -304,6 +305,11 @@ select "Edit Drafts" and then click the "Edit" button for NGT0004:FooBarBaz.
 
         #########################################################################
         # NGT User may not SUBMIT a dataset in DRAFT mode if they owne it
+        #Make sure file is uploaded first
+        with open('{}/Archive.zip'.format(dirname(__file__)), 'rb') as fp:
+            response = self.client.post('/api/v1/datasets/1/upload/', {'attachment': fp})
+            self.assertContains(response, '"success":true',
+                                status_code=status.HTTP_201_CREATED)
         response = self.client.get("/api/v1/datasets/1/submit/")  # In draft mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_200_OK, response.status_code)
@@ -327,7 +333,7 @@ select "Edit Drafts" and then click the "Edit" button for NGT0004:FooBarBaz.
         # NGT Administrator may edit any DRAFT status (this will fail due to missing fields)
         response = self.client.get("/api/v1/datasets/1/submit/")  # In draft mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
-        self.assertEqual({'missingRequiredFields': ['authors', 'funding_organizations', 'originating_institution']},
+        self.assertEqual({'missingRequiredFields': ['archive','authors', 'funding_organizations', 'originating_institution']},
                          value)
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
@@ -340,6 +346,11 @@ select "Edit Drafts" and then click the "Edit" button for NGT0004:FooBarBaz.
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
         self.assertEqual({'detail': 'Only a data set in DRAFT status may be submitted'}, value)
         self.assertEqual(0, len(mail.outbox))  # no notification emails sent
+
+        with open('{}/Archive.zip'.format(dirname(__file__)), 'rb') as fp:
+            response = self.client.post('/api/v1/datasets/2/upload/', {'attachment': fp})
+            self.assertContains(response, '"success":true',
+                                status_code=status.HTTP_201_CREATED)
 
         #########################################################################
         # NGT Administrator may edit a dataset in SUBMITTED status
@@ -613,7 +624,6 @@ select "View Approved Datasets" and then click the "Approve" button for NGT0001:
         self.assertEqual(outbox_len + 1, len(mail.outbox))  # notification emails sent
         email = mail.outbox[0]
         self.assertEqual(email.subject, "[ngt-archive-test] Dataset Submitted (NGT0000)")
-        print(email.body)
         self.assertTrue(email.body.find("""The dataset NGT0000:Data Set 1 created on 10/28/2016 was submitted to the NGEE Tropics Archive.
 The dataset can be viewed at http://testserver. Login with your account credentials,
 select "View Approved Datasets" and then click the "Submitted" button for NGT0000:Data Set 1.
@@ -720,12 +730,42 @@ select "View Approved Datasets" and then click the "Submitted" button for NGT000
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
+        ### Make sure file is uploaded before submittind
+        with open('{}/Archive.zip'.format(dirname(__file__)), 'rb') as fp:
+            response = self.client.post('/api/v1/datasets/1/upload/', {'attachment': fp})
+            self.assertContains(response, '"success":true',
+                                status_code=status.HTTP_201_CREATED)
+
         #########################################################################
         # NGT User may not SUBMIT a dataset in DRAFT mode if they owne it
         response = self.client.get("/api/v1/datasets/1/submit/")  # In draft mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual({'detail': 'DataSet has been submitted.', 'success': True}, value)
+
+    def test_issue_173(self):
+        """DataSet.name should not be unique #173"""
+
+        self.login_user("auser")
+        response = self.client.post('/api/v1/datasets/',
+                                    data='{"name":"A FooBarBaz DataSet",'
+                                         '"authors":["http://testserver/api/v1/people/2/"],'
+                                         '"sites":["http://testserver/api/v1/sites/1/"] ,'
+                                         '"plots":["http://testserver/api/v1/plots/1/"],'
+                                         '"variables":["http://testserver/api/v1/variables/1/"]  }',
+                                    content_type='application/json')
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
+
+        response = self.client.post('/api/v1/datasets/',
+                                    data='{"name":"A FooBarBaz DataSet",'
+                                         '"authors":["http://testserver/api/v1/people/2/"],'
+                                         '"sites":["http://testserver/api/v1/sites/1/"] ,'
+                                         '"plots":["http://testserver/api/v1/plots/1/"],'
+                                         '"variables":["http://testserver/api/v1/variables/1/"]  }',
+                                    content_type='application/json')
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
+
+
 
     def test_issue_74(self):
         self.login_user("auser")
@@ -736,7 +776,33 @@ select "View Approved Datasets" and then click the "Submitted" button for NGT000
                                          '"plots":["http://testserver/api/v1/plots/1/"],'
                                          '"variables":["http://testserver/api/v1/variables/1/"]  }',
                                     content_type='application/json')
-        self.assertTrue(status.HTTP_201_CREATED, response.status_code)
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
+        dataset_url = json.loads(response.content.decode('utf-8'))["url"]
+
+        response = self.client.get(dataset_url)
+
+        self.assertContains(response,
+                            "http://testserver/api/v1/variables/1/")
+        self.assertContains(response,
+                            "http://testserver/api/v1/sites/1/")
+        self.assertContains(response,
+                            "http://testserver/api/v1/plots/1/")
+
+    def test_issue_180(self):
+        """
+        Dataset lost due to permissions error
+        :return:
+        """
+        self.login_user("auser")
+        response = self.client.post('/api/v1/datasets/',
+                                    data='{"description":"A FooBarBaz DataSet",'
+                                         '"authors":["http://testserver/api/v1/people/2/"],'
+                                         '"sites":["http://testserver/api/v1/sites/1/"] ,'
+                                         '"plots":["http://testserver/api/v1/plots/1/"],'
+                                         '"variables":["http://testserver/api/v1/variables/1/"],'
+                                         '"access_level":1  }',
+                                    content_type='application/json')
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         dataset_url = json.loads(response.content.decode('utf-8'))["url"]
 
         response = self.client.get(dataset_url)

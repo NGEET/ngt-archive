@@ -142,7 +142,7 @@ class DataSetViewSet(ModelViewSet):
             dataset = self.get_object()
             upload = request.data['attachment']
 
-            if request.user.is_admin and upload.size > settings.ARCHIVE_API['DATASET_ADMIN_MAX_UPLOAD_SIZE']:
+            if request.user.has_perm("archive_api.upload_large_file_dataset") and upload.size > settings.ARCHIVE_API['DATASET_ADMIN_MAX_UPLOAD_SIZE']:
                 return Response({'success': False, 'detail': 'Uploaded file size is {:.1f} MB. Max upload size is {:.1f} MB'.format(
                     upload.size / (1024 * 1024), settings.ARCHIVE_API['DATASET_ADMIN_MAX_UPLOAD_SIZE']/(1024*1024)
                 )},status=http_status.HTTP_400_BAD_REQUEST)
@@ -252,9 +252,9 @@ class DataSetViewSet(ModelViewSet):
         if self.request.user.has_perm('archive_api.view_all_datasets'):
             return DataSet.objects.all()
         else:
-            where_clause = Q(access_level=DataSet.ACCESS_PRIVATE, created_by=user) | Q(
+            where_clause = Q(created_by=user) | Q(
                 access_level=DataSet.ACCESS_PUBLIC, status=DataSet.STATUS_APPROVED) | Q(
-                Q(access_level=DataSet.ACCESS_PRIVATE, cdiac_submission_contact__user=user,
+                Q(cdiac_submission_contact__user=user,
                   cdiac_import=True)
             )
 
