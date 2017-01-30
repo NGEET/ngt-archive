@@ -625,8 +625,7 @@ select "View Approved Datasets" and then click the "Approve" button for NGT0001:
         email = mail.outbox[0]
         self.assertEqual(email.subject, "[ngt-archive-test] Dataset Submitted (NGT0000)")
         self.assertTrue(email.body.find("""The dataset NGT0000:Data Set 1 created on 10/28/2016 was submitted to the NGEE Tropics Archive.
-The dataset can be viewed at http://testserver. Login with your account credentials,
-select "View Approved Datasets" and then click the "Submitted" button for NGT0000:Data Set 1.
+You will not be able to view this dataset until it has been approved.
 """) > 0)
         self.assertEqual(email.to, ['myuser@foo.bar'])
 
