@@ -125,9 +125,22 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
         """
         errors = dict()
 
+        # Validate the data range
         if {'start_date', 'end_date'}.issubset(data.keys()) and data['start_date'] and data['end_date'] and data[
             'start_date'] > data['end_date']:
-            raise serializers.ValidationError("start_date must come before end_date")
+            errors["end_date"]="Start date must come before end date"
+
+        # Validate the selected plots
+        if 'plots' in data.keys():
+            if 'sites' not in data.keys():
+                errors.setdefault('plots', [])
+                errors["plots"].append("A site must be selected.")
+            else:
+                for plot in data["plots"]:
+                    if plot.site not in data["sites"]:
+                        errors.setdefault('plots', [])
+                        errors["plots"].append("Select the site corresponding to plot {}:{}".format(plot.plot_id, plot.name))
+
         # If the dataset is approved or submitted there are an extra set of fields
         # that are required
         if self.instance and self.instance.status > DataSet.STATUS_DRAFT:

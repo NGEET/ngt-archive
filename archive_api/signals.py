@@ -128,9 +128,7 @@ The NGEE Tropics Archive Team
             content = """Dear {fullname},
 
 The dataset {dataset_id}:{dataset_name} created on {created_date:%m/%d/%Y} was submitted to the NGEE Tropics Archive.
-The dataset can be viewed at {root_url}. Login with your account credentials,
-select "View Approved Datasets" and then click the "Submitted" button for {dataset_id}:{dataset_name}.
-
+You will not be able to view this dataset until it has been approved.
 
 You will be notified once the dataset has been approved or if we have questions regarding your submission.
 Note that at this time we do not have the ability to edit the dataset once it has been approved.
