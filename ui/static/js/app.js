@@ -236,7 +236,7 @@ $(document).ready(function(){
         dataObj.plots = plots;
         $('.js-all-plots').append('<option value="">None</option>');
         for(var i=0;i<plots.length;i++) {
-            var option = $('<option value="'+ plots[i].url +'" data-index="' + i + '">' + (plots[i].plot_id ? plots[i].plot_id : 'N/A') + ': ' + plots[i].name + '</option>');
+            var option = $('<option class="hide" value="'+ plots[i].url +'" data-index="' + i + '">' + (plots[i].plot_id ? plots[i].plot_id : 'N/A') + ': ' + plots[i].name + '</option>');
             $('.js-all-plots').append(option);
         }
     });
@@ -254,6 +254,9 @@ $(document).ready(function(){
         var index = $(this).find('option:selected').attr('data-index');
         $('.js-view-site-btn .js-site-id').html($(this).val());
         $('.js-site-info').removeClass('hide');
+
+        $('.js-all-plots').removeAttr('disabled');
+
         var location = {lat: dataObj.sites[index].location_latitude, lng: dataObj.sites[index].location_longitude};
         var map = new google.maps.Map(document.getElementById('js-map-view'), {
           zoom: 4,
@@ -309,6 +312,7 @@ $(document).ready(function(){
 
         for(var i=0; i< dataObj.plots.length; i++) {
             if(dataObj.plots[i].site == dataObj.sites[index].url) {
+                $('.js-all-plots option[value="' + dataObj.plots[i].url +'"]').removeClass('hide');
                 if(!plotTitle) {
                     plotTitle = true;
                     $('.js-params').append('<h4 class="plot-title">Plots in ' + dataObj.sites[index].site_id + '</h4>');
@@ -340,9 +344,18 @@ $(document).ready(function(){
                 }
                 $('.js-params').append(plotContainer);
             }
+            else {
+                $('.js-all-plots option[value="' + dataObj.plots[i].url +'"]').addClass('hide');
+            }
 
         }
 
+    });
+
+    $('body').on('click', '.js-param.plots', function() {
+        if($('.js-all-plots').attr('disabled')) {
+            alert('Please select a site first.');
+        }
     });
 
     $('body').on('change', '.js-all-plots', function() {
