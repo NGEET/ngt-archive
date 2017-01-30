@@ -743,6 +743,31 @@ select "View Approved Datasets" and then click the "Submitted" button for NGT000
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual({'detail': 'DataSet has been submitted.', 'success': True}, value)
 
+    def test_issue_187(self):
+        "REST API: submit check that plot matches a site #187"
+        self.login_user("auser")
+        response = self.client.post('/api/v1/datasets/',
+                                    data='{"name":"A FooBarBaz DataSet",'
+                                         '"authors":["http://testserver/api/v1/people/2/"],'
+                                         '"plots":["http://testserver/api/v1/plots/1/"],'
+                                         '"variables":["http://testserver/api/v1/variables/1/"]  }',
+                                    content_type='application/json')
+        self.assertEqual(status.HTTP_400_BAD_REQUEST,response.status_code)
+        self.assertEqual(json.loads(response.content.decode('utf-8')),
+                         {"plots": ["A site must be selected."]})
+
+        response = self.client.post('/api/v1/datasets/',
+                                    data='{"name":"A FooBarBaz DataSet",'
+                                         '"authors":["http://testserver/api/v1/people/2/"],'
+                                         '"sites":["http://testserver/api/v1/sites/2/"],'
+                                         '"plots":["http://testserver/api/v1/plots/1/"],'
+                                         '"variables":["http://testserver/api/v1/variables/1/"]  }',
+                                    content_type='application/json')
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+        self.assertEqual(json.loads(response.content.decode('utf-8')),
+                         {'plots': ['Select the site corresponding to plot CC-CCPD1:Central City '
+                                     'CCPD Plot 1']})
+
     def test_issue_173(self):
         """DataSet.name should not be unique #173"""
 
