@@ -721,6 +721,7 @@ $(document).ready(function(){
             fileToUpload = false;
         }
         else {
+            alert('Please upload a file in order to submit the dataset.');
             /*submissionObj = processForm(submissionObj, submitMode, true);
             if(submissionObj.submit) {
                 delete submissionObj.submit;
@@ -741,7 +742,7 @@ $(document).ready(function(){
             else {
                 alert('Fail');
             }*/
-            processEditingForm(submissionObj, url);
+            //processEditingForm(submissionObj, url);
         }
     });
 
@@ -1234,7 +1235,8 @@ function createDraft(submissionObj, submitMode) {
                     fileToUpload = false;
                 }
                 else {
-                    if(submitMode) {
+                    alert('Please upload a file in order to submit the dataset.');
+                    /*if(submitMode) {
                         $.when(submitDataset(status.url)).done(function(submitStatus) {
                             alert(submitStatus.detail);
                             $('.js-clear-form').trigger('click');
@@ -1243,7 +1245,7 @@ function createDraft(submissionObj, submitMode) {
                     else {
                         alert('Dataset successfully created.');
                         $('.js-clear-form').trigger('click');
-                    }
+                    }*/
                 }
             }
             else {
