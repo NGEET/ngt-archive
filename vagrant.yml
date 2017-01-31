@@ -108,6 +108,7 @@
         with_items:
           - uwsgi
           - virtualenv
+          - uwsgitop
 
       # We just want to create the virtual env directory but 'name' is required
       # Using pyyaml because it is inoccuous
@@ -163,8 +164,13 @@
          - manage
 
 
-      - name: ngt_archive uwsgi app conf
+      - name: ngt_archive uwsgi upstart
         template: src=ngt_archive_init.jinja2 dest=/etc/init/ngt_archive.conf
+        notify: restart ngt_archive
+        tags:
+         - app
+      - name: ngt_archive uwsgi  conf
+        template: src=ngt_archive_uwsgi_conf.jinja2 dest={{ project_root }}/ngt_archive_conf.yml
         notify: restart ngt_archive
         tags:
          - app
