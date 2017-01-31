@@ -1,0 +1,20 @@
+ngt_archive_prod:
+    http-socket: :9999
+    module: ngt_archive.wsgi
+    #plugin: python3
+    chdir: {{ project_root }}
+    static-map: /static={{ project_root }}/static/
+    enable-threads: true
+    virtualenv: {{ project_root }}/.venv
+    uid: vagrant
+    gid: vagrant
+    die-on-term: true
+    enable-threads: true
+    thunder-lock: true
+    master: 1
+    processes:  2
+    stats: :9998
+    stats-http: true
+    enable-metrics: true
+    logger: syslog:uwsgi_ngt
+    logger: file:{{ project_root }}/ngt-archive.log
