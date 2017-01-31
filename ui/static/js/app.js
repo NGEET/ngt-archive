@@ -1331,7 +1331,13 @@ function createEditForm(templateType) {
                 break;
 
                 case "boolean":
-                var tag = $('.js-template' + '.' + templates[templateType][param].type).clone();
+                var tag =  $('.js-template' + '.' + templates[templateType][param].type).clone();
+                var d = new Date();
+                var n = d.getTime();
+                tag.find('.js-true').attr('id', 'true-' + n);
+                tag.find('.js-true-label').attr('for', 'true-' + n);
+                tag.find('.js-false').attr('id', 'false-' + n);
+                tag.find('.js-false-label').attr('for', 'false-' + n);
                 tag.removeClass('js-template');
                 paramHTML.append(tag);
                 break;
@@ -1537,7 +1543,7 @@ function processEditingForm(submissionObj, url) {
                                         else {
                                             alert('Dataset submission failed. Please check the fields and try again.');
                                         }
-                                        $('.js-clear-form').trigger('click');
+                                        //$('.js-clear-form').trigger('click');
                                     });
                                 }
                             });
@@ -1585,7 +1591,7 @@ function processEditingForm(submissionObj, url) {
                         else {
                             alert('Dataset submission failed. Please check the fields and try again.');
                         }
-                        $('.js-clear-form').trigger('click');
+                        //$('.js-clear-form').trigger('click');
                     });
                 }
             });
