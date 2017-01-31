@@ -25,7 +25,9 @@ main.yml
 ngee_tropics.sql
 ngt-archive.log
 ngt_archive.egg-info/
+ngt_archive.log
 ngt_archive/__pycache__/
+ngt_archive_conf.yml
 ornl_backup/
 plots.txt
 sites.txt
