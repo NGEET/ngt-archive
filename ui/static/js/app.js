@@ -1174,12 +1174,12 @@ function createDraft(submissionObj, submitMode) {
                                 success: function(data) {
                                     if(submitMode) {
                                         $.when(submitDataset(statusObj.url)).done(function(submitStatus) {
-                                            alert(submitStatus.detail);
+                                            alert(submitStatus.detail + ' You will not be able to view this dataset until it is approved. \nPlease note: The screen will refresh after you click OK.');
                                             $('.js-clear-form').trigger('click');
                                         });
                                     }
                                     else {
-                                        alert('Dataset has been created with the attached file');
+                                        alert('Dataset has been created with the attached file.\nPlease note: The screen will refresh after you click OK.');
                                         $('.js-clear-form').trigger('click');
                                     }
                                     
@@ -1207,7 +1207,7 @@ function createDraft(submissionObj, submitMode) {
                         
                     }
                     else {
-                        alert('Dataset has been created successfully.');
+                        alert('Dataset has been created successfully.\nPlease note: The screen will refresh after you click OK.');
                         $('.js-clear-form').trigger('click');
                     }
                     
@@ -1226,7 +1226,7 @@ function createDraft(submissionObj, submitMode) {
 
     }
     else {
-        alert('Please fill all the required fields');
+        alert('Please fill all the required fields.');
         $('body').animate({
             scrollTop: $('.js-create-form').offset().top
         }, 500);
