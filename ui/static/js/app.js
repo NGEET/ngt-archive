@@ -1249,7 +1249,7 @@ function processForm(submissionObj, submitMode, editMode) {
                             submissionObj[param] = false;
                         }
                         
-                        if($('.js-boolean:checked').length == 0) {
+                        if($('.js-boolean:checked').length == 0 && submitMode) {
                             submissionObj.submit = false;
                             $(this).closest('.js-param').addClass('missing');
                         }
