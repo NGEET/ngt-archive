@@ -829,7 +829,7 @@ $(document).ready(function(){
         if(Object.keys(submissionObj).length > 1) {
 
             $.when(editDataset(submissionObj, url)).done(function(data) {
-                if(data) {
+                if(data.statusText != 'error') {
                     
                     if(fileToUpload) {
                         if(fileTypeAllowed(fileToUpload.type) > -1) {
@@ -1484,13 +1484,11 @@ function editDataset(submissionObj, url) {
         },
 
         fail: function(jqXHR, textStatus, errorThrown) {
-            console.log(textStatus);
-            deferObj.resolve(false);
+            deferObj.resolve(jqXHR);
         },
 
         error: function(jqXHR, textStatus, errorThrown) {
-            console.log(textStatus);
-            deferObj.resolve(false);
+            deferObj.resolve(jqXHR);
         },
 
     });
