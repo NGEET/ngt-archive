@@ -442,10 +442,10 @@ $(document).ready(function(){
             }
             else {
                 if($('.js-edit-form .js-param[data-param="'+ param +'"] .js-input').hasClass('js-boolean')) {
-                    if(dataObj.datasets[index][param]) {
+                    if(dataObj.datasets[index][param] == true) {
                         $('.js-edit-form .js-param[data-param="'+ param +'"] .js-input.js-true').prop('checked', true);
                     }
-                    else {
+                    else if(dataObj.datasets[index][param] == false) {
                         $('.js-edit-form .js-param[data-param="'+ param +'"] .js-input.js-false').prop('checked', true);
                     }
                 }   
@@ -1389,10 +1389,12 @@ function createEditForm(templateType) {
     
     var editForm = $('.js-create-form').clone();
     editForm.removeClass('js-create-form').addClass('js-edit-form hide').appendTo('.js-view.view-drafts-view');
-    editForm.find('.switch-input').attr('id', 'edit-yes-no')
-                                .attr('name', 'editYesNoSwitch');
-
-    editForm.find('label').attr('for', 'edit-yes-no');
+    var d = new Date();
+    var n = d.getTime();
+    editForm.find('.js-true').attr('id', 'true-' + n);
+    editForm.find('.js-true-label').attr('for', 'true-' + n);
+    editForm.find('.js-false').attr('id', 'false-' + n);
+    editForm.find('.js-false-label').attr('for', 'false-' + n);
 
     $('.js-input.date').datepicker({
         dateFormat: "yy-mm-dd"
