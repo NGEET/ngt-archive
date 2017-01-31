@@ -532,6 +532,7 @@ $(document).ready(function(){
 
     $('body').on('click', '.js-file-upload-btn', function(event) {
         event.preventDefault();
+        event.stopPropagation();
         $('.js-file-input-btn').trigger('click');
     });
 
@@ -541,6 +542,7 @@ $(document).ready(function(){
 
     $('body').on('change', '.js-file-input-btn', function(event) {
         event.preventDefault();
+        event.stopPropagation();
         var dataFile = this.files[0];
         fileToUpload = this.files[0];
         $('.js-file-name').html(this.files[0].name);
