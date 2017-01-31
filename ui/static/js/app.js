@@ -1141,10 +1141,10 @@ function createDraft(submissionObj, submitMode) {
         if(submitMode && !fileToUpload) {
             alert('Please upload an archive file in order to submit the dataset.');
         }
-        else if(!submitMode) {
+        else {
             delete submissionObj.submit;
-            $.when(createDataset(submissionObj)).done(function(status) {
-                if(status) {
+            $.when(createDataset(submissionObj)).done(function(statusObj) {
+                if(statusObj.status == 200) {
                     if(fileToUpload) {
                         if(fileTypeAllowed(fileToUpload.type) > -1) {
                             var csrftoken = getCookie('csrftoken');
@@ -1178,7 +1178,7 @@ function createDraft(submissionObj, submitMode) {
                                         });
                                     }
                                     else {
-                                        alert('Draft has been created with the attached file');
+                                        alert('Dataset has been created with the attached file');
                                         $('.js-clear-form').trigger('click');
                                     }
                                     
@@ -1199,10 +1199,11 @@ function createDraft(submissionObj, submitMode) {
                         }
                         else {
                             alert('Data set created successfully. However, the archive file was not uploaded. The error is: Invalid file format. Please, go to the "Edit Drafts" menu to make any further changes.');
+                            $('.js-clear-form').trigger('click');
+                            $('.js-clear-file').trigger('click');
+                            fileToUpload = false;
                         }
-                        $('.js-clear-form').trigger('click');
-                        $('.js-clear-file').trigger('click');
-                        fileToUpload = false;
+                        
                     }
                     else {
                         alert('Dataset has been created successfully.');
@@ -1211,7 +1212,12 @@ function createDraft(submissionObj, submitMode) {
                     
                 }
                 else {
-                    alert('There was an error creating the draft. Please try again later.');
+                    var response = JSON.parse(statusObj.responseText);
+                    var responseText = '';
+                    for(var prop in response) {
+                        responseText += response[prop] + '. ';
+                    }
+                    alert('There was an error creating the draft: ' + responseText);
                 }
 
             });
@@ -1251,6 +1257,11 @@ function processForm(submissionObj, submitMode, editMode) {
                         else if($(this).prop('checked') && $(this).val() == 'false') {
                             submissionObj[param] = false;
                         }
+                        
+                        if($('.js-boolean:checked').length == 0) {
+                            submissionObj.submit = false;
+                            $(this).closest('.js-param').addClass('missing');
+                        }
                     }
                     else if(multi) {
                         if(!submissionObj[param]) {
@@ -1274,7 +1285,6 @@ function processForm(submissionObj, submitMode, editMode) {
                 }
 
             }
-
             else if ($(this).val() == null && submitMode && required) {
                 submissionObj.submit = false;
                 $(this).closest('.js-param').addClass('missing');
@@ -1444,12 +1454,12 @@ function createDataset(submissionObj) {
 
         fail: function(jqXHR, textStatus, errorThrown) {
             console.log(textStatus);
-            deferObj.resolve(false);
+            deferObj.resolve(jqXHR);
         },
 
         error: function(jqXHR, textStatus, errorThrown) {
             console.log(textStatus);
-            deferObj.resolve(false);
+            deferObj.resolve(jqXHR);
         },
 
     });
