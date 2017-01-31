@@ -1135,7 +1135,7 @@ function createDraft(submissionObj, submitMode) {
         else {
             delete submissionObj.submit;
             $.when(createDataset(submissionObj)).done(function(statusObj) {
-                if(statusObj.status == 200) {
+                if(statusObj.status == 200 || statusObj.status == '0') {
                     if(fileToUpload) {
                         if(fileTypeAllowed(fileToUpload.type) > -1) {
                             var csrftoken = getCookie('csrftoken');
@@ -1160,10 +1160,10 @@ function createDraft(submissionObj, submitMode) {
                                 contentType: false,
                                 data: formData,
                                 processData: false,
-                                url: status.url + "upload/",
+                                url: statusObj.url + "upload/",
                                 success: function(data) {
                                     if(submitMode) {
-                                        $.when(submitDataset(status.url)).done(function(submitStatus) {
+                                        $.when(submitDataset(statusObj.url)).done(function(submitStatus) {
                                             alert(submitStatus.detail);
                                             $('.js-clear-form').trigger('click');
                                         });
@@ -1206,9 +1206,9 @@ function createDraft(submissionObj, submitMode) {
                     var response = JSON.parse(statusObj.responseText);
                     var responseText = '';
                     for(var prop in response) {
-                        responseText += response[prop] + '. ';
+                        responseText += templates.datasets[prop].label + ': ' + response[prop] + '\n';
                     }
-                    alert('There was an error creating the draft: ' + responseText);
+                    alert('There was an error creating the draft: \n' + responseText);
                 }
 
             });
