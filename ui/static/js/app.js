@@ -599,11 +599,20 @@ $(document).ready(function(){
         });
         console.log(jsonObj);
         $.when(editDataset(jsonObj, url)).done(function(status) {
-            if(status) {
+            if(status.result) {
                 alert('Your changes have been saved');
             }
             else {
-                alert('Fail');
+                var responseStr = '';
+                if(status.responseText) {
+                    
+                    var response = JSON.parse(status.responseText);
+                    for(var prop in response) {
+                        responseStr += templates.datasets[prop].label + ': ' + response[prop] + '\n';
+                    }
+                }
+                
+                alert('There was an error with the update.\n' + responseStr);
             }
         });
         
@@ -848,7 +857,7 @@ $(document).ready(function(){
         if(Object.keys(submissionObj).length > 1) {
 
             $.when(editDataset(submissionObj, url)).done(function(data) {
-                if(data.statusText != 'error') {
+                if(data.result) {
                     
                     if(fileToUpload) {
                         if(fileTypeAllowed(fileToUpload.type) > -1) {
@@ -913,7 +922,16 @@ $(document).ready(function(){
                     }
                 }
                 else {
-                    alert('There was an error with the update. Please try again.');
+                    var responseStr = '';
+                    if(data.responseText) {
+                        
+                        var response = JSON.parse(data.responseText);
+                        for(var prop in response) {
+                            responseStr += templates.datasets[prop].label + ': ' + response[prop] + '\n';
+                        }
+                    }
+                    
+                    alert('There was an error with the update.\n' + responseStr);
                 }
             });
         }
@@ -1465,16 +1483,17 @@ function createDataset(submissionObj) {
         dataType: "json",
         data: JSON.stringify(submissionObj),
         success: function(data) {
+            data.result = true;
             deferObj.resolve(data);
         },
 
         fail: function(jqXHR, textStatus, errorThrown) {
-            console.log(textStatus);
+            jqXHR.result = false;
             deferObj.resolve(jqXHR);
         },
 
         error: function(jqXHR, textStatus, errorThrown) {
-            console.log(textStatus);
+            jqXHR.result = false;
             deferObj.resolve(jqXHR);
         },
 
@@ -1505,14 +1524,17 @@ function editDataset(submissionObj, url) {
         dataType: "json",
         data: JSON.stringify(submissionObj),
         success: function(data) {
+            data.result = true;
             deferObj.resolve(data);
         },
 
         fail: function(jqXHR, textStatus, errorThrown) {
+            jqXHR.result = false;
             deferObj.resolve(jqXHR);
         },
 
         error: function(jqXHR, textStatus, errorThrown) {
+            jqXHR.result = false;
             deferObj.resolve(jqXHR);
         },
 
@@ -1566,7 +1588,7 @@ function processEditingForm(submissionObj, url) {
                         if(submissionObj.submit) {
                             delete submissionObj.submit;
                             $.when(editDataset(submissionObj, url)).done(function(status) {
-                                if(status) {
+                                if(status.result) {
                                     $.when(submitDataset(url)).done(function(submitStatus) {
                                         if(submitStatus.detail) {
                                             alert(submitStatus.detail);
@@ -1577,11 +1599,23 @@ function processEditingForm(submissionObj, url) {
                                         //$('.js-clear-form').trigger('click');
                                     });
                                 }
+                                else {
+                                    var responseStr = '';
+                                    if(status.responseText) {
+                                        
+                                        var response = JSON.parse(status.responseText);
+                                        for(var prop in response) {
+                                            responseStr += templates.datasets[prop].label + ': ' + response[prop] + '\n';
+                                        }
+                                    }
+                                    
+                                    alert('There was an error with the update.\n' + responseStr);
+                                }
                             });
 
                         }
                         else {
-                            alert('Fail');
+                            alert('Please check your entries and try again.');
                         }
                     }
                     else if(status.url) {
@@ -1614,7 +1648,7 @@ function processEditingForm(submissionObj, url) {
         if(submissionObj.submit) {
             delete submissionObj.submit;
             $.when(editDataset(submissionObj, url)).done(function(status) {
-                if(status) {
+                if(status.result) {
                     $.when(submitDataset(url)).done(function(submitStatus) {
                         if(submitStatus.detail) {
                             alert(submitStatus.detail);
@@ -1624,6 +1658,18 @@ function processEditingForm(submissionObj, url) {
                         }
                         //$('.js-clear-form').trigger('click');
                     });
+                }
+                else {
+                    var responseStr = '';
+                    if(status.responseText) {
+                        
+                        var response = JSON.parse(status.responseText);
+                        for(var prop in response) {
+                            responseStr += templates.datasets[prop].label + ': ' + response[prop] + '\n';
+                        }
+                    }
+                    
+                    alert('There was an error with the update.\n' + responseStr);
                 }
             });
         }
