@@ -465,71 +465,7 @@ $(document).ready(function(){
         });*/
     });
 
-    /*$.when(getDataSets()).then(function(data) {
-        console.log(data);
-        for(var i=0;i<data.length;i++) {
-            $('main').append('<p>' + data[i].dataSetId + '</p>');
-            $('main').append('<p>' + data[i].description + '</p>');
-        }
-    });
-
-    $.when(getVariables()).then(function(data) {
-        console.log(data);
-        for(var i=0;i<data.length;i++) {
-            $('main').append('<p>' + data[i].name + '</p>');
-        }
-    });
-
-    $.when(getSites()).then(function(data) {
-        console.log(data);
-        for(var i=0;i<data.length;i++) {
-            $('main').append('<p>' + data[i].name + '<br>')
-                .append(data[i].siteId + '<br>')
-                .append(data[i].description + '<br>')
-                .append(data[i].country + '<br>')
-                .append(data[i].stateProvince + '<br>')
-                .append(data[i].utcOffset + '<br>')
-                .append(data[i].locationLatitude + '<br>')
-                .append(data[i].locationLongitude + '<br>')
-                .append(data[i].locationElevation + '<br>')
-                .append(data[i].locationMapUrl + '<br>')
-                .append(data[i].locationBoundingBoxUlLatitude + '<br>')
-                .append(data[i].locationBoundingBoxUlLongitude + '<br>')
-                .append(data[i].locationBoundingBoxLrLatitude + '<br>')
-                .append(data[i].locationBoundingBoxLrLongitude + '<br>')
-                .append(data[i].siteUrls + '<br>')
-                .append(data[i].submissionDate + '<br>')
-                .append(data[i].submission + '<br></p>');
-        }
-    });
-
-    $.when(getContacts()).then(function(data) {
-        console.log(data);
-        for(var i=0;i<data.length;i++) {
-            $('main').append('<p>' + data[i].firstName + '<br>')
-                    .append(data[i].lastName + '<br>')
-                    .append(data[i].email + '<br>')
-                    .append(data[i].institutionAffiliation + '<br></p>');
-        }
-    });
-
-    $.when(getPlots()).then(function(data) {
-        console.log(data);
-        for(var i=0;i<data.length;i++) {
-            $('main').append('<p>' + data[i].plotId + '<br>')
-                    .append(data[i].name + '<br>')
-                    .append(data[i].description + '<br>')
-                    .append(data[i].size + '<br>')
-                    .append(data[i].locationElevation + '<br>')
-                    .append(data[i].locationKmzUrl + '<br>')
-                    .append(data[i].submissionDate + '<br>')
-                    .append(data[i].pi + '<br>')
-                    .append(data[i].site + '<br>')
-                    .append(data[i].submission + '<br></p>');
-        }
-    });*/
-
-
+    
     $('body').on('click', '.js-file-upload-btn', function(event) {
         event.preventDefault();
         event.stopPropagation();
@@ -737,27 +673,32 @@ $(document).ready(function(){
             fileToUpload = false;
         }
         else {
-            alert('Please upload a file in order to submit the dataset.');
-            /*submissionObj = processForm(submissionObj, submitMode, true);
-            if(submissionObj.submit) {
-                delete submissionObj.submit;
-                $.when(editDataset(submissionObj, url)).done(function(status) {
-                    if(status) {
-                        $.when(submitDataset(url)).done(function(submitStatus) {
-                            if(submitStatus.detail) {
-                                alert(submitStatus.detail);
-                            }
-                            else {
-                                alert('Fail');
-                            }
-                            $('.js-clear-form').trigger('click');
-                        });
-                    }
-                });
+            if(submitMode) {
+                alert('Please upload a file in order to submit the dataset.');
             }
             else {
-                alert('Fail');
-            }*/
+                submissionObj = processForm(submissionObj, submitMode, true);
+                if(submissionObj.submit) {
+
+                    /*delete submissionObj.submit;
+                    $.when(editDataset(submissionObj, url)).done(function(status) {
+                        if(status) {
+                            $.when(submitDataset(url)).done(function(submitStatus) {
+                                if(submitStatus.detail) {
+                                    alert(submitStatus.detail);
+                                }
+                                else {
+                                    alert('Fail');
+                                }
+                                $('.js-clear-form').trigger('click');
+                            });
+                        }
+                    });*/
+                }
+                else {
+                    alert('Fail');
+                }
+            }
             //processEditingForm(submissionObj, url);
         }
     });
@@ -1042,7 +983,7 @@ $(document).ready(function(){
                                 }
 
                                 else if(prop == 'variables') {
-                                    for(var m=0;m<dataObj.sites.length;m++) {
+                                    for(var m=0;m<dataObj.variables.length;m++) {
                                         if(datasetObj[prop].indexOf(dataObj.variables[m].url) != -1) {
                                             substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + dataObj.variables[m].name + '</span></div>';
                                             
@@ -1505,32 +1446,7 @@ function createDataset(submissionObj) {
 
 function editDataset(submissionObj, url) {
     var deferObj = jQuery.Deferred();
-    /*var data = {
-        name: "bla 3454 768 h",
-        description: "b76 90 57ah" };
-   /* var data = {"data_set_id":"FooBarBaz",
-                "description":"A FooBarBaz DataSet",
-                "name": "Data Set 1", 
-                "status_comment": "",
-                "doi": "",
-                "start_date": "2016-10-28",
-                "end_date": null,
-                "qaqc_status": null,
-                "qaqc_method_description": "",
-                "ngee_tropics_resources": true,
-                "funding_organizations": "",
-                "doe_funding_contract_numbers": "",
-                "acknowledgement": "",
-                "reference": "",
-                "additional_reference_information": "",
-                "additional_access_information": "",
-                "submission_date": "2016-10-28T19:12:35Z",
-                "contact": "http://testserver/api/v1/people/4/",
-                "authors": ["http://testserver/api/v1/people/1/"],
-                "sites": ["http://testserver/api/v1/sites/1/"],
-                "plots": ["http://testserver/api/v1/plots/1/"],
-                "variables": ["http://testserver/api/v1/variables/1/", 
-                "http://testserver/api/v1/variables/2/"]};*/
+    
     var csrftoken = getCookie('csrftoken');
 
     $.ajaxSetup({
@@ -1567,71 +1483,6 @@ function editDataset(submissionObj, url) {
 
     return deferObj.promise();
 }
-
-/*function createContact(fname, lname, email, institute) {
-    var deferObj = jQuery.Deferred();
-    /*var data = {
-        name: "bla 3454 768 h",
-        description: "b76 90 57ah" };
-   /* var data = {"data_set_id":"FooBarBaz",
-                "description":"A FooBarBaz DataSet",
-                "name": "Data Set 1", 
-                "status_comment": "",
-                "doi": "",
-                "start_date": "2016-10-28",
-                "end_date": null,
-                "qaqc_status": null,
-                "qaqc_method_description": "",
-                "ngee_tropics_resources": true,
-                "funding_organizations": "",
-                "doe_funding_contract_numbers": "",
-                "acknowledgement": "",
-                "reference": "",
-                "additional_reference_information": "",
-                "additional_access_information": "",
-                "submission_date": "2016-10-28T19:12:35Z",
-                "contact": "http://testserver/api/v1/people/4/",
-                "authors": ["http://testserver/api/v1/people/1/"],
-                "sites": ["http://testserver/api/v1/sites/1/"],
-                "plots": ["http://testserver/api/v1/plots/1/"],
-                "variables": ["http://testserver/api/v1/variables/1/", 
-                "http://testserver/api/v1/variables/2/"]};*/
-    /*var csrftoken = getCookie('csrftoken');
-
-    $.ajaxSetup({
-        beforeSend: function(xhr, settings) {
-            xhr.setRequestHeader("X-CSRFToken", csrftoken);
-        }
-    });
-
-    //data = JSON.stringify(data);
-    $.ajax({
-        method: "PUT",
-        headers: { 
-            'Accept': 'application/json',
-            'Content-Type': 'application/json' 
-        },
-        url: url,
-        dataType: "json",
-        data: JSON.stringify(submissionObj),
-        success: function(data) {
-            deferObj.resolve(data);
-        },
-
-        fail: function(jqXHR, textStatus, errorThrown) {
-            console.log(textStatus);
-            deferObj.resolve(false);
-        },
-
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.log(textStatus);
-            deferObj.resolve(false);
-        },
-
-    });
-
-    return deferObj.promise();
-}*/
 
 function processEditingForm(submissionObj, url) {
     var submitMode = true;
