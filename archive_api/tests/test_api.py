@@ -178,7 +178,7 @@ select "Edit Drafts" and then click the "Edit" button for NGT0004:FooBarBaz.
         self.assertEqual(value['additional_access_information'], None)
         self.assertEqual(value['name'], 'FooBarBaz')
         self.assertEqual(value['modified_by'], 'auser')
-        self.assertEqual(value['ngee_tropics_resources'], False)
+        self.assertEqual(value['ngee_tropics_resources'], None)
         self.assertEqual(value['status'], str(DataSet.STATUS_DRAFT))
         self.assertEqual(value['doi'], None)
         self.assertEqual(value['plots'], [])
@@ -204,6 +204,7 @@ select "Edit Drafts" and then click the "Edit" button for NGT0004:FooBarBaz.
                                                     'sites',
                                                     'contact',
                                                     'variables',
+                                                    'ngee_tropics_resources',
                                                     'funding_organizations',
                                                     'originating_institution']}, value)
 
