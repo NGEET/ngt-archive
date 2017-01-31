@@ -302,6 +302,12 @@ body {
                 margin-bottom: 2rem;
                 margin-top: 2rem;
 
+                .file-exists {
+                    background: darken($light-orange, 2%);
+                    color: white;
+                    padding: 10px 0 15px;
+                }
+
                 input[type="file"] {
                         position: absolute;
                         left: 0;
