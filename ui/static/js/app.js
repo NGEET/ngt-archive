@@ -319,8 +319,13 @@ $(document).ready(function(){
             }
         }
 
+        var siteStr = '';
+        $('.js-all-sites option:selected').each(function() {
+            siteStr += $(this).val() + ' ';
+        });
+
         for(var i=0; i< dataObj.plots.length; i++) {
-            if(dataObj.plots[i].site == dataObj.sites[index].url) {
+            if(siteStr.indexOf(dataObj.plots[i].site) != -1) {
                 $('.js-all-plots option[value="' + dataObj.plots[i].url +'"]').removeClass('hide');
                 if(!plotTitle) {
                     plotTitle = true;
@@ -462,6 +467,7 @@ $(document).ready(function(){
         $('.js-edit-form .js-clear-form').addClass('hide');
         $('.js-edit-form .js-cancel-btn').removeClass('hide');
         $('.js-edit-back-btn').removeClass('hide');
+        $('.js-edit-form .js-all-plots').removeAttr('disabled');
 
         if(dataObj.datasets[index].archive) {
             $('.js-file-exists').removeClass('hide');
