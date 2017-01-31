@@ -427,7 +427,6 @@ $(document).ready(function(){
         
         for(var param in dataObj.datasets[index]) {
             if(Array.isArray(dataObj.datasets[index][param])) {
-                console.log('arr');
                 for (var i = 0; i < dataObj.datasets[index][param].length; i++) {
                     if(i > 0 ) {
                         var position = $('.js-edit-form .js-param[data-param="'+ param +'"] section').last();
@@ -463,6 +462,10 @@ $(document).ready(function(){
         $('.js-edit-form .js-clear-form').addClass('hide');
         $('.js-edit-form .js-cancel-btn').removeClass('hide');
         $('.js-edit-back-btn').removeClass('hide');
+
+        if(dataObj.datasets[index].archive) {
+            $('.js-file-exists').removeClass('hide');
+        }
         //$('.js-edit-form .js-file-drop-zone').addClass('hide');
 
         /*$('.js-edit-form .js-param').each(function() {
