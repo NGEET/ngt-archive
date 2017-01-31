@@ -34,6 +34,15 @@ function fileTypeAllowed(filetype) {
     return -1;
 }
 
+function dedupe(array) {
+    var returnArray = [];
+    $.each(array, function(i, el){
+        if($.inArray(el, returnArray) === -1) returnArray.push(el);
+    });
+
+    return returnArray;
+}
+
 $(document).ready(function(){
     $(document).foundation();
 
@@ -785,6 +794,7 @@ $(document).ready(function(){
         }
         else {
             submissionObj = processForm(submissionObj, submitMode);
+            
             if(Object.keys(submissionObj).length > 2) {
                 createDraft(submissionObj, submitMode);
             }
@@ -823,7 +833,7 @@ $(document).ready(function(){
         });*/
 
         submissionObj = processForm(submissionObj, false, true);
-
+        
         console.log(submissionObj);
 
         if(Object.keys(submissionObj).length > 1) {
@@ -1283,6 +1293,12 @@ function processForm(submissionObj, submitMode, editMode) {
             
         });
     });
+
+    for(var prop in submissionObj) {
+        if(Array.isArray(submissionObj[prop])) {
+            submissionObj[prop] = dedupe(submissionObj[prop]);
+        }
+    }
 
     return submissionObj;
 }
