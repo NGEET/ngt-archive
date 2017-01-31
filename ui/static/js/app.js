@@ -381,15 +381,6 @@ $(document).ready(function(){
         }
     });
 
-    /*$('body').on('drop', function(event) {
-        //event.preventDefault();
-        var files = event.originalEvent.dataTransfer.files;
-        $('.js-file-input-btn').value(files[0]);
-        $('.js-file-name').html(files[0].name);
-        $('.js-file-name-wrapper').removeClass('hide');
-        console.log(files[0].name);
-    });*/
-
     $("html").on("dragover", function(event) {
         event.preventDefault();  
         event.stopPropagation();
