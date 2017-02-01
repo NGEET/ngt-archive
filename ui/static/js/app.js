@@ -472,6 +472,9 @@ $(document).ready(function(){
         if(dataObj.datasets[index].archive) {
             $('.js-file-exists').removeClass('hide');
         }
+        else {
+            $('.js-file-exists').addClass('hide');
+        }
         //$('.js-edit-form .js-file-drop-zone').addClass('hide');
 
         /*$('.js-edit-form .js-param').each(function() {
@@ -665,14 +668,7 @@ $(document).ready(function(){
                     processData: false,
                     url: url + "upload/",
                     success: function(data) {
-                        /*if(submitMode) {
-                            $.when(submitDataset(status.url)).done(function(submitStatus) {
-                                alert(submitStatus.detail);
-                                $('.js-clear-form').trigger('click');
-                            });
-                        }
-                        else {*/
-                        //}
+                        
                         processEditingForm(submissionObj, url);
                         
                         
@@ -694,36 +690,13 @@ $(document).ready(function(){
             else {
                 alert('The file format is Invalid. Please upload an archive file');
             }
-            fileToUpload = false;
+            
+        }
+        else if(!$('.js-file-exists').hasClass('hide')) {
+            processEditingForm(submissionObj, url);
         }
         else {
-            if(submitMode) {
-                alert('Please upload a file in order to submit the dataset.');
-            }
-            else {
-                submissionObj = processForm(submissionObj, submitMode, true);
-                if(submissionObj.submit) {
-
-                    /*delete submissionObj.submit;
-                    $.when(editDataset(submissionObj, url)).done(function(status) {
-                        if(status) {
-                            $.when(submitDataset(url)).done(function(submitStatus) {
-                                if(submitStatus.detail) {
-                                    alert(submitStatus.detail);
-                                }
-                                else {
-                                    alert('Fail');
-                                }
-                                $('.js-clear-form').trigger('click');
-                            });
-                        }
-                    });*/
-                }
-                else {
-                    alert('Fail');
-                }
-            }
-            //processEditingForm(submissionObj, url);
+            alert('Please upload a file in order to submit the dataset.');
         }
     });
 
@@ -800,7 +773,16 @@ $(document).ready(function(){
                             entryCount++;
                         }
                         else {
-                            alert('There was a problem creating the new entry. Please try again');
+                            var responseStr = '';
+                            if(status.responseText) {
+                                
+                                var response = JSON.parse(status.responseText);
+                                for(var prop in response) {
+                                    responseStr += prop + ': ' + response[prop] + '\n';
+                                }
+                            }
+                            alert('There was a problem creating the new entry.\n' + responseStr);
+                            return;
                         }
                     });
 
@@ -907,7 +889,16 @@ $(document).ready(function(){
                             entryCount++;
                         }
                         else {
-                            alert('There was a problem creating the new entry. Please try again');
+                            var responseStr = '';
+                            if(status.responseText) {
+                                
+                                var response = JSON.parse(status.responseText);
+                                for(var prop in response) {
+                                    responseStr += prop + ': ' + response[prop] + '\n';
+                                }
+                            }
+                            alert('There was a problem creating the new entry.\n' + responseStr);
+                            return;
                         }
                     });
 
@@ -1188,11 +1179,13 @@ function createDraft(submissionObj, submitMode) {
                                         $.when(submitDataset(statusObj.url)).done(function(submitStatus) {
                                             alert(submitStatus.detail + ' You will not be able to view this dataset until it is approved. \nPlease note: The screen will refresh after you click OK.');
                                             $('.js-clear-form').trigger('click');
+                                            $('.js-clear-file').trigger('click');
                                         });
                                     }
                                     else {
                                         alert('Dataset has been created with the attached file.\nPlease note: The screen will refresh after you click OK.');
                                         $('.js-clear-form').trigger('click');
+                                        $('.js-clear-file').trigger('click');
                                     }
                                     
                                 },
@@ -1214,13 +1207,13 @@ function createDraft(submissionObj, submitMode) {
                             alert('Data set created successfully. However, the archive file was not uploaded. The error is: Invalid file format. Please, go to the "Edit Drafts" menu to make any further changes.');
                             $('.js-clear-form').trigger('click');
                             $('.js-clear-file').trigger('click');
-                            fileToUpload = false;
                         }
                         
                     }
                     else {
                         alert('Dataset has been created successfully.\nPlease note: The screen will refresh after you click OK.');
                         $('.js-clear-form').trigger('click');
+                        $('.js-clear-file').trigger('click');
                     }
                     
                 }
@@ -1285,6 +1278,7 @@ function completeEdit(submissionObj, url, submitMode) {
                                 }
                                 else {*/
                                     alert('Draft has been updated with the attached file');
+                                    $('.js-clear-file').trigger('click');
                                     
                                 //}
                                 
@@ -1307,7 +1301,6 @@ function completeEdit(submissionObj, url, submitMode) {
                         alert('Dataset has been updated, but the file format is Invalid. Please upload an archive file');
 
                     }
-                    fileToUpload = false;
                 }
                 else {
                     alert('Draft has been updated successfully.');
@@ -1663,7 +1656,9 @@ function processEditingForm(submissionObj, url) {
                                 if(status.result) {
                                     $.when(submitDataset(url)).done(function(submitStatus) {
                                         if(submitStatus.detail) {
-                                            alert(submitStatus.detail);
+                                            alert(submitStatus.detail + ' You will not be able to view this dataset until it is approved. \nPlease note: The screen will refresh after you click OK.');
+                                            $('.js-clear-form').trigger('click');
+                                            $('.js-clear-file').trigger('click');
                                         }
                                         else {
                                             alert('Dataset submission failed. Please check the fields and try again.');
@@ -1704,7 +1699,16 @@ function processEditingForm(submissionObj, url) {
                         entryCount++;
                     }
                     else {
-                        alert('There was a problem creating the new entry. Please try again.');
+                        var responseStr = '';
+                        if(status.responseText) {
+                            
+                            var response = JSON.parse(status.responseText);
+                            for(var prop in response) {
+                                responseStr += prop + ': ' + response[prop] + '\n';
+                            }
+                        }
+                        alert('There was a problem creating the new entry.\n' + responseStr);
+                        return;
                     }
                 });
 
@@ -1723,7 +1727,9 @@ function processEditingForm(submissionObj, url) {
                 if(status.result) {
                     $.when(submitDataset(url)).done(function(submitStatus) {
                         if(submitStatus.detail) {
-                            alert(submitStatus.detail);
+                            alert(submitStatus.detail + ' You will not be able to view this dataset until it is approved. \nPlease note: The screen will refresh after you click OK.');
+                            $('.js-clear-form').trigger('click');
+                            $('.js-clear-file').trigger('click');
                         }
                         else {
                             alert('Dataset submission failed. Please check the fields and try again.');
@@ -1779,17 +1785,18 @@ function createContact(fname, lname, email, institute) {
         dataType: "json",
         data: JSON.stringify(data),
         success: function(data) {
+            data.result = true;
             deferObj.resolve(data);
         },
 
         fail: function(jqXHR, textStatus, errorThrown) {
-            console.log(textStatus);
-            deferObj.resolve(data);
+            jqXHR.result = false;
+            deferObj.resolve(jqXHR);
         },
 
         error: function(jqXHR, textStatus, errorThrown) {
-            console.log(textStatus);
-            deferObj.resolve(data);
+            jqXHR.result = false;
+            deferObj.resolve(jqXHR);
         },
 
     });
@@ -1804,17 +1811,18 @@ function getDataSets(url) {
         url: (url ? url : "api/v1/datasets/"),
         dataType: "json",
         success: function(data) {
+            data.result = true;
             deferObj.resolve(data);
         },
 
-        fail: function(data) {
-            console.log(data);
-            deferObj.resolve(data);
+        fail: function(jqXHR, textStatus, errorThrown) {
+            jqXHR.result = false;
+            deferObj.resolve(jqXHR);
         },
 
-        error: function(data, errorThrown) {
-            console.log(data);
-            deferObj.resolve(data);
+        error: function(jqXHR, textStatus, errorThrown) {
+            jqXHR.result = false;
+            deferObj.resolve(jqXHR);
         },
 
     });
@@ -1829,17 +1837,18 @@ function getVariables() {
         url: "api/v1/variables/",
         dataType: "json",
         success: function(data) {
+            data.result = true;
             deferObj.resolve(data);
         },
 
-        fail: function(data) {
-            console.log(data);
-            deferObj.resolve(data);
+        fail: function(jqXHR, textStatus, errorThrown) {
+            jqXHR.result = false;
+            deferObj.resolve(jqXHR);
         },
 
-        error: function(data, errorThrown) {
-            console.log(data);
-            deferObj.resolve(data);
+        error: function(jqXHR, textStatus, errorThrown) {
+            jqXHR.result = false;
+            deferObj.resolve(jqXHR);
         },
 
     });
@@ -1854,17 +1863,18 @@ function getSites() {
         url: "api/v1/sites/",
         dataType: "json",
         success: function(data) {
+            data.result = true;
             deferObj.resolve(data);
         },
 
-        fail: function(data) {
-            console.log(data);
-            deferObj.resolve(data);
+        fail: function(jqXHR, textStatus, errorThrown) {
+            jqXHR.result = false;
+            deferObj.resolve(jqXHR);
         },
 
-        error: function(data, errorThrown) {
-            console.log(data);
-            deferObj.resolve(data);
+        error: function(jqXHR, textStatus, errorThrown) {
+            jqXHR.result = false;
+            deferObj.resolve(jqXHR);
         },
 
     });
@@ -1879,17 +1889,18 @@ function getContacts() {
         url: "api/v1/people/",
         dataType: "json",
         success: function(data) {
+            data.result = true;
             deferObj.resolve(data);
         },
 
-        fail: function(data) {
-            console.log(data);
-            deferObj.resolve(data);
+        fail: function(jqXHR, textStatus, errorThrown) {
+            jqXHR.result = false;
+            deferObj.resolve(jqXHR);
         },
 
-        error: function(data, errorThrown) {
-            console.log(data);
-            deferObj.resolve(data);
+        error: function(jqXHR, textStatus, errorThrown) {
+            jqXHR.result = false;
+            deferObj.resolve(jqXHR);
         },
 
     });
@@ -1904,17 +1915,18 @@ function getPlots() {
         url: "api/v1/plots/",
         dataType: "json",
         success: function(data) {
+            data.result = true;
             deferObj.resolve(data);
         },
 
-        fail: function(data) {
-            console.log(data);
-            deferObj.resolve(data);
+        fail: function(jqXHR, textStatus, errorThrown) {
+            jqXHR.result = false;
+            deferObj.resolve(jqXHR);
         },
 
-        error: function(data, errorThrown) {
-            console.log(data);
-            deferObj.resolve(data);
+        error: function(jqXHR, textStatus, errorThrown) {
+            jqXHR.result = false;
+            deferObj.resolve(jqXHR);
         },
 
     });
@@ -1990,15 +2002,18 @@ function submitDataset(url) {
         url: url + 'submit/',
         dataType: "json",
         success: function(data) {
+            data.result = true;
             deferObj.resolve(data);
         },
 
-        fail: function(data) {
-            deferObj.resolve(data);
+        fail: function(jqXHR, textStatus, errorThrown) {
+            jqXHR.result = false;
+            deferObj.resolve(jqXHR);
         },
 
-        error: function(data, errorThrown) {
-            deferObj.resolve(data);
+        error: function(jqXHR, textStatus, errorThrown) {
+            jqXHR.result = false;
+            deferObj.resolve(jqXHR);
         },
 
     });
