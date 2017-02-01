@@ -382,12 +382,19 @@ body {
                 margin-bottom: 20px;
 
                 .title {
-                    cursor: pointer;
+                    &:hover {
+                        color: darken($dark-blue, 10%);
+                    }
                 }
 
                 .desc {
                     //max-height: 3rem;
                     //overflow: hidden;
+                }
+
+                .title, .desc {
+                    cursor: pointer;
+
                 } 
             }
         }
