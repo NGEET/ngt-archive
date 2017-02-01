@@ -1240,6 +1240,9 @@ function createDraft(submissionObj, submitMode) {
 
 function completeEdit(submissionObj, url, submitMode) {
     if(Object.keys(submissionObj).length > 1) {
+        if(!submissionObj['plots']) {
+            submissionObj['plots'] = [];
+        }
 
         $.when(editDataset(submissionObj, url)).done(function(data) {
             if(data.result) {
