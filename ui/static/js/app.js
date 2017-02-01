@@ -103,6 +103,7 @@ $(document).ready(function(){
             //console.log(data);
             $('.js-text-dump').html('');
             $('.js-datasets').html('');
+            var draftCount = 0;
             for(var i=0;i<data.length;i++) {
                 if(data[i].status == 0) {
                     var tag = $('<div/>').addClass('js-view-dataset dataset');
@@ -113,13 +114,14 @@ $(document).ready(function(){
                         .attr('data-index', i);
 
                     $('.js-all-datasets').append(tag);   
-
+                    draftCount++;
                     /*$('.js-all-datasets').append((data[i].name ? data[i].name : 'NA') + '<br>')
                                     .append((data[i].description ? data[i].description : 'NA') + '<br>')
                                     .append('<button class="js-view-dataset button" data-url="' + data[i].url + '" data-index="' + i + '">View</button>')
                                     .append('&nbsp;' + '<button class="js-delete-dataset button" data-url="' + data[i].url + '" data-index="' + i + '">Delete</button>' + '<br><br>');*/
                 }
             }
+            //$('.js-view.view-drafts-view h4').prepend(draftCount + ' ');
             $('.js-loading').addClass('hide');
         });
         break;
@@ -131,6 +133,7 @@ $(document).ready(function(){
             //console.log(data);
             $('.js-text-dump').html('');
             $('.js-datasets').html('');
+            var approvedCount = 0;
             for(var i=0;i<data.length;i++) {
                 
                 if(data[i].status == 2) {
@@ -139,6 +142,8 @@ $(document).ready(function(){
                         .append('<p class="desc">' + (data[i].description ? data[i].description.substring(0, 199) + '...' : 'NA') + '</p>')
                         .attr('data-url', data[i].url)
                         .attr('data-index', i);
+
+                    approvedCount++;
 
                     switch(data[i].access_level) {
                         case '0': 
@@ -155,13 +160,15 @@ $(document).ready(function(){
                     }
 
                     $('.js-all-datasets').append(tag); 
-                }              
+                   
+                }
                     /*$('.js-all-datasets').append((data[i].name ? data[i].name : 'NA') + '<br>')
                                     .append((data[i].description ? data[i].description : 'NA') + '<br>')
                                     .append('<button class="js-view-dataset button" data-url="' + data[i].url + '" data-index="' + i + '">View</button>')
                                     .append('&nbsp;' + '<button class="js-delete-dataset button" data-url="' + data[i].url + '" data-index="' + i + '">Delete</button>' + '<br><br>');*/
                 
             }
+            $('.js-view.view-dataset-view h4').prepend(approvedCount + ' ');              
             $('.js-loading').addClass('hide');
         });
         break;
@@ -469,11 +476,26 @@ $(document).ready(function(){
         $('.js-edit-back-btn').removeClass('hide');
         $('.js-edit-form .js-all-plots').removeAttr('disabled');
 
+
         if(dataObj.datasets[index].archive) {
             $('.js-file-exists').removeClass('hide');
         }
         else {
             $('.js-file-exists').addClass('hide');
+        }
+
+        var siteStr = '';
+        $('.js-all-sites option:selected').each(function() {
+            siteStr += $(this).val() + ' ';
+        });
+
+        for(var i=0; i< dataObj.plots.length; i++) {
+            if(siteStr.indexOf(dataObj.plots[i].site) != -1) {
+                $('.js-all-plots option[value="' + dataObj.plots[i].url +'"]').removeClass('hide');
+            }
+            else {
+                $('.js-all-plots option[value="' + dataObj.plots[i].url +'"]').addClass('hide');
+            }
         }
         //$('.js-edit-form .js-file-drop-zone').addClass('hide');
 
@@ -1228,6 +1250,9 @@ function createDraft(submissionObj, submitMode) {
 function completeEdit(submissionObj, url, submitMode) {
     if(!submissionObj['plots']) {
         submissionObj['plots'] = [];
+    }
+
+    if(!submissionObj['sites']) {
         submissionObj['sites'] = [];
     }
 
@@ -1362,6 +1387,11 @@ function processForm(submissionObj, submitMode, editMode) {
                     }
                     else {
                         submissionObj[param] = null;
+                    }
+
+                    if(required) {
+                        submissionObj.submit = false;
+                        $(this).closest('.js-param').addClass('missing');
                     }
                 }
                 else if(submitMode && required) {
