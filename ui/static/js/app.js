@@ -742,9 +742,10 @@ $(document).ready(function(){
         });
 
         var entryCount = 0;
+        var validEntries = true;
         //find all the contacts and authors first before processing others
         if($('.js-new-value.js-input').length > 0) {
-            var validEntries = true;
+            
 
             $('.js-new-value.js-input').each(function(index) {
                 if(!$(this).find('.js-first-name').val() || !$(this).find('.js-last-name').val()) {
@@ -827,7 +828,7 @@ $(document).ready(function(){
         event.preventDefault();
         var url = $('.js-edit-form').attr('data-url');
         var submissionObj = {};
-
+        var validEntries = true;
 
         /*$('.js-edit-form .js-param').each(function() {
             var param = $(this).attr('data-param');
@@ -849,94 +850,78 @@ $(document).ready(function(){
                 }
             }
         });*/
+        var entryCount = 0;
+        if($('.js-new-value.js-input').length > 0) {
 
-        submissionObj = processForm(submissionObj, false, true);
-        
-        console.log(submissionObj);
-
-        if(Object.keys(submissionObj).length > 1) {
-
-            $.when(editDataset(submissionObj, url)).done(function(data) {
-                if(data.result) {
-                    
-                    if(fileToUpload) {
-                        if(fileTypeAllowed(fileToUpload.type) > -1) {
-                            var csrftoken = getCookie('csrftoken');
-
-                            $.ajaxSetup({
-                                beforeSend: function(xhr, settings) {
-                                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                                }
-                            });
-
-                            var data = {
-                                attachment: fileToUpload
-                            };
-
-                            var formData = new FormData();
-                            formData.append('attachment', fileToUpload);
-
-                            //data = JSON.parse(data);
-
-                            $.ajax({
-                                method: "POST",
-                                contentType: false,
-                                data: formData,
-                                processData: false,
-                                url: url + "upload/",
-                                success: function(data) {
-                                    /*if(submitMode) {
-                                        $.when(submitDataset(status.url)).done(function(submitStatus) {
-                                            alert(submitStatus.detail);
-                                            $('.js-clear-form').trigger('click');
-                                        });
-                                    }
-                                    else {*/
-                                        alert('Draft has been updated with the attached file');
-                                        
-                                    //}
-                                    
-                                },
-
-                                fail: function(data) {
-                                    var detailObj = JSON.parse(data.responseText);
-                                    alert('Fail: The draft was updated successfully but the file could not be uploaded. ' + detailObj.detail);
-                                },
-
-                                error: function(data, errorThrown) {
-                                    var detailObj = JSON.parse(data.responseText);
-                                    alert('Error: The draft was updated successfully but the file could not be uploaded. ' + detailObj.detail);
-                                },
-
-                            });
-
-                        }
-                        else {
-                            alert('Dataset has been updated, but the file format is Invalid. Please upload an archive file');
-
-                        }
-                        fileToUpload = false;
-                    }
-                    else {
-                        alert('Draft has been updated successfully.');
-                    }
-                }
-                else {
-                    var responseStr = '';
-                    if(data.responseText) {
-                        
-                        var response = JSON.parse(data.responseText);
-                        for(var prop in response) {
-                            responseStr += templates.datasets[prop].label + ': ' + response[prop] + '\n';
-                        }
-                    }
-                    
-                    alert('There was an error with the update.\n' + responseStr);
+            $('.js-new-value.js-input').each(function(index) {
+                if(!$(this).find('.js-first-name').val() || !$(this).find('.js-last-name').val()) {
+                    validEntries = false;
                 }
             });
+
+            if(validEntries) {
+
+                $('.js-new-value.js-input').each(function(index) {
+
+                    var param = $(this).closest('.js-param').attr('data-param');
+
+                    var fname = $(this).find('.js-first-name').val();
+                    var lname = $(this).find('.js-last-name').val();
+
+                    $.when(createContact(fname, lname, '', '')).done(function(status) {
+                        //console.log(status);
+                        if(status.url && entryCount == $('.js-new-value.js-input').length - 1) {
+                            if(!submissionObj[param] && param == 'authors') {
+                                submissionObj[param] = [];
+                                submissionObj[param].push(status.url);
+                            }
+                            else if(param == 'contact') {
+                                submissionObj[param] = status.url;
+                            }
+                            else if(param == 'authors') {
+                                submissionObj[param].push(status.url);
+                            }
+                            entryCount++;
+                            submissionObj = processForm(submissionObj, false, true);
+                            
+                            // no properties are specified. note that ngee tropics resources will always be set
+                            // submit will also be present, which will be removed in the createDraft method
+                            if(Object.keys(submissionObj).length > 1) { 
+                                completeEdit(submissionObj, url);
+                            }
+                            else {
+                                alert('Please enter a unique name for your new draft');
+                            }
+                        }
+                        else if(status.url) {
+                            if(!submissionObj[param] && param == 'authors') {
+                                submissionObj[param] = [];
+                                submissionObj[param].push(status.url);
+                            }
+                            else if(param == 'contact') {
+                                submissionObj[param] = status.url;
+                            }
+                            else if(param == 'authors') {
+                                submissionObj[param].push(status.url);
+                            }
+                            entryCount++;
+                        }
+                        else {
+                            alert('There was a problem creating the new entry. Please try again');
+                        }
+                    });
+
+                });
+            }
+
+            else {
+                alert('Please enter first and last names for all new contacts/authors');
+            }
+            
         }
         else {
-            alert('Please enter a unique name for the draft.');
+            submissionObj = processForm(submissionObj, false, true);
+            completeEdit(submissionObj, url);
         }
     });
 
@@ -1257,6 +1242,93 @@ function createDraft(submissionObj, submitMode) {
         $('body').animate({
             scrollTop: $('.js-create-form').offset().top
         }, 500);
+    }
+}
+
+function completeEdit(submissionObj, url, submitMode) {
+    if(Object.keys(submissionObj).length > 1) {
+
+        $.when(editDataset(submissionObj, url)).done(function(data) {
+            if(data.result) {
+                
+                if(fileToUpload) {
+                    if(fileTypeAllowed(fileToUpload.type) > -1) {
+                        var csrftoken = getCookie('csrftoken');
+
+                        $.ajaxSetup({
+                            beforeSend: function(xhr, settings) {
+                                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                            }
+                        });
+
+                        var data = {
+                            attachment: fileToUpload
+                        };
+
+                        var formData = new FormData();
+                        formData.append('attachment', fileToUpload);
+
+                        //data = JSON.parse(data);
+
+                        $.ajax({
+                            method: "POST",
+                            contentType: false,
+                            data: formData,
+                            processData: false,
+                            url: url + "upload/",
+                            success: function(data) {
+                                /*if(submitMode) {
+                                    $.when(submitDataset(status.url)).done(function(submitStatus) {
+                                        alert(submitStatus.detail);
+                                        $('.js-clear-form').trigger('click');
+                                    });
+                                }
+                                else {*/
+                                    alert('Draft has been updated with the attached file');
+                                    
+                                //}
+                                
+                            },
+
+                            fail: function(data) {
+                                var detailObj = JSON.parse(data.responseText);
+                                alert('Fail: The draft was updated successfully but the file could not be uploaded. ' + detailObj.detail);
+                            },
+
+                            error: function(data, errorThrown) {
+                                var detailObj = JSON.parse(data.responseText);
+                                alert('Error: The draft was updated successfully but the file could not be uploaded. ' + detailObj.detail);
+                            },
+
+                        });
+
+                    }
+                    else {
+                        alert('Dataset has been updated, but the file format is Invalid. Please upload an archive file');
+
+                    }
+                    fileToUpload = false;
+                }
+                else {
+                    alert('Draft has been updated successfully.');
+                }
+            }
+            else {
+                var responseStr = '';
+                if(data.responseText) {
+                    
+                    var response = JSON.parse(data.responseText);
+                    for(var prop in response) {
+                        responseStr += templates.datasets[prop].label + ': ' + response[prop] + '\n';
+                    }
+                }
+                
+                alert('There was an error with the update.\n' + responseStr);
+            }
+        });
+    }
+    else {
+        alert('Please enter a unique name for the draft.');
     }
 }
 
