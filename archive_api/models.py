@@ -89,7 +89,7 @@ STATUS_CHOICES = (
 
 QAQC_STATUS_CHOICES = (
     (0, 'None'),
-    (1, 'Preliminary QA-QC'),
+    (1, 'Provisional QA-QC'),
     (2, 'Full QA-QC'),
 )
 
