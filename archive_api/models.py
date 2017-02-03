@@ -140,6 +140,9 @@ class MeasurementVariable(models.Model):
     def __repr__(self):
         return '<Contact {}>'.format(self)
 
+    class Meta:
+        ordering = ('name',)
+
 
 class NGTUser(django.contrib.auth.models.User):
     def __unicode__(self):
@@ -344,6 +347,8 @@ class DataSet(models.Model):
 
     def __repr__(self):
         return '<DataSet {}>'.format(self)
+
+
 
 
 class Author(models.Model):
