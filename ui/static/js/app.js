@@ -1220,7 +1220,7 @@ function createDraft(submissionObj, submitMode) {
                         
                     }
                     else {
-                        alert('Dataset has been created successfully.\nPlease note: The screen will refresh after you click OK.');
+                        alert('Dataset has been created successfully. You can make further changes to it by going to Home > Edit Drafts.\nPlease note: The screen will refresh after you click OK.');
                         $('.js-clear-form').trigger('click');
                         $('.js-clear-file').trigger('click');
                     }
@@ -1313,7 +1313,7 @@ function completeEdit(submissionObj, url, submitMode) {
 
                 }
                 else {
-                    alert('Dataset has been updated, but the file format is Invalid. Please upload an archive file');
+                    alert('Dataset has been updated, but the file format is invalid. Please upload an archive file.');
 
                 }
             }
