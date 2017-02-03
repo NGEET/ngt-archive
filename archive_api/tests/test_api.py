@@ -123,6 +123,7 @@ class DataSetClientTestCase(APITestCase):
         self.login_user("auser")
         response = self.client.get('/api/v1/datasets/2/')
         value = json.loads(response.content.decode('utf-8'))
+        self.maxDiff=None
         self.assertEqual(value,
                          {'modified_date': '2016-10-28T23:01:20.066913Z', 'doi': '', 'start_date': '2016-10-28',
                           'status_comment': '', 'plots': ['http://testserver/api/v1/plots/1/'],
@@ -132,9 +133,9 @@ class DataSetClientTestCase(APITestCase):
                           'doe_funding_contract_numbers': '',
                           'description': 'Qui illud verear persequeris te. Vis probo nihil verear an, zril tamquam philosophia eos te, quo ne fugit movet contentiones. Quas mucius detraxit vis an, vero omnesque petentium sit ea. Id ius inimicus comprehensam.',
                           'submission_date': '2016-10-28', 'qaqc_method_description': '',
-                          'variables': ['http://testserver/api/v1/variables/1/',
-                                        'http://testserver/api/v1/variables/2/',
-                                        'http://testserver/api/v1/variables/3/'], 'archive': None,
+                          'variables': ['http://testserver/api/v1/variables/2/',
+                                        'http://testserver/api/v1/variables/3/',
+                                        'http://testserver/api/v1/variables/1/'], 'archive': None,
                           'cdiac_submission_contact': None, 'reference': '', 'additional_access_information': '',
                           'contact': 'http://testserver/api/v1/people/2/', 'acknowledgement': '',
                           'data_set_id': 'NGT0001',
@@ -408,7 +409,7 @@ select "Edit Drafts" and then click the "Edit" button for NGT0004:FooBarBaz.
         self.assertEqual(value["sites"], ["http://testserver/api/v1/sites/1/"])
         self.assertEqual(value["plots"], ["http://testserver/api/v1/plots/1/"])
         self.assertEqual(value["variables"],
-                         ["http://testserver/api/v1/variables/1/", "http://testserver/api/v1/variables/2/"])
+                         ["http://testserver/api/v1/variables/2/","http://testserver/api/v1/variables/1/"])
 
         #########################################################################
         # A dataset that is not in SUBMITTED status may not be approved
