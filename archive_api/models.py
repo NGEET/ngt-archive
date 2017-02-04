@@ -302,7 +302,7 @@ class DataSet(models.Model):
     cdiac_submission_contact = models.ForeignKey(Person, related_name='+', on_delete=models.DO_NOTHING, blank=True,
                                                  null=True)
 
-    archive = DatasetArchiveField(upload_to=get_upload_path, storage=dataset_archive_storage, null=True)
+    archive = models.FileField(upload_to=get_upload_path, storage=dataset_archive_storage, null=True)
 
     class Meta:
         unique_together = ('ngt_id','version')
