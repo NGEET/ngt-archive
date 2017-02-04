@@ -47,7 +47,7 @@
         "list_name": "plots",
         "required": false,
         "read_only": false,
-        "label": "Dataset Plots",
+        "label": "Dataset Plot",
         "sequence": 6,
         "multiple": true,
         "description": "Plot identification where dataset was collected."
@@ -86,7 +86,7 @@
         "list_name": "variables",
         "required": true,
         "read_only": false,
-        "label": "Dataset Variables",
+        "label": "Dataset Variable",
         "sequence": 10,
         "multiple": true,
         "description": "Measurement Variables in Dataset (select all that apply)."
@@ -179,8 +179,7 @@
         "sequence": 18,
         "multiple": false,
         "label": "Dataset Acknowledgement",
-        "max_length": 88,
-        "description": "Acknowledgement text (88 character limit)."
+        "description": "Acknowledgement text."
     },
     "reference": {
         "type": "string",
@@ -243,7 +242,7 @@
         "type": "field",
         "required": false,
         "read_only": true,
-        "label": "CDIAC Submission Contact",
+        "label": "Submission Contact",
         "sequence": 24
     },
     "url": {
