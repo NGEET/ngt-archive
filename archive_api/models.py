@@ -89,7 +89,7 @@ STATUS_CHOICES = (
 
 QAQC_STATUS_CHOICES = (
     (0, 'None'),
-    (1, 'Preliminary QA-QC'),
+    (1, 'Provisional QA-QC'),
     (2, 'Full QA-QC'),
 )
 
@@ -139,6 +139,9 @@ class MeasurementVariable(models.Model):
 
     def __repr__(self):
         return '<Contact {}>'.format(self)
+
+    class Meta:
+        ordering = ('name',)
 
 
 class NGTUser(django.contrib.auth.models.User):
@@ -299,7 +302,7 @@ class DataSet(models.Model):
     cdiac_submission_contact = models.ForeignKey(Person, related_name='+', on_delete=models.DO_NOTHING, blank=True,
                                                  null=True)
 
-    archive = DatasetArchiveField(upload_to=get_upload_path, storage=dataset_archive_storage, null=True)
+    archive = models.FileField(upload_to=get_upload_path, storage=dataset_archive_storage, null=True)
 
     class Meta:
         unique_together = ('ngt_id','version')
@@ -344,6 +347,8 @@ class DataSet(models.Model):
 
     def __repr__(self):
         return '<DataSet {}>'.format(self)
+
+
 
 
 class Author(models.Model):

@@ -125,7 +125,7 @@
             },
             {
                 "value": "1",
-                "display_name": "Initial QA-QC"
+                "display_name": "Provisional QA-QC"
             },
             {
                 "value": "2",
@@ -134,7 +134,7 @@
         ],
         "sequence": 13,
         "multiple": false,
-        "description": "Choices are None, Initial QA-QC, Final QA-QC."
+        "description": "Choices are None, Provisional QA-QC, Final QA-QC."
     },
     "qaqc_method_description": {
         "type": "string",
