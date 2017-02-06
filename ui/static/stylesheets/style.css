@@ -165,19 +165,23 @@ body #myModal .modal-body .dataset-row {
 body #myModal .modal-body .dataset-row .row .columns.medium-9 {
   float: right;
 }
-/* line 185, ../sass/style.scss */
+/* line 184, ../sass/style.scss */
+body #myModal label[for="data-policy"] {
+  margin-right: 0;
+}
+/* line 189, ../sass/style.scss */
 body #myModal .download-wrapper .button {
   float: right;
 }
-/* line 190, ../sass/style.scss */
+/* line 194, ../sass/style.scss */
 body #myModal .row:first-child {
   margin-bottom: 10px;
 }
-/* line 195, ../sass/style.scss */
+/* line 199, ../sass/style.scss */
 body main {
   background-color: #fff;
 }
-/* line 197, ../sass/style.scss */
+/* line 201, ../sass/style.scss */
 body main article {
   background-color: #fff;
   max-width: 1200px;
@@ -185,22 +189,22 @@ body main article {
   padding: 0 32px 32px;
   box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.22);
 }
-/* line 204, ../sass/style.scss */
+/* line 208, ../sass/style.scss */
 body main article code {
   display: block;
   min-height: 40px;
 }
-/* line 210, ../sass/style.scss */
+/* line 214, ../sass/style.scss */
 body main .logo {
   box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.22);
 }
-/* line 213, ../sass/style.scss */
+/* line 217, ../sass/style.scss */
 body main .logo img {
   max-width: 800px;
   display: block;
   margin: 0 auto;
 }
-/* line 220, ../sass/style.scss */
+/* line 224, ../sass/style.scss */
 body main nav.menu {
   max-width: 1200px;
   margin: 0 auto;
@@ -210,39 +214,39 @@ body main nav.menu {
   padding: 0 20px;
   box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.22);
 }
-/* line 230, ../sass/style.scss */
+/* line 234, ../sass/style.scss */
 body main nav.menu .user {
   margin-right: 32px;
   font-weight: 600;
 }
-/* line 235, ../sass/style.scss */
+/* line 239, ../sass/style.scss */
 body main nav.menu a {
   color: white;
 }
-/* line 238, ../sass/style.scss */
+/* line 242, ../sass/style.scss */
 body main nav.menu a:hover {
   color: white;
 }
-/* line 245, ../sass/style.scss */
+/* line 249, ../sass/style.scss */
 body main .create-dataset-view .param, body main .view-drafts-view .param {
   padding: 5px 10px;
   margin-bottom: 5px;
   overflow-wrap: break-word;
 }
-/* line 251, ../sass/style.scss */
+/* line 255, ../sass/style.scss */
 body main .create-dataset-view .param section:first-of-type .del-param, body main .view-drafts-view .param section:first-of-type .del-param {
   display: none;
 }
-/* line 255, ../sass/style.scss */
+/* line 259, ../sass/style.scss */
 body main .create-dataset-view .param section:first-of-type input, body main .create-dataset-view .param section:first-of-type select, body main .create-dataset-view .param section:first-of-type div, body main .view-drafts-view .param section:first-of-type input, body main .view-drafts-view .param section:first-of-type select, body main .view-drafts-view .param section:first-of-type div {
   width: 100%;
 }
-/* line 261, ../sass/style.scss */
+/* line 265, ../sass/style.scss */
 body main .create-dataset-view .param section input, body main .create-dataset-view .param section select, body main .create-dataset-view .param section div, body main .view-drafts-view .param section input, body main .view-drafts-view .param section select, body main .view-drafts-view .param section div {
   width: 90%;
   display: inline-block;
 }
-/* line 266, ../sass/style.scss */
+/* line 270, ../sass/style.scss */
 body main .create-dataset-view .param section .del-param, body main .view-drafts-view .param section .del-param {
   width: 10%;
   display: inline-block;
@@ -254,24 +258,24 @@ body main .create-dataset-view .param section .del-param, body main .view-drafts
   line-height: 36px;
   color: #fff;
 }
-/* line 277, ../sass/style.scss */
+/* line 281, ../sass/style.scss */
 body main .create-dataset-view .param section .del-param:hover, body main .view-drafts-view .param section .del-param:hover {
   background-color: #5e5e5e;
 }
-/* line 281, ../sass/style.scss */
+/* line 285, ../sass/style.scss */
 body main .create-dataset-view .param section .del-param span, body main .view-drafts-view .param section .del-param span {
   text-align: center;
 }
-/* line 286, ../sass/style.scss */
+/* line 290, ../sass/style.scss */
 body main .create-dataset-view .param section .add-text, body main .view-drafts-view .param section .add-text {
   padding: 0 0.9375rem;
 }
-/* line 289, ../sass/style.scss */
+/* line 293, ../sass/style.scss */
 body main .create-dataset-view .param section .contact-wrapper, body main .view-drafts-view .param section .contact-wrapper {
   float: none;
   width: 100%;
 }
-/* line 296, ../sass/style.scss */
+/* line 300, ../sass/style.scss */
 body main .create-dataset-view .file-drop-zone, body main .view-drafts-view .file-drop-zone {
   text-align: center;
   border: 2px dashed #777;
@@ -280,13 +284,13 @@ body main .create-dataset-view .file-drop-zone, body main .view-drafts-view .fil
   margin-bottom: 2rem;
   margin-top: 2rem;
 }
-/* line 305, ../sass/style.scss */
+/* line 309, ../sass/style.scss */
 body main .create-dataset-view .file-drop-zone .file-exists, body main .view-drafts-view .file-drop-zone .file-exists {
   background: #f59e00;
   color: white;
   padding: 10px 0 15px;
 }
-/* line 311, ../sass/style.scss */
+/* line 315, ../sass/style.scss */
 body main .create-dataset-view .file-drop-zone input[type="file"], body main .view-drafts-view .file-drop-zone input[type="file"] {
   position: absolute;
   left: 0;
@@ -299,71 +303,71 @@ body main .create-dataset-view .file-drop-zone input[type="file"], body main .vi
   transform: translateX(-50%);
   cursor: pointer;
 }
-/* line 324, ../sass/style.scss */
+/* line 328, ../sass/style.scss */
 body main .create-dataset-view .file-drop-zone .file-name-wrapper, body main .view-drafts-view .file-drop-zone .file-name-wrapper {
   margin-top: 20px;
 }
-/* line 328, ../sass/style.scss */
+/* line 332, ../sass/style.scss */
 body main .create-dataset-view .file-drop-zone .file-select-btn, body main .view-drafts-view .file-drop-zone .file-select-btn {
   display: block;
   margin: 0 auto;
 }
-/* line 339, ../sass/style.scss */
+/* line 343, ../sass/style.scss */
 body main .map-view {
   height: 400px;
 }
-/* line 345, ../sass/style.scss */
+/* line 349, ../sass/style.scss */
 body main .sites-container .site-info .title {
   border-bottom: 1px solid #ccc;
 }
-/* line 349, ../sass/style.scss */
+/* line 353, ../sass/style.scss */
 body main .sites-container .site-info .main-params, body main .sites-container .site-info .map-view {
   margin-top: 10px;
 }
-/* line 353, ../sass/style.scss */
+/* line 357, ../sass/style.scss */
 body main .sites-container .site-info .columns {
   padding: 0;
 }
-/* line 357, ../sass/style.scss */
+/* line 361, ../sass/style.scss */
 body main .sites-container .site-info .main-params {
   padding-right: 15px;
 }
-/* line 362, ../sass/style.scss */
+/* line 366, ../sass/style.scss */
 body main .sites-container .site-info .site-desc .columns {
   padding: 0;
 }
-/* line 366, ../sass/style.scss */
+/* line 370, ../sass/style.scss */
 body main .sites-container .site-info .site-desc .plot-title {
   margin-top: 30px;
 }
-/* line 370, ../sass/style.scss */
+/* line 374, ../sass/style.scss */
 body main .sites-container .site-info .site-desc .plot-info {
   margin-top: 10px;
   margin-bottom: 15px;
   padding: 10px 15px 15px;
   background-color: #f8f8f8;
 }
-/* line 377, ../sass/style.scss */
+/* line 381, ../sass/style.scss */
 body main .sites-container .site-info .site-desc .param {
   margin-bottom: 4px;
 }
-/* line 385, ../sass/style.scss */
+/* line 389, ../sass/style.scss */
 body main .all-datasets .dataset {
   margin-bottom: 20px;
 }
-/* line 389, ../sass/style.scss */
+/* line 393, ../sass/style.scss */
 body main .all-datasets .dataset .title:hover {
   color: #006489;
 }
-/* line 399, ../sass/style.scss */
+/* line 403, ../sass/style.scss */
 body main .all-datasets .dataset .title, body main .all-datasets .dataset .desc {
   cursor: pointer;
 }
-/* line 406, ../sass/style.scss */
+/* line 410, ../sass/style.scss */
 body main footer {
   padding-top: 2rem;
 }
-/* line 409, ../sass/style.scss */
+/* line 413, ../sass/style.scss */
 body main footer img {
   max-width: 320px;
 }

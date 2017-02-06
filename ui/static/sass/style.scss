@@ -181,6 +181,10 @@ body {
             }
         }
 
+        label[for="data-policy"] {
+            margin-right: 0;
+        }
+
         .download-wrapper {
             .button {
                 float: right;

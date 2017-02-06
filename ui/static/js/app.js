@@ -242,7 +242,7 @@ $(document).ready(function(){
         console.log(vars);
         dataObj.variables = vars;
         for(var i=0;i<vars.length;i++) {
-            var option = $('<option value="'+ vars[i].url +'" data-index="' + i + '">' + vars[i].name + ': ' + (vars[i].name ?  vars[i].name : 'N/A')+ '</option>');
+            var option = $('<option value="'+ vars[i].url +'" data-index="' + i + '">' + vars[i].name + '</option>');
             $('.js-all-vars').append(option);
         }
     });
@@ -665,53 +665,48 @@ $(document).ready(function(){
 
 
         if(fileToUpload) {
-            //if(fileTypeAllowed(fileToUpload.type) > -1) {
-                var csrftoken = getCookie('csrftoken');
 
-                $.ajaxSetup({
-                    beforeSend: function(xhr, settings) {
-                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                    }
-                });
+            var csrftoken = getCookie('csrftoken');
 
-                var data = {
-                    attachment: fileToUpload
-                };
+            $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            });
 
-                var formData = new FormData();
-                formData.append('attachment', fileToUpload);
+            var data = {
+                attachment: fileToUpload
+            };
 
-                //data = JSON.parse(data);
+            var formData = new FormData();
+            formData.append('attachment', fileToUpload);
 
-                $.ajax({
-                    method: "POST",
-                    contentType: false,
-                    data: formData,
-                    processData: false,
-                    url: url + "upload/",
-                    success: function(data) {
-                        
-                        processEditingForm(submissionObj, url);
-                        
-                        
-                    },
+            //data = JSON.parse(data);
 
-                    fail: function(data) {
-                        var detailObj = JSON.parse(data.responseText);
-                        alert('Fail: ' + detailObj.detail);
-                    },
+            $.ajax({
+                method: "POST",
+                contentType: false,
+                data: formData,
+                processData: false,
+                url: url + "upload/",
+                success: function(data) {
+                    
+                    processEditingForm(submissionObj, url);
+                    
+                    
+                },
 
-                    error: function(data, errorThrown) {
-                        var detailObj = JSON.parse(data.responseText);
-                        alert('Error: ' + detailObj.detail);
-                    },
+                fail: function(data) {
+                    var detailObj = JSON.parse(data.responseText);
+                    alert('Fail: ' + detailObj.detail);
+                },
 
-                });
+                error: function(data, errorThrown) {
+                    var detailObj = JSON.parse(data.responseText);
+                    alert('Error: ' + detailObj.detail);
+                },
 
-            /*}
-            else {
-                alert('The file format is Invalid. Please upload an archive file');
-            }*/
+            });
             
         }
         else if(!$('.js-file-exists').hasClass('hide')) {
@@ -1159,65 +1154,57 @@ function createDraft(submissionObj, submitMode) {
             $.when(createDataset(submissionObj)).done(function(statusObj) {
                 if(statusObj.status == 200 || statusObj.status == '0') {
                     if(fileToUpload) {
-                        //if(fileTypeAllowed(fileToUpload.type) > -1) {
-                            var csrftoken = getCookie('csrftoken');
 
-                            $.ajaxSetup({
-                                beforeSend: function(xhr, settings) {
-                                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                                }
-                            });
+                        var csrftoken = getCookie('csrftoken');
 
-                            var data = {
-                                attachment: fileToUpload
-                            };
+                        $.ajaxSetup({
+                            beforeSend: function(xhr, settings) {
+                                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                            }
+                        });
 
-                            var formData = new FormData();
-                            formData.append('attachment', fileToUpload);
+                        var data = {
+                            attachment: fileToUpload
+                        };
 
-                            //data = JSON.parse(data);
+                        var formData = new FormData();
+                        formData.append('attachment', fileToUpload);
 
-                            $.ajax({
-                                method: "POST",
-                                contentType: false,
-                                data: formData,
-                                processData: false,
-                                url: statusObj.url + "upload/",
-                                success: function(data) {
-                                    if(submitMode) {
-                                        $.when(submitDataset(statusObj.url)).done(function(submitStatus) {
-                                            alert(submitStatus.detail + ' You will not be able to view this dataset until it is approved. \nPlease note: The screen will refresh after you click OK.');
-                                            $('.js-clear-form').trigger('click');
-                                            $('.js-clear-file').trigger('click');
-                                        });
-                                    }
-                                    else {
-                                        alert('Dataset has been created with the attached file.\nPlease note: The screen will refresh after you click OK.');
+                        //data = JSON.parse(data);
+
+                        $.ajax({
+                            method: "POST",
+                            contentType: false,
+                            data: formData,
+                            processData: false,
+                            url: statusObj.url + "upload/",
+                            success: function(data) {
+                                if(submitMode) {
+                                    $.when(submitDataset(statusObj.url)).done(function(submitStatus) {
+                                        alert(submitStatus.detail + ' You will not be able to view this dataset until it is approved. \nPlease note: The screen will refresh after you click OK.');
                                         $('.js-clear-form').trigger('click');
                                         $('.js-clear-file').trigger('click');
-                                    }
-                                    
-                                },
+                                    });
+                                }
+                                else {
+                                    alert('Dataset has been created with the attached file.\nPlease note: The screen will refresh after you click OK.');
+                                    $('.js-clear-form').trigger('click');
+                                    $('.js-clear-file').trigger('click');
+                                }
+                                
+                            },
 
-                                fail: function(data) {
-                                    var detailObj = JSON.parse(data.responseText);
-                                    alert('Fail: The draft was created successfully but the file could not be uploaded. ' + detailObj.detail);
-                                },
+                            fail: function(data) {
+                                var detailObj = JSON.parse(data.responseText);
+                                alert('Fail: The draft was created successfully but the file could not be uploaded. ' + detailObj.detail);
+                            },
 
-                                error: function(data, errorThrown) {
-                                    var detailObj = JSON.parse(data.responseText);
-                                    alert('Error: The draft was created successfully but the file could not be uploaded. ' + detailObj.detail);
-                                },
+                            error: function(data, errorThrown) {
+                                var detailObj = JSON.parse(data.responseText);
+                                alert('Error: The draft was created successfully but the file could not be uploaded. ' + detailObj.detail);
+                            },
 
-                            });
-
-                        /*}
-                        else {
-                            alert('Data set created successfully. However, the archive file was not uploaded. The error is: Invalid file format. Please, go to the "Edit Drafts" menu to make any further changes.');
-                            $('.js-clear-form').trigger('click');
-                            $('.js-clear-file').trigger('click');
-                        }*/
-                        
+                        });
                     }
                     else {
                         alert('Dataset has been created successfully. You can make further changes to it by going to Home > Edit Drafts.\nPlease note: The screen will refresh after you click OK.');
@@ -1260,62 +1247,56 @@ function completeEdit(submissionObj, url, submitMode) {
         if(data.result) {
             
             if(fileToUpload) {
-                //if(fileTypeAllowed(fileToUpload.type) > -1) {
-                    var csrftoken = getCookie('csrftoken');
 
-                    $.ajaxSetup({
-                        beforeSend: function(xhr, settings) {
-                            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                var csrftoken = getCookie('csrftoken');
+
+                $.ajaxSetup({
+                    beforeSend: function(xhr, settings) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                });
+
+                var data = {
+                    attachment: fileToUpload
+                };
+
+                var formData = new FormData();
+                formData.append('attachment', fileToUpload);
+
+                //data = JSON.parse(data);
+
+                $.ajax({
+                    method: "POST",
+                    contentType: false,
+                    data: formData,
+                    processData: false,
+                    url: url + "upload/",
+                    success: function(data) {
+                        /*if(submitMode) {
+                            $.when(submitDataset(status.url)).done(function(submitStatus) {
+                                alert(submitStatus.detail);
+                                $('.js-clear-form').trigger('click');
+                            });
                         }
-                    });
-
-                    var data = {
-                        attachment: fileToUpload
-                    };
-
-                    var formData = new FormData();
-                    formData.append('attachment', fileToUpload);
-
-                    //data = JSON.parse(data);
-
-                    $.ajax({
-                        method: "POST",
-                        contentType: false,
-                        data: formData,
-                        processData: false,
-                        url: url + "upload/",
-                        success: function(data) {
-                            /*if(submitMode) {
-                                $.when(submitDataset(status.url)).done(function(submitStatus) {
-                                    alert(submitStatus.detail);
-                                    $('.js-clear-form').trigger('click');
-                                });
-                            }
-                            else {*/
-                                alert('Draft has been updated with the attached file');
-                                $('.js-clear-file').trigger('click');
-                                
-                            //}
+                        else {*/
+                            alert('Draft has been updated with the attached file');
+                            $('.js-clear-file').trigger('click');
                             
-                        },
+                        //}
+                        
+                    },
 
-                        fail: function(data) {
-                            var detailObj = JSON.parse(data.responseText);
-                            alert('Fail: The draft was updated successfully but the file could not be uploaded. ' + detailObj.detail);
-                        },
+                    fail: function(data) {
+                        var detailObj = JSON.parse(data.responseText);
+                        alert('Fail: The draft was updated successfully but the file could not be uploaded. ' + detailObj.detail);
+                    },
 
-                        error: function(data, errorThrown) {
-                            var detailObj = JSON.parse(data.responseText);
-                            alert('Error: The draft was updated successfully but the file could not be uploaded. ' + detailObj.detail);
-                        },
+                    error: function(data, errorThrown) {
+                        var detailObj = JSON.parse(data.responseText);
+                        alert('Error: The draft was updated successfully but the file could not be uploaded. ' + detailObj.detail);
+                    },
 
-                    });
-
-                /*}
-                else {
-                    alert('Dataset has been updated, but the file format is invalid. Please upload an archive file.');
-
-                }*/
+                });                
             }
             else {
                 alert('Draft has been updated successfully.');
@@ -1442,13 +1423,18 @@ function createEditForm(templateType) {
             paramHTML = $('<div class="js-param ' + (templates[templateType][param].required ? ' required ' : '') + (templates[templateType][param].multiple ? ' multi ' : '') + ' param"></div>').addClass(param)
                         .attr('data-param', param);
             var label = templates[templateType][param].label;
+            
+            if(templates[templateType][param].multiple) {
+                label += '(s)';
+            }
+
             if(templates[templateType][param].required) {
                 label += '<i class="required">*</i>';
             }
 
             var tooltip = '<b class="desc-tooltip js-tooltip" title="' + templates[templateType][param].description + '" > ?</b>';
 
-            paramHTML.append($('<span class="js-display-name display-name"></span>').html(label + '&nbsp;&nbsp;' + tooltip));
+            paramHTML.append($('<span class="js-display-name display-name"></span>').html(label  + '&nbsp;&nbsp;' + tooltip));
             switch(templates[templateType][param].type) {
                 case "string":
                 var tag = $('.js-template' + '.' + templates[templateType][param].type).clone();
