@@ -189,7 +189,7 @@ $(document).ready(function(){
 
         $('.js-all-contacts').append('<option value="add-new" data-index="-1" class="add-new-option"> - Add New Entry - </option>');
         for(var i=0;i<contacts.length;i++) {
-            var option = $('<option value="'+ contacts[i].url +'" data-index="' + i + '">' + contacts[i].first_name + ' ' + contacts[i].last_name + '</option>');
+            var option = $('<option value="'+ contacts[i].url +'" data-index="' + i + '">' + contacts[i].last_name + ', ' + contacts[i].first_name + '</option>');
             $('.js-all-contacts').append(option);
         }
 
@@ -665,7 +665,7 @@ $(document).ready(function(){
 
 
         if(fileToUpload) {
-            if(fileTypeAllowed(fileToUpload.type) > -1) {
+            //if(fileTypeAllowed(fileToUpload.type) > -1) {
                 var csrftoken = getCookie('csrftoken');
 
                 $.ajaxSetup({
@@ -708,10 +708,10 @@ $(document).ready(function(){
 
                 });
 
-            }
+            /*}
             else {
                 alert('The file format is Invalid. Please upload an archive file');
-            }
+            }*/
             
         }
         else if(!$('.js-file-exists').hasClass('hide')) {
@@ -1159,7 +1159,7 @@ function createDraft(submissionObj, submitMode) {
             $.when(createDataset(submissionObj)).done(function(statusObj) {
                 if(statusObj.status == 200 || statusObj.status == '0') {
                     if(fileToUpload) {
-                        if(fileTypeAllowed(fileToUpload.type) > -1) {
+                        //if(fileTypeAllowed(fileToUpload.type) > -1) {
                             var csrftoken = getCookie('csrftoken');
 
                             $.ajaxSetup({
@@ -1211,12 +1211,12 @@ function createDraft(submissionObj, submitMode) {
 
                             });
 
-                        }
+                        /*}
                         else {
                             alert('Data set created successfully. However, the archive file was not uploaded. The error is: Invalid file format. Please, go to the "Edit Drafts" menu to make any further changes.');
                             $('.js-clear-form').trigger('click');
                             $('.js-clear-file').trigger('click');
-                        }
+                        }*/
                         
                     }
                     else {
@@ -1260,7 +1260,7 @@ function completeEdit(submissionObj, url, submitMode) {
         if(data.result) {
             
             if(fileToUpload) {
-                if(fileTypeAllowed(fileToUpload.type) > -1) {
+                //if(fileTypeAllowed(fileToUpload.type) > -1) {
                     var csrftoken = getCookie('csrftoken');
 
                     $.ajaxSetup({
@@ -1311,11 +1311,11 @@ function completeEdit(submissionObj, url, submitMode) {
 
                     });
 
-                }
+                /*}
                 else {
                     alert('Dataset has been updated, but the file format is invalid. Please upload an archive file.');
 
-                }
+                }*/
             }
             else {
                 alert('Draft has been updated successfully.');
