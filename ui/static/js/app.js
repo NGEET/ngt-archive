@@ -333,7 +333,7 @@ $(document).ready(function(){
 
         for(var i=0; i< dataObj.plots.length; i++) {
             if(siteStr.indexOf(dataObj.plots[i].site) != -1) {
-                $('.js-all-plots option[value="' + dataObj.plots[i].url +'"]').removeClass('hide');
+                $('.js-all-plots option[value="' + dataObj.plots[i].url +'"]').prop('disabled', false);
                 if(!plotTitle) {
                     plotTitle = true;
                     $('.js-params').append('<h4 class="plot-title">Plots in ' + dataObj.sites[index].site_id + '</h4>');
@@ -366,7 +366,9 @@ $(document).ready(function(){
                 $('.js-params').append(plotContainer);
             }
             else {
-                $('.js-all-plots option[value="' + dataObj.plots[i].url +'"]').addClass('hide');
+                $('.js-all-plots option[value="' + dataObj.plots[i].url +'"]').each(function() {
+                    $(this).prop('disabled', true);
+                })
             }
 
         }
@@ -491,10 +493,14 @@ $(document).ready(function(){
 
         for(var i=0; i< dataObj.plots.length; i++) {
             if(siteStr.indexOf(dataObj.plots[i].site) != -1) {
-                $('.js-all-plots option[value="' + dataObj.plots[i].url +'"]').removeClass('hide');
+                $('.js-all-plots option[value="' + dataObj.plots[i].url +'"]').each(function() {
+                    $(this).prop('disabled', false);  
+                });
             }
             else {
-                $('.js-all-plots option[value="' + dataObj.plots[i].url +'"]').addClass('hide');
+                $('.js-all-plots option[value="' + dataObj.plots[i].url +'"]').each(function() {
+                    $(this).addClass('disabled', true);
+                });
             }
         }
         //$('.js-edit-form .js-file-drop-zone').addClass('hide');

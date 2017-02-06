@@ -66,7 +66,7 @@
         "type": "string",
         "required": true,
         "read_only": false,
-        "label": "Dataset Originating Institution",
+        "label": "Dataset Originating Institution(s)",
         "sequence": 8,
         "multiple": false,
         "description": "Name of the organization that performed the research or issued the dataset. Separate multiple organizations with a semicolon and a space."
@@ -158,7 +158,7 @@
         "type": "string",
         "required": true,
         "read_only": false,
-        "label": "Dataset Funding organizations",
+        "label": "Dataset Funding organization(s)",
         "sequence": 16,
         "multiple": false,
         "description": "Identify the agencies and offices that funded the work in the dataset separate multiple funders with a comma and a space."
