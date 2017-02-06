@@ -513,7 +513,12 @@ $(document).ready(function(){
     });
 
     $(document).on('focus',".datepicker_recurring_start", function(){
-        $(this).datepicker();
+        $(this).datepicker({
+            dateFormat: "yy-mm-dd",
+            changeMonth: true,
+            changeYear: true,
+            yearRange: "c-20:c+10"
+        });
     });
 
     $('body').on('change', '.js-file-input-btn', function(event) {
@@ -1521,7 +1526,10 @@ function createEditForm(templateType) {
     editForm.find('.js-false-label').attr('for', 'false-' + n);
 
     $('.js-input.date').datepicker({
-        dateFormat: "yy-mm-dd"
+        dateFormat: "yy-mm-dd",
+        changeMonth: true,
+        changeYear: true,
+        yearRange: "c-20:c+10"
     });
     $( document ).tooltip();
 }
