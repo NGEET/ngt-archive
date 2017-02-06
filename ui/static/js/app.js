@@ -665,6 +665,7 @@ $(document).ready(function(){
 
 
         if(fileToUpload) {
+
             var csrftoken = getCookie('csrftoken');
 
             $.ajaxSetup({
@@ -1153,6 +1154,7 @@ function createDraft(submissionObj, submitMode) {
             $.when(createDataset(submissionObj)).done(function(statusObj) {
                 if(statusObj.status == 200 || statusObj.status == '0') {
                     if(fileToUpload) {
+
                         var csrftoken = getCookie('csrftoken');
 
                         $.ajaxSetup({
@@ -1246,6 +1248,7 @@ function completeEdit(submissionObj, url, submitMode) {
         if(data.result) {
             
             if(fileToUpload) {
+
                 var csrftoken = getCookie('csrftoken');
 
                 $.ajaxSetup({
@@ -1289,7 +1292,12 @@ function completeEdit(submissionObj, url, submitMode) {
                         alert('Fail: The draft was updated successfully but the file could not be uploaded. ' + detailObj.detail);
                     },
 
-                }
+                    error: function(data, errorThrown) {
+                        var detailObj = JSON.parse(data.responseText);
+                        alert('Error: The draft was updated successfully but the file could not be uploaded. ' + detailObj.detail);
+                    },
+
+                });                
 
             }
             else {
