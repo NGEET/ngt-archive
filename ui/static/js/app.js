@@ -1203,6 +1203,7 @@ function createDraft(submissionObj, submitMode) {
                             },
 
                         });
+
                     }
                     else {
                         alert('Dataset has been created successfully. You can make further changes to it by going to Home > Edit Drafts.\nPlease note: The screen will refresh after you click OK.');
@@ -1288,18 +1289,8 @@ function completeEdit(submissionObj, url, submitMode) {
                         alert('Fail: The draft was updated successfully but the file could not be uploaded. ' + detailObj.detail);
                     },
 
-<<<<<<< 0a159ecc8db09cade4d312d2c006f628e70d84f8
                 }
-                else {
-                    alert('Dataset has been updated, but the file format is invalid. Please upload an archive file.');
-=======
-                    error: function(data, errorThrown) {
-                        var detailObj = JSON.parse(data.responseText);
-                        alert('Error: The draft was updated successfully but the file could not be uploaded. ' + detailObj.detail);
-                    },
->>>>>>> Closes #215. Closes #230. Closes #223. Closes #181. Closes #218
 
-                });                
             }
             else {
                 alert('Draft has been updated successfully.');
