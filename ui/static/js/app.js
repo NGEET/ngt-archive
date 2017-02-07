@@ -419,13 +419,15 @@ $(document).ready(function(){
         event.stopPropagation();
         var files = event.originalEvent.dataTransfer.files;
         //$('.js-file-input-btn').val(files[0]);
-        if(files.length == 1) {
-            $('.js-file-name').html(files[0].name);
-            $('.js-file-name-wrapper').removeClass('hide');
-            fileToUpload = files[0];
-        }
-        else {
-            alert('Only one file is allowed per dataset. If you have multiple files, please compress them into a single file and upload it.');
+        if(files) {
+            if(files.length == 1) {
+                $('.js-file-name').html(files[0].name);
+                $('.js-file-name-wrapper').removeClass('hide');
+                fileToUpload = files[0];
+            }
+            else if(files.length > 1) {
+                alert('Only one file is allowed per dataset. If you have multiple files, please compress them into a single file and upload it.');
+            }
         }
     });
 
@@ -532,12 +534,14 @@ $(document).ready(function(){
     });
 
     $('body').on('change', '.js-file-input-btn', function(event) {
-        event.preventDefault();
-        event.stopPropagation();
-        var dataFile = this.files[0];
-        fileToUpload = this.files[0];
-        $('.js-file-name').html(this.files[0].name);
-        $('.js-file-name-wrapper').removeClass('hide');
+        if(this.files) {
+            event.preventDefault();
+            event.stopPropagation();
+            var dataFile = this.files[0];
+            fileToUpload = this.files[0];
+            $('.js-file-name').html(this.files[0].name);
+            $('.js-file-name-wrapper').removeClass('hide');
+        }
         //console.log(this);
     });    
     
@@ -819,7 +823,7 @@ $(document).ready(function(){
             }
 
             else {
-                alert('Please enter first and last names for all new contacts/authors');
+                alert('Please enter first and last names, and email for all new contacts/authors');
             }
         }
         else {
@@ -926,7 +930,7 @@ $(document).ready(function(){
             }
 
             else {
-                alert('Please enter first and last names for all new contacts/authors');
+                alert('Please enter first and last names, and email for all new contacts/authors');
             }
             
         }
