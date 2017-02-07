@@ -181,6 +181,10 @@ body {
             }
         }
 
+        label[for="data-policy"] {
+            margin-right: 0;
+        }
+
         .download-wrapper {
             .button {
                 float: right;
@@ -257,6 +261,10 @@ body {
                     }
                 }
 
+                button {
+                    margin-top: -8px;
+                }
+
                 section {
                     input, select, div {
                         width: 90%;
@@ -311,17 +319,22 @@ body {
                 input[type="file"] {
                         position: absolute;
                         left: 0;
-                        width: 100px;
-                        top: 96px;
+                        width: 100%;
+                        top: 0px;
                         left: 50%;
-                        padding-bottom: 32px;
+                        padding-bottom: 4px;
                         opacity: 0;
                         z-index: 2;
                         transform: translateX(-50%);
                         cursor: pointer;
                 }
 
+                .file-name-wrapper {
+                    margin-top: 20px;
+                }
+
                 .file-select-btn {
+                        position: relative;
                         display: block;
                         margin: 0 auto;
                 }
