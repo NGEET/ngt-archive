@@ -187,9 +187,9 @@ $(document).ready(function(){
         dataObj.contacts = contacts;
         var contactList = [];
 
-        $('.js-all-contacts').append('<option value="add-new" data-index="-1" class="add-new-option"> - Add New Entry - </option>');
+        $('.js-all-contacts').append('<option value="add-new" data-index="-1" class="add-new-option"> - Add Collaborator - </option>');
         for(var i=0;i<contacts.length;i++) {
-            var option = $('<option value="'+ contacts[i].url +'" data-index="' + i + '">' + contacts[i].first_name + ' ' + contacts[i].last_name + '</option>');
+            var option = $('<option value="'+ contacts[i].url +'" data-index="' + i + '">' + contacts[i].last_name + ', ' + contacts[i].first_name + '</option>');
             $('.js-all-contacts').append(option);
         }
 
@@ -242,7 +242,7 @@ $(document).ready(function(){
         console.log(vars);
         dataObj.variables = vars;
         for(var i=0;i<vars.length;i++) {
-            var option = $('<option value="'+ vars[i].url +'" data-index="' + i + '">' + vars[i].name + ': ' + (vars[i].name ?  vars[i].name : 'N/A')+ '</option>');
+            var option = $('<option value="'+ vars[i].url +'" data-index="' + i + '">' + vars[i].name + '</option>');
             $('.js-all-vars').append(option);
         }
     });
@@ -252,7 +252,7 @@ $(document).ready(function(){
         dataObj.plots = plots;
         $('.js-all-plots').append('<option value="">None</option>');
         for(var i=0;i<plots.length;i++) {
-            var option = $('<option class="hide" value="'+ plots[i].url +'" data-index="' + i + '">' + (plots[i].plot_id ? plots[i].plot_id : 'N/A') + ': ' + plots[i].name + '</option>');
+            var option = $('<option value="'+ plots[i].url +'" data-index="' + i + ' " disabled>' + (plots[i].plot_id ? plots[i].plot_id : 'N/A') + ': ' + plots[i].name + '</option>');
             $('.js-all-plots').append(option);
         }
     });
@@ -333,7 +333,7 @@ $(document).ready(function(){
 
         for(var i=0; i< dataObj.plots.length; i++) {
             if(siteStr.indexOf(dataObj.plots[i].site) != -1) {
-                $('.js-all-plots option[value="' + dataObj.plots[i].url +'"]').removeClass('hide');
+                $('.js-all-plots option[value="' + dataObj.plots[i].url +'"]').prop('disabled', false);
                 if(!plotTitle) {
                     plotTitle = true;
                     $('.js-params').append('<h4 class="plot-title">Plots in ' + dataObj.sites[index].site_id + '</h4>');
@@ -366,18 +366,20 @@ $(document).ready(function(){
                 $('.js-params').append(plotContainer);
             }
             else {
-                $('.js-all-plots option[value="' + dataObj.plots[i].url +'"]').addClass('hide');
+                $('.js-all-plots option[value="' + dataObj.plots[i].url +'"]').each(function() {
+                    $(this).prop('disabled', true);
+                })
             }
 
         }
 
     });
 
-    $('body').on('click', '.js-param.plots', function() {
+    /*$('body').on('click', '.js-param.plots', function() {
         if($('.js-all-plots').attr('disabled')) {
             alert('Please select a site first.');
         }
-    });
+    });*/
 
     $('body').on('change', '.js-all-plots', function() {
         //console.log('here');
@@ -417,10 +419,16 @@ $(document).ready(function(){
         event.stopPropagation();
         var files = event.originalEvent.dataTransfer.files;
         //$('.js-file-input-btn').val(files[0]);
-        $('.js-file-name').html(files[0].name);
-        $('.js-file-name-wrapper').removeClass('hide');
-        fileToUpload = files[0];
-        console.log(files[0]);
+        if(files) {
+            if(files.length == 1) {
+                $('.js-file-name').html(files[0].name);
+                $('.js-file-name-wrapper').removeClass('hide');
+                fileToUpload = files[0];
+            }
+            else if(files.length > 1) {
+                alert('Only one file is allowed per dataset. If you have multiple files, please compress them into a single file and upload it.');
+            }
+        }
     });
 
     $('body').on('click', '.js-clear-file-btn', function(event) {
@@ -491,10 +499,14 @@ $(document).ready(function(){
 
         for(var i=0; i< dataObj.plots.length; i++) {
             if(siteStr.indexOf(dataObj.plots[i].site) != -1) {
-                $('.js-all-plots option[value="' + dataObj.plots[i].url +'"]').removeClass('hide');
+                $('.js-all-plots option[value="' + dataObj.plots[i].url +'"]').each(function() {
+                    $(this).prop('disabled', false);  
+                });
             }
             else {
-                $('.js-all-plots option[value="' + dataObj.plots[i].url +'"]').addClass('hide');
+                $('.js-all-plots option[value="' + dataObj.plots[i].url +'"]').each(function() {
+                    $(this).addClass('disabled', true);
+                });
             }
         }
         //$('.js-edit-form .js-file-drop-zone').addClass('hide');
@@ -513,16 +525,23 @@ $(document).ready(function(){
     });
 
     $(document).on('focus',".datepicker_recurring_start", function(){
-        $(this).datepicker();
+        $(this).datepicker({
+            dateFormat: "yy-mm-dd",
+            changeMonth: true,
+            changeYear: true,
+            yearRange: "c-20:c+10"
+        });
     });
 
     $('body').on('change', '.js-file-input-btn', function(event) {
-        event.preventDefault();
-        event.stopPropagation();
-        var dataFile = this.files[0];
-        fileToUpload = this.files[0];
-        $('.js-file-name').html(this.files[0].name);
-        $('.js-file-name-wrapper').removeClass('hide');
+        if(this.files) {
+            event.preventDefault();
+            event.stopPropagation();
+            var dataFile = this.files[0];
+            fileToUpload = this.files[0];
+            $('.js-file-name').html(this.files[0].name);
+            $('.js-file-name-wrapper').removeClass('hide');
+        }
         //console.log(this);
     });    
     
@@ -665,53 +684,48 @@ $(document).ready(function(){
 
 
         if(fileToUpload) {
-            if(fileTypeAllowed(fileToUpload.type) > -1) {
-                var csrftoken = getCookie('csrftoken');
 
-                $.ajaxSetup({
-                    beforeSend: function(xhr, settings) {
-                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                    }
-                });
+            var csrftoken = getCookie('csrftoken');
 
-                var data = {
-                    attachment: fileToUpload
-                };
+            $.ajaxSetup({
+                beforeSend: function(xhr, settings) {
+                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                }
+            });
 
-                var formData = new FormData();
-                formData.append('attachment', fileToUpload);
+            var data = {
+                attachment: fileToUpload
+            };
 
-                //data = JSON.parse(data);
+            var formData = new FormData();
+            formData.append('attachment', fileToUpload);
 
-                $.ajax({
-                    method: "POST",
-                    contentType: false,
-                    data: formData,
-                    processData: false,
-                    url: url + "upload/",
-                    success: function(data) {
-                        
-                        processEditingForm(submissionObj, url);
-                        
-                        
-                    },
+            //data = JSON.parse(data);
 
-                    fail: function(data) {
-                        var detailObj = JSON.parse(data.responseText);
-                        alert('Fail: ' + detailObj.detail);
-                    },
+            $.ajax({
+                method: "POST",
+                contentType: false,
+                data: formData,
+                processData: false,
+                url: url + "upload/",
+                success: function(data) {
+                    
+                    processEditingForm(submissionObj, url);
+                    
+                    
+                },
 
-                    error: function(data, errorThrown) {
-                        var detailObj = JSON.parse(data.responseText);
-                        alert('Error: ' + detailObj.detail);
-                    },
+                fail: function(data) {
+                    var detailObj = JSON.parse(data.responseText);
+                    alert('Fail: ' + detailObj.detail);
+                },
 
-                });
+                error: function(data, errorThrown) {
+                    var detailObj = JSON.parse(data.responseText);
+                    alert('Error: ' + detailObj.detail);
+                },
 
-            }
-            else {
-                alert('The file format is Invalid. Please upload an archive file');
-            }
+            });
             
         }
         else if(!$('.js-file-exists').hasClass('hide')) {
@@ -743,7 +757,7 @@ $(document).ready(function(){
             
 
             $('.js-new-value.js-input').each(function(index) {
-                if(!$(this).find('.js-first-name').val() || !$(this).find('.js-last-name').val()) {
+                if(!$(this).find('.js-first-name').val() || !$(this).find('.js-last-name').val() || !$(this).find('.js-email').val()) {
                     validEntries = false;
                 }
             });
@@ -756,8 +770,9 @@ $(document).ready(function(){
 
                     var fname = $(this).find('.js-first-name').val();
                     var lname = $(this).find('.js-last-name').val();
+                    var email = $(this).find('.js-email').val();
 
-                    $.when(createContact(fname, lname, '', '')).done(function(status) {
+                    $.when(createContact(fname, lname, email, '')).done(function(status) {
                         //console.log(status);
                         if(status.url && entryCount == $('.js-new-value.js-input').length - 1) {
                             if(!submissionObj[param] && param == 'authors') {
@@ -799,7 +814,7 @@ $(document).ready(function(){
                                     responseStr += prop + ': ' + response[prop] + '\n';
                                 }
                             }
-                            alert('There was a problem creating the new entry.\n' + responseStr);
+                            alert('There was a problem creating the new collaborator.\n' + responseStr);
                             return;
                         }
                     });
@@ -808,7 +823,7 @@ $(document).ready(function(){
             }
 
             else {
-                alert('Please enter first and last names for all new contacts/authors');
+                alert('Please enter first and last names, and email for all new contacts/authors');
             }
         }
         else {
@@ -915,7 +930,7 @@ $(document).ready(function(){
             }
 
             else {
-                alert('Please enter first and last names for all new contacts/authors');
+                alert('Please enter first and last names, and email for all new contacts/authors');
             }
             
         }
@@ -1159,65 +1174,58 @@ function createDraft(submissionObj, submitMode) {
             $.when(createDataset(submissionObj)).done(function(statusObj) {
                 if(statusObj.status == 200 || statusObj.status == '0') {
                     if(fileToUpload) {
-                        if(fileTypeAllowed(fileToUpload.type) > -1) {
-                            var csrftoken = getCookie('csrftoken');
 
-                            $.ajaxSetup({
-                                beforeSend: function(xhr, settings) {
-                                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                                }
-                            });
+                        var csrftoken = getCookie('csrftoken');
 
-                            var data = {
-                                attachment: fileToUpload
-                            };
+                        $.ajaxSetup({
+                            beforeSend: function(xhr, settings) {
+                                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                            }
+                        });
 
-                            var formData = new FormData();
-                            formData.append('attachment', fileToUpload);
+                        var data = {
+                            attachment: fileToUpload
+                        };
 
-                            //data = JSON.parse(data);
+                        var formData = new FormData();
+                        formData.append('attachment', fileToUpload);
 
-                            $.ajax({
-                                method: "POST",
-                                contentType: false,
-                                data: formData,
-                                processData: false,
-                                url: statusObj.url + "upload/",
-                                success: function(data) {
-                                    if(submitMode) {
-                                        $.when(submitDataset(statusObj.url)).done(function(submitStatus) {
-                                            alert(submitStatus.detail + ' You will not be able to view this dataset until it is approved. \nPlease note: The screen will refresh after you click OK.');
-                                            $('.js-clear-form').trigger('click');
-                                            $('.js-clear-file').trigger('click');
-                                        });
-                                    }
-                                    else {
-                                        alert('Dataset has been created with the attached file.\nPlease note: The screen will refresh after you click OK.');
+                        //data = JSON.parse(data);
+
+                        $.ajax({
+                            method: "POST",
+                            contentType: false,
+                            data: formData,
+                            processData: false,
+                            url: statusObj.url + "upload/",
+                            success: function(data) {
+                                if(submitMode) {
+                                    $.when(submitDataset(statusObj.url)).done(function(submitStatus) {
+                                        alert(submitStatus.detail + ' You will not be able to view this dataset until it is approved. \nPlease note: The screen will refresh after you click OK.');
                                         $('.js-clear-form').trigger('click');
                                         $('.js-clear-file').trigger('click');
-                                    }
-                                    
-                                },
+                                    });
+                                }
+                                else {
+                                    alert('Dataset has been created with the attached file.\nPlease note: The screen will refresh after you click OK.');
+                                    $('.js-clear-form').trigger('click');
+                                    $('.js-clear-file').trigger('click');
+                                }
+                                
+                            },
 
-                                fail: function(data) {
-                                    var detailObj = JSON.parse(data.responseText);
-                                    alert('Fail: The draft was created successfully but the file could not be uploaded. ' + detailObj.detail);
-                                },
+                            fail: function(data) {
+                                var detailObj = JSON.parse(data.responseText);
+                                alert('Fail: The draft was created successfully but the file could not be uploaded. ' + detailObj.detail);
+                            },
 
-                                error: function(data, errorThrown) {
-                                    var detailObj = JSON.parse(data.responseText);
-                                    alert('Error: The draft was created successfully but the file could not be uploaded. ' + detailObj.detail);
-                                },
+                            error: function(data, errorThrown) {
+                                var detailObj = JSON.parse(data.responseText);
+                                alert('Error: The draft was created successfully but the file could not be uploaded. ' + detailObj.detail);
+                            },
 
-                            });
+                        });
 
-                        }
-                        else {
-                            alert('Data set created successfully. However, the archive file was not uploaded. The error is: Invalid file format. Please, go to the "Edit Drafts" menu to make any further changes.');
-                            $('.js-clear-form').trigger('click');
-                            $('.js-clear-file').trigger('click');
-                        }
-                        
                     }
                     else {
                         alert('Dataset has been created successfully. You can make further changes to it by going to Home > Edit Drafts.\nPlease note: The screen will refresh after you click OK.');
@@ -1260,62 +1268,57 @@ function completeEdit(submissionObj, url, submitMode) {
         if(data.result) {
             
             if(fileToUpload) {
-                if(fileTypeAllowed(fileToUpload.type) > -1) {
-                    var csrftoken = getCookie('csrftoken');
 
-                    $.ajaxSetup({
-                        beforeSend: function(xhr, settings) {
-                            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                var csrftoken = getCookie('csrftoken');
+
+                $.ajaxSetup({
+                    beforeSend: function(xhr, settings) {
+                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                    }
+                });
+
+                var data = {
+                    attachment: fileToUpload
+                };
+
+                var formData = new FormData();
+                formData.append('attachment', fileToUpload);
+
+                //data = JSON.parse(data);
+
+                $.ajax({
+                    method: "POST",
+                    contentType: false,
+                    data: formData,
+                    processData: false,
+                    url: url + "upload/",
+                    success: function(data) {
+                        /*if(submitMode) {
+                            $.when(submitDataset(status.url)).done(function(submitStatus) {
+                                alert(submitStatus.detail);
+                                $('.js-clear-form').trigger('click');
+                            });
                         }
-                    });
-
-                    var data = {
-                        attachment: fileToUpload
-                    };
-
-                    var formData = new FormData();
-                    formData.append('attachment', fileToUpload);
-
-                    //data = JSON.parse(data);
-
-                    $.ajax({
-                        method: "POST",
-                        contentType: false,
-                        data: formData,
-                        processData: false,
-                        url: url + "upload/",
-                        success: function(data) {
-                            /*if(submitMode) {
-                                $.when(submitDataset(status.url)).done(function(submitStatus) {
-                                    alert(submitStatus.detail);
-                                    $('.js-clear-form').trigger('click');
-                                });
-                            }
-                            else {*/
-                                alert('Draft has been updated with the attached file');
-                                $('.js-clear-file').trigger('click');
-                                
-                            //}
+                        else {*/
+                            alert('Draft has been updated with the attached file');
+                            $('.js-clear-file').trigger('click');
                             
-                        },
+                        //}
+                        
+                    },
 
-                        fail: function(data) {
-                            var detailObj = JSON.parse(data.responseText);
-                            alert('Fail: The draft was updated successfully but the file could not be uploaded. ' + detailObj.detail);
-                        },
+                    fail: function(data) {
+                        var detailObj = JSON.parse(data.responseText);
+                        alert('Fail: The draft was updated successfully but the file could not be uploaded. ' + detailObj.detail);
+                    },
 
-                        error: function(data, errorThrown) {
-                            var detailObj = JSON.parse(data.responseText);
-                            alert('Error: The draft was updated successfully but the file could not be uploaded. ' + detailObj.detail);
-                        },
+                    error: function(data, errorThrown) {
+                        var detailObj = JSON.parse(data.responseText);
+                        alert('Error: The draft was updated successfully but the file could not be uploaded. ' + detailObj.detail);
+                    },
 
-                    });
+                });                
 
-                }
-                else {
-                    alert('Dataset has been updated, but the file format is invalid. Please upload an archive file.');
-
-                }
             }
             else {
                 alert('Draft has been updated successfully.');
@@ -1442,13 +1445,18 @@ function createEditForm(templateType) {
             paramHTML = $('<div class="js-param ' + (templates[templateType][param].required ? ' required ' : '') + (templates[templateType][param].multiple ? ' multi ' : '') + ' param"></div>').addClass(param)
                         .attr('data-param', param);
             var label = templates[templateType][param].label;
+            
+            if(templates[templateType][param].multiple) {
+                label += '(s)';
+            }
+
             if(templates[templateType][param].required) {
                 label += '<i class="required">*</i>';
             }
 
             var tooltip = '<b class="desc-tooltip js-tooltip" title="' + templates[templateType][param].description + '" > ?</b>';
 
-            paramHTML.append($('<span class="js-display-name display-name"></span>').html(label + '&nbsp;&nbsp;' + tooltip));
+            paramHTML.append($('<span class="js-display-name display-name"></span>').html(label  + '&nbsp;&nbsp;' + tooltip));
             switch(templates[templateType][param].type) {
                 case "string":
                 var tag = $('.js-template' + '.' + templates[templateType][param].type).clone();
@@ -1533,9 +1541,16 @@ function createEditForm(templateType) {
     editForm.find('.js-false-label').attr('for', 'false-' + n);
 
     $('.js-input.date').datepicker({
-        dateFormat: "yy-mm-dd"
+        dateFormat: "yy-mm-dd",
+        changeMonth: true,
+        changeYear: true,
+        yearRange: "c-20:c+10"
     });
+    
     $( document ).tooltip();
+    $('.ui-tooltip').each(function() {
+        $(this).html($(this).attr('title'));
+    });
 }
 
 function getCookie(name) {
@@ -1743,7 +1758,7 @@ function processEditingForm(submissionObj, url) {
         }
 
         else {
-            alert('Please enter first and last names for all new contacts/authors.');
+            alert('Please enter first and last names, and email for all new contacts/authors.');
         }
     }
     else {
