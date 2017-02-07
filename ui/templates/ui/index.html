@@ -166,9 +166,10 @@
                 </section>
                 <section class="js-view create-dataset-view hide" data-view="create">
                     <h4>Create a Dataset</h4>
+                    <p><i class="required">*</i><i> = Required for submission</i></p>
                     <form class="js-create-form dataset small-12 medium-9">
                         <div class="small-12 medium-9 small-centered medium-centered file-drop-zone js-file-drop-zone">
-                            <h5>Drop data file here</h5>
+                            <h5>Drop data file here <i class="required">*</i></h5>
                             <h6 class="hide file-exists js-file-exists"><b>Note:</b> This dataset already contains a file. If you upload a new file, you will be replacing the existing file.</h6>
                             <!--h6>Allowed file types: Compressed/archive files (zip, rar, 7z...). To download free zipping software, click <a href="http://www.7-zip.org/" target="_blank">here</a></h6-->
                             <input type="file" name="" class="js-file-input-btn">
@@ -246,6 +247,9 @@
                             <div class="columns small-6 contact-wrapper">
                                 <input class="js-last-name" type="text" name="" placeholder="Last name">
                             </div>
+                            <div class="columns small-6 contact-wrapper">
+                                <input class="js-email" type="text" name="" placeholder="Email">
+                            </div>
                         </div>
                     </section>
                     <!--section class="contact-section js-contact-section hide js-ref-list" data-list="contacts">
@@ -253,7 +257,7 @@
                         <input type="hidden" class="js-input js-contact-url">
                     </section-->
                     <section class="plot-section js-site-section hide js-ref-list js-multi-container" data-list="plots">
-                        <select class="js-all-plots all-plots js-input " disabled>
+                        <select class="js-all-plots all-plots js-input ">
                             <option selected disabled value="">Select plot</option>                        
                         </select>
                         <!--div class="js-plot-info hide">
