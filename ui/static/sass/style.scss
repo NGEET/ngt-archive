@@ -319,10 +319,10 @@ body {
                 input[type="file"] {
                         position: absolute;
                         left: 0;
-                        width: 100px;
-                        top: 96px;
+                        width: 100%;
+                        top: 0px;
                         left: 50%;
-                        padding-bottom: 32px;
+                        padding-bottom: 4px;
                         opacity: 0;
                         z-index: 2;
                         transform: translateX(-50%);
@@ -334,6 +334,7 @@ body {
                 }
 
                 .file-select-btn {
+                        position: relative;
                         display: block;
                         margin: 0 auto;
                 }
