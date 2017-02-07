@@ -187,7 +187,7 @@ $(document).ready(function(){
         dataObj.contacts = contacts;
         var contactList = [];
 
-        $('.js-all-contacts').append('<option value="add-new" data-index="-1" class="add-new-option"> - Add New Entry - </option>');
+        $('.js-all-contacts').append('<option value="add-new" data-index="-1" class="add-new-option"> - Add Collaborator - </option>');
         for(var i=0;i<contacts.length;i++) {
             var option = $('<option value="'+ contacts[i].url +'" data-index="' + i + '">' + contacts[i].last_name + ', ' + contacts[i].first_name + '</option>');
             $('.js-all-contacts').append(option);
@@ -252,7 +252,7 @@ $(document).ready(function(){
         dataObj.plots = plots;
         $('.js-all-plots').append('<option value="">None</option>');
         for(var i=0;i<plots.length;i++) {
-            var option = $('<option class="hide" value="'+ plots[i].url +'" data-index="' + i + '">' + (plots[i].plot_id ? plots[i].plot_id : 'N/A') + ': ' + plots[i].name + '</option>');
+            var option = $('<option value="'+ plots[i].url +'" data-index="' + i + ' " disabled>' + (plots[i].plot_id ? plots[i].plot_id : 'N/A') + ': ' + plots[i].name + '</option>');
             $('.js-all-plots').append(option);
         }
     });
@@ -375,11 +375,11 @@ $(document).ready(function(){
 
     });
 
-    $('body').on('click', '.js-param.plots', function() {
+    /*$('body').on('click', '.js-param.plots', function() {
         if($('.js-all-plots').attr('disabled')) {
             alert('Please select a site first.');
         }
-    });
+    });*/
 
     $('body').on('change', '.js-all-plots', function() {
         //console.log('here');
@@ -419,10 +419,14 @@ $(document).ready(function(){
         event.stopPropagation();
         var files = event.originalEvent.dataTransfer.files;
         //$('.js-file-input-btn').val(files[0]);
-        $('.js-file-name').html(files[0].name);
-        $('.js-file-name-wrapper').removeClass('hide');
-        fileToUpload = files[0];
-        console.log(files[0]);
+        if(files.length == 1) {
+            $('.js-file-name').html(files[0].name);
+            $('.js-file-name-wrapper').removeClass('hide');
+            fileToUpload = files[0];
+        }
+        else {
+            alert('Only one file is allowed per dataset. If you have multiple files, please compress them into a single file and upload it.');
+        }
     });
 
     $('body').on('click', '.js-clear-file-btn', function(event) {
@@ -749,7 +753,7 @@ $(document).ready(function(){
             
 
             $('.js-new-value.js-input').each(function(index) {
-                if(!$(this).find('.js-first-name').val() || !$(this).find('.js-last-name').val()) {
+                if(!$(this).find('.js-first-name').val() || !$(this).find('.js-last-name').val() || !$(this).find('.js-email').val()) {
                     validEntries = false;
                 }
             });
@@ -762,8 +766,9 @@ $(document).ready(function(){
 
                     var fname = $(this).find('.js-first-name').val();
                     var lname = $(this).find('.js-last-name').val();
+                    var email = $(this).find('.js-email').val();
 
-                    $.when(createContact(fname, lname, '', '')).done(function(status) {
+                    $.when(createContact(fname, lname, email, '')).done(function(status) {
                         //console.log(status);
                         if(status.url && entryCount == $('.js-new-value.js-input').length - 1) {
                             if(!submissionObj[param] && param == 'authors') {
@@ -1537,7 +1542,11 @@ function createEditForm(templateType) {
         changeYear: true,
         yearRange: "c-20:c+10"
     });
+    
     $( document ).tooltip();
+    $('.ui-tooltip').each(function() {
+        $(this).html($(this).attr('title'));
+    });
 }
 
 function getCookie(name) {
