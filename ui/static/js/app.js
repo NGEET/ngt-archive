@@ -810,7 +810,7 @@ $(document).ready(function(){
                                     responseStr += prop + ': ' + response[prop] + '\n';
                                 }
                             }
-                            alert('There was a problem creating the new entry.\n' + responseStr);
+                            alert('There was a problem creating the new collaborator.\n' + responseStr);
                             return;
                         }
                     });
@@ -1754,7 +1754,7 @@ function processEditingForm(submissionObj, url) {
         }
 
         else {
-            alert('Please enter first and last names for all new contacts/authors.');
+            alert('Please enter first and last names, and email for all new contacts/authors.');
         }
     }
     else {
