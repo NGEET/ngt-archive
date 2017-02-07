@@ -823,7 +823,7 @@ $(document).ready(function(){
             }
 
             else {
-                alert('Please enter first and last names, and email for all new contacts/authors');
+                alert('Please enter first and last names, and email address for all new contacts/authors');
             }
         }
         else {
