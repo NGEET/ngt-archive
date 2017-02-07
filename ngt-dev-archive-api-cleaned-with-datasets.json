@@ -1,0 +1,2975 @@
+[
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 1,
+    "fields": {
+      "name": "Temperature"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 2,
+    "fields": {
+      "name": "Precipitation"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 3,
+    "fields": {
+      "name": "Surface humidity"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 4,
+    "fields": {
+      "name": "Solar Radiation (net)"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 5,
+    "fields": {
+      "name": "Longwave radiation"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 6,
+    "fields": {
+      "name": "Shortwave radiation"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 7,
+    "fields": {
+      "name": "Wind speed"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 8,
+    "fields": {
+      "name": "Wind direction"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 9,
+    "fields": {
+      "name": "Barometric pressure"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 10,
+    "fields": {
+      "name": "Net Ecosystem Exchange (NEE)"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 11,
+    "fields": {
+      "name": "Latent Heat"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 12,
+    "fields": {
+      "name": "Sensible Heat"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 13,
+    "fields": {
+      "name": "Sapflow"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 14,
+    "fields": {
+      "name": "Sapwood Area"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 15,
+    "fields": {
+      "name": "Sapwood PV Parameters"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 16,
+    "fields": {
+      "name": "Demography"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 17,
+    "fields": {
+      "name": "Dendrometry"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 18,
+    "fields": {
+      "name": "Leaf water potential"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 19,
+    "fields": {
+      "name": "Leaf temperature"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 20,
+    "fields": {
+      "name": "Leaf gas exchange"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 21,
+    "fields": {
+      "name": "Leaf photosynthetic traits (Vcmax and Jmax)"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 22,
+    "fields": {
+      "name": "Leaf area index"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 23,
+    "fields": {
+      "name": "Leaf phenology"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 24,
+    "fields": {
+      "name": "Leaf spectra"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 25,
+    "fields": {
+      "name": "Leaf chemistry"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 26,
+    "fields": {
+      "name": "VOC measurements"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 27,
+    "fields": {
+      "name": "Non structural Carbohydrates (NSC)"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 28,
+    "fields": {
+      "name": "Native conductivity"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 29,
+    "fields": {
+      "name": "Water table depth"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 30,
+    "fields": {
+      "name": "Soil order"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 31,
+    "fields": {
+      "name": "Soil water content"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 32,
+    "fields": {
+      "name": "Soil temperature"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 33,
+    "fields": {
+      "name": "Soil chemistry"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 34,
+    "fields": {
+      "name": "Soil texture"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 35,
+    "fields": {
+      "name": "Soil matric potential"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 36,
+    "fields": {
+      "name": "Other soil physical properties"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 37,
+    "fields": {
+      "name": "Soil gas flux"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 38,
+    "fields": {
+      "name": "Soil sorption coefficients"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 39,
+    "fields": {
+      "name": "Root data"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 40,
+    "fields": {
+      "name": "Remote sensing"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 41,
+    "fields": {
+      "name": "Other"
+    }
+  },
+  {
+    "model": "archive_api.measurementvariable",
+    "pk": 42,
+    "fields": {
+      "name": "Leaf pressure-volume (PV) parameters"
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 1,
+    "fields": {
+      "first_name": "John",
+      "last_name": "Grace",
+      "email": "jgrace@ad.ac.uk",
+      "institution_affiliation": "University of Edinburgh (FLUXNET)",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 2,
+    "fields": {
+      "first_name": "Niro",
+      "last_name": "Higuchi",
+      "email": "niro@inpa.gov.br",
+      "institution_affiliation": "INPA",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 3,
+    "fields": {
+      "first_name": "Alessandro",
+      "last_name": "Araujo",
+      "email": "alessandro.araujo@gmail.com",
+      "institution_affiliation": "EMBRAPA",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 6,
+    "fields": {
+      "first_name": "Scott",
+      "last_name": "Saleska",
+      "email": "saleska@email.arizona.edu",
+      "institution_affiliation": "Univeristy of Arizona",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 7,
+    "fields": {
+      "first_name": "Georgianne",
+      "last_name": "Moore",
+      "email": "gwmoore@tamu.edu",
+      "institution_affiliation": "Texas A&M University",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 8,
+    "fields": {
+      "first_name": "Heidi",
+      "last_name": "Asbjornsen",
+      "email": "heidi.asbjornsen@unh.edu",
+      "institution_affiliation": "University of New Hampshire",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 10,
+    "fields": {
+      "first_name": "Joseph",
+      "last_name": "Wright",
+      "email": "WRIGHTJ@si.edu",
+      "institution_affiliation": "STRI",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 11,
+    "fields": {
+      "first_name": "Argelis",
+      "last_name": "Ruiz",
+      "email": "ruiza@si.edu",
+      "institution_affiliation": "STRI",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 12,
+    "fields": {
+      "first_name": "Grizelle",
+      "last_name": "Gonz\u00e1lez",
+      "email": "ggonzalez@fs.fed.us",
+      "institution_affiliation": "IITF",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 14,
+    "fields": {
+      "first_name": "Damien",
+      "last_name": "Bonal",
+      "email": "bonal@nancy.inra.fr",
+      "institution_affiliation": "INRA",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 15,
+    "fields": {
+      "first_name": "Gretchen",
+      "last_name": "Miller",
+      "email": "gmiller@civil.tamu.edu",
+      "institution_affiliation": "TAMU",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 16,
+    "fields": {
+      "first_name": "Kolby",
+      "last_name": "Jardine",
+      "email": "kjjardine@lbl.gov",
+      "institution_affiliation": "LBNL",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 18,
+    "fields": {
+      "first_name": "Charuleka",
+      "last_name": "Varadharajan",
+      "email": "cvaradharajan@lbl.gov",
+      "institution_affiliation": "LBNL",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 19,
+    "fields": {
+      "first_name": "Richard",
+      "last_name": "Norby",
+      "email": "rjn@ornl.gov",
+      "institution_affiliation": "ORNL",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 20,
+    "fields": {
+      "first_name": "Carter",
+      "last_name": "Berry",
+      "email": "zcberry@gmail.com",
+      "institution_affiliation": "University of New Hampshire",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 21,
+    "fields": {
+      "first_name": "Jeffrey",
+      "last_name": "Warren",
+      "email": "warrenjm@ornl.gov",
+      "institution_affiliation": "ORNL",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 22,
+    "fields": {
+      "first_name": "Terezinha",
+      "last_name": "Monteiro",
+      "email": "hidrolba.mao@inpa.gov.br",
+      "institution_affiliation": "INPA",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 23,
+    "fields": {
+      "first_name": "Jitendra",
+      "last_name": "Kumar",
+      "email": "jkumar@climatemodeling.org",
+      "institution_affiliation": "",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 24,
+    "fields": {
+      "first_name": "Forrest",
+      "last_name": "Hoffman",
+      "email": "",
+      "institution_affiliation": "",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 25,
+    "fields": {
+      "first_name": "William",
+      "last_name": "Hargrove",
+      "email": "",
+      "institution_affiliation": "",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 26,
+    "fields": {
+      "first_name": "Nathan",
+      "last_name": "Collier",
+      "email": "",
+      "institution_affiliation": "",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 29,
+    "fields": {
+      "first_name": "Kim",
+      "last_name": "Ely",
+      "email": "kely@bnl.gov",
+      "institution_affiliation": "",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 30,
+    "fields": {
+      "first_name": "Shawn",
+      "last_name": "Serbin",
+      "email": "",
+      "institution_affiliation": "",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 31,
+    "fields": {
+      "first_name": "Alistair",
+      "last_name": "Rogers",
+      "email": "arogers@bnl.gov",
+      "institution_affiliation": "",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 32,
+    "fields": {
+      "first_name": "Jin",
+      "last_name": "Wu",
+      "email": "",
+      "institution_affiliation": "",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 33,
+    "fields": {
+      "first_name": "Turin",
+      "last_name": "Dickman",
+      "email": "",
+      "institution_affiliation": "",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 34,
+    "fields": {
+      "first_name": "Brett",
+      "last_name": "Wolfe",
+      "email": "btwolfe@gmail.com",
+      "institution_affiliation": "",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 35,
+    "fields": {
+      "first_name": "Adam",
+      "last_name": "Collins",
+      "email": "",
+      "institution_affiliation": "",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 36,
+    "fields": {
+      "first_name": "Charlotte",
+      "last_name": "Grossiord",
+      "email": "",
+      "institution_affiliation": "",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 37,
+    "fields": {
+      "first_name": "Nate",
+      "last_name": "McDowell",
+      "email": "",
+      "institution_affiliation": "",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 38,
+    "fields": {
+      "first_name": "Sean",
+      "last_name": "Michaletz",
+      "email": "",
+      "institution_affiliation": "",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 39,
+    "fields": {
+      "first_name": "Luiza",
+      "last_name": "Aparecido",
+      "email": "luizamariabr2014@tamu.edu",
+      "institution_affiliation": "",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 40,
+    "fields": {
+      "first_name": "Bruno",
+      "last_name": "Gimenez",
+      "email": "",
+      "institution_affiliation": "",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 41,
+    "fields": {
+      "first_name": "Kleber",
+      "last_name": "Campos",
+      "email": "",
+      "institution_affiliation": "",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 42,
+    "fields": {
+      "first_name": "Jeff",
+      "last_name": "Chambers",
+      "email": "",
+      "institution_affiliation": "",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 44,
+    "fields": {
+      "first_name": "Matteo",
+      "last_name": "Detto",
+      "email": "",
+      "institution_affiliation": "",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 46,
+    "fields": {
+      "first_name": "Stuart",
+      "last_name": "Davies",
+      "email": "",
+      "institution_affiliation": "",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 48,
+    "fields": {
+      "first_name": "Tana",
+      "last_name": "Wood",
+      "email": "tanawood@fs.fed.us",
+      "institution_affiliation": "",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 49,
+    "fields": {
+      "first_name": "Bradley",
+      "last_name": "Christoffersen",
+      "email": "bradleychristo@gmail.com",
+      "institution_affiliation": "",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 51,
+    "fields": {
+      "first_name": "Lianhong",
+      "last_name": "Gu",
+      "email": "",
+      "institution_affiliation": "",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 52,
+    "fields": {
+      "first_name": "Ivan",
+      "last_name": "Haworth",
+      "email": "",
+      "institution_affiliation": "",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 53,
+    "fields": {
+      "first_name": "Anna",
+      "last_name": "Jensen",
+      "email": "",
+      "institution_affiliation": "",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 54,
+    "fields": {
+      "first_name": "Benjamin",
+      "last_name": "Turner",
+      "email": "",
+      "institution_affiliation": "",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 55,
+    "fields": {
+      "first_name": "Anthony",
+      "last_name": "Walker",
+      "email": "",
+      "institution_affiliation": "",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 56,
+    "fields": {
+      "first_name": "David",
+      "last_name": "Weston",
+      "email": "",
+      "institution_affiliation": "",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 57,
+    "fields": {
+      "first_name": "Klaus",
+      "last_name": "Winter",
+      "email": "",
+      "institution_affiliation": "",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 59,
+    "fields": {
+      "first_name": "Robinson",
+      "last_name": "Negron-Juarez",
+      "email": "",
+      "institution_affiliation": "",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 60,
+    "fields": {
+      "first_name": "Jennifer",
+      "last_name": "Holm",
+      "email": "",
+      "institution_affiliation": "",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 64,
+    "fields": {
+      "first_name": "Coordinating",
+      "last_name": "Research",
+      "email": "",
+      "institution_affiliation": "",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.person",
+    "pk": 65,
+    "fields": {
+      "first_name": "D\u00eanis",
+      "last_name": "Nascimento",
+      "email": "denis.nascimento@inpa.gov.br",
+      "institution_affiliation": "",
+      "user_role": null,
+      "user": null
+    }
+  },
+  {
+    "model": "archive_api.site",
+    "pk": 1,
+    "fields": {
+      "site_id": "BR-Cax",
+      "name": "Caxiuana Forest-Almeirim",
+      "description": "The FLONA Caxiuan\u00e3 is an undisturbed and protected national rainforest near the mouth of the Amazon River in the state of Par\u00e1, near Almeirim. It is located some 350 km west of Bel\u00e9m on the Par\u00e1 River and just east of the Xingu River. The 33,000 ha ecological station lies within this larger national forest (200,000 ha). (FLUXNET) The tower is positioned on a plateau lying 6km to the south-east of the Baia de Caxiuan\u00e3. The aluminum tower is 51.5m tall, 2 m x 1 m wide. (Carswell et al 2002).",
+      "country": "Brazil",
+      "state_province": "Para",
+      "utc_offset": -3,
+      "location_latitude": -1.71972,
+      "location_longitude": -51.45889,
+      "location_elevation": "60",
+      "location_map_url": "https://drive.google.com/open?id=0B5RSGI83Og11ZS16VTc0dTdldEE",
+      "location_bounding_box_ul_latitude": null,
+      "location_bounding_box_ul_longitude": null,
+      "location_bounding_box_lr_latitude": null,
+      "location_bounding_box_lr_longitude": null,
+      "site_urls": "http://fluxnet.ornl.gov/site/63",
+      "submission": 18,
+      "submission_date": null,
+      "contacts": [],
+      "pis": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "archive_api.site",
+    "pk": 2,
+    "fields": {
+      "site_id": "BR-Ma2",
+      "name": "Manaus - ZF2 K34",
+      "description": "Eddy covariance site established in 1999 on kilometer 34 of the ZF2 highway. It was later expanded into atmospheric and soil sampling hub. It is a 1.5 m \u00d7 2.5 m-section aluminum tower, 50 m tall, on a medium sized plateau (Araujo et al., 2002).  This site includes three hydrology station deployments encompassing igarapes of first, second, and third order. The installed equipment includes: rainfall - rain gauges installed along the microbasin; groundwater level - measured with piezometers along the gradient and along first and third order sections; soil moisture - measured with neutron probes along the gradient and with TDRs in a well 15m deep; stream water level - pressure transducers submerged in the igarapes.",
+      "country": "Brazil",
+      "state_province": "Amazonas",
+      "utc_offset": -4,
+      "location_latitude": -2.609075,
+      "location_longitude": -60.2093,
+      "location_elevation": "130",
+      "location_map_url": "https://drive.google.com/open?id=0B5RSGI83Og11UTdKRGxwNjBGU0k",
+      "location_bounding_box_ul_latitude": -2.53620714167988,
+      "location_bounding_box_ul_longitude": -60.3013006742039,
+      "location_bounding_box_lr_latitude": -2.66141683051511,
+      "location_bounding_box_lr_longitude": -60.1328053328774,
+      "site_urls": "http://lba2.inpa.gov.br/index.php/estacoes-de-pesquisa/zf-2-manaus",
+      "submission": 16,
+      "submission_date": null,
+      "contacts": [
+        3,
+        22
+      ],
+      "pis": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "archive_api.site",
+    "pk": 3,
+    "fields": {
+      "site_id": "XX-PTr",
+      "name": "Pantropical site",
+      "description": "This site is to be used for datasets collected from across the tropics.",
+      "country": "NONE",
+      "state_province": "",
+      "utc_offset": null,
+      "location_latitude": 0.0,
+      "location_longitude": 0.0,
+      "location_elevation": "",
+      "location_map_url": "https://drive.google.com/open?id=0B5RSGI83Og11dFZodnJDSjJ0eFpqaXhmSVYtTVd3VGJzSVhn",
+      "location_bounding_box_ul_latitude": null,
+      "location_bounding_box_ul_longitude": null,
+      "location_bounding_box_lr_latitude": null,
+      "location_bounding_box_lr_longitude": null,
+      "site_urls": "",
+      "submission": 18,
+      "submission_date": null,
+      "contacts": [],
+      "pis": []
+    }
+  },
+  {
+    "model": "archive_api.site",
+    "pk": 4,
+    "fields": {
+      "site_id": "GF-Guy",
+      "name": "Guyaflux",
+      "description": "The Guyaflux site in located at the Paracou exprimental forest. It is located in French Guiana, in the coastal plains (15 km from ocean). It is covered by tropical rainforest. It has not been undisturbed since centuries, but native people may have wandered there and use wood 400-600 y ago.",
+      "country": "French Guiana",
+      "state_province": "",
+      "utc_offset": -3,
+      "location_latitude": 5.279544,
+      "location_longitude": -52.927037,
+      "location_elevation": "40",
+      "location_map_url": "https://drive.google.com/open?id=0B5RSGI83Og11UFJFZEhuYVczV2s",
+      "location_bounding_box_ul_latitude": 5.279544,
+      "location_bounding_box_ul_longitude": -52.927037,
+      "location_bounding_box_lr_latitude": 5.276421,
+      "location_bounding_box_lr_longitude": -52.919462,
+      "site_urls": "in construction",
+      "submission": 14,
+      "submission_date": null,
+      "contacts": [
+        14
+      ],
+      "pis": [
+        14
+      ]
+    }
+  },
+  {
+    "model": "archive_api.site",
+    "pk": 5,
+    "fields": {
+      "site_id": "BR-Sa1",
+      "name": "Santarem - K67",
+      "description": "The LBA Tapajos KM67 Mature Forest site is located in the Tapajos National Forest, a 450,000 ha closed-canopy upland forest in Amazonian Brazil. Bounded by the Tapajos River in the west and highway BR-163 to the east, the tower is located on a flat plateau (or planalto) that extends up to 150 km to the north, south, and east. Within the confines of the National Forest, anthropogenic disturbances are limited to a few small hunting trails. The surrounding stand is classified as \u2018primary\u2019 or \"old-growth\" predominantly by its uneven age distribution, emergent trees, numerous epiphytes, and abundant large logs. In 2007, falling trees hit the tower guy wires rendering all instrumentation in-operational. After a complete restoration, tower measurements resumed in August of 2008. (Pyle et al., 2008, Hutyra et al., 2007, Saleska et al., 2003 -- copied from FLUXNET) The tower is 64m tall. (FLUXNET)",
+      "country": "Brazil",
+      "state_province": "Para",
+      "utc_offset": -3,
+      "location_latitude": -2.8556,
+      "location_longitude": -54.95936667,
+      "location_elevation": "199.87",
+      "location_map_url": "https://drive.google.com/open?id=0B5RSGI83Og11TjFIY19UVnBISTQ",
+      "location_bounding_box_ul_latitude": null,
+      "location_bounding_box_ul_longitude": null,
+      "location_bounding_box_lr_latitude": null,
+      "location_bounding_box_lr_longitude": null,
+      "site_urls": "http://fluxnet.ornl.gov/site/83",
+      "submission": 6,
+      "submission_date": null,
+      "contacts": [
+        6
+      ],
+      "pis": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "archive_api.site",
+    "pk": 6,
+    "fields": {
+      "site_id": "CR-SoC",
+      "name": "Soltis Center",
+      "description": "The Texas A&M Soltis Center is located on TAMU property adjoining the Monteverde Preserve on the Caribbean slope. The site is considered \"transitional montane rain forest\" with 4200 mm annual rainfall. It is situated in the Penas Blancas watershed. http://soltiscentercostarica.tamu.edu/The site hosts a 42 m tower equipped with micrometerological instrumentation. Around the tower, a 2200 m\u00b2 plot was designated, containing 151 heterogeneous tree individuals ranging from 6 to >200 cm in diameter and 6 to 40 m in height. The steep terrain is volcanic in origin and has an average slope of 45 degrees.",
+      "country": "Costa Rica",
+      "state_province": "Alajuela",
+      "utc_offset": -6,
+      "location_latitude": 10.383478,
+      "location_longitude": -84.621256,
+      "location_elevation": "550",
+      "location_map_url": "https://drive.google.com/open?id=0B5RSGI83Og11cWdNZGNLOUcwam8",
+      "location_bounding_box_ul_latitude": 10.395439,
+      "location_bounding_box_ul_longitude": -84.635015,
+      "location_bounding_box_lr_latitude": 10.380126,
+      "location_bounding_box_lr_longitude": -84.615466,
+      "site_urls": "http://soltiscentercostarica.tamu.edu,  http://climatemodeling.science.energy.gov/projects/improving-land-surface-modeling-evapotranspiration-processes-tropical-forests",
+      "submission": 7,
+      "submission_date": null,
+      "contacts": [
+        7
+      ],
+      "pis": [
+        7
+      ]
+    }
+  },
+  {
+    "model": "archive_api.site",
+    "pk": 7,
+    "fields": {
+      "site_id": "MX-CHI",
+      "name": "CHILES",
+      "description": "The sites are located in two different secondary forest plots in TMCF in the state of Veracruz, Mexico. The sites each have climate, sap flow, community censuses, and some other hydrological measurements at various points in the last 2 years",
+      "country": "Mexico",
+      "state_province": "Veracruz",
+      "utc_offset": -6,
+      "location_latitude": 19.534527,
+      "location_longitude": -96.9885,
+      "location_elevation": "1412-1489",
+      "location_map_url": "https://drive.google.com/open?id=0B5RSGI83Og11a0E1V2VRS3lacG9CRVc5aGdfMkFfS2RPeEhZ",
+      "location_bounding_box_ul_latitude": 19.543687,
+      "location_bounding_box_ul_longitude": -96.994076,
+      "location_bounding_box_lr_latitude": 19.510855,
+      "location_bounding_box_lr_longitude": -96.976968,
+      "site_urls": "",
+      "submission": 20,
+      "submission_date": null,
+      "contacts": [
+        20
+      ],
+      "pis": [
+        8
+      ]
+    }
+  },
+  {
+    "model": "archive_api.site",
+    "pk": 8,
+    "fields": {
+      "site_id": "PA-BCI",
+      "name": "Barro Colorado Island (BCI)",
+      "description": "Barro Colorado Island (BCI) is a humid tropical forest with high biodiversity, around 300 species in 50 ha. The climate has a sever dty season from and of December to end of April. Several decidous species drop their leaves during this period. Lianas are very abundant in this forest accounting up to 30% of leaf area. (AMERIFLUX)Barro Colorado Island (BCI), a 1,560-hectare island, is STRI's primary site for the study of lowland moist tropical forests. Together with five adjacent peninsulas, BCI forms the 5,600-hectare Barro Colorado Nature Monument (BCNM), which is located in the middle of the Panama Canal. Established in April 17, 1923, BCNM and has been administered by the Smithsonian since 1946 (STRI CTFS).",
+      "country": "Panama",
+      "state_province": "Panama",
+      "utc_offset": -5,
+      "location_latitude": 9.154,
+      "location_longitude": -79.848,
+      "location_elevation": "150m",
+      "location_map_url": "https://drive.google.com/open?id=0B5RSGI83Og11bHNQczJHUkEtclk",
+      "location_bounding_box_ul_latitude": 9.177125,
+      "location_bounding_box_ul_longitude": -79.87,
+      "location_bounding_box_lr_latitude": 9.130659,
+      "location_bounding_box_lr_longitude": -79.82,
+      "site_urls": "http://fluxnet.ornl.gov/site/4247, http://ameriflux-data.lbl.gov:8080/SitePages/siteInfo.aspx?PA-Bar,http://biogeodb.stri.si.edu/physical_monitoring/research/barrocolorado",
+      "submission": 10,
+      "submission_date": null,
+      "contacts": [
+        10
+      ],
+      "pis": [
+        10
+      ]
+    }
+  },
+  {
+    "model": "archive_api.site",
+    "pk": 9,
+    "fields": {
+      "site_id": "PA-PNM",
+      "name": "Parque Natural Metropolitano",
+      "description": "Established in 1992, the PNM canopy crane is located at the North Western edge of Panama City, at the eastern edge of the Parque Natural Metropolitano (Metropolitan Nature Park) and is surrounded by 80-year old, lowland semi- deciduous forest. The crane is 50 meters tall with a radius of 51 meters, and can reach approximately 80 species of trees and lianas. (Paton 2015 PNM Met report)",
+      "country": "Panama",
+      "state_province": "Panama",
+      "utc_offset": -5,
+      "location_latitude": 8.99441,
+      "location_longitude": -79.543,
+      "location_elevation": "",
+      "location_map_url": "https://drive.google.com/open?id=0B5RSGI83Og11dW1mUWJLYkVxZms",
+      "location_bounding_box_ul_latitude": 9.003006,
+      "location_bounding_box_ul_longitude": -79.557448,
+      "location_bounding_box_lr_latitude": 8.978675,
+      "location_bounding_box_lr_longitude": -79.536377,
+      "site_urls": "http://biogeodb.stri.si.edu/physical_monitoring/research/metpark,http://www.stri.si.edu/english/research/facilities/terrestrial/cranes/cranes_and_sites.php",
+      "submission": 10,
+      "submission_date": null,
+      "contacts": [
+        11
+      ],
+      "pis": [
+        10
+      ]
+    }
+  },
+  {
+    "model": "archive_api.site",
+    "pk": 11,
+    "fields": {
+      "site_id": "PA-SLZ",
+      "name": "Bosque Protector San Lorenzo (Fort Sherman)",
+      "description": "Established in 1997, the FTS canopy crane is located approximately 11km South West from the city of Colon, in the middle theParque Natural San Lorenzo (formerly known as FortSherman) and is surrounded by 300-year old, low-landtropical rainforest. The crane is 52 meters tall with aradius of 54 meters, and can reach approximately 240species of trees and lianas. (Paton 2015 FTS Met report)",
+      "country": "Panama",
+      "state_province": "Colon",
+      "utc_offset": -5,
+      "location_latitude": 9.280996,
+      "location_longitude": -79.978162,
+      "location_elevation": "120",
+      "location_map_url": "https://drive.google.com/open?id=0B5RSGI83Og11emozM0lEZ2Z4Mzg",
+      "location_bounding_box_ul_latitude": 9.309974,
+      "location_bounding_box_ul_longitude": -80.060054,
+      "location_bounding_box_lr_latitude": 9.167649,
+      "location_bounding_box_lr_longitude": -79.928904,
+      "site_urls": "http://biogeodb.stri.si.edu/physical_monitoring/research/sherman,http://www.stri.si.edu/english/research/facilities/terrestrial/cranes/cranes_and_sites.php",
+      "submission": 10,
+      "submission_date": null,
+      "contacts": [
+        11
+      ],
+      "pis": [
+        10
+      ]
+    }
+  },
+  {
+    "model": "archive_api.site",
+    "pk": 12,
+    "fields": {
+      "site_id": "PR-EVR",
+      "name": "El Verde Ridge",
+      "description": "The El Verde research site is located within El Yunque National Forest in Puerto Rico, surrounded by tropical rainforests representative of many Caribbean island ecosystems. Research at El Verde focuses on forest dynamics, stream ecology and hydrology, and ecosystem processes. Most research is conducted by the Luquillo Long-Term Ecological Research (LTER) program and by scientists from the University of Puerto Rico and universities in mainland US.",
+      "country": "Puerto Rico",
+      "state_province": "Rio Grande",
+      "utc_offset": -4,
+      "location_latitude": 18.321333,
+      "location_longitude": -65.817944,
+      "location_elevation": "",
+      "location_map_url": "https://drive.google.com/open?id=0B5RSGI83Og11MEZ2VzE0dEZMSTA",
+      "location_bounding_box_ul_latitude": null,
+      "location_bounding_box_ul_longitude": null,
+      "location_bounding_box_lr_latitude": null,
+      "location_bounding_box_lr_longitude": null,
+      "site_urls": "http://evfs.ites.upr.edu/",
+      "submission": 19,
+      "submission_date": null,
+      "contacts": [
+        12
+      ],
+      "pis": []
+    }
+  },
+  {
+    "model": "archive_api.site",
+    "pk": 13,
+    "fields": {
+      "site_id": "PR-EVV",
+      "name": "El Verde Valley",
+      "description": "The El Verde research site is located within El Yunque National Forest in Puerto Rico, surrounded by tropical rainforests representative of many Caribbean island ecosystems. Research at El Verde focuses on forest dynamics, stream ecology and hydrology, and ecosystem processes. Most research is conducted by the Luquillo Long-Term Ecological Research (LTER) program and by scientists from the University of Puerto Rico and universities in mainland US.",
+      "country": "Puerto Rico",
+      "state_province": "Rio Grande",
+      "utc_offset": -4,
+      "location_latitude": 18.321333,
+      "location_longitude": -65.817528,
+      "location_elevation": "",
+      "location_map_url": "https://drive.google.com/open?id=0B5RSGI83Og11cjhqWEdJU01xRTg",
+      "location_bounding_box_ul_latitude": null,
+      "location_bounding_box_ul_longitude": null,
+      "location_bounding_box_lr_latitude": null,
+      "location_bounding_box_lr_longitude": null,
+      "site_urls": "http://evfs.ites.upr.edu/",
+      "submission": 19,
+      "submission_date": null,
+      "contacts": [
+        12
+      ],
+      "pis": []
+    }
+  },
+  {
+    "model": "archive_api.site",
+    "pk": 14,
+    "fields": {
+      "site_id": "PR-Ica",
+      "name": "Icacos",
+      "description": "Alongside road 191 toward an instrumented river on the south side of the Luquillo Mountains, underline with a granodirite bedrock.",
+      "country": "Puerto Rico",
+      "state_province": "Naguabo",
+      "utc_offset": -4,
+      "location_latitude": 18.289528,
+      "location_longitude": -65.791722,
+      "location_elevation": "",
+      "location_map_url": "https://drive.google.com/open?id=0B5RSGI83Og11aGxEc3JLQUF0am8",
+      "location_bounding_box_ul_latitude": null,
+      "location_bounding_box_ul_longitude": null,
+      "location_bounding_box_lr_latitude": null,
+      "location_bounding_box_lr_longitude": null,
+      "site_urls": "http://criticalzone.org/luquillo/infrastructure/field-area/rio-icacos/",
+      "submission": 19,
+      "submission_date": null,
+      "contacts": [
+        12
+      ],
+      "pis": []
+    }
+  },
+  {
+    "model": "archive_api.site",
+    "pk": 15,
+    "fields": {
+      "site_id": "PR-Sab",
+      "name": "Sabana",
+      "description": "The Sabana Field Research Station is in the Rio Sabana watershed, contains a monitoring station on the Rio Sabana, and is a short drive from the Bisley Long-term Ecological Research watersheds. (CZO website). The TRACE experiment (http://forestwarming.org) is located at Sabana.",
+      "country": "Puerto Rico",
+      "state_province": "Luquillo",
+      "utc_offset": -4,
+      "location_latitude": 18.324913,
+      "location_longitude": -65.729763,
+      "location_elevation": "104-128",
+      "location_map_url": "https://drive.google.com/open?id=0B5RSGI83Og11WjVCSnhIM1I2TlE",
+      "location_bounding_box_ul_latitude": 18.32485,
+      "location_bounding_box_ul_longitude": -65.73085,
+      "location_bounding_box_lr_latitude": 18.32435,
+      "location_bounding_box_lr_longitude": -65.73035,
+      "site_urls": "http://criticalzone.org/luquillo/infrastructure/field-area/sabana-field-station1/#settingResearch",
+      "submission": 19,
+      "submission_date": null,
+      "contacts": [
+        12
+      ],
+      "pis": []
+    }
+  },
+  {
+    "model": "archive_api.plot",
+    "pk": 1,
+    "fields": {
+      "plot_id": "BCI-50ha",
+      "name": "Barro Colorado Island - 50 hectare plot",
+      "description": "The BCI plot is a 50 hectare, 1000 m x 500 m plot; the long axis lies east-west.  (http://www.ctfs.si.edu/data/pdf/CTFSbook_PDF/BCIchapt.pdf)",
+      "size": "50",
+      "location_elevation": "",
+      "location_kmz_url": "https://drive.google.com/open?id=0B5RSGI83Og11anIzcUF3X0xHX2s",
+      "pi": 10,
+      "site": 8,
+      "submission": 18,
+      "submission_date": null
+    }
+  },
+  {
+    "model": "archive_api.plot",
+    "pk": 2,
+    "fields": {
+      "plot_id": "GF-1",
+      "name": "Plot 1 of Guyaflux",
+      "description": "Plot 1 is 70 * 70 m, tophill, 20 m from fluxtower",
+      "size": "0.49",
+      "location_elevation": "40",
+      "location_kmz_url": "",
+      "pi": 14,
+      "site": 4,
+      "submission": 14,
+      "submission_date": null
+    }
+  },
+  {
+    "model": "archive_api.plot",
+    "pk": 3,
+    "fields": {
+      "plot_id": "MX-BSJ",
+      "name": "CHILE - BSJ",
+      "description": "The sites are located in two different secondary forest plots in TMCF in the state of Veracruz, Mexico. The sites each have climate, sap flow, community censuses, and some other hydrological measurements at various points in the last 2 years",
+      "size": "m",
+      "location_elevation": "1412",
+      "location_kmz_url": "https://drive.google.com/open?id=0B5RSGI83Og11a0E1V2VRS3lacG9CRVc5aGdfMkFfS2RPeEhZ",
+      "pi": 8,
+      "site": 7,
+      "submission": 20,
+      "submission_date": null
+    }
+  },
+  {
+    "model": "archive_api.plot",
+    "pk": 4,
+    "fields": {
+      "plot_id": "MX-BSM",
+      "name": "CHILE - BSM",
+      "description": "The sites are located in two different secondary forest plots in TMCF in the state of Veracruz, Mexico. The sites each have climate, sap flow, community censuses, and some other hydrological measurements at various points in the last 2 years",
+      "size": "m",
+      "location_elevation": "1489",
+      "location_kmz_url": "https://drive.google.com/open?id=0B5RSGI83Og11a0E1V2VRS3lacG9CRVc5aGdfMkFfS2RPeEhZ",
+      "pi": 8,
+      "site": 7,
+      "submission": 20,
+      "submission_date": null
+    }
+  },
+  {
+    "model": "archive_api.plot",
+    "pk": 5,
+    "fields": {
+      "plot_id": "PA-PNSL",
+      "name": "Sherman - Wet crane",
+      "description": "The Sherman plot is located in the San Lorenzo National Park in tropical moist forest on the Caribbean side of the Panama Canal. It sits on a hilltop south of the Chagres River and receives approximately 2700-3000 mm of annual rainfall. The plot is 5.96 ha. It is a 400 m x 100 m rectangle with a 140 m x 140 m square contiguous to the left side of the southernmost hectare. A canopy research crane belonging to the Smithsonian Tropical Research Institute is situated in the center of this 140 m x 140 m square. The northernmost hectare of this plot is in young forest approximately 30 years old.",
+      "size": "5.96",
+      "location_elevation": "",
+      "location_kmz_url": "",
+      "pi": 10,
+      "site": 11,
+      "submission": 10,
+      "submission_date": null
+    }
+  },
+  {
+    "model": "archive_api.plot",
+    "pk": 6,
+    "fields": {
+      "plot_id": "PR-TRACE",
+      "name": "TRACE Experiment Plots",
+      "description": "70+ year old regenerated forest at Sabana, Puerto Rico. The Forest Service has an understory IR Heating Study called TRACE, plots P1-P6",
+      "size": "40x50m",
+      "location_elevation": "100-150",
+      "location_kmz_url": "https://drive.google.com/open?id=0B5RSGI83Og11WjVCSnhIM1I2TlE",
+      "pi": null,
+      "site": 15,
+      "submission": 21,
+      "submission_date": null
+    }
+  },
+  {
+    "model": "archive_api.plot",
+    "pk": 7,
+    "fields": {
+      "plot_id": "TAMU-SoltisTower",
+      "name": "TAMU Soltis Tower",
+      "description": "The Texas A&M Soltis Center is located on TAMU property adjoining the Monteverde Preserve on the Caribbean side. The tower site is situated on an east-facing slope with a surrounding plot of 40x45 m (rectangle) at an elevation of approx 640 m ASL. While most of the property consists of mature secondary forest, this area appears to be primary forest, indicated by three very large old-growth trees within the plot. The site is considered \"transitional montane rain forest\" with 4200 mm annual rainfall.",
+      "size": "1.8",
+      "location_elevation": "550",
+      "location_kmz_url": "https://drive.google.com/open?id=0B5RSGI83Og11cWdNZGNLOUcwam8",
+      "pi": 15,
+      "site": 6,
+      "submission": 7,
+      "submission_date": null
+    }
+  },
+  {
+    "model": "archive_api.dataset",
+    "pk": 1,
+    "fields": {
+      "ngt_id": 20,
+      "description": "This data set contain global gridded surfaces of Gross Primary Productivity (GPP) at 2 arc minute (approximately 4 km) spatial resolution monthly for the period of 2000-2014 derived from FLUXNET2015 (released July 12, 2016) observations  using a representativeness based upscaling approach.",
+      "version": "1.0",
+      "status": 2,
+      "status_comment": null,
+      "name": "Global 4 km resolution monthly gridded Gross Primary Productivity (GPP) data set dervied from FLUXNET2015",
+      "doi": "http://dx.doi.org/10.15486/NGT/1279968",
+      "start_date": "2000-01-01",
+      "end_date": "2014-12-31",
+      "qaqc_status": 2,
+      "qaqc_method_description": null,
+      "ngee_tropics_resources": true,
+      "funding_organizations": "U.S. Department of Energy, Office of Science, Office of Biological and Environmental Research",
+      "doe_funding_contract_numbers": null,
+      "acknowledgement": null,
+      "reference": null,
+      "additional_reference_information": null,
+      "originating_institution": "Oak Ridge National Laboratory",
+      "access_level": 2,
+      "additional_access_information": null,
+      "submission_date": "2016-08-02",
+      "created_by": 1,
+      "created_date": "2017-01-26T17:57:52.971Z",
+      "modified_by": 1,
+      "modified_date": "2017-01-26T17:59:36.896Z",
+      "contact": 23,
+      "cdiac_import": true,
+      "cdiac_submission_contact": 23,
+      "archive": "0000/0020/NGT0020/1.0/NGT0020_1.0.zip",
+      "sites": [
+        3
+      ],
+      "plots": [],
+      "variables": [
+        41
+      ]
+    }
+  },
+  {
+    "model": "archive_api.dataset",
+    "pk": 2,
+    "fields": {
+      "ngt_id": 5,
+      "description": "A series of sapflow, inventory, meteo, C fluxes, SWC, PAI, Litterfall data from the Guyaflux site located in French Guiana",
+      "version": "1.0",
+      "status": 2,
+      "status_comment": null,
+      "name": "Guyaflux-French Guiana",
+      "doi": null,
+      "start_date": "2014-01-01",
+      "end_date": "2016-06-08",
+      "qaqc_status": 2,
+      "qaqc_method_description": "Data were checked for quality. Gapfilling was conducted for meteo and eddyflux data when possible.",
+      "ngee_tropics_resources": false,
+      "funding_organizations": "INRA, UMR EEF, UMR Ecofog, Labex CEBA",
+      "doe_funding_contract_numbers": null,
+      "acknowledgement": "Benoit Burban should be acknowledged for all these data",
+      "reference": null,
+      "additional_reference_information": null,
+      "originating_institution": "INRA",
+      "access_level": 1,
+      "additional_access_information": null,
+      "submission_date": "2016-06-23",
+      "created_by": 1,
+      "created_date": "2017-01-26T17:59:36.921Z",
+      "modified_by": 1,
+      "modified_date": "2017-01-26T17:59:37.250Z",
+      "contact": 14,
+      "cdiac_import": true,
+      "cdiac_submission_contact": 14,
+      "archive": "0000/0000/NGT0005/1.0/NGT0005_1.0.7z",
+      "sites": [
+        4
+      ],
+      "plots": [
+        2
+      ],
+      "variables": [
+        9,
+        17,
+        11,
+        22,
+        5,
+        10,
+        41,
+        2,
+        13,
+        12,
+        6,
+        32,
+        31,
+        4,
+        1,
+        8,
+        7
+      ]
+    }
+  },
+  {
+    "model": "archive_api.dataset",
+    "pk": 3,
+    "fields": {
+      "ngt_id": 8,
+      "description": "Diurnal and ACi gas exchange and leaf water potential. Leaf spectra and leaf sampling details for future leaf mass area, CHN and non-structural carbohydrate (NSC) analysis. Spectra files and chemistry will form a separate data record. Measurements taken at Parque Natural Metropolitano and San Lorenzo during February, March and April 2016.",
+      "version": "1.0",
+      "status": 2,
+      "status_comment": null,
+      "name": "Leaf Gas Exchange, LeafSpectra, LeafWaterPotential, LeafTraits in Panama. Feb-Apr 2016",
+      "doi": null,
+      "start_date": "2016-02-13",
+      "end_date": "2016-04-26",
+      "qaqc_status": 1,
+      "qaqc_method_description": "Data validation included ensuring: sample IDs have correct format and are unique; corresponding photo numbers are correct; all species codes are valid; all temperatures are reasonable; LWP data in same unit and reasonable range; leaf disc size in range; samples in LeafSamples cross referenced against gas exchange measurements. \r\nonly valid species codes\r\ntemperatures reasonable\r\nLWP in consistent units, reasonable range\r\ncross reference barcodes and GasexTypeOrSequence against ACi and diurnal Licor log files\r\nleaf disc_size in range (6-15)",
+      "ngee_tropics_resources": true,
+      "funding_organizations": "NGEE-Tropics",
+      "doe_funding_contract_numbers": null,
+      "acknowledgement": null,
+      "reference": null,
+      "additional_reference_information": null,
+      "originating_institution": "Brookhaven National Laboratory; Los Alamos National Laboratory",
+      "access_level": 0,
+      "additional_access_information": null,
+      "submission_date": "2016-06-29",
+      "created_by": 1,
+      "created_date": "2017-01-26T17:59:37.266Z",
+      "modified_by": 1,
+      "modified_date": "2017-01-26T18:00:39.471Z",
+      "contact": 31,
+      "cdiac_import": true,
+      "cdiac_submission_contact": 29,
+      "archive": "0000/0000/NGT0008/1.0/NGT0008_1.0.zip",
+      "sites": [
+        9,
+        11
+      ],
+      "plots": [],
+      "variables": [
+        18,
+        19,
+        20,
+        21
+      ]
+    }
+  },
+  {
+    "model": "archive_api.dataset",
+    "pk": 4,
+    "fields": {
+      "ngt_id": 12,
+      "description": "This dataset contains 9 replicate LAI estimates for the Soltis Tower plot. Data were collected using hemispherical photography on Oct 15, 2014. The average of these 9 gridded (3x3) locations within the plot provides a reasonable estimate for the LAI in the vicinity of the sapflow trees.",
+      "version": "1.0",
+      "status": 2,
+      "status_comment": null,
+      "name": "Leaf area index, Soltis Tower plot, Costa Rica, 2014",
+      "doi": null,
+      "start_date": "2014-10-15",
+      "end_date": "2014-10-15",
+      "qaqc_status": 0,
+      "qaqc_method_description": "Hemispherical photos were processed using HemiView software.",
+      "ngee_tropics_resources": false,
+      "funding_organizations": "US Department of Energy",
+      "doe_funding_contract_numbers": null,
+      "acknowledgement": null,
+      "reference": null,
+      "additional_reference_information": null,
+      "originating_institution": "Texas A and M University",
+      "access_level": 1,
+      "additional_access_information": null,
+      "submission_date": "2016-07-01",
+      "created_by": 1,
+      "created_date": "2017-01-26T18:00:39.484Z",
+      "modified_by": 1,
+      "modified_date": "2017-01-26T18:00:39.529Z",
+      "contact": 39,
+      "cdiac_import": true,
+      "cdiac_submission_contact": 7,
+      "archive": "0000/0010/NGT0012/1.0/NGT0012_1.0.zip",
+      "sites": [
+        6
+      ],
+      "plots": [
+        7
+      ],
+      "variables": [
+        22
+      ]
+    }
+  },
+  {
+    "model": "archive_api.dataset",
+    "pk": 5,
+    "fields": {
+      "ngt_id": 14,
+      "description": "These data include actual and corrected leaf surface temperature from the top of the canopy tower. For comparison, the air temperature from a nearby sensor on the spire is also included.",
+      "version": "1.0",
+      "status": 2,
+      "status_comment": null,
+      "name": "Leaf surface temperature, Soltis Center, 20150122 to 20160702",
+      "doi": null,
+      "start_date": "2015-01-22",
+      "end_date": "2016-07-02",
+      "qaqc_status": 1,
+      "qaqc_method_description": "Remove any data indicative of signal loss or out of range",
+      "ngee_tropics_resources": false,
+      "funding_organizations": "US Department of Energy",
+      "doe_funding_contract_numbers": null,
+      "acknowledgement": null,
+      "reference": null,
+      "additional_reference_information": null,
+      "originating_institution": "Texas A and M University",
+      "access_level": 1,
+      "additional_access_information": null,
+      "submission_date": "2016-07-05",
+      "created_by": 1,
+      "created_date": "2017-01-26T18:00:39.542Z",
+      "modified_by": 1,
+      "modified_date": "2017-01-26T18:00:39.894Z",
+      "contact": 7,
+      "cdiac_import": true,
+      "cdiac_submission_contact": 7,
+      "archive": "0000/0010/NGT0014/1.0/NGT0014_1.0.zip",
+      "sites": [
+        6
+      ],
+      "plots": [
+        7
+      ],
+      "variables": [
+        19
+      ]
+    }
+  },
+  {
+    "model": "archive_api.dataset",
+    "pk": 6,
+    "fields": {
+      "ngt_id": 13,
+      "description": "Raw, unprocessed data of Leaf Surface temperature (5 trees) and sap velocity (4 trees) near the Km67 flux tower.",
+      "version": "1.0",
+      "status": 2,
+      "status_comment": null,
+      "name": "Leaf surface temperature and sap velocity near Km67 tower in Santarem, Brazil (2016-03-11 to 2016-06-13)",
+      "doi": null,
+      "start_date": "2016-03-11",
+      "end_date": "2016-06-13",
+      "qaqc_status": 0,
+      "qaqc_method_description": null,
+      "ngee_tropics_resources": true,
+      "funding_organizations": "Lawrence Berkeley National Lab",
+      "doe_funding_contract_numbers": "DE-AC02-05CH11231",
+      "acknowledgement": "U.S. DOE, Office of Science, Office of Biological and Environmental Research",
+      "reference": null,
+      "additional_reference_information": null,
+      "originating_institution": "Lawrence Berkeley National Laboratory (LBNL)",
+      "access_level": 1,
+      "additional_access_information": null,
+      "submission_date": "2016-07-01",
+      "created_by": 1,
+      "created_date": "2017-01-26T18:00:39.903Z",
+      "modified_by": 1,
+      "modified_date": "2017-01-26T18:00:41.748Z",
+      "contact": 16,
+      "cdiac_import": true,
+      "cdiac_submission_contact": 16,
+      "archive": "0000/0010/NGT0013/1.0/NGT0013_1.0.zip",
+      "sites": [
+        5
+      ],
+      "plots": [],
+      "variables": [
+        19,
+        13
+      ]
+    }
+  },
+  {
+    "model": "archive_api.dataset",
+    "pk": 7,
+    "fields": {
+      "ngt_id": 11,
+      "description": "Five minute weather data at Soltis Center station in clearing near rainforest in Costa Rica.",
+      "version": "1.0",
+      "status": 2,
+      "status_comment": null,
+      "name": "Meteorological Data, Soltis Center, Costa Rica, Jan 2014 - April 2016",
+      "doi": null,
+      "start_date": "2014-01-01",
+      "end_date": "2016-04-30",
+      "qaqc_status": 1,
+      "qaqc_method_description": "Minor visual inspection for reasonable ranges. It has been processed to add NaN for missing data records, which occurred during power outages.",
+      "ngee_tropics_resources": false,
+      "funding_organizations": "DOE-BER, NSF-GEO, local donor",
+      "doe_funding_contract_numbers": null,
+      "acknowledgement": "This research was supported by the Office of Science (BER), U.S. Department of Energy.",
+      "reference": null,
+      "additional_reference_information": null,
+      "originating_institution": "Texas A&M University",
+      "access_level": 1,
+      "additional_access_information": null,
+      "submission_date": "2016-06-30",
+      "created_by": 1,
+      "created_date": "2017-01-26T18:00:41.761Z",
+      "modified_by": 1,
+      "modified_date": "2017-01-26T18:00:42.517Z",
+      "contact": 15,
+      "cdiac_import": true,
+      "cdiac_submission_contact": 15,
+      "archive": "0000/0010/NGT0011/1.0/NGT0011_1.0.zip",
+      "sites": [
+        6
+      ],
+      "plots": [],
+      "variables": [
+        1,
+        2,
+        4,
+        7,
+        8,
+        9
+      ]
+    }
+  },
+  {
+    "model": "archive_api.dataset",
+    "pk": 8,
+    "fields": {
+      "ngt_id": 24,
+      "description": "Raw data from dataloggers on PA_Bar. Includes sapflow from canopy and understory trees and PAR measurements above the crown of understory trees. E-field log is incomplete, and will be updated in a later submission.",
+      "version": "1.0",
+      "status": 2,
+      "status_comment": null,
+      "name": "PA_Bar SAP_voltage PAR_voltage",
+      "doi": null,
+      "start_date": "2015-08-31",
+      "end_date": "2016-08-30",
+      "qaqc_status": 0,
+      "qaqc_method_description": "data need to be cleaned prior to use",
+      "ngee_tropics_resources": true,
+      "funding_organizations": "NGEE-Tropics",
+      "doe_funding_contract_numbers": null,
+      "acknowledgement": null,
+      "reference": null,
+      "additional_reference_information": null,
+      "originating_institution": "STRI",
+      "access_level": 1,
+      "additional_access_information": null,
+      "submission_date": "2016-09-29",
+      "created_by": 1,
+      "created_date": "2017-01-26T18:00:42.531Z",
+      "modified_by": 1,
+      "modified_date": "2017-01-26T18:00:42.864Z",
+      "contact": 34,
+      "cdiac_import": true,
+      "cdiac_submission_contact": 34,
+      "archive": "0000/0020/NGT0024/1.0/NGT0024_1.0.zip",
+      "sites": [
+        8
+      ],
+      "plots": [],
+      "variables": [
+        13
+      ]
+    }
+  },
+  {
+    "model": "archive_api.dataset",
+    "pk": 9,
+    "fields": {
+      "ngt_id": 22,
+      "description": "Data logger downloads from PA-PNM, including Granier sapflow, soil moisture TDR, and infrared radiometer canopy surface temperature",
+      "version": "1.0",
+      "status": 2,
+      "status_comment": null,
+      "name": "PNM sapflow, leaf surface temp, soil TDR 2016-09-21",
+      "doi": null,
+      "start_date": "2015-11-17",
+      "end_date": "2016-07-21",
+      "qaqc_status": 0,
+      "qaqc_method_description": null,
+      "ngee_tropics_resources": true,
+      "funding_organizations": "NGEE-Tropics, CTFS, STRI",
+      "doe_funding_contract_numbers": null,
+      "acknowledgement": null,
+      "reference": null,
+      "additional_reference_information": null,
+      "originating_institution": "Smithsonian Tropical Research Insitute",
+      "access_level": 1,
+      "additional_access_information": null,
+      "submission_date": "2016-09-21",
+      "created_by": 1,
+      "created_date": "2017-01-26T18:00:42.885Z",
+      "modified_by": 1,
+      "modified_date": "2017-01-26T18:00:49.698Z",
+      "contact": 34,
+      "cdiac_import": true,
+      "cdiac_submission_contact": 34,
+      "archive": "0000/0020/NGT0022/1.0/NGT0022_1.0.zip",
+      "sites": [
+        9
+      ],
+      "plots": [],
+      "variables": [
+        13,
+        19,
+        31
+      ]
+    }
+  },
+  {
+    "model": "archive_api.dataset",
+    "pk": 10,
+    "fields": {
+      "ngt_id": 23,
+      "description": "Data are from a 2 m tall meteorological tower located at the USDA Forest Service's Sabana Field Research Station outside Luquillo, Puerto Rico.The tower is in an open area near buildings and a parking lot. The forest surrounds this small clearing, and is about 25 m away from the tower. Data were supplied by Grizelle Gonzalez (ggonzalez@fs.fed.us) to Jeff Warren (warrenjm@ornl.gov) on September 29th, 2016. Data are from the USDA Forest Service Sabana Research Station - main research contact is Tana Wood (tanawood@fs.fed.us). Data are hourly, beginning 01/05/2015. Data include Rain, Air T, RH, PAR and total solar radiation",
+      "version": "1.0",
+      "status": 1,
+      "status_comment": null,
+      "name": "PR-Sabana Meteorological Data 01-2015 to 09-2016",
+      "doi": null,
+      "start_date": "2015-01-05",
+      "end_date": "2016-09-21",
+      "qaqc_status": 0,
+      "qaqc_method_description": "NONE",
+      "ngee_tropics_resources": true,
+      "funding_organizations": "USDA",
+      "doe_funding_contract_numbers": null,
+      "acknowledgement": null,
+      "reference": null,
+      "additional_reference_information": null,
+      "originating_institution": "USDA Forest Service",
+      "access_level": 1,
+      "additional_access_information": null,
+      "submission_date": "2016-09-29",
+      "created_by": 1,
+      "created_date": "2017-01-26T18:00:49.714Z",
+      "modified_by": 1,
+      "modified_date": "2017-01-26T18:00:49.859Z",
+      "contact": 48,
+      "cdiac_import": true,
+      "cdiac_submission_contact": 21,
+      "archive": "0000/0020/NGT0023/1.0/NGT0023_1.0.zip",
+      "sites": [
+        15
+      ],
+      "plots": [],
+      "variables": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        7
+      ]
+    }
+  },
+  {
+    "model": "archive_api.dataset",
+    "pk": 11,
+    "fields": {
+      "ngt_id": 2,
+      "description": "Leaf pressure-volume parameters (osmotic potential at full turgor, turgor loss point, bulk elastic modulus, and others). Obtained by combining new data I gleaned from original publications not already in the following compilations (after removing the extratropical data): \r\nBartlett, M. K., Zhang, Y., Kreidler, N., Sun, S., Ardy, R., Cao, K., and Sack, L.: Global analysis of plasticity in turgor loss point, a key drought tolerance trait, Ecol Lett, 17, 1580-1590, 2014.\r\nBartlett, M. K., Scoffoni, C., and Sack, L.: The determinants of leaf turgor loss point and prediction of drought tolerance of species and biomes: a global meta-analysis, Ecology Letters, 15, 393-405, 2012.\r\nMar\u00e9chaux, I., Bartlett, M. K., Sack, L., Baraloto, C., Engel, J., Joetzjer, E., Chave, J., and Kitajima, K.: Drought tolerance as predicted by leaf water potential at turgor loss point varies strongly across species within an Amazonian forest, Functional Ecology, 29, 1268-1277, 2015.\r\n\r\nData are from natural tropical and subtropical forests or savannas and span rainfall gradients from deciduous dry tropical forests to everwet tropical forests, and come from countries all throughout the pantropics.",
+      "version": "1.0",
+      "status": 2,
+      "status_comment": null,
+      "name": "Pantropical Tree Leaf Hydraulic Properties, 1986 - 2015",
+      "doi": null,
+      "start_date": "1986-01-01",
+      "end_date": "2015-01-30",
+      "qaqc_status": null,
+      "qaqc_method_description": null,
+      "ngee_tropics_resources": true,
+      "funding_organizations": "European Union Seventh Framework Programme under the project AMAZALERT (Grant Agreement No. 282664 to Patrick Meir), and DOE (BER) NGEE-Tropics project",
+      "doe_funding_contract_numbers": null,
+      "acknowledgement": null,
+      "reference": null,
+      "additional_reference_information": null,
+      "originating_institution": "Los Alamos National Laboratory",
+      "access_level": 0,
+      "additional_access_information": null,
+      "submission_date": "2016-06-10",
+      "created_by": 1,
+      "created_date": "2017-01-26T18:00:49.866Z",
+      "modified_by": 1,
+      "modified_date": "2017-01-26T18:00:50.197Z",
+      "contact": 49,
+      "cdiac_import": true,
+      "cdiac_submission_contact": 49,
+      "archive": "0000/0000/NGT0002/1.0/NGT0002_1.0.zip",
+      "sites": [
+        3
+      ],
+      "plots": [],
+      "variables": [
+        42
+      ]
+    }
+  },
+  {
+    "model": "archive_api.dataset",
+    "pk": 12,
+    "fields": {
+      "ngt_id": 0,
+      "description": "Data synthesis of pantropical sapwood area as a function of tree size (height or DBH) for trees ranging in sizes 1 - 140 cm DBH and 6 - 44 m tall. Data span both natural tropical forests and plantations and rainfall gradients from deciduous dry tropical forests to everwet tropical forests, and come from the following countries: Queensland, Australia; Costa Rica; Panama; Sulawesi, Indonesia; Venezuela; Ecuador; Brazil; French Guiana; Bolivia.\r\nSA_headers.csv: description of variables in the two files below\r\nSA.csv: tree size (DBH or height) sapwood area\r\nSA_references.csv: citation, bibliographic reference, and DOI for the published references from which data were extracted",
+      "version": "1.0",
+      "status": 2,
+      "status_comment": null,
+      "name": "Pantropical Tree Sapwood Area Data, 1977 - 2015",
+      "doi": "http://dx.doi.org/10.15486/NGT/1256473",
+      "start_date": "1977-01-01",
+      "end_date": "2015-01-30",
+      "qaqc_status": null,
+      "qaqc_method_description": null,
+      "ngee_tropics_resources": true,
+      "funding_organizations": "European Union Seventh Framework Programme under the project AMAZALERT (Grant Agreement No. 282664 to Patrick Meir), and DOE (BER) NGEE-Tropics project",
+      "doe_funding_contract_numbers": null,
+      "acknowledgement": null,
+      "reference": "Christoffersen BO, Gloor M, Fauset S, Fyllas N, Galbraith D, Baker T, Rowland L, Fisher R, Binks O, Sevanto S, Xu C, Jansen S, Choat B, Mencuccini M, McDowell NG, Meir P. Linking tropical forest function to hydraulic traits in a size-structured and trait-driven model (TFS v.1-Hydro). Geoscientific Model Development Discussions (in review).",
+      "additional_reference_information": null,
+      "originating_institution": "Los Alamos National Laboratory",
+      "access_level": 0,
+      "additional_access_information": null,
+      "submission_date": "2016-06-09",
+      "created_by": 1,
+      "created_date": "2017-01-26T18:00:50.204Z",
+      "modified_by": 1,
+      "modified_date": "2017-01-26T18:00:50.306Z",
+      "contact": 49,
+      "cdiac_import": true,
+      "cdiac_submission_contact": 49,
+      "archive": "0000/0000/NGT0000/1.0/NGT0000_1.0.zip",
+      "sites": [
+        3
+      ],
+      "plots": [],
+      "variables": [
+        14
+      ]
+    }
+  },
+  {
+    "model": "archive_api.dataset",
+    "pk": 13,
+    "fields": {
+      "ngt_id": 1,
+      "description": "Description: Sapwood pressure-volume parameters (osmotic potential at full turgor, turgor loss point, bulk elastic modulus, and others). Determined by curve-fitting (following methods in \r\nhttp://prometheuswiki.publish.csiro.au/tiki-index.php?page=Leaf+pressure-volume+curve+parameters) \r\nto raw isotherm data (paired measurements of water content and water potential). Raw data were digitized from published figures. Data are from natural tropical and subtropical forests or savannas and span rainfall gradients from deciduous dry tropical forests to everwet tropical forests, and come from the following countries: Argentina, Panama, Brazil, Costa Rica, and Madagascar.\r\nsapwood_PV_recal_headers.csv: description of variables in the two files below\r\nsapwood_PV_recal_corrected.csv: bias-corrected sapwood PV data (see Methods in the associated reference)\r\nsapwood_PV_recal_uncorrected.csv: uncorrected sapwood PV data (see Methods in the associated reference)\r\nsapwood_PV_references.csv: citation, bibliographic reference, and DOI for the published references from which data were extracted",
+      "version": "1.0",
+      "status": 2,
+      "status_comment": null,
+      "name": "Pantropical Tree Sapwood Hydraulic Properties, 1991 - 2014",
+      "doi": "http://dx.doi.org/10.15486/NGT/1256474",
+      "start_date": "1991-04-01",
+      "end_date": "2014-09-29",
+      "qaqc_status": null,
+      "qaqc_method_description": null,
+      "ngee_tropics_resources": true,
+      "funding_organizations": "European Union Seventh Framework Programme under the project AMAZALERT (Grant Agreement No. 282664 to Patrick Meir), and DOE (BER) NGEE-Tropics project",
+      "doe_funding_contract_numbers": null,
+      "acknowledgement": null,
+      "reference": "Christoffersen BO, Gloor M, Fauset S, Fyllas N, Galbraith D, Baker T, Rowland L, Fisher R, Binks O, Sevanto S, Xu C, Jansen S, Choat B, Mencuccini M, McDowell NG, Meir P. Linking tropical forest function to hydraulic traits in a size-structured and trait-driven model (TFS v.1-Hydro). Geoscientific Model Development Discussions (in review).",
+      "additional_reference_information": null,
+      "originating_institution": "Los Alamos National Laboratory",
+      "access_level": 0,
+      "additional_access_information": null,
+      "submission_date": "2016-06-09",
+      "created_by": 1,
+      "created_date": "2017-01-26T18:00:50.314Z",
+      "modified_by": 1,
+      "modified_date": "2017-01-26T18:00:50.664Z",
+      "contact": 49,
+      "cdiac_import": true,
+      "cdiac_submission_contact": 49,
+      "archive": "0000/0000/NGT0001/1.0/NGT0001_1.0.zip",
+      "sites": [
+        3
+      ],
+      "plots": [],
+      "variables": [
+        15
+      ]
+    }
+  },
+  {
+    "model": "archive_api.dataset",
+    "pk": 14,
+    "fields": {
+      "ngt_id": 3,
+      "description": "Xylem hydraulic properties data, both newly extracted from publications plus tropics-specific data extracted from the \"Xylem Functional Traits Database\" (Choat et al., 2012; Gleason et al., 2016), which is available on TRY (www.try-db.org). \r\nChoat, B., Jansen, S., et al: Global convergence in the vulnerability of forests to drought, Nature, doi: 10.1038/nature11688, 2012. 2012.\r\nGleason, S. M., Westoby, M., Jansen, S., Choat, B., et al.: Weak tradeoff between xylem safety and xylem-specific hydraulic efficiency across the world's woody plant species, New Phytologist, 209, 123-136, 2016.\r\n\r\nMeasurements include xylem hydraulic conductivity per unit sapwood (Ks) and per unit leaf (Kl) area, water potential at 12%, 50%, and 88% loss of conductivity (P12, P50, and P88, respectively), leaf mass per area, wood density, and maximum rate of photosynthesis.  Data span both natural tropical forests and plantations and rainfall gradients from deciduous dry tropical forests to everwet tropical forests, and come from countries all across the pantropics.",
+      "version": "1.0",
+      "status": 2,
+      "status_comment": null,
+      "name": "Pantropical tropical tree xylem hydraulic functional traits, 1991 - 2013",
+      "doi": null,
+      "start_date": "1991-01-01",
+      "end_date": "2013-12-31",
+      "qaqc_status": null,
+      "qaqc_method_description": null,
+      "ngee_tropics_resources": true,
+      "funding_organizations": "European Union Seventh Framework Programme under the project AMAZALERT (Grant Agreement No. 282664 to Patrick Meir), and DOE (BER) NGEE-Tropics project",
+      "doe_funding_contract_numbers": null,
+      "acknowledgement": null,
+      "reference": null,
+      "additional_reference_information": null,
+      "originating_institution": "Los Alamos National Laboratory",
+      "access_level": 0,
+      "additional_access_information": null,
+      "submission_date": "2016-06-10",
+      "created_by": 1,
+      "created_date": "2017-01-26T18:00:50.670Z",
+      "modified_by": 1,
+      "modified_date": "2017-01-26T18:00:50.733Z",
+      "contact": 49,
+      "cdiac_import": true,
+      "cdiac_submission_contact": 49,
+      "archive": "0000/0000/NGT0003/1.0/NGT0003_1.0.zip",
+      "sites": [
+        3
+      ],
+      "plots": [],
+      "variables": [
+        18,
+        21,
+        23,
+        41
+      ]
+    }
+  },
+  {
+    "model": "archive_api.dataset",
+    "pk": 15,
+    "fields": {
+      "ngt_id": 4,
+      "description": "Photosynthetic parameters were calculated from A/Ci curves collected from trees at two canopy crane sites in Panama. Foliar nitrogen and phosphorus concentrations of the leaves also were determined.",
+      "version": "1.0",
+      "status": 2,
+      "status_comment": null,
+      "name": "Photosynthetic parameters and nutrient content of trees at the Panama crane sites.",
+      "doi": "http://dx.doi.org/10.15486/NGT/1255260",
+      "start_date": "2013-01-22",
+      "end_date": "2013-01-31",
+      "qaqc_status": 2,
+      "qaqc_method_description": "Visual inspection of each A/Ci curve",
+      "ngee_tropics_resources": true,
+      "funding_organizations": "ORNL LDRD, NGEE-Tropics",
+      "doe_funding_contract_numbers": "WFP61301",
+      "acknowledgement": "Jorge Aranda (STRI) assisted with species identification.",
+      "reference": "Gu L, Norby RJ, Haworth IC, Jensen AM, Turner BL, Walker AP, Warren JM, Weston DJ, Winter K. 2016. Photosynthetic parameters and nutrient content of trees at the Panama crane sites. Next Generation Ecosystem Experiments Tropics Data Collection, Carbon Dioxide Information Analysis Center, Oak Ridge National Laboratory, Oak Ridge, Tennessee, USA. Accessed at http://dx.doi.org/10.15486/NGT/1255260",
+      "additional_reference_information": null,
+      "originating_institution": "Oak Ridge National Laboratory",
+      "access_level": 2,
+      "additional_access_information": null,
+      "submission_date": "2016-06-20",
+      "created_by": 1,
+      "created_date": "2017-01-26T18:00:50.747Z",
+      "modified_by": 1,
+      "modified_date": "2017-01-26T18:00:50.803Z",
+      "contact": 19,
+      "cdiac_import": true,
+      "cdiac_submission_contact": 19,
+      "archive": "0000/0000/NGT0004/1.0/NGT0004_1.0.zip",
+      "sites": [
+        9,
+        11
+      ],
+      "plots": [],
+      "variables": [
+        25,
+        21
+      ]
+    }
+  },
+  {
+    "model": "archive_api.dataset",
+    "pk": 16,
+    "fields": {
+      "ngt_id": 19,
+      "description": "Leaf Surface Temperature, Direct/Diffuse solar radiation, sap velocity, leaf gas exchange, and soil moisture content  at or near the K14, K34, and B34 towers. These are mostly raw data from the data loggers, except in the case of the ICT sensors where the datalogger output was translated using ICT software.",
+      "version": "1.0",
+      "status": 2,
+      "status_comment": null,
+      "name": "Raw/Translated data and metadata from sensor measurements at Manaus, Brazil, 15 Feb 2015-14 July 2016",
+      "doi": null,
+      "start_date": "2015-02-15",
+      "end_date": "2016-07-14",
+      "qaqc_status": 0,
+      "qaqc_method_description": "Field notes included in metadata files regarding data quality (e.g. power failure, sensor replacement, suspicious data, etc.)",
+      "ngee_tropics_resources": true,
+      "funding_organizations": "Lawrence Berkeley National Lab",
+      "doe_funding_contract_numbers": "DE-AC02-05CH11231",
+      "acknowledgement": "This material is based upon work supported as part of the the DOE NGEE Tropics program",
+      "reference": null,
+      "additional_reference_information": null,
+      "originating_institution": "LBNL",
+      "access_level": 1,
+      "additional_access_information": null,
+      "submission_date": "2016-07-21",
+      "created_by": 1,
+      "created_date": "2017-01-26T18:00:50.811Z",
+      "modified_by": 1,
+      "modified_date": "2017-01-26T18:00:53.754Z",
+      "contact": 16,
+      "cdiac_import": true,
+      "cdiac_submission_contact": 16,
+      "archive": "0000/0010/NGT0019/1.0/NGT0019_1.0.zip",
+      "sites": [
+        2
+      ],
+      "plots": [],
+      "variables": [
+        4,
+        13,
+        19,
+        20,
+        31
+      ]
+    }
+  },
+  {
+    "model": "archive_api.dataset",
+    "pk": 17,
+    "fields": {
+      "ngt_id": 9,
+      "description": "Field Log File and associated reference files that describes the paired sapflow and dendrometer dataset submission \"Sap_flow_Dendrometer_RAW_DATA_PR_Trace_10-2015_to_06-2016\". Reference files include a schematic map of the plot, the sensor manuals and a journal article describing sap flow processing procedures.",
+      "version": "1.0",
+      "status": 2,
+      "status_comment": null,
+      "name": "Sap flow Dendrometer E Field Log PR Trace 10-2015 to 06-2016",
+      "doi": null,
+      "start_date": "2015-10-07",
+      "end_date": null,
+      "qaqc_status": 0,
+      "qaqc_method_description": null,
+      "ngee_tropics_resources": true,
+      "funding_organizations": "US DOE Office of Science, Office of Biological and Environmental Research; Oak Ridge National Laboratory",
+      "doe_funding_contract_numbers": null,
+      "acknowledgement": null,
+      "reference": null,
+      "additional_reference_information": null,
+      "originating_institution": "Oak Ridge National Laboratory",
+      "access_level": 1,
+      "additional_access_information": null,
+      "submission_date": "2016-06-29",
+      "created_by": 1,
+      "created_date": "2017-01-26T18:00:53.767Z",
+      "modified_by": 1,
+      "modified_date": "2017-01-26T18:00:54.347Z",
+      "contact": 21,
+      "cdiac_import": true,
+      "cdiac_submission_contact": 21,
+      "archive": "0000/0000/NGT0009/1.0/NGT0009_1.0.zip",
+      "sites": [
+        15
+      ],
+      "plots": [
+        6
+      ],
+      "variables": [
+        17,
+        13
+      ]
+    }
+  },
+  {
+    "model": "archive_api.dataset",
+    "pk": 18,
+    "fields": {
+      "ngt_id": 7,
+      "description": "Sap flow and Dendrometer data from 8 different over story trees located at the Forest Service TRACE project at Sabana, PR. The data set is unprocessed and includes missing data during periods prior to sensor installlation and poor data during periods of sensor failure",
+      "version": "1.0",
+      "status": 2,
+      "status_comment": null,
+      "name": "Sap flow Dendrometer Raw data PR Trace 10-2015 to 06-2016",
+      "doi": null,
+      "start_date": "2015-10-07",
+      "end_date": "2016-06-10",
+      "qaqc_status": 0,
+      "qaqc_method_description": null,
+      "ngee_tropics_resources": true,
+      "funding_organizations": "US DOE TES Program; Oak Ridge National Laboratory,",
+      "doe_funding_contract_numbers": null,
+      "acknowledgement": null,
+      "reference": null,
+      "additional_reference_information": null,
+      "originating_institution": "Oak Ridge National Laboratory",
+      "access_level": 1,
+      "additional_access_information": null,
+      "submission_date": "2016-06-29",
+      "created_by": 1,
+      "created_date": "2017-01-26T18:00:54.356Z",
+      "modified_by": 1,
+      "modified_date": "2017-01-26T18:00:54.548Z",
+      "contact": 21,
+      "cdiac_import": true,
+      "cdiac_submission_contact": 21,
+      "archive": "0000/0000/NGT0007/1.0/NGT0007_1.0.zip",
+      "sites": [
+        15
+      ],
+      "plots": [],
+      "variables": [
+        17,
+        13
+      ]
+    }
+  },
+  {
+    "model": "archive_api.dataset",
+    "pk": 19,
+    "fields": {
+      "ngt_id": 17,
+      "description": "This is the first dataset submission of ongoing measurements of sap flow, soil water content, and leaf surface temperature at San Lorenzo, Panama starting in 2015. The files include raw data output from data loggers, as well as files compiling some of the raw data together into single files.",
+      "version": "1.0",
+      "status": 2,
+      "status_comment": null,
+      "name": "Sapflow, Soil Water Content, Leaf Surface Temperature, San Lorenzo, Panama (PA-SLZ), 2015 - 201606",
+      "doi": null,
+      "start_date": "2015-12-10",
+      "end_date": null,
+      "qaqc_status": 0,
+      "qaqc_method_description": null,
+      "ngee_tropics_resources": true,
+      "funding_organizations": "NGEE-Tropics",
+      "doe_funding_contract_numbers": null,
+      "acknowledgement": null,
+      "reference": null,
+      "additional_reference_information": null,
+      "originating_institution": "STRI",
+      "access_level": 1,
+      "additional_access_information": null,
+      "submission_date": "2016-07-13",
+      "created_by": 1,
+      "created_date": "2017-01-26T18:00:54.555Z",
+      "modified_by": 1,
+      "modified_date": "2017-01-26T18:01:03.794Z",
+      "contact": 34,
+      "cdiac_import": true,
+      "cdiac_submission_contact": 34,
+      "archive": "0000/0010/NGT0017/1.0/NGT0017_1.0.zip",
+      "sites": [
+        11
+      ],
+      "plots": [],
+      "variables": [
+        13,
+        19,
+        31
+      ]
+    }
+  },
+  {
+    "model": "archive_api.dataset",
+    "pk": 20,
+    "fields": {
+      "ngt_id": 6,
+      "description": "Sap flux density [Js (kg m-2 h-1)] was measured continuously using 43 thermal dissipation sensors (Granier 1987) constructed using the method described in (Phillips et al. 1996) and installed in 26 trees during a 5 month period ranging from July 5, 2014 to mid 2016 (ongoing). This method consists of a reference and heated probe inserted in the outer 20 mm of the active xylem. \r\nThe number of sensors installed per tree differed by size. Trees less than 20 cm in diameter received one sensor (14 individuals); between 21-80 cm, two sensors (8 individuals); above 80 cm, three sensors (3 individuals) or four sensors (1 individual). The first sensor was placed perpendicular to the slope, roughly facing the north, with the others (if any) spaced evenly around the tree. The sensors were installed at a height of 1.5 m height, or as low as possible above tall buttresses, up to 7 m. Data were collected every 30 seconds and later averaged over 10-minute intervals and stored on a datalogger (CR1000, Campbell Scientific Inc., Logan, UT).",
+      "version": "1.0",
+      "status": 2,
+      "status_comment": null,
+      "name": "Sapflow, Soltis Center, Costa Rica (26 trees, total of 43 sensors), 2014-2016",
+      "doi": null,
+      "start_date": "2014-07-05",
+      "end_date": "2016-05-31",
+      "qaqc_status": 2,
+      "qaqc_method_description": "See Sapflow Processing matlab file. The script assumes that over 20 kg m-2 10min-1 of sap flux rates was abnormal for the site. Data were manually altered when needed (e.g. when sensors failed and had to be replaced/or when power was out leading to time gaps that needed to be gap filled).",
+      "ngee_tropics_resources": false,
+      "funding_organizations": "US Department of Energy",
+      "doe_funding_contract_numbers": "M1400130 - Improving Land-Surface Modeling of Evapotranspiration Processes in Tropical Forests",
+      "acknowledgement": null,
+      "reference": null,
+      "additional_reference_information": null,
+      "originating_institution": "Texas A and M University",
+      "access_level": 1,
+      "additional_access_information": null,
+      "submission_date": "2016-06-28",
+      "created_by": 1,
+      "created_date": "2017-01-26T18:01:03.808Z",
+      "modified_by": 1,
+      "modified_date": "2017-01-26T18:01:05.032Z",
+      "contact": 39,
+      "cdiac_import": true,
+      "cdiac_submission_contact": 7,
+      "archive": "0000/0000/NGT0006/1.0/NGT0006_1.0.zip",
+      "sites": [
+        6
+      ],
+      "plots": [],
+      "variables": [
+        13,
+        14
+      ]
+    }
+  },
+  {
+    "model": "archive_api.dataset",
+    "pk": 21,
+    "fields": {
+      "ngt_id": 16,
+      "description": "This data set includes sap flow, weather station, and one set of soil moisture data. It was collected for various other purposes within the scope of an NSF-ICER 1313804 project. There is sap flow and climate data across two sites from various points in time starting in the spring of 2015 and ending in spring of 2016. Sapflow data were collected using the heat ratio method (Burgess 2001). Sensors were installed at breast height and are constructed in Heidi Asbjornsen's lab at the University of New Hampshire. Each probe has either 2 or 3 thermocouples in them to measure flow at various depths and then multiplied by sapwood area at that depth. Corrections for spacing error and wounding were done like Burgess 2001. Data processing was done as in Berry (2016). I have also included one data set from the BSM site that has soil moisture data from last summer.",
+      "version": "1.0",
+      "status": 2,
+      "status_comment": null,
+      "name": "Sapflow, Weather - Veracruz Mexico, April 2015 to March 2016",
+      "doi": null,
+      "start_date": "2015-04-11",
+      "end_date": "2016-03-01",
+      "qaqc_status": 1,
+      "qaqc_method_description": "Some gaps in errors from the sap flow sensors have been filled using an ARIMA moving average model. Some trees have been corrected well for proper zero values while others have not, so this will need to be considered. Larger periods of errors have been removed entirely. Still lots of QC needed. For the weather data you will note some periodic gaps and a change of weather station type at the BSJ site.",
+      "ngee_tropics_resources": false,
+      "funding_organizations": "National Science Foundation",
+      "doe_funding_contract_numbers": "NSF-ICER 1313804",
+      "acknowledgement": null,
+      "reference": null,
+      "additional_reference_information": null,
+      "originating_institution": "University of New Hampshire",
+      "access_level": 1,
+      "additional_access_information": null,
+      "submission_date": "2016-07-06",
+      "created_by": 1,
+      "created_date": "2017-01-26T18:01:05.045Z",
+      "modified_by": 1,
+      "modified_date": "2017-01-26T18:01:06.268Z",
+      "contact": 20,
+      "cdiac_import": true,
+      "cdiac_submission_contact": 20,
+      "archive": "0000/0010/NGT0016/1.0/NGT0016_1.0.zip",
+      "sites": [
+        7
+      ],
+      "plots": [
+        3,
+        4
+      ],
+      "variables": [
+        1,
+        2,
+        3,
+        4,
+        7,
+        8,
+        13,
+        31
+      ]
+    }
+  },
+  {
+    "model": "archive_api.dataset",
+    "pk": 22,
+    "fields": {
+      "ngt_id": 18,
+      "description": "Historic soil moisture data obtained from neutron probe in a topographic gradient of the experimental watershed As\u00fa stream.\r\nCoordination of the LBA Program Hydrologic Research.",
+      "version": "1.0",
+      "status": 2,
+      "status_comment": null,
+      "name": "Soil moisture data with neutron probe, Manaus, 2006- Apr 2016",
+      "doi": null,
+      "start_date": "2006-01-01",
+      "end_date": "2016-04-01",
+      "qaqc_status": 2,
+      "qaqc_method_description": "The protocol for obtaining overall data quality was established by hydrology area of researchers in the implementation of the experimental watershed.\r\nIn addition to standard technical procedures, the data are referenced hydrometric with other components.\r\nSuch procedures occur in the field and office.",
+      "ngee_tropics_resources": false,
+      "funding_organizations": "Large-Scale Biosphere-Atmosphere Experiment in Amazonia (LBA)",
+      "doe_funding_contract_numbers": null,
+      "acknowledgement": null,
+      "reference": null,
+      "additional_reference_information": null,
+      "originating_institution": "Large-Scale Biosphere-Atmosphere Experiment in Amazonia (LBA)",
+      "access_level": 1,
+      "additional_access_information": null,
+      "submission_date": "2016-07-28",
+      "created_by": 1,
+      "created_date": "2017-01-26T18:01:06.281Z",
+      "modified_by": 1,
+      "modified_date": "2017-01-26T18:01:06.453Z",
+      "contact": 22,
+      "cdiac_import": true,
+      "cdiac_submission_contact": 65,
+      "archive": "0000/0010/NGT0018/1.0/NGT0018_1.0.7z",
+      "sites": [
+        2
+      ],
+      "plots": [],
+      "variables": [
+        31
+      ]
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 1,
+    "fields": {
+      "author": 23,
+      "dataset": 1,
+      "order": 0
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 2,
+    "fields": {
+      "author": 24,
+      "dataset": 1,
+      "order": 1
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 3,
+    "fields": {
+      "author": 25,
+      "dataset": 1,
+      "order": 2
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 4,
+    "fields": {
+      "author": 26,
+      "dataset": 1,
+      "order": 3
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 5,
+    "fields": {
+      "author": 14,
+      "dataset": 2,
+      "order": 0
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 6,
+    "fields": {
+      "author": 29,
+      "dataset": 3,
+      "order": 0
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 7,
+    "fields": {
+      "author": 30,
+      "dataset": 3,
+      "order": 1
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 8,
+    "fields": {
+      "author": 31,
+      "dataset": 3,
+      "order": 2
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 9,
+    "fields": {
+      "author": 32,
+      "dataset": 3,
+      "order": 3
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 10,
+    "fields": {
+      "author": 33,
+      "dataset": 3,
+      "order": 4
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 11,
+    "fields": {
+      "author": 34,
+      "dataset": 3,
+      "order": 5
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 12,
+    "fields": {
+      "author": 35,
+      "dataset": 3,
+      "order": 6
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 13,
+    "fields": {
+      "author": 36,
+      "dataset": 3,
+      "order": 7
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 14,
+    "fields": {
+      "author": 37,
+      "dataset": 3,
+      "order": 8
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 15,
+    "fields": {
+      "author": 38,
+      "dataset": 3,
+      "order": 9
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 16,
+    "fields": {
+      "author": 39,
+      "dataset": 4,
+      "order": 0
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 17,
+    "fields": {
+      "author": 15,
+      "dataset": 5,
+      "order": 0
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 18,
+    "fields": {
+      "author": 7,
+      "dataset": 5,
+      "order": 1
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 19,
+    "fields": {
+      "author": 16,
+      "dataset": 6,
+      "order": 0
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 20,
+    "fields": {
+      "author": 40,
+      "dataset": 6,
+      "order": 1
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 21,
+    "fields": {
+      "author": 41,
+      "dataset": 6,
+      "order": 2
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 22,
+    "fields": {
+      "author": 6,
+      "dataset": 6,
+      "order": 3
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 23,
+    "fields": {
+      "author": 2,
+      "dataset": 6,
+      "order": 4
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 24,
+    "fields": {
+      "author": 42,
+      "dataset": 6,
+      "order": 5
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 25,
+    "fields": {
+      "author": 15,
+      "dataset": 7,
+      "order": 0
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 26,
+    "fields": {
+      "author": 34,
+      "dataset": 8,
+      "order": 0
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 27,
+    "fields": {
+      "author": 44,
+      "dataset": 8,
+      "order": 1
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 28,
+    "fields": {
+      "author": 10,
+      "dataset": 8,
+      "order": 2
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 29,
+    "fields": {
+      "author": 46,
+      "dataset": 8,
+      "order": 3
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 30,
+    "fields": {
+      "author": 34,
+      "dataset": 9,
+      "order": 0
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 31,
+    "fields": {
+      "author": 44,
+      "dataset": 9,
+      "order": 1
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 32,
+    "fields": {
+      "author": 10,
+      "dataset": 9,
+      "order": 2
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 33,
+    "fields": {
+      "author": 46,
+      "dataset": 9,
+      "order": 3
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 34,
+    "fields": {
+      "author": 12,
+      "dataset": 10,
+      "order": 0
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 35,
+    "fields": {
+      "author": 49,
+      "dataset": 11,
+      "order": 0
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 36,
+    "fields": {
+      "author": 49,
+      "dataset": 12,
+      "order": 0
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 37,
+    "fields": {
+      "author": 49,
+      "dataset": 13,
+      "order": 0
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 38,
+    "fields": {
+      "author": 49,
+      "dataset": 14,
+      "order": 0
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 39,
+    "fields": {
+      "author": 51,
+      "dataset": 15,
+      "order": 0
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 40,
+    "fields": {
+      "author": 19,
+      "dataset": 15,
+      "order": 1
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 41,
+    "fields": {
+      "author": 52,
+      "dataset": 15,
+      "order": 2
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 42,
+    "fields": {
+      "author": 53,
+      "dataset": 15,
+      "order": 3
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 43,
+    "fields": {
+      "author": 54,
+      "dataset": 15,
+      "order": 4
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 44,
+    "fields": {
+      "author": 55,
+      "dataset": 15,
+      "order": 5
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 45,
+    "fields": {
+      "author": 21,
+      "dataset": 15,
+      "order": 6
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 46,
+    "fields": {
+      "author": 56,
+      "dataset": 15,
+      "order": 7
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 47,
+    "fields": {
+      "author": 57,
+      "dataset": 15,
+      "order": 8
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 48,
+    "fields": {
+      "author": 16,
+      "dataset": 16,
+      "order": 0
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 49,
+    "fields": {
+      "author": 40,
+      "dataset": 16,
+      "order": 1
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 50,
+    "fields": {
+      "author": 59,
+      "dataset": 16,
+      "order": 2
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 51,
+    "fields": {
+      "author": 60,
+      "dataset": 16,
+      "order": 3
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 52,
+    "fields": {
+      "author": 3,
+      "dataset": 16,
+      "order": 4
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 53,
+    "fields": {
+      "author": 2,
+      "dataset": 16,
+      "order": 5
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 54,
+    "fields": {
+      "author": 42,
+      "dataset": 16,
+      "order": 6
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 55,
+    "fields": {
+      "author": 21,
+      "dataset": 17,
+      "order": 0
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 56,
+    "fields": {
+      "author": 21,
+      "dataset": 18,
+      "order": 0
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 57,
+    "fields": {
+      "author": 34,
+      "dataset": 19,
+      "order": 0
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 58,
+    "fields": {
+      "author": 44,
+      "dataset": 19,
+      "order": 1
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 59,
+    "fields": {
+      "author": 10,
+      "dataset": 19,
+      "order": 2
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 60,
+    "fields": {
+      "author": 46,
+      "dataset": 19,
+      "order": 3
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 61,
+    "fields": {
+      "author": 39,
+      "dataset": 20,
+      "order": 0
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 62,
+    "fields": {
+      "author": 7,
+      "dataset": 20,
+      "order": 1
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 63,
+    "fields": {
+      "author": 20,
+      "dataset": 21,
+      "order": 0
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 64,
+    "fields": {
+      "author": 8,
+      "dataset": 21,
+      "order": 1
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 65,
+    "fields": {
+      "author": 64,
+      "dataset": 22,
+      "order": 0
+    }
+  }
+]
