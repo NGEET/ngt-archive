@@ -4,6 +4,7 @@ import json
 from unittest import mock
 from unittest.mock import PropertyMock
 
+import os
 import shutil
 from django.contrib.auth.models import User
 from django.core import mail
@@ -13,7 +14,7 @@ from os.path import dirname
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from archive_api.models import DatasetArchiveField, DataSetDownloadLog, DataSet
+from archive_api.models import DataSetDownloadLog, DataSet
 from ngt_archive import settings
 
 
@@ -79,14 +80,11 @@ class DataSetClientTestCase(APITestCase):
         self.login_user("auser")
         response = self.client.options('/api/v1/datasets/')
         self.assertContains(response, "detail_routes")
-        self.assertContains(response, "allowed_mime_types")
         self.assertContains(response, "upload")
         self.assertContains(response, "submit")
         self.assertContains(response, "approve")
         self.assertContains(response, "unapprove")
         self.assertContains(response, "unsubmit")
-        for mime_type in DatasetArchiveField.CONTENT_TYPES:
-            self.assertContains(response, mime_type)
 
     def test_client_unnamed(self):
 
@@ -861,6 +859,39 @@ You will not be able to view this dataset until it has been approved.
                                 status_code=status.HTTP_400_BAD_REQUEST)
             self.assertContains(response, "Uploaded file size is 3001.7 MB. Max upload size is 2048.0 MB",
                                 status_code=status.HTTP_400_BAD_REQUEST)
+
+    def test_issue_253(self):
+        """Error uploading files > 2.5 MB #253"""
+
+        self.login_user("auser")
+
+        # Write a 3 MB file
+        with open('{}/bigfile.dat'.format(dirname(__file__)), 'wb') as out:
+            out.seek((1024 * 1024 * 3) - 1)
+            out.write(b"0")
+
+        with open('{}/bigfile.dat'.format(dirname(__file__)), 'rb') as fp:
+            response = self.client.post('/api/v1/datasets/1/upload/', {'attachment': fp})
+
+            self.assertContains(response, '"success":true',
+                                status_code=status.HTTP_201_CREATED)
+            self.assertContains(response, "uploaded",
+                                status_code=status.HTTP_201_CREATED)
+
+            response = self.client.get( '/api/v1/datasets/1/archive/')
+            self.assertContains(response, '')
+            self.assertTrue("X-Sendfile" in response)
+            self.assertTrue(
+                response["X-Sendfile"].find("archives/0000/0000/NGT0000/0.0/NGT0000_0.0") > -1)
+            self.assertTrue("Content-Disposition" in response)
+            self.assertEqual("attachment; filename=NGT0000_0.0_Data_Set_1.dat",
+                             response['Content-Disposition'])
+
+        try:
+            os.remove('{}/bigfile.dat'.format(dirname(__file__)))
+        except:
+            pass
+
 
 class SiteClientTestCase(APITestCase):
     fixtures = ('test_auth.json', 'test_archive_api.json',)
