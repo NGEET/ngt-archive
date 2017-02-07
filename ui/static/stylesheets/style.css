@@ -298,10 +298,10 @@ body main .create-dataset-view .file-drop-zone .file-exists, body main .view-dra
 body main .create-dataset-view .file-drop-zone input[type="file"], body main .view-drafts-view .file-drop-zone input[type="file"] {
   position: absolute;
   left: 0;
-  width: 100px;
-  top: 96px;
+  width: 100%;
+  top: 0px;
   left: 50%;
-  padding-bottom: 32px;
+  padding-bottom: 4px;
   opacity: 0;
   z-index: 2;
   transform: translateX(-50%);
@@ -313,65 +313,66 @@ body main .create-dataset-view .file-drop-zone .file-name-wrapper, body main .vi
 }
 /* line 336, ../sass/style.scss */
 body main .create-dataset-view .file-drop-zone .file-select-btn, body main .view-drafts-view .file-drop-zone .file-select-btn {
+  position: relative;
   display: block;
   margin: 0 auto;
 }
-/* line 347, ../sass/style.scss */
+/* line 348, ../sass/style.scss */
 body main .map-view {
   height: 400px;
 }
-/* line 353, ../sass/style.scss */
+/* line 354, ../sass/style.scss */
 body main .sites-container .site-info .title {
   border-bottom: 1px solid #ccc;
 }
-/* line 357, ../sass/style.scss */
+/* line 358, ../sass/style.scss */
 body main .sites-container .site-info .main-params, body main .sites-container .site-info .map-view {
   margin-top: 10px;
 }
-/* line 361, ../sass/style.scss */
+/* line 362, ../sass/style.scss */
 body main .sites-container .site-info .columns {
   padding: 0;
 }
-/* line 365, ../sass/style.scss */
+/* line 366, ../sass/style.scss */
 body main .sites-container .site-info .main-params {
   padding-right: 15px;
 }
-/* line 370, ../sass/style.scss */
+/* line 371, ../sass/style.scss */
 body main .sites-container .site-info .site-desc .columns {
   padding: 0;
 }
-/* line 374, ../sass/style.scss */
+/* line 375, ../sass/style.scss */
 body main .sites-container .site-info .site-desc .plot-title {
   margin-top: 30px;
 }
-/* line 378, ../sass/style.scss */
+/* line 379, ../sass/style.scss */
 body main .sites-container .site-info .site-desc .plot-info {
   margin-top: 10px;
   margin-bottom: 15px;
   padding: 10px 15px 15px;
   background-color: #f8f8f8;
 }
-/* line 385, ../sass/style.scss */
+/* line 386, ../sass/style.scss */
 body main .sites-container .site-info .site-desc .param {
   margin-bottom: 4px;
 }
-/* line 393, ../sass/style.scss */
+/* line 394, ../sass/style.scss */
 body main .all-datasets .dataset {
   margin-bottom: 20px;
 }
-/* line 397, ../sass/style.scss */
+/* line 398, ../sass/style.scss */
 body main .all-datasets .dataset .title:hover {
   color: #006489;
 }
-/* line 407, ../sass/style.scss */
+/* line 408, ../sass/style.scss */
 body main .all-datasets .dataset .title, body main .all-datasets .dataset .desc {
   cursor: pointer;
 }
-/* line 414, ../sass/style.scss */
+/* line 415, ../sass/style.scss */
 body main footer {
   padding-top: 2rem;
 }
-/* line 417, ../sass/style.scss */
+/* line 418, ../sass/style.scss */
 body main footer img {
   max-width: 320px;
 }
