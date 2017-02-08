@@ -19,7 +19,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from types import FunctionType
 
-from archive_api.models import DataSet, MeasurementVariable, Site, Person, Plot, DatasetArchiveField, DataSetDownloadLog
+from archive_api.models import DataSet, MeasurementVariable, Site, Person, Plot, DataSetDownloadLog
 from archive_api.permissions import HasArchivePermission, HasSubmitPermission, HasApprovePermission, \
     HasUnsubmitPermission, \
     HasUnapprovePermission, HasUploadPermission, HasEditPermissionOrReadonly, APPROVED, DRAFT, SUBMITTED, IsActivated
@@ -59,8 +59,7 @@ class DataSetMetadata(SimpleMetadata):
         upload_route = data["detail_routes"]["upload"]
         upload_route["parameters"] = {"attachment": {
             "type": "file",
-            "required": True,
-            "allowed_mime_types": DatasetArchiveField.CONTENT_TYPES
+            "required": True
         }}
 
         return data
@@ -140,6 +139,8 @@ class DataSetViewSet(ModelViewSet):
         """
         if 'attachment' in request.data:
             dataset = self.get_object()
+
+
             upload = request.data['attachment']
 
             if request.user.has_perm("archive_api.upload_large_file_dataset") and upload.size > settings.ARCHIVE_API['DATASET_ADMIN_MAX_UPLOAD_SIZE']:
@@ -162,6 +163,8 @@ class DataSetViewSet(ModelViewSet):
             except ValidationError as ve:
                 return Response({'success': False, 'detail': ve.detail},
                                 status=http_status.HTTP_400_BAD_REQUEST)
+            finally:
+                upload.close()
 
             return Response({'success': True, 'detail': 'File uploaded'},
                             status=http_status.HTTP_201_CREATED, headers={'Location':

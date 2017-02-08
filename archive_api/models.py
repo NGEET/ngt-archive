@@ -6,55 +6,6 @@ from django.core.files.storage import FileSystemStorage
 from django.db import models
 from django.db import transaction
 from django.conf import settings
-from rest_framework.exceptions import ValidationError
-
-
-class DatasetArchiveField( models.FileField):
-
-        CONTENT_TYPES = ["application/zip", "application/x-bzip2",
-                     "application/gzip", "application/x-lzip", "application/x-lzma",
-                     "application/x-xz", "application/x-compress",
-                     "application/x-compress", "application/x-7z-compressed",
-                     "application/x-gtar", "application/x-rar-compressed"]
-
-        def __init__(self, *args, **kwargs):
-            """
-            Override the parent constructor to set the allowed content_types
-
-            :param args:
-            :param kwargs:
-            """
-
-            self.content_types = self.CONTENT_TYPES
-            super(DatasetArchiveField,self).__init__(*args,**kwargs)
-
-        def clean(self, *args, **kwargs):
-            """
-            Override parent method to add checking for content type
-
-            Parent method converts the value's type and run validation. Validation errors
-            from to_python and validate are propagated. The correct value is
-            returned if no error is raised.
-            """
-            data = super(DatasetArchiveField,self).clean(*args,**kwargs)
-
-            try:
-                content_type = mimetypes.guess_type(data.name)
-                if content_type[0] not in self.content_types:
-                    raise ValidationError('Filetype {} not supported. Allowed types: {}'.format(content_type[0],
-                                                                                                ", ".join(
-                                                                                                  self.content_types)))
-            except AttributeError:
-                raise ValidationError('Filetype unknown. Allowed types: {}'.format(", ".join(self.content_types)))
-
-        def save(self, **kwargs):
-            """
-            Override parent to call the custom clean method
-
-            :param kwargs:
-            :return:
-            """
-            return super(DatasetArchiveField, self).save(**kwargs)
 
 
 class DatasetArchiveStorage(FileSystemStorage):

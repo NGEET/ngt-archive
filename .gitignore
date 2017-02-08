@@ -7,12 +7,10 @@
 .menv/
 .vagrant/
 .venv/
-/archive_api/fixtures/ngt-dev-archive-api-cleaned-with-datasets.json
-/archive_api/fixtures/ngt-dev-archiveapi.json
-/archive_api/fixtures/ngt-dev-users.json
 /static
 ORNL_Archive_Backup_20160916/
 __pycache__/
+archive_api/fixtures/*.txt
 archive_api_import.json
 archive_api_import_with_datasets.json
 archives
@@ -24,6 +22,7 @@ local.py
 main.yml
 ngee_tropics.sql
 ngt-archive.log
+ngt-dev*.json
 ngt_archive.egg-info/
 ngt_archive.log
 ngt_archive/__pycache__/
