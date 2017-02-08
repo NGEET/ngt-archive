@@ -61,7 +61,7 @@ class Migration(migrations.Migration):
                 ('modified_date', models.DateTimeField(auto_now=True)),
                 ('cdiac_import', models.BooleanField(default=False)),
                 ('archive',
-                 archive_api.models.DatasetArchiveField(null=True, storage=archive_api.models.DatasetArchiveStorage(),
+                 models.FileField(null=True, storage=archive_api.models.DatasetArchiveStorage(),
                                                         upload_to=archive_api.models.get_upload_path)),
             ],
             options={
