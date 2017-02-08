@@ -296,14 +296,25 @@ $(document).ready(function(){
                     if(prop == 'contacts') {
                         for(var i=0;i<dataObj.contacts.length;i++) {
                             if(dataObj.sites[index][prop].indexOf(dataObj.contacts[i].url) != -1) {
-                                param.append('<div class="columns small-12 medium-9 end float-right">' + dataObj.contacts[i].first_name + ' ' + dataObj.contacts[i].last_name + '</div>');
+                                var contactString = '<div class="columns small-12 medium-9 end float-right">' + dataObj.contacts[i].first_name + ' ' + dataObj.contacts[i].last_name;
+                                if(dataObj.contacts[i].email){
+                                    contactString += ' &lt; ' + dataObj.contacts[i].email +' &gt;';
+                                }
+                                contactString +=  '</div>';
+                                param.append(contactString);
                             }
                         }
                     }
                     else if(prop == 'pis') {
                         for(var j=0;j<dataObj.contacts.length;j++) {
                             if(dataObj.sites[index][prop].indexOf(dataObj.contacts[j].url) != -1) {
-                                param.append('<div class="columns small-12 medium-9 end float-right">' + dataObj.contacts[j].first_name + ' ' + dataObj.contacts[j].last_name + '</div>');
+                                var contactString = '<div class="columns small-12 medium-9 end float-right">' +
+                                        dataObj.contacts[j].first_name + ' ' + dataObj.contacts[j].last_name ;
+                                if(dataObj.contacts[j].email){
+                                    contactString += ' &lt; ' + dataObj.contacts[j].email +' &gt;';
+                                }
+                                contactString +=  '</div>';
+                                param.append(contactString);
                             }
                         }
                     }
@@ -347,7 +358,12 @@ $(document).ready(function(){
                             for(var j=0;j<dataObj.contacts.length;j++) {
                                 if(dataObj.plots[i][prop] != null) {
                                     if(dataObj.plots[i][prop].indexOf(dataObj.contacts[j].url) != -1) {
-                                        var param = $('<div class="row param '+ (templates.plots[prop] && templates.plots[prop].sequence === -1 ? 'hide' : '') +'"><div class="columns small-12 medium-3"><b>' + (templates.plots[prop] ? templates.plots[prop].label : prop) + ' </b></div><div class="small-12 medium-9 columns">' + dataObj.contacts[j].first_name + ' ' + dataObj.contacts[j].last_name + '</div></div>');
+                                        var contactString = dataObj.contacts[j].first_name + ' ' + dataObj.contacts[j].last_name;
+                                        if(dataObj.contacts[j].email){
+                                            contactString += ' &lt; ' + dataObj.contacts[j].email +' &gt; ';
+                                        }
+
+                                        var param = $('<div class="row param '+ (templates.plots[prop] && templates.plots[prop].sequence === -1 ? 'hide' : '') +'"><div class="columns small-12 medium-3"><b>' + (templates.plots[prop] ? templates.plots[prop].label : prop) + ' </b></div><div class="small-12 medium-9 columns">' + contactString + '</div></div>');
                                         plotContainer.append(param);
                                     }
                                 }
@@ -985,7 +1001,13 @@ $(document).ready(function(){
                                     for(var i=0;i<dataObj.contacts.length;i++) {
 
                                         if(datasetObj[prop].indexOf(dataObj.contacts[i].url) != -1) {
-                                            substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + dataObj.contacts[i].first_name + ' ' + dataObj.contacts[i].last_name + '</span></div>';
+                                            substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' +
+                                                dataObj.contacts[i].first_name + ' ' +
+                                                dataObj.contacts[i].last_name ;
+                                            if(dataObj.contacts[i].email){
+                                                substring += ' &lt; ' + dataObj.contacts[i].email +' &gt;';
+                                            }
+                                            substring +=  '</span></div>';
                                             
                                         }
 
