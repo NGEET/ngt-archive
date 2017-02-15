@@ -684,6 +684,51 @@ $(document).ready(function(){
                 //data = JSON.parse(data);
 
                 $.ajax({
+                    xhr: function() {
+            
+                        var xhr = new window.XMLHttpRequest();
+                        xhr.filePointer = formData;
+                        xhr.upload.filePointer = formData;
+                        //Upload progress
+                        xhr.upload.addEventListener("progress", function(e, data){
+                            
+                            if (e.lengthComputable) {
+                                var pc = parseInt(e.loaded / e.total * 100);
+                                if(pc >= 100) {
+                                    //this.filePointer.spinner.parent().addClass('hide');
+                                    this.filePointer.progress = pc;
+                                    console.log(pc);
+                                }
+                                else {
+                                    $('.js-progress-wrapper').removeClass('hide');
+                                    $('.js-progress').html(pc);
+                                    //this.filePointer.spinner.parent().removeClass('hide');
+                                    //this.filePointer.spinner.html(pc + '%');
+                                    //this.filePointer.progress = pc;
+                                }
+                            }
+                        }, false); 
+
+                        xhr.addEventListener("progress", function(e, data){
+                            
+                            if (e.lengthComputable) {
+                                var pc = parseInt(e.loaded / e.total * 100);
+                                if(pc >= 100) {
+                                    //this.filePointer.spinner.parent().addClass('hide');
+                                    this.filePointer.progress = pc;
+                                    console.log(pc);
+                                }
+                                else {
+                                    $('.js-progress-wrapper').removeClass('hide');
+                                    $('.js-progress').html(pc);
+                                    //this.filePointer.spinner.parent().removeClass('hide');
+                                    //this.filePointer.spinner.html(pc + '%');
+                                    //this.filePointer.progress = pc;
+                                }
+                            }
+                        }, false);
+                        return xhr;
+                    },
                     method: "POST",
                     contentType: false,
                     data: formData,
@@ -1178,6 +1223,51 @@ function createDraft(submissionObj, submitMode) {
                             //data = JSON.parse(data);
 
                             $.ajax({
+                                xhr: function() {
+            
+                                    var xhr = new window.XMLHttpRequest();
+                                    xhr.filePointer = formData;
+                                    xhr.upload.filePointer = formData;
+                                    //Upload progress
+                                    xhr.upload.addEventListener("progress", function(e, data){
+                                        
+                                        if (e.lengthComputable) {
+                                            var pc = parseInt(e.loaded / e.total * 100);
+                                            if(pc >= 100) {
+                                                //this.filePointer.spinner.parent().addClass('hide');
+                                                this.filePointer.progress = pc;
+                                                console.log(pc);
+                                            }
+                                            else {
+                                                $('.js-progress-wrapper').removeClass('hide');
+                                                $('.js-progress').html(pc);
+                                                //this.filePointer.spinner.parent().removeClass('hide');
+                                                //this.filePointer.spinner.html(pc + '%');
+                                                //this.filePointer.progress = pc;
+                                            }
+                                        }
+                                    }, false); 
+
+                                    xhr.addEventListener("progress", function(e, data){
+                                        
+                                        if (e.lengthComputable) {
+                                            var pc = parseInt(e.loaded / e.total * 100);
+                                            if(pc >= 100) {
+                                                //this.filePointer.spinner.parent().addClass('hide');
+                                                this.filePointer.progress = pc;
+                                                console.log(pc);
+                                            }
+                                            else {
+                                                $('.js-progress-wrapper').removeClass('hide');
+                                                $('.js-progress').html(pc);
+                                                //this.filePointer.spinner.parent().removeClass('hide');
+                                                //this.filePointer.spinner.html(pc + '%');
+                                                //this.filePointer.progress = pc;
+                                            }
+                                        }
+                                    }, false);
+                                    return xhr;
+                                },
                                 method: "POST",
                                 contentType: false,
                                 data: formData,
