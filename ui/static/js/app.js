@@ -716,30 +716,63 @@ $(document).ready(function(){
             var formData = new FormData();
             formData.append('attachment', fileToUpload);
 
-            //data = JSON.parse(data);
+                $.ajax({
+                    xhr: function() {
+            
+                        var xhr = new window.XMLHttpRequest();
+                        xhr.filePointer = formData;
+                        xhr.upload.filePointer = formData;
+                        //Upload progress
+                        xhr.upload.addEventListener("progress", function(e, data){
+                            
+                            if (e.lengthComputable) {
+                                var pc = parseInt(e.loaded / e.total * 100);
+                                if(pc >= 100) {
+                                    //this.filePointer.spinner.parent().addClass('hide');
+                                    this.filePointer.progress = pc;
+                                    console.log(pc);
+                                }
+                                else {
+                                    $('.js-progress-wrapper').removeClass('hide');
+                                    $('.js-progress').html(pc);
+                                    //this.filePointer.spinner.parent().removeClass('hide');
+                                    //this.filePointer.spinner.html(pc + '%');
+                                    //this.filePointer.progress = pc;
+                                }
+                            }
+                        }, false); 
 
-            $.ajax({
-                method: "POST",
-                contentType: false,
-                data: formData,
-                processData: false,
-                url: url + "upload/",
-                success: function(data) {
-                    
-                    processEditingForm(submissionObj, url);
-                    
-                    
-                },
-
-                fail: function(data) {
-                    var detailObj = JSON.parse(data.responseText);
-                    alert('Fail: ' + detailObj.detail);
-                },
-
-                error: function(data, errorThrown) {
-                    var detailObj = JSON.parse(data.responseText);
-                    alert('Error: ' + detailObj.detail);
-                },
+                        xhr.addEventListener("progress", function(e, data){
+                            
+                            if (e.lengthComputable) {
+                                var pc = parseInt(e.loaded / e.total * 100);
+                                if(pc >= 100) {
+                                    //this.filePointer.spinner.parent().addClass('hide');
+                                    this.filePointer.progress = pc;
+                                    console.log(pc);
+                                }
+                                else {
+                                    $('.js-progress-wrapper').removeClass('hide');
+                                    $('.js-progress').html(pc);
+                                    //this.filePointer.spinner.parent().removeClass('hide');
+                                    //this.filePointer.spinner.html(pc + '%');
+                                    //this.filePointer.progress = pc;
+                                }
+                            }
+                        }, false);
+                        return xhr;
+                    },
+                    method: "POST",
+                    contentType: false,
+                    data: formData,
+                    processData: false,
+                    url: url + "upload/",
+                    success: function(data) {
+                        
+                        processEditingForm(submissionObj, url);
+                        
+                        
+                    },
 
             });
             
@@ -1197,33 +1230,83 @@ function createDraft(submissionObj, submitMode) {
                 if(statusObj.status == 200 || statusObj.status == '0') {
                     if(fileToUpload) {
 
-                        var csrftoken = getCookie('csrftoken');
+                        //if(fileTypeAllowed(fileToUpload.type) > -1) {
+                            var csrftoken = getCookie('csrftoken');
 
-                        $.ajaxSetup({
-                            beforeSend: function(xhr, settings) {
-                                xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                            }
-                        });
+                            $.ajaxSetup({
+                                beforeSend: function(xhr, settings) {
+                                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                                }
+                            });
 
-                        var data = {
-                            attachment: fileToUpload
-                        };
+                            var data = {
+                                attachment: fileToUpload
+                            };
 
-                        var formData = new FormData();
-                        formData.append('attachment', fileToUpload);
+                            var formData = new FormData();
+                            formData.append('attachment', fileToUpload);
 
-                        //data = JSON.parse(data);
+                            $.ajax({
+                                xhr: function() {
+            
+                                    var xhr = new window.XMLHttpRequest();
+                                    xhr.filePointer = formData;
+                                    xhr.upload.filePointer = formData;
+                                    //Upload progress
+                                    xhr.upload.addEventListener("progress", function(e, data){
+                                        
+                                        if (e.lengthComputable) {
+                                            var pc = parseInt(e.loaded / e.total * 100);
+                                            if(pc >= 100) {
+                                                //this.filePointer.spinner.parent().addClass('hide');
+                                                this.filePointer.progress = pc;
+                                                console.log(pc);
+                                            }
+                                            else {
+                                                $('.js-progress-wrapper').removeClass('hide');
+                                                $('.js-progress').html(pc);
+                                                //this.filePointer.spinner.parent().removeClass('hide');
+                                                //this.filePointer.spinner.html(pc + '%');
+                                                //this.filePointer.progress = pc;
+                                            }
+                                        }
+                                    }, false); 
 
-                        $.ajax({
-                            method: "POST",
-                            contentType: false,
-                            data: formData,
-                            processData: false,
-                            url: statusObj.url + "upload/",
-                            success: function(data) {
-                                if(submitMode) {
-                                    $.when(submitDataset(statusObj.url)).done(function(submitStatus) {
-                                        alert(submitStatus.detail + ' You will not be able to view this dataset until it is approved. \nPlease note: The screen will refresh after you click OK.');
+                                    xhr.addEventListener("progress", function(e, data){
+                                        
+                                        if (e.lengthComputable) {
+                                            var pc = parseInt(e.loaded / e.total * 100);
+                                            if(pc >= 100) {
+                                                //this.filePointer.spinner.parent().addClass('hide');
+                                                this.filePointer.progress = pc;
+                                                console.log(pc);
+                                            }
+                                            else {
+                                                $('.js-progress-wrapper').removeClass('hide');
+                                                $('.js-progress').html(pc);
+                                                //this.filePointer.spinner.parent().removeClass('hide');
+                                                //this.filePointer.spinner.html(pc + '%');
+                                                //this.filePointer.progress = pc;
+                                            }
+                                        }
+                                    }, false);
+                                    return xhr;
+                                },
+                                method: "POST",
+                                contentType: false,
+                                data: formData,
+                                processData: false,
+                                url: statusObj.url + "upload/",
+                                success: function(data) {
+                                    if(submitMode) {
+                                        $.when(submitDataset(statusObj.url)).done(function(submitStatus) {
+                                            alert(submitStatus.detail + ' You will not be able to view this dataset until it is approved. \nPlease note: The screen will refresh after you click OK.');
+                                            $('.js-clear-form').trigger('click');
+                                            $('.js-clear-file').trigger('click');
+                                        });
+                                    }
+                                    else {
+                                        alert('Dataset has been created with the attached file.\nPlease note: The screen will refresh after you click OK.');
                                         $('.js-clear-form').trigger('click');
                                         $('.js-clear-file').trigger('click');
                                     });
