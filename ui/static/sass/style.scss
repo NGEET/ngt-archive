@@ -7,6 +7,26 @@ $light-blue: #4fb9f9;
 $dark-blue: #0089bc;
 $light-orange: #ffa500;
 
+.popover {
+    max-width: 900px !important;
+
+    .arrow::after {
+        border-right-color: #f7f7f7 !important;
+    }
+
+    .popover-title {
+        max-width: 600px !important;
+
+        p {
+            margin-bottom: 0;
+        }
+    }
+
+    .popover-content {
+        display: none;
+    }
+}
+
 .button {
     background-color: $light-green;
 
@@ -213,6 +233,8 @@ body {
 
         .logo {
             box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.22);
+            //width: 1200px;
+            //margin: 0 auto;
 
             img {
                 max-width: 800px;
