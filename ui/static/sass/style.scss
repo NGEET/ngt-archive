@@ -244,22 +244,22 @@ body {
         }
 
         nav.menu {
-                max-width: 1200px;
-                margin: 0 auto;
-                line-height: 48px;
-                background-color: $dark-green;
-                color: white;
-                padding: 0 20px;
-                box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.22);
-        
+            max-width: 1200px;
+            margin: 0 auto;
+            line-height: 48px;
+            background-color: $dark-green;
+            color: white;
+            padding: 0 20px;
+            box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.22);
 
             .user {
                 margin-right: 32px;
                 font-weight: 600;
             }
 
-            a{
+            a {
                 color: white;
+                margin: 0 10px;
 
                 &:hover {
                     color: white;
