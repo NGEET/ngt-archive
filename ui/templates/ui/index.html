@@ -15,11 +15,13 @@
         <link rel="stylesheet" type="text/css" href="static/js/jquery-ui/jquery-ui.theme.css">
         <link rel="stylesheet" type="text/css" href="static/js/jquery-ui/jquery-ui.structure.css">
         <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAllKgUfxh6WQorM4b-vnIBjY1kRGwG86g"></script>
+        <script type="text/javascript" src="static/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="static/stylesheets/popover.css">
     </head>
     <body>
         
         <main>
-            <div class="row logo">
+            <div class="logo">
                 <a href="/">
                     <img src="static/img/logo.png">
                 </a>
@@ -169,7 +171,21 @@
                     <p><i class="required">*</i><i> = Required for submission</i></p>
                     <form class="js-create-form dataset small-12 medium-9">
                         <div class="small-12 medium-9 small-centered medium-centered file-drop-zone js-file-drop-zone">
-                            <h5>Drop data file here <i class="required">*</i></h5>
+                            <h5>
+                                Drop data file here <i class="required">*</i>
+                                <b class="desc-tooltip js-file-tooltip" title="<p>Upload a single file containing all your data files. If you have multiple files, submit a compressed file (zip, rar, 7z, etc). Data files submitted to the Archive should be grouped together into collections in a way that make sense for them to be submitted and viewed together as a single record. Some examples of data collections are:</p>
+                                <ul>
+                                <li>Data from a field campaign that need to be viewed together - in this case you can submit all the data collected during that field campaign as a single collection.</li>
+                                <li>Data used in a publication - in this case you can submit all the data (raw or processed) that went into the publication as a single collection.</li>
+                                <li>Data used in a data product that is to be released with a DOI (e.g. a synthesis data product) - in this case you can submit the data that went into the data product (raw or processed) as a single collection. If data are used from external databases, we suggest including those data that you used for the synthesis for reproducibility.</li>
+                                <li>Continuously generated sensor data - in this case, we suggest grouping raw data (such as those obtained from data loggers) and processed data as separate records so that each can be released at separate times.</li>
+                                </ul>
+                                <p>
+                                For NGEE Tropics-sponsored datasets that are currently collecting data from permanently installed sensors, we require that the metadata reporting templates are also attached. (With link to the templates).
+                                </p>
+                                ">?</b>
+
+                            </h5>
                             <h6 class="hide file-exists js-file-exists"><b>Note:</b> This dataset already contains a file. If you upload a new file, you will be replacing the existing file.</h6>
                             <!--h6>Allowed file types: Compressed/archive files (zip, rar, 7z...). To download free zipping software, click <a href="http://www.7-zip.org/" target="_blank">here</a></h6-->
                             <div class="button file-select-btn small-12 large-6">
