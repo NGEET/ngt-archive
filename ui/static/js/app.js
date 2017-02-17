@@ -1025,16 +1025,17 @@ $(document).ready(function(){
                 for(var prop in datasetObj) {
                     if(templates.datasets[prop]) {
                         if(templates.datasets[prop].sequence != -1) {
+                            
                             var substring = '<div class="row">';
                             
-                            substring += '<div class="columns small-12 medium-3"><b class="js-param-name">' + templates.datasets[prop].label + '</b>' + '&nbsp;</div>';
-                            if((prop == 'contact' || prop == 'sites' || prop == 'plots' || prop == 'authors' || prop == 'variables' ||  prop == 'cdiac_submission_contact') &&  datasetObj[prop] != null) {
+                            substring += '<div class="columns small-12 medium-3"><b class="js-param-name ' + prop + '">' + templates.datasets[prop].label + '</b>' + '&nbsp;</div>';
+                            if((prop == 'contact' || prop == 'sites' || prop == 'plots' || prop == 'authors' || prop == 'variables' ||  prop == 'cdiac_submission_contact') &&  datasetObj[prop] && datasetObj[prop] != null) {
                                 console.log('url:' + prop);
                                 if(prop == 'contact' || prop == 'authors' || prop == 'cdiac_submission_contact') {
                                     for(var i=0;i<dataObj.contacts.length;i++) {
 
                                         if(datasetObj[prop].indexOf(dataObj.contacts[i].url) != -1) {
-                                            substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' +
+                                            substring += '<div class="columns small-12 medium-9"><span class="js-param-val ' + prop + '">' +
                                                 dataObj.contacts[i].first_name + ' ' +
                                                 dataObj.contacts[i].last_name ;
                                             if(dataObj.contacts[i].email){
@@ -1089,6 +1090,16 @@ $(document).ready(function(){
                                     }
                                 }
                             }
+                            /*else if(prop == 'cdiac_submission_contact') {
+                                if(datasetObj[prop]) {
+                                    substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' +  datasetObj[prop] + '</span></div>';
+                                    $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
+                                }
+                                else {
+                                    substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' +  (datasetObj['contact'] == null ? '' : datasetObj['contact']) + '</span></div>';
+                                    $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));   
+                                }
+                            }*/
                             else if(prop == 'qaqc_status') {
                                 for(var n=0;n<templates.datasets.qaqc_status.choices.length;n++) {
                                     if(datasetObj[prop] == templates.datasets.qaqc_status.choices[n].value) {
@@ -1102,9 +1113,14 @@ $(document).ready(function(){
                                 $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
                             }
                             else {
-
-                                substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + (datasetObj[prop] == null ? 'N/A' : datasetObj[prop]) + '</span></div>';
-                                $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
+                                if(prop == 'cdiac_submission_contact') {
+                                    substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + ($('.js-param-val.contact').html() ? $('.js-param-val.contact').html() : 'N/A') + '</span></div>';
+                                    $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
+                                }
+                                else {
+                                    substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + (datasetObj[prop] == null ? 'N/A' : datasetObj[prop]) + '</span></div>';
+                                    $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
+                                }
                             }
                             
                         }
@@ -1309,15 +1325,8 @@ function createDraft(submissionObj, submitMode) {
                                         alert('Dataset has been created with the attached file.\nPlease note: The screen will refresh after you click OK.');
                                         $('.js-clear-form').trigger('click');
                                         $('.js-clear-file').trigger('click');
-                                    });
-                                }
-                                else {
-                                    alert('Dataset has been created with the attached file.\nPlease note: The screen will refresh after you click OK.');
-                                    $('.js-clear-form').trigger('click');
-                                    $('.js-clear-file').trigger('click');
-                                }
-                                
-                            },
+                                    }
+                                },
 
                             fail: function(data) {
                                 var detailObj = JSON.parse(data.responseText);
