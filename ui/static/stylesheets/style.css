@@ -235,14 +235,15 @@ body main nav.menu {
   padding: 0 20px;
   box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.22);
 }
-/* line 256, ../sass/style.scss */
+/* line 255, ../sass/style.scss */
 body main nav.menu .user {
   margin-right: 32px;
   font-weight: 600;
 }
-/* line 261, ../sass/style.scss */
+/* line 260, ../sass/style.scss */
 body main nav.menu a {
   color: white;
+  margin: 0 10px;
 }
 /* line 264, ../sass/style.scss */
 body main nav.menu a:hover {
