@@ -1661,10 +1661,12 @@ function createEditForm(templateType) {
         yearRange: "c-20:c+10"
     });
     
-    $( document ).tooltip();
-    $('.ui-tooltip').each(function() {
+    //$( document ).tooltip();
+    $('.js-tooltip').popover({html: true, trigger: 'hover focus', placement: 'right'});
+    $('.js-file-tooltip').popover({html: true, trigger: 'hover focus', placement: 'top'});
+    /*$('.ui-tooltip').each(function() {
         $(this).html($(this).attr('title'));
-    });
+    });*/
 }
 
 function getCookie(name) {
