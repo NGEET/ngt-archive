@@ -1436,6 +1436,8 @@ function completeEdit(submissionObj, url, submitMode) {
             }
             else {
                 alert('Draft has been updated successfully.');
+                $('.js-clear-form').trigger('click');
+                $('.js-clear-file').trigger('click');
             }
         }
         else {
