@@ -721,7 +721,7 @@ $(document).ready(function(){
 
             var formData = new FormData();
             formData.append('attachment', fileToUpload);
-
+            $('.js-loading').removeClass('hide');
                 $.ajax({
                     xhr: function() {
             
@@ -779,6 +779,9 @@ $(document).ready(function(){
                         
                         
                     },
+                    complete: function() {
+                        $('.js-loading').addClass('hide');
+                    },
 
             });
             
@@ -796,7 +799,7 @@ $(document).ready(function(){
         var submissionObj = {};
         submissionObj.submit = true;
         var submitMode = false;
-
+        
         if($(this).hasClass('js-submit')) {
             submitMode = true;
         }
@@ -1261,6 +1264,7 @@ function createDraft(submissionObj, submitMode) {
             alert('Please upload an archive file in order to submit the dataset.');
         }
         else {
+            $('.js-loading').removeClass('hide');
             delete submissionObj.submit;
             $.when(createDataset(submissionObj)).done(function(statusObj) {
                 if(statusObj.status == 200 || statusObj.status == '0') {
@@ -1268,7 +1272,7 @@ function createDraft(submissionObj, submitMode) {
 
                         //if(fileTypeAllowed(fileToUpload.type) > -1) {
                             var csrftoken = getCookie('csrftoken');
-
+                            $('.js-loading').removeClass('hide');
                             $.ajaxSetup({
                                 beforeSend: function(xhr, settings) {
                                     xhr.setRequestHeader("X-CSRFToken", csrftoken);
@@ -1358,6 +1362,10 @@ function createDraft(submissionObj, submitMode) {
                                 alert('Error: The draft was created successfully but the file could not be uploaded. ' + detailObj.detail);
                             },
 
+                            complete: function() {
+                                $('.js-loading').addClass('hide');
+                            },
+
                         });
 
                     }
@@ -1365,6 +1373,7 @@ function createDraft(submissionObj, submitMode) {
                         alert('Dataset has been created successfully. You can make further changes to it by going to Home > Edit Drafts.\nPlease note: The screen will refresh after you click OK.');
                         $('.js-clear-form').trigger('click');
                         $('.js-clear-file').trigger('click');
+                        $('.js-loading').addClass('hide');
                     }
                     
                 }
@@ -1375,6 +1384,7 @@ function createDraft(submissionObj, submitMode) {
                         responseText += templates.datasets[prop].label + ': ' + response[prop] + '\n';
                     }
                     alert('There was an error creating the draft: \n' + responseText);
+                    $('.js-loading').addClass('hide');
                 }
 
             });
@@ -1450,6 +1460,10 @@ function completeEdit(submissionObj, url, submitMode) {
                         var detailObj = JSON.parse(data.responseText);
                         alert('Error: The draft was updated successfully but the file could not be uploaded. ' + detailObj.detail);
                     },
+
+                    complete: function() {
+                        $('.js-loading').addClass('hide');
+                    }
 
                 });                
 
