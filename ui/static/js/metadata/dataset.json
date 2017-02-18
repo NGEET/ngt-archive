@@ -185,7 +185,7 @@
         "type": "string",
         "required": false,
         "read_only": false,
-        "label": "Dataset Reference",
+        "label": "Dataset Reference(s)",
         "sequence": 19,
         "multiple": false,
         "description": "<p>Associated publications or datasets where users can learn more about the data, processing method, or how the data were used. Ideally, provide complete citation information for the publication (including DOI).</p>"
