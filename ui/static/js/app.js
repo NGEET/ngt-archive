@@ -1163,6 +1163,16 @@ $(document).ready(function(){
                 }
 
             //}
+            if(window.location.href.indexOf('edit-draft') != -1 || !datasetObj.archive) {
+                //$('.js-data-policy-check').addClass('hide');
+                $('.js-data-policy-text').addClass('hide');
+                $('.js-file-download-btn').addClass('hide');
+            }
+            else {
+                //$('.js-data-policy-check').removeClass('hide');
+                $('.js-data-policy-text').removeClass('hide');
+                $('.js-file-download-btn').removeClass('hide');
+            }
             $('.js-data-policy-check').prop('checked', false);
             popup.open();
         });
