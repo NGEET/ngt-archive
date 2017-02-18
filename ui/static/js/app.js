@@ -46,6 +46,12 @@ function dedupe(array) {
 $(document).ready(function(){
     $(document).foundation();
 
+    $(window).bind("beforeunload", function(event) { 
+        if(window.location.href.indexOf('create') != -1 || window.location.href.indexOf('edit-draft') != -1) {
+            return confirm("Are you sure you want to leave this page? There may be unsaved changes."); 
+        }
+    });
+
     if($('.js-auth').attr('data-auth') == 'false') {
         window.location = 'api/api-auth/login/?next=/';
     }
@@ -1090,16 +1096,20 @@ $(document).ready(function(){
                                     }
                                 }
                             }
-                            /*else if(prop == 'cdiac_submission_contact') {
-                                if(datasetObj[prop]) {
-                                    substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' +  datasetObj[prop] + '</span></div>';
+                            else if(prop == 'ngee_tropics_resources') {
+                                if(datasetObj[prop] == true) {
+                                    substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + 'Yes' + '</span></div>';
                                     $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
                                 }
-                                else {
-                                    substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' +  (datasetObj['contact'] == null ? '' : datasetObj['contact']) + '</span></div>';
+                                else if(datasetObj[prop] == false) {
+                                    substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + 'No' + '</span></div>';
                                     $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));   
                                 }
-                            }*/
+                                else {
+                                    substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + '</span></div>';
+                                    $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
+                                }
+                            }
                             else if(prop == 'qaqc_status') {
                                 for(var n=0;n<templates.datasets.qaqc_status.choices.length;n++) {
                                     if(datasetObj[prop] == templates.datasets.qaqc_status.choices[n].value) {
