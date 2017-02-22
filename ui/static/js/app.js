@@ -1050,21 +1050,21 @@ $(document).ready(function(){
                             if((prop == 'contact' || prop == 'sites' || prop == 'plots' || prop == 'authors' || prop == 'variables' ||  prop == 'cdiac_submission_contact') &&  datasetObj[prop] && datasetObj[prop] != null) {
                                 console.log('url:' + prop);
                                 if(prop == 'contact' || prop == 'authors' || prop == 'cdiac_submission_contact') {
-                                    for(var i=0;i<dataObj.contacts.length;i++) {
-
-                                        if(datasetObj[prop].indexOf(dataObj.contacts[i].url) != -1) {
-                                            substring += '<div class="columns small-12 medium-9"><span class="js-param-val ' + prop + '">' +
-                                                dataObj.contacts[i].first_name + ' ' +
-                                                dataObj.contacts[i].last_name ;
-                                            if(dataObj.contacts[i].email){
-                                                substring += ' &lt; ' + dataObj.contacts[i].email +' &gt;';
+                                    for(var q=0;q<datasetObj[prop].length; q++) {
+                                        for(var i=0;i<dataObj.contacts.length;i++) {                                        
+                                            if(datasetObj[prop][q].indexOf(dataObj.contacts[i].url) != -1) {
+                                                substring += '<div class="columns small-12 medium-9"><span class="js-param-val ' + prop + '">' +
+                                                    dataObj.contacts[i].first_name + ' ' +
+                                                    dataObj.contacts[i].last_name ;
+                                                if(dataObj.contacts[i].email){
+                                                    substring += ' &lt; ' + dataObj.contacts[i].email +' &gt;';
+                                                }
+                                                substring +=  '</span></div>';
                                             }
-                                            substring +=  '</span></div>';
-                                            
-                                        }
 
-                                        if(prop == 'authors' && datasetObj[prop].indexOf(dataObj.contacts[i].url) != -1) {
-                                            citation += dataObj.contacts[i].first_name + ' ' + dataObj.contacts[i].last_name + ', ';
+                                            if(prop == 'authors' && datasetObj[prop][q].indexOf(dataObj.contacts[i].url) != -1) {
+                                                citation += dataObj.contacts[i].first_name + ' ' + dataObj.contacts[i].last_name + ', ';
+                                            }
                                         }
                                     }
                                     $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
