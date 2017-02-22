@@ -3,14 +3,14 @@
         "type": "field",
         "required": false,
         "read_only": true,
-        "label": "Dataset id",
+        "label": "Data set id",
         "sequence": 1
     },
     "version": {
         "type": "string",
         "required": false,
         "read_only": true,
-        "label": "Dataset Version",
+        "label": "Version",
         "sequence": 2
     },
     "name": {
@@ -167,7 +167,7 @@
         "type": "string",
         "required": false,
         "read_only": false,
-        "label": "DOE Funding Contract Number(s)",
+        "label": "DOE Funding Contract Numbers",
         "sequence": 17,
         "multiple": false,
         "description": "<p>List the numbers of any DOE contract under which the work was funded. If no DOE funding for this dataset or field is empty set as 'NONE'. If the dataset is a result of a joint effort between two or more DOE Site/Facility Management Contractors, etc., additional DOE contract numbers may be entered. The 'DE' should not be included as a part of the number.</p>"
@@ -178,14 +178,14 @@
         "read_only": false,
         "sequence": 18,
         "multiple": false,
-        "label": "Dataset Acknowledgement(s)",
+        "label": "Dataset Acknowledgement",
         "description": "<p>Acknowledgement that you want the users of this data to include when they use the data (different from citation). Acknowledgements can include relevant DOI or paper(s), and/or funding for the site support. You can also indicate that you prefer to be contacted for acknowledgement text. If NGEE Tropics resources (financial, personnel etc.) were used, include the following line: 'Funding for NGEE-Tropics data resources was provided by the U.S. Department of Energy Office of Science, Office of Biological and Environmental Research.'</p>"    
     },
     "reference": {
         "type": "string",
         "required": false,
         "read_only": false,
-        "label": "Dataset Reference(s)",
+        "label": "Dataset Reference",
         "sequence": 19,
         "multiple": false,
         "description": "<p>Associated publications or datasets where users can learn more about the data, processing method, or how the data were used. Ideally, provide complete citation information for the publication (including DOI).</p>"
@@ -234,9 +234,11 @@
     "doi": {
         "type": "string",
         "required": false,
-        "read_only": true,
+        "read_only": false,
         "label": "Dataset DOI",
-        "sequence": 23
+        "sequence": 23,
+        "multiple": false,
+        "description": "<p>DOI for this dataset.</p>"
     },
     "cdiac_submission_contact": {
         "type": "field",
@@ -249,7 +251,7 @@
         "type": "field",
         "required": false,
         "read_only": true,
-        "label": "Url",
+        "label": "URL",
         "sequence": -1
     },
     
