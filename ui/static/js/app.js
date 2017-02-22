@@ -1,6 +1,7 @@
 var dataObj = {};
 var templates = {};
 var fileToUpload = '';
+var overrideMsg = false;
 
 function getParameterByName(name, url) {
     if (!url) {
@@ -47,8 +48,10 @@ $(document).ready(function(){
     $(document).foundation();
 
     $(window).bind("beforeunload", function(event) { 
-        if(window.location.href.indexOf('create') != -1 || window.location.href.indexOf('edit-draft') != -1) {
-            return confirm("Are you sure you want to leave this page? There may be unsaved changes."); 
+        if(!overrideMsg) {
+            if(window.location.href.indexOf('create') != -1 || window.location.href.indexOf('edit-draft') != -1) {
+                return confirm("Are you sure you want to leave this page? There may be unsaved changes."); 
+            }
         }
     });
 
@@ -638,6 +641,7 @@ $(document).ready(function(){
 
     $('body').on('click', '.js-cancel-btn', function(event) {
         event.preventDefault();
+        overrideMsg = true;
         location.reload();
     })
 
@@ -688,6 +692,7 @@ $(document).ready(function(){
 
     $('body').on('click', '.js-clear-form', function(event) {
         event.preventDefault();
+        overrideMsg = true;
         location.reload();
         /*$('.js-create-form .js-input').each(function() {
             $(this).val('');
@@ -930,7 +935,7 @@ $(document).ready(function(){
             });
 
             if(validEntries) {
-
+                $('.js-loading').removeClass('hide');
                 $('.js-new-value.js-input').each(function(index) {
 
                     var param = $(this).closest('.js-param').attr('data-param');
@@ -982,6 +987,8 @@ $(document).ready(function(){
                                 }
                             }
                             alert('There was a problem creating the new entry.\n' + responseStr);
+                            $('.js-loading').addClass('hide');
+
                             return;
                         }
                     });
@@ -995,6 +1002,7 @@ $(document).ready(function(){
             
         }
         else {
+            $('.js-loading').removeClass('hide');
             submissionObj = processForm(submissionObj, false, true);
             completeEdit(submissionObj, url);
         }
@@ -1445,9 +1453,9 @@ function completeEdit(submissionObj, url, submitMode) {
                             });
                         }
                         else {*/
-                            alert('Draft has been updated with the attached file');
+                            alert('Draft has been updated with the attached file.\nPlease note: The page will refresh now and take you back to the list of drafts.');
                             $('.js-clear-file').trigger('click');
-                            
+                            $('.js-clear-form').trigger('click');
                         //}
                         
                     },
@@ -1470,7 +1478,7 @@ function completeEdit(submissionObj, url, submitMode) {
 
             }
             else {
-                alert('Draft has been updated successfully.');
+                alert('Draft has been updated successfully.\nPlease note: The page will refresh now and take you back to the list of drafts.');
                 $('.js-clear-form').trigger('click');
                 $('.js-clear-file').trigger('click');
             }
@@ -1486,6 +1494,7 @@ function completeEdit(submissionObj, url, submitMode) {
             }
             
             alert('There was an error with the update.\n' + responseStr);
+            $('.js-loading').addClass('hide');
         }
     });
     
@@ -1543,10 +1552,10 @@ function processForm(submissionObj, submitMode, editMode) {
                         submissionObj[param] = null;
                     }
 
-                    if(required) {
+                    /*if(required) {
                         submissionObj.submit = false;
                         $(this).closest('.js-param').addClass('missing');
-                    }
+                    }*/
                 }
                 else if(submitMode && required) {
                     if($(this).hasClass('js-new-value') && submissionObj[param]) {
