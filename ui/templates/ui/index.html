@@ -15,17 +15,21 @@
         <link rel="stylesheet" type="text/css" href="static/js/jquery-ui/jquery-ui.theme.css">
         <link rel="stylesheet" type="text/css" href="static/js/jquery-ui/jquery-ui.structure.css">
         <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAllKgUfxh6WQorM4b-vnIBjY1kRGwG86g"></script>
+        <script type="text/javascript" src="static/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="static/stylesheets/popover.css">
     </head>
     <body>
         
         <main>
-            <div class="row logo">
+            <div class="logo">
                 <a href="/">
                     <img src="static/img/logo.png">
                 </a>
             </div>
             <nav class="menu expanded">
                 <a href="/">Home</a>
+                <a href="https://drive.google.com/file/d/0B5RSGI83Og11cVlGbWcxeW5LQjg/view">Data Policy</a>
+                <a href="https://docs.google.com/document/d/14idE53T_HyE5a9jaIGcdnW1zvg6WwT9bBY9aF7BfE3c/edit">Help and Support</a>
                 <a href="api/api-auth/logout/?next=/" class="float-right">Logout</a>
                 {% if user.is_authenticated  and user.is_activated %}
                     <span class="float-right user">{{ user.get_username }}</span>
@@ -40,9 +44,9 @@
                 <section class="row js-home-view home-view">
                     <div class="columns small-centered small-4">
                         <button class="button js-view-toggle columns small-12" data-view="create">Create New Dataset</button>
-                        <button class="button js-view-toggle columns small-12" data-view="edit-draft">Edit Drafts</button>
+                        <button class="button js-view-toggle columns small-12" data-view="edit-draft">Edit Draft Datasets</button>
                         <button class="button js-view-toggle columns small-12" data-view="view">View Approved Datasets</button>
-                        <a class="button columns small-12" data-view="view" href="/?view=view-sites">View Sites and Plots</a>
+                        <a class="button columns small-12" data-view="view" href="/?view=view-sites">View Field Sites / Plots</a>
                     </div>
                 </section>
                 
@@ -169,15 +173,35 @@
                     <p><i class="required">*</i><i> = Required for submission</i></p>
                     <form class="js-create-form dataset small-12 medium-9">
                         <div class="small-12 medium-9 small-centered medium-centered file-drop-zone js-file-drop-zone">
-                            <h5>Drop data file here <i class="required">*</i></h5>
+                            <h5>
+                                Drop data file here <i class="required">*</i>
+                                <b class="desc-tooltip js-file-tooltip" title="<p>Upload a single file containing all your data files. If you have multiple files, submit a compressed file (zip, rar, 7z, etc). Data files submitted to the Archive should be grouped together into collections in a way that make sense for them to be submitted and viewed together as a single record. Some examples of data collections are:</p>
+                                <ul>
+                                <li>Data from a field campaign that need to be viewed together - in this case you can submit all the data collected during that field campaign as a single collection.</li>
+                                <li>Data used in a publication - in this case you can submit all the data (raw or processed) that went into the publication as a single collection.</li>
+                                <li>Data used in a data product that is to be released with a DOI (e.g. a synthesis data product) - in this case you can submit the data that went into the data product (raw or processed) as a single collection. If data are used from external databases, we suggest including those data that you used for the synthesis for reproducibility.</li>
+                                <li>Continuously generated sensor data - in this case, we suggest grouping raw data (such as those obtained from data loggers) and processed data as separate records so that each can be released at separate times.</li>
+                                </ul>
+                                <p>
+                                For NGEE Tropics-sponsored datasets that are currently collecting data from permanently installed sensors, we require that the metadata reporting templates are also attached. (With link to the templates).
+                                </p>
+                                ">?</b>
+
+                            </h5>
                             <h6 class="hide file-exists js-file-exists"><b>Note:</b> This dataset already contains a file. If you upload a new file, you will be replacing the existing file.</h6>
                             <!--h6>Allowed file types: Compressed/archive files (zip, rar, 7z...). To download free zipping software, click <a href="http://www.7-zip.org/" target="_blank">here</a></h6-->
                             <div class="button file-select-btn small-12 large-6">
                                 <input type="file" name="" class="js-file-input-btn">
                                 Select File
                             </div>
+
                             <div class="file-name-wrapper js-file-name-wrapper hide">
                                 <span class="js-file-name"></span>
+                                <div class="js-progress-wrapper hide">
+                                    Uploading:&nbsp;
+                                    <span class="js-progress"></span>
+                                    %
+                                </div>
                                 <button class="button secondary js-clear-file-btn">Clear</button>
                             </div>
                         </div>
@@ -307,7 +331,7 @@
                 </section>
               <!--button class="button edit-btn js-edit-dataset-btn">Edit</button-->
                 <div class="js-download-wrapper hide row columns small-12">
-                    <span>     
+                    <span class="js-data-policy-text">     
                         <input type="checkbox" name="data-policy"  id="data-policy" class="js-data-policy-check">
                         <label for="data-policy">I have read and agree to the terms of the</label> <a href="https://drive.google.com/file/d/0B5RSGI83Og11cVlGbWcxeW5LQjg/view">NGEE Tropics data policy</a>.
                     </span><br>
