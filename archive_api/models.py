@@ -203,6 +203,7 @@ class DataSet(models.Model):
     ACCESS_NGEET = 1
     ACCESS_PUBLIC = 2
 
+    STATUS_DELETED = -1 # this does not show up in any displays
     STATUS_DRAFT = 0
     STATUS_SUBMITTED = 1
     STATUS_APPROVED = 2

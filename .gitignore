@@ -10,6 +10,9 @@
 /static
 ORNL_Archive_Backup_20160916/
 __pycache__/
+_build/
+_static/
+_templates/
 archive_api/fixtures/*.txt
 archive_api_import.json
 archive_api_import_with_datasets.json
