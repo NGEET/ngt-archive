@@ -2,6 +2,7 @@ var dataObj = {};
 var templates = {};
 var fileToUpload = '';
 var overrideMsg = false;
+var editingScreen = false;
 
 function getParameterByName(name, url) {
     if (!url) {
@@ -49,7 +50,7 @@ $(document).ready(function(){
 
     $(window).bind("beforeunload", function(event) { 
         if(!overrideMsg) {
-            if(window.location.href.indexOf('create') != -1 || window.location.href.indexOf('edit-draft') != -1) {
+            if(window.location.href.indexOf('create') != -1 || (window.location.href.indexOf('edit-draft') != -1 && editingScreen)) {
                 return confirm("Are you sure you want to leave this page? There may be unsaved changes."); 
             }
         }
@@ -132,6 +133,8 @@ $(document).ready(function(){
             }
             //$('.js-view.view-drafts-view h4').prepend(draftCount + ' ');
             $('.js-loading').addClass('hide');
+            editingScreen = false;
+
         });
         break;
 
@@ -536,6 +539,8 @@ $(document).ready(function(){
                 });
             }
         }
+        editingScreen = true;
+
         //$('.js-edit-form .js-file-drop-zone').addClass('hide');
 
         /*$('.js-edit-form .js-param').each(function() {
@@ -1188,7 +1193,7 @@ $(document).ready(function(){
                 }
 
             //}
-            if(window.location.href.indexOf('edit-draft') != -1 || !datasetObj.archive) {
+            if(!datasetObj.archive) {
                 //$('.js-data-policy-check').addClass('hide');
                 $('.js-data-policy-text').addClass('hide');
                 $('.js-file-download-btn').addClass('hide');
