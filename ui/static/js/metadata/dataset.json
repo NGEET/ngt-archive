@@ -3,7 +3,7 @@
         "type": "field",
         "required": false,
         "read_only": true,
-        "label": "Data set id",
+        "label": "Dataset ID",
         "sequence": 1
     },
     "version": {
