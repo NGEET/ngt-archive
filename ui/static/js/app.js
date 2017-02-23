@@ -1186,13 +1186,19 @@ $(document).ready(function(){
                 $('.js-file-download-btn').removeClass('hide');
             }
             $('.js-data-policy-check').prop('checked', false);
+            $('.js-file-download-btn').addClass('disabled');
             popup.open();
         });
     
     });
 
     $('body').on('click', '.js-data-policy-check', function() {
-        $('.js-file-download-btn').hasClass('disabled') ? $('.js-file-download-btn').removeClass('disabled') : $('.js-file-download-btn').addClass('disabled');
+        if($('.js-data-policy-check').prop('checked')) {
+            $('.js-file-download-btn').removeClass('disabled');
+        }
+        else {
+            $('.js-file-download-btn').addClass('disabled');
+        }
     });
 
     $('body').on('click', '.js-close-modal', function(event) {
