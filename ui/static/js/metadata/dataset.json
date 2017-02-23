@@ -10,7 +10,7 @@
         "type": "string",
         "required": false,
         "read_only": true,
-        "label": "Version",
+        "label": "Dataset Version",
         "sequence": 2
     },
     "name": {
@@ -167,7 +167,7 @@
         "type": "string",
         "required": false,
         "read_only": false,
-        "label": "DOE Funding Contract Numbers",
+        "label": "DOE Funding Contract Number(s)",
         "sequence": 17,
         "multiple": false,
         "description": "<p>List the numbers of any DOE contract under which the work was funded. If no DOE funding for this dataset or field is empty set as 'NONE'. If the dataset is a result of a joint effort between two or more DOE Site/Facility Management Contractors, etc., additional DOE contract numbers may be entered. The 'DE' should not be included as a part of the number.</p>"
@@ -185,7 +185,7 @@
         "type": "string",
         "required": false,
         "read_only": false,
-        "label": "Dataset Reference",
+        "label": "Dataset Reference(s)",
         "sequence": 19,
         "multiple": false,
         "description": "<p>Associated publications or datasets where users can learn more about the data, processing method, or how the data were used. Ideally, provide complete citation information for the publication (including DOI).</p>"
