@@ -1041,7 +1041,7 @@ $(document).ready(function(){
                 var citation = '';
 
                 for(var prop in templates.datasets) {
-                    if(prop in datasetObj && templates.datasets[prop].sequence != -1) {
+                    if(prop in datasetObj && templates.datasets[prop].sequence != -1 && datasetObj[prop] != null && datasetObj[prop].length > 0) {
                             
                             var substring = '<div class="row">';
                             
