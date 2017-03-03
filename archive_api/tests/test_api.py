@@ -110,7 +110,8 @@ class DataSetClientTestCase(APITestCase):
         self.assertTrue("X-Sendfile" in response)
         self.assertTrue(response["X-Sendfile"].find("archives/NGT0004_1.0_"))
         self.assertTrue("Content-Disposition" in response)
-        self.assertEqual("attachment; filename=NGT0004_0.0_Unnamed.zip", response['Content-Disposition'])
+
+        self.assertTrue("attachment; filename=Archive_" in response['Content-Disposition'])
 
     def test_client_get(self):
         # Unauthorized user that is not in any groups
@@ -136,7 +137,7 @@ class DataSetClientTestCase(APITestCase):
                                         'http://testserver/api/v1/variables/1/'], 'archive': None,
                           'cdiac_submission_contact': None, 'reference': '', 'additional_access_information': '',
                           'contact': 'http://testserver/api/v1/people/2/', 'acknowledgement': '',
-                          'data_set_id': 'NGT0001',
+                          'data_set_id': 'NGT0001', 'archive_filename': None,
                           'modified_by': 'auser', 'status': '1', 'ngee_tropics_resources': True, 'qaqc_status': None,
                           'end_date': None, 'additional_reference_information': '', 'name': 'Data Set 2',
                           'created_by': 'auser', 'sites': ['http://testserver/api/v1/sites/1/'],
@@ -561,7 +562,7 @@ select "View Approved Datasets" and then click the "Approve" button for NGT0001:
         self.assertTrue("X-Sendfile" in response)
         self.assertTrue(response["X-Sendfile"].find("archives/NGT1_1.0_"))
         self.assertTrue("Content-Disposition" in response)
-        self.assertEqual("attachment; filename=NGT0000_0.0_Data_Set_1.zip", response['Content-Disposition'])
+        self.assertTrue("attachment; filename=Archive_" in response['Content-Disposition'])
 
         downloadlog = DataSetDownloadLog.objects.all()
         self.assertEqual(len(downloadlog),1)
@@ -582,9 +583,9 @@ select "View Approved Datasets" and then click the "Approve" button for NGT0001:
         response = self.client.get('/api/v1/datasets/1/archive/')
         self.assertContains(response, '')
         self.assertTrue("X-Sendfile" in response)
-        self.assertTrue(response["X-Sendfile"].find("archives/0000/0000/NGT0000/0.0/NGT0000_0.0") > -1)
+        self.assertTrue(response["X-Sendfile"].find("archives/0000/0000/NGT0000/0.0/valid_upload") > -1)
         self.assertTrue("Content-Disposition" in response)
-        self.assertEqual("attachment; filename=NGT0000_0.0_Data_Set_1.txt", response['Content-Disposition'])
+        self.assertTrue("attachment; filename=valid_upload_" in response['Content-Disposition'])
 
         response = self.client.put('/api/v1/datasets/1/',
                                    data='{"data_set_id":"FooBarBaz","description":"A FooBarBaz DataSet",'
@@ -635,9 +636,9 @@ You will not be able to view this dataset until it has been approved.
         response = self.client.get('/api/v1/datasets/1/archive/')
         self.assertContains(response, '')
         self.assertTrue("X-Sendfile" in response)
-        self.assertTrue(response["X-Sendfile"].find("archives/0000/0000/NGT0000/1.0/NGT0000_1.0") > -1)
+        self.assertTrue(response["X-Sendfile"].find("archives/0000/0000/NGT0000/1.0/valid_upload") > -1)
         self.assertTrue("Content-Disposition" in response)
-        self.assertEqual("attachment; filename=NGT0000_1.0_Data_Set_1.txt", response['Content-Disposition'])
+        self.assertTrue("attachment; filename=valid_upload_" in response['Content-Disposition'])
 
         import os
         shutil.rmtree(os.path.join(settings.ARCHIVE_API['DATASET_ARCHIVE_ROOT'], "0000"))
@@ -882,9 +883,9 @@ You will not be able to view this dataset until it has been approved.
             self.assertContains(response, '')
             self.assertTrue("X-Sendfile" in response)
             self.assertTrue(
-                response["X-Sendfile"].find("archives/0000/0000/NGT0000/0.0/NGT0000_0.0") > -1)
+                response["X-Sendfile"].find("archives/0000/0000/NGT0000/0.0/bigfile") > -1)
             self.assertTrue("Content-Disposition" in response)
-            self.assertEqual("attachment; filename=NGT0000_0.0_Data_Set_1.dat",
+            self.assertTrue("attachment; filename=bigfile_" in
                              response['Content-Disposition'])
 
         try:
