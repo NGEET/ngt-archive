@@ -1,10 +1,10 @@
 # Create your views here.
 import inspect
+import shutil
 from collections import OrderedDict
 
 import os
 from django.conf import settings
-
 from django.db import transaction
 from django.http import HttpResponse
 from django.utils import timezone
@@ -22,8 +22,10 @@ from types import FunctionType
 from archive_api.models import DataSet, MeasurementVariable, Site, Person, Plot, DataSetDownloadLog
 from archive_api.permissions import HasArchivePermission, HasSubmitPermission, HasApprovePermission, \
     HasUnsubmitPermission, \
-    HasUnapprovePermission, HasUploadPermission, HasEditPermissionOrReadonly, APPROVED, DRAFT, SUBMITTED, IsActivated
-from archive_api.serializers import DataSetSerializer, MeasurementVariableSerializer, SiteSerializer, PersonSerializer, \
+    HasUnapprovePermission, HasUploadPermission, HasEditPermissionOrReadonly, APPROVED, DRAFT, \
+    SUBMITTED, IsActivated
+from archive_api.serializers import DataSetSerializer, MeasurementVariableSerializer, \
+    SiteSerializer, PersonSerializer, \
     PlotSerializer
 from archive_api.signals import dataset_status_change
 
@@ -35,7 +37,7 @@ def get_ip_address(request):
     :param request:
     :return:
     """
-    headers = ('HTTP_X_REAL_IP','HTTP_CLIENT_IP','HTTP_X_FORWARDED_FOR', 'REMOTE_ADDR')
+    headers = ('HTTP_X_REAL_IP', 'HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'REMOTE_ADDR')
     for header in headers:
         ip = request.META.get(header)
         if ip:
@@ -70,7 +72,7 @@ class DataSetViewSet(ModelViewSet):
         Returns a list of all  DataSets available to the archive_api service
     """
     permission_classes = (HasEditPermissionOrReadonly, permissions.IsAuthenticated, IsActivated,
-                          permissions.DjangoModelPermissions )
+                          permissions.DjangoModelPermissions)
     queryset = DataSet.objects.all()
     serializer_class = DataSetSerializer
     http_method_names = ['get', 'post', 'put', 'head', 'options']
@@ -85,8 +87,9 @@ class DataSetViewSet(ModelViewSet):
             instance = serializer.save(created_by=self.request.user, modified_by=self.request.user)
 
             # Send signal for the status change
-            dataset_status_change.send(sender=self.__class__, request=self.request, user=self.request.user,
-                                   instance=instance, original_status=None)
+            dataset_status_change.send(sender=self.__class__, request=self.request,
+                                       user=self.request.user,
+                                       instance=instance, original_status=None)
 
     def perform_update(self, serializer):
         """
@@ -96,20 +99,14 @@ class DataSetViewSet(ModelViewSet):
             serializer.save(modified_by=self.request.user)
 
     @detail_route(methods=['GET'],
-                  permission_classes=(HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasArchivePermission))
+                  permission_classes=(
+                  HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasArchivePermission))
     def archive(self, request, pk=None):
 
         dataset = self.get_object()
 
         from django.conf import settings
-        # We want the current name of the Dataset as the files name
-        if dataset.name:
-            dataset_name = dataset.name.replace(" ", "_")
-            dataset_name = ''.join([i for i in dataset_name if i.isalnum() or i == "_"])
-            dataset_name = dataset_name.replace("__", "_")
-        else:
-            dataset_name = "Unnamed"
-        dataset_id_version, file_extension = os.path.splitext(dataset.archive.name)
+        head, tail = os.path.split(dataset.archive.name)
 
         fullpath = os.path.join(settings.ARCHIVE_API['DATASET_ARCHIVE_ROOT'], dataset.archive.name)
         if not dataset.archive:
@@ -118,8 +115,7 @@ class DataSetViewSet(ModelViewSet):
 
         response = HttpResponse()
         response['X-Sendfile'] = smart_str(fullpath)
-        response['Content-Disposition'] = 'attachment; filename={}_{}_{}{}'.format(
-            dataset.data_set_id(), dataset.version, dataset_name, file_extension)
+        response['Content-Disposition'] = 'attachment; filename={}'.format(tail)
 
         DataSetDownloadLog.objects.create(
             user=request.user,
@@ -132,7 +128,8 @@ class DataSetViewSet(ModelViewSet):
         return response
 
     @detail_route(methods=['post'],
-                  permission_classes=(HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasUploadPermission))
+                  permission_classes=(
+                  HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasUploadPermission))
     def upload(self, request, *args, **kwargs):
         """
         Upload an archive file to the Dataset
@@ -140,17 +137,23 @@ class DataSetViewSet(ModelViewSet):
         if 'attachment' in request.data:
             dataset = self.get_object()
 
-
             upload = request.data['attachment']
 
-            if request.user.has_perm("archive_api.upload_large_file_dataset") and upload.size > settings.ARCHIVE_API['DATASET_ADMIN_MAX_UPLOAD_SIZE']:
-                return Response({'success': False, 'detail': 'Uploaded file size is {:.1f} MB. Max upload size is {:.1f} MB'.format(
-                    upload.size / (1024 * 1024), settings.ARCHIVE_API['DATASET_ADMIN_MAX_UPLOAD_SIZE']/(1024*1024)
-                )},status=http_status.HTTP_400_BAD_REQUEST)
+            if request.user.has_perm("archive_api.upload_large_file_dataset") and upload.size > \
+                    settings.ARCHIVE_API['DATASET_ADMIN_MAX_UPLOAD_SIZE']:
+                return Response({'success': False,
+                                 'detail': 'Uploaded file size is {:.1f} MB. Max upload size is {:.1f} MB'.format(
+                                     upload.size / (1024 * 1024),
+                                     settings.ARCHIVE_API['DATASET_ADMIN_MAX_UPLOAD_SIZE'] / (
+                                     1024 * 1024)
+                                 )}, status=http_status.HTTP_400_BAD_REQUEST)
             elif upload.size > settings.ARCHIVE_API['DATASET_USER_MAX_UPLOAD_SIZE']:
-                return Response({'success': False, 'detail': 'Uploaded file size is {:.1f} MB. Max upload size is {:.1f} MB'.format(
-                    upload.size/(1024*1024), settings.ARCHIVE_API['DATASET_USER_MAX_UPLOAD_SIZE'] / (1024 * 1024)
-                )}, status=http_status.HTTP_400_BAD_REQUEST)
+                return Response({'success': False,
+                                 'detail': 'Uploaded file size is {:.1f} MB. Max upload size is {:.1f} MB'.format(
+                                     upload.size / (1024 * 1024),
+                                     settings.ARCHIVE_API['DATASET_USER_MAX_UPLOAD_SIZE'] / (
+                                     1024 * 1024)
+                                 )}, status=http_status.HTTP_400_BAD_REQUEST)
 
             try:
                 # This will rollback the transaction on failure
@@ -168,50 +171,58 @@ class DataSetViewSet(ModelViewSet):
 
             return Response({'success': True, 'detail': 'File uploaded'},
                             status=http_status.HTTP_201_CREATED, headers={'Location':
-                                                                         dataset.archive.url})
+                                                                              dataset.archive.url})
         else:
             return Response({'success': False, 'detail': 'There is no file to upload'},
                             status=http_status.HTTP_400_BAD_REQUEST)
 
     @detail_route(methods=['post', 'get'],
-                  permission_classes=(HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasApprovePermission))
+                  permission_classes=(
+                  HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasApprovePermission))
     def approve(self, request, pk=None):
         """
         Approve action.  Changes the dataset from SUBMITTED to APPROVED status. User must permissions for this action
         """
 
         self.change_status(request, APPROVED)
-        return Response({'success': True, 'detail': 'DataSet has been approved.'}, status=http_status.HTTP_200_OK)
+        return Response({'success': True, 'detail': 'DataSet has been approved.'},
+                        status=http_status.HTTP_200_OK)
 
     @detail_route(methods=['post', 'get'],
-                  permission_classes=(HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasUnsubmitPermission))
+                  permission_classes=(
+                  HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasUnsubmitPermission))
     def unsubmit(self, request, pk=None):
         """
         Unsubmit action.  Changes the dataset from SUBMITTED to DRAFT status. User must have permissions for this action
         """
 
         self.change_status(request, DRAFT)
-        return Response({'success': True, 'detail': 'DataSet has been unsubmitted.'}, status=http_status.HTTP_200_OK)
+        return Response({'success': True, 'detail': 'DataSet has been unsubmitted.'},
+                        status=http_status.HTTP_200_OK)
 
     @detail_route(methods=['post', 'get'],
                   permission_classes=(
-                          HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasUnapprovePermission))
+                          HasEditPermissionOrReadonly, permissions.IsAuthenticated,
+                          HasUnapprovePermission))
     def unapprove(self, request, pk=None):
         """
         Unapprove action.  Changes the dataset from APPROVED to SUBMITTED status. User must have permissions for this action
         """
 
         self.change_status(request, SUBMITTED)
-        return Response({'success': True, 'detail': 'DataSet has been unapproved.'}, status=http_status.HTTP_200_OK)
+        return Response({'success': True, 'detail': 'DataSet has been unapproved.'},
+                        status=http_status.HTTP_200_OK)
 
     @detail_route(methods=['post', 'get'],
-                  permission_classes=(HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasSubmitPermission))
+                  permission_classes=(
+                  HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasSubmitPermission))
     def submit(self, request, pk=None):
         """
         Submit action. Changes the dataset from DRAFT to SUBMITTED status. User must have permissions for this action.
         """
         self.change_status(request, SUBMITTED)
-        return Response({'success': True, 'detail': 'DataSet has been submitted.'}, status=http_status.HTTP_200_OK)
+        return Response({'success': True, 'detail': 'DataSet has been submitted.'},
+                        status=http_status.HTTP_200_OK)
 
     def change_status(self, request, status):
         """
@@ -228,14 +239,27 @@ class DataSetViewSet(ModelViewSet):
             dataset.submission_date = timezone.now()
             dataset.modified_by = request.user
             serializer = DataSetSerializer(dataset, context={'request': request})
-            deserializer = DataSetSerializer(dataset, data=serializer.data, context={'request': request})
+            deserializer = DataSetSerializer(dataset, data=serializer.data,
+                                             context={'request': request})
             deserializer.is_valid(raise_exception=True)
             self.perform_update(deserializer)
             if status == SUBMITTED and dataset.archive:
+
+                old_path, filename = os.path.split(dataset.archive.name)
                 dataset.version = "1.0"  # FIXME:  hard coded util statemachine is implemented
-                dataset.archive.open()
-                dataset.archive.field.clean(dataset.archive, dataset)
-                dataset.archive.save(dataset.archive.name, dataset.archive)
+                new_path = old_path.replace("0.0", dataset.version)
+                os.makedirs(os.path.join(settings.ARCHIVE_API['DATASET_ARCHIVE_ROOT'], new_path),
+                            exist_ok=True)
+                shutil.copy2(
+                    os.path.join(settings.ARCHIVE_API['DATASET_ARCHIVE_ROOT'], old_path, filename),
+                    os.path.join(settings.ARCHIVE_API['DATASET_ARCHIVE_ROOT'], new_path, filename))
+
+                dataset.archive.name = "{}/{}".format(new_path, filename)
+                dataset.save()
+
+                # dataset.archive.open()
+                # dataset.archive.field.clean(dataset.archive, dataset)
+                #dataset.archive.save()
 
         # Send the signal for the status change
         dataset_status_change.send(sender=self.__class__, request=request, user=request.user,
@@ -251,7 +275,7 @@ class DataSetViewSet(ModelViewSet):
         """
         user = self.request.user
 
-        from django.db.models import Q # for or clause
+        from django.db.models import Q  # for or clause
         if self.request.user.has_perm('archive_api.view_all_datasets'):
             return DataSet.objects.all()
         else:
@@ -262,7 +286,8 @@ class DataSetViewSet(ModelViewSet):
             )
 
             if self.request.user.has_perm('archive_api.view_ngeet_approved_datasets'):
-                where_clause = where_clause | Q(access_level=DataSet.ACCESS_NGEET, status=DataSet.STATUS_APPROVED)
+                where_clause = where_clause | Q(access_level=DataSet.ACCESS_NGEET,
+                                                status=DataSet.STATUS_APPROVED)
             return DataSet.objects.filter(where_clause)
 
 

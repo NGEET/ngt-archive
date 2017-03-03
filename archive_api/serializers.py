@@ -1,5 +1,7 @@
 from urllib.parse import urlparse
 
+import os
+
 from archive_api.models import DataSet, MeasurementVariable, Site, Person, Plot, Author
 from django.core.urlresolvers import resolve
 from django.db import transaction
@@ -26,8 +28,6 @@ class StringToIntField(serializers.Field):
 
     def to_representation(self, obj):
         return str(obj)
-
-
 
 
 class AuthorsField(serializers.SerializerMethodField):
@@ -65,12 +65,22 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
     """
     created_by = serializers.ReadOnlyField(source='created_by.username')
     modified_by = serializers.ReadOnlyField(source='modified_by.username')
+    archive_filename = serializers.SerializerMethodField()
     submission_date = serializers.ReadOnlyField()
     authors = AuthorsField()
     archive = serializers.SerializerMethodField()
     status = StringToIntReadOnlyField()
     qaqc_status = StringToIntField(required=False,allow_null=True)
     access_level = StringToIntField(required=False, allow_null=True)
+
+    def get_archive_filename(self,instance):
+
+        if instance.archive:
+
+            base, filename = os.path.split(instance.archive.name)
+            return filename
+        else:
+            return None
 
     def get_archive(self, instance):
         """ Returns the archive access url"""
@@ -113,10 +123,12 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
                   'acknowledgement', 'reference', 'additional_reference_information',
                   'access_level', 'additional_access_information', 'originating_institution',
                   'submission_date', 'contact', 'sites', 'authors', 'plots', 'variables', 'archive',
+                  'archive_filename',
                   'created_by', 'created_date', 'modified_by', 'modified_date'
                   , 'cdiac_import', 'cdiac_submission_contact')
         read_only_fields = ('cdiac_import', 'cdiac_submission_contact',
             'url', 'version', 'created_by', 'created_date', 'modified_by', 'modified_date', 'status', 'archive',
+            'archive_filename',
             'submission_date', 'data_set_id')
 
     def validate(self, data):
