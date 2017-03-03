@@ -1,16 +1,14 @@
-import mimetypes
-
-import os
 import django.contrib.auth.models
+import os
+from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.db import models
 from django.db import transaction
-from django.conf import settings
+from django.utils.datetime_safe import datetime
 
 
 class DatasetArchiveStorage(FileSystemStorage):
-
-    def __init__(self,*args, **kwargs):
+    def __init__(self, *args, **kwargs):
         """
         Override parent constructor. If location is not set, set the
         `DATASET_ARCHIVE_ROOT`
@@ -23,14 +21,13 @@ class DatasetArchiveStorage(FileSystemStorage):
 
         from django.conf import settings
         if "location" not in kwargs:
-            kwargs["location"]=settings.ARCHIVE_API['DATASET_ARCHIVE_ROOT']
+            kwargs["location"] = settings.ARCHIVE_API['DATASET_ARCHIVE_ROOT']
         if "base_url" not in kwargs:
             kwargs["base_url"] = settings.ARCHIVE_API['DATASET_ARCHIVE_URL']
         super(DatasetArchiveStorage, self).__init__(*args, **kwargs)
 
 
 dataset_archive_storage = DatasetArchiveStorage()
-
 
 STATUS_CHOICES = (
     (0, 'Draft'),
@@ -63,20 +60,25 @@ def get_upload_path(instance, filename):
     :param filename:
     :return:
     """
-    _, file_extension = os.path.splitext(filename)
+    head, tail = os.path.split(filename)
+    filename_base, filename_ext = os.path.splitext(tail)
 
     parent_dir_no = 0
     sub_dir_no = 0
     if instance.ngt_id > 0:
         parent_dir_no = int(int(instance.ngt_id / 100) * 100)
-        sub_dir_no = int(int(instance.ngt_id/10) * 10)
+        sub_dir_no = int(int(instance.ngt_id / 10) * 10)
 
     return os.path.join(
-        "{parent_dir_no:04}/{sub_dir_no:04}/{data_set_id}/{version}/{data_set_id}_{version}{ext}".format(**{"data_set_id":instance.data_set_id(),
-                             "parent_dir_no":parent_dir_no,
-                             "sub_dir_no":sub_dir_no,
-                             "version":instance.version,
-                             "ext":file_extension}))
+        "{parent_dir_no:04}/{sub_dir_no:04}/{data_set_id}/{version}/{filename_base}_"
+        "{now:%Y%m%d%H%M%S}{ext}".format(
+            **{"data_set_id": instance.data_set_id(),
+               "parent_dir_no": parent_dir_no,
+               "sub_dir_no": sub_dir_no,
+               "version": instance.version,
+               "filename_base": filename_base,
+               "now": datetime.now(),
+               "ext": filename_ext}))
 
 
 class MeasurementVariable(models.Model):
@@ -100,7 +102,7 @@ class NGTUser(django.contrib.auth.models.User):
         return self.get_full_name()
 
     class Meta:
-        proxy=True
+        proxy = True
 
     @property
     def is_activated(self):
@@ -198,12 +200,11 @@ class Plot(models.Model):
 
 
 class DataSet(models.Model):
-
     ACCESS_PRIVATE = 0
     ACCESS_NGEET = 1
     ACCESS_PUBLIC = 2
 
-    STATUS_DELETED = -1 # this does not show up in any displays
+    STATUS_DELETED = -1  # this does not show up in any displays
     STATUS_DRAFT = 0
     STATUS_SUBMITTED = 1
     STATUS_APPROVED = 2
@@ -216,7 +217,7 @@ class DataSet(models.Model):
     version = models.CharField(max_length=15, default="0.0")
 
     status = models.IntegerField(choices=STATUS_CHOICES,
-                              default=0)  # (draft [DEFAULT], submitted, approved)
+                                 default=0)  # (draft [DEFAULT], submitted, approved)
     status_comment = models.TextField(blank=True, null=True)
     name = models.CharField(max_length=150, blank=True, null=True)
     doi = models.TextField(blank=True, null=True)
@@ -224,7 +225,7 @@ class DataSet(models.Model):
     end_date = models.DateField(blank=True, null=True)
     qaqc_status = models.IntegerField(choices=QAQC_STATUS_CHOICES, blank=True, null=True)
     qaqc_method_description = models.TextField(blank=True, null=True)
-    ngee_tropics_resources = models.NullBooleanField(blank=True,null=True)
+    ngee_tropics_resources = models.NullBooleanField(blank=True, null=True)
     funding_organizations = models.TextField(blank=True, null=True)
     doe_funding_contract_numbers = models.CharField(max_length=100, blank=True, null=True)
     acknowledgement = models.TextField(blank=True, null=True)
@@ -251,13 +252,15 @@ class DataSet(models.Model):
 
     # CDIAC Import Fields
     cdiac_import = models.BooleanField(default=False)
-    cdiac_submission_contact = models.ForeignKey(Person, related_name='+', on_delete=models.DO_NOTHING, blank=True,
+    cdiac_submission_contact = models.ForeignKey(Person, related_name='+',
+                                                 on_delete=models.DO_NOTHING, blank=True,
                                                  null=True)
 
-    archive = models.FileField(upload_to=get_upload_path, storage=dataset_archive_storage, null=True)
+    archive = models.FileField(upload_to=get_upload_path, storage=dataset_archive_storage,
+                               null=True)
 
     class Meta:
-        unique_together = ('ngt_id','version')
+        unique_together = ('ngt_id', 'version')
         permissions = (
             ("approve_submitted_dataset", "Can approve a 'submitted' dataset"),
             ("edit_own_draft_dataset", "Can edit own 'draft' dataset"),
@@ -267,7 +270,7 @@ class DataSet(models.Model):
             ("unapprove_approved_dataset", "Can unapprove a 'approved' dataset"),
             ("view_all_datasets", "Can view all datasets"),
             ("view_ngeet_approved_datasets", "Can view all approved NGEE Tropics datasets"),
-            ("upload_large_file_dataset","Can upload a large file to a dataset")
+            ("upload_large_file_dataset", "Can upload a large file to a dataset")
         )
 
     def save(self, *args, **kwargs):
@@ -285,10 +288,12 @@ class DataSet(models.Model):
             if self.ngt_id is None and self.version == "0.0":
                 # select_for_update Locks table for the rest of the transaction
                 # nowait is honored if the db supports it.
-                max_dataset = DataSet.objects.select_for_update(nowait=True).order_by('-ngt_id','-id')
-                if max_dataset :
+                max_dataset = DataSet.objects.select_for_update(nowait=True).order_by('-ngt_id',
+                                                                                      '-id')
+                if max_dataset:
                     self.ngt_id = max_dataset[0].ngt_id + 1
-                else: self.ngt_id=0 # only for the very first dataset
+                else:
+                    self.ngt_id = 0  # only for the very first dataset
             super(DataSet, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -299,8 +304,6 @@ class DataSet(models.Model):
 
     def __repr__(self):
         return '<DataSet {}>'.format(self)
-
-
 
 
 class Author(models.Model):
@@ -317,9 +320,10 @@ class Author(models.Model):
 class DataSetDownloadLog(models.Model):
     """Logs archive downloads"""
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.DO_NOTHING)
-    dataset = models.ForeignKey(DataSet,on_delete=models.DO_NOTHING)
-    dataset_status  = models.IntegerField(choices=STATUS_CHOICES)  # (draft [DEFAULT], submitted, approved)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.DO_NOTHING)
+    dataset = models.ForeignKey(DataSet, on_delete=models.DO_NOTHING)
+    dataset_status = models.IntegerField(
+        choices=STATUS_CHOICES)  # (draft [DEFAULT], submitted, approved)
     request_url = models.CharField(max_length=256)
     datetime = models.DateTimeField(editable=False, auto_now_add=True)
     ip_address = models.GenericIPAddressField(blank=True, null=True)
