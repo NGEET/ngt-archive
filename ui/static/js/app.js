@@ -149,29 +149,38 @@ $(document).ready(function(){
             for(var i=0;i<data.length;i++) {
                 
                 if(data[i].status == 2) {
-                    var tag = $('<div/>').addClass('js-view-dataset dataset');
+                    var tr = $('<tr/>');
+                    var tag = $('<td/><div/>').addClass('js-view-dataset dataset');
                     tag.append('<h5 class="title">' + (data[i].name ? data[i].name : 'NA') + '</h5>')
                         .append('<p class="desc">' + (data[i].description ? data[i].description.substring(0, 199) + '...' : 'NA') + '</p>')
                         .attr('data-url', data[i].url)
                         .attr('data-index', i);
 
+                    tr.append(tag);
+
+                    for(var j=0;j<dataObj.contacts.length;j++) {
+                        if(dataObj.contacts[j].url.indexOf(data[i].contact) != -1) {
+                            tr.append('<td>' + dataObj.contacts[j].first_name + ' ' + dataObj.contacts[j].last_name + '</td>');
+                        }
+                    }
+
                     approvedCount++;
 
                     switch(data[i].access_level) {
                         case '0': 
-                            tag.find('.title').append('<span class="tag">Private</span>');
+                            tr.append('<td>Private</td>');
                             break;
 
                         case '1': 
-                            tag.find('.title').append('<span class="tag">NGEE Tropics</span>');
+                            tr.append('<td>NGEE Tropics</td>');
                             break;
 
                         case '2':
-                            tag.find('.title').append('<span class="tag">Public</span>');
+                            tr.append('<td>Public</td>');
                             break;
                     }
 
-                    $('.js-all-datasets').append(tag); 
+                    $('.js-all-datasets tbody').append(tr); 
                    
                 }
                     /*$('.js-all-datasets').append((data[i].name ? data[i].name : 'NA') + '<br>')
