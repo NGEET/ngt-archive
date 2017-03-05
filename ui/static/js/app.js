@@ -517,9 +517,12 @@ $(document).ready(function(){
 
         if(dataObj.datasets[index].archive) {
             $('.js-file-exists').removeClass('hide');
+            $('.js-existing-file').removeClass('hide');
+            $('.js-existing-file span').html(dataObj.datasets[index].archive_filename);
         }
         else {
             $('.js-file-exists').addClass('hide');
+            $('.js-existing-file').addClass('hide');
         }
 
         var siteStr = '';
