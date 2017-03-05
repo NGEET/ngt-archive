@@ -45,6 +45,7 @@
                     <p>
                     The term "Dataset" refers to data and metadata grouped together into a package in a way that make sense for them to be submitted and viewed together. The Datasets can comprise of single or multiple measurements. Examples of datasets include data and metadata from a field campaign, data in a publication, data products grouped with the raw data, or sensor data files downloaded at different times with metadata files.
                     </p>
+                    <br>
                     <div class="columns small-centered small-4">
                         <button class="button js-view-toggle columns small-12" data-view="create">Create New Dataset</button>
                         <button class="button js-view-toggle columns small-12" data-view="edit-draft">Edit Draft Datasets</button>
@@ -141,7 +142,20 @@
                 <!--br><br-->
                 <section class="js-view view-dataset-view hide" data-view="view">
                     <h4>Approved Datasets</h4>
-                    <div class="all-datasets js-all-datasets"></div>
+                    <div class="all-datasets js-all-datasets">
+                        <table class=" unstriped">
+                            <thead>
+                                <tr>
+                                    <th>Dataset</th>
+                                    <th>Dataset Contact</th>
+                                    <th>Access Level</th>
+                                </tr>
+                                <tbody>
+                                    
+                                </tbody>
+                            </thead>
+                        </table>
+                    </div>
                 </section>
                 <section class="js-view view-sites-view hide" data-view="view-sites">
                     <h4>Sites</h4>
