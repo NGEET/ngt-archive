@@ -259,10 +259,13 @@ body {
 
             a {
                 color: white;
-                margin: 0 10px;
+                padding: 0 20px;
+                height: 48px;
+                display: inline-block;
 
                 &:hover {
                     color: white;
+                    background-color: darken($dark-green, 10%);
                 }
             }
         }
