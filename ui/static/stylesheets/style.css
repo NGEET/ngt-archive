@@ -384,20 +384,21 @@ body main .sites-container .site-info .site-desc .param {
 /* line 419, ../sass/style.scss */
 body main .all-datasets .dataset {
   margin-bottom: 32px;
+  width: 75%;
 }
-/* line 423, ../sass/style.scss */
+/* line 424, ../sass/style.scss */
 body main .all-datasets .dataset .title:hover {
   color: #006489;
 }
-/* line 433, ../sass/style.scss */
+/* line 434, ../sass/style.scss */
 body main .all-datasets .dataset .title, body main .all-datasets .dataset .desc {
   cursor: pointer;
 }
-/* line 440, ../sass/style.scss */
+/* line 441, ../sass/style.scss */
 body main footer {
   padding-top: 2rem;
 }
-/* line 443, ../sass/style.scss */
+/* line 444, ../sass/style.scss */
 body main footer img {
   max-width: 320px;
 }
