@@ -28,7 +28,7 @@
             </div>
             <nav class="menu expanded">
                 <a href="/">Home</a>
-                <a href="https://drive.google.com/file/d/0B5RSGI83Og11cVlGbWcxeW5LQjg/view">Data Policy</a>
+                <a href="https://drive.google.com/file/d/0B5RSGI83Og11cVlGbWcxeW5LQjg/view" target="_blank">Data Policy</a>
                 <a href="https://docs.google.com/document/d/14idE53T_HyE5a9jaIGcdnW1zvg6WwT9bBY9aF7BfE3c/edit">Help and Support</a>
                 <a href="api/api-auth/logout/?next=/" class="float-right">Logout</a>
                 {% if user.is_authenticated  and user.is_activated %}
@@ -41,10 +41,10 @@
             </nav>
             <article class="main-article js-main-article">
                 <h3>NGEE Tropics Archive</h3>
-                <p>
-                The term "Dataset" refers to data and metadata grouped together into a package in a way that make sense for them to be submitted and viewed together. The Datasets can comprise of single or multiple measurements. Examples of datasets include data and metadata from a field campaign, data in a publication, data products grouped with the raw data, or sensor data files downloaded at different times with metadata files.
-                </p>
                 <section class="row js-home-view home-view">
+                    <p>
+                    The term "Dataset" refers to data and metadata grouped together into a package in a way that make sense for them to be submitted and viewed together. The Datasets can comprise of single or multiple measurements. Examples of datasets include data and metadata from a field campaign, data in a publication, data products grouped with the raw data, or sensor data files downloaded at different times with metadata files.
+                    </p>
                     <div class="columns small-centered small-4">
                         <button class="button js-view-toggle columns small-12" data-view="create">Create New Dataset</button>
                         <button class="button js-view-toggle columns small-12" data-view="edit-draft">Edit Draft Datasets</button>
@@ -337,7 +337,7 @@
                 <div class="js-download-wrapper hide row columns small-12">
                     <span class="js-data-policy-text">     
                         <input type="checkbox" name="data-policy"  id="data-policy" class="js-data-policy-check">
-                        <label for="data-policy">I have read and agree to the terms of the</label> <a href="https://drive.google.com/file/d/0B5RSGI83Og11cVlGbWcxeW5LQjg/view">NGEE Tropics data policy</a>.
+                        <label for="data-policy">I have read and agree to the terms of the</label> <a href="https://drive.google.com/file/d/0B5RSGI83Og11cVlGbWcxeW5LQjg/view" target="_blank">NGEE Tropics data policy</a>.
                     </span><br>
                     <a class="button download-btn js-file-download-btn disabled">Download Dataset</a>
                 </div>
