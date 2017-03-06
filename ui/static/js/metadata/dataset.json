@@ -149,7 +149,7 @@
         "type": "boolean",
         "required": true,
         "read_only": false,
-        "label": "Indicate whether NGEE Tropics Resources (financial, personnel etc.) were used to obtain this dataset. The NGEE Tropics Internal Data Policy will apply, if checked 'yes'",
+        "label": "NGEE Tropics Resources Used? (If \"yes\", internal data policy applies)",
         "sequence": 15,
         "multiple": false,
         "description": "<p>This should be checked if any NGEE Tropics Resources (financial, personnel, etc.) were used to generate the data. If marked yes, the data will will be subject to the NGEE Tropics Internal Data Policy. NGEE Tropics Internal Data Policy: 'Private' Datasets that have used NGEE Tropics Resources (financial, personnel etc.) will automatically be set to 'NGEE Tropics' access within 6 months of submission. 'Private and 'NGEE Tropics' datasets that have used NGEE Tropics Resources will be set to 'Public' access within 18 months of submission.</p>"
@@ -167,7 +167,7 @@
         "type": "string",
         "required": false,
         "read_only": false,
-        "label": "DOE Funding Contract Number(s)",
+        "label": "Dataset Funding Contract Number(s)",
         "sequence": 17,
         "multiple": false,
         "description": "<p>List the numbers of any DOE contract under which the work was funded. If no DOE funding for this dataset or field is empty set as 'NONE'. If the dataset is a result of a joint effort between two or more DOE Site/Facility Management Contractors, etc., additional DOE contract numbers may be entered. The 'DE' should not be included as a part of the number.</p>"
@@ -178,7 +178,7 @@
         "read_only": false,
         "sequence": 18,
         "multiple": false,
-        "label": "Dataset Acknowledgement",
+        "label": "Dataset Acknowledgement(s)",
         "description": "<p>Acknowledgement that you want the users of this data to include when they use the data (different from citation). Acknowledgements can include relevant DOI or paper(s), and/or funding for the site support. You can also indicate that you prefer to be contacted for acknowledgement text. If NGEE Tropics resources (financial, personnel etc.) were used, include the following line: 'Funding for NGEE-Tropics data resources was provided by the U.S. Department of Energy Office of Science, Office of Biological and Environmental Research.'</p>"    
     },
     "reference": {
