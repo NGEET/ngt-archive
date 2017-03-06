@@ -191,7 +191,7 @@
                     <form class="js-create-form dataset small-12 medium-9">
                         <div class="small-12 medium-9 small-centered medium-centered file-drop-zone js-file-drop-zone">
                             <h5>
-                                Drag and drop data file here <i class="required">*</i>
+                                Drag and drop data file in this box <i class="required">*</i>
                                 <b class="desc-tooltip js-file-tooltip" title="<p>Upload a single file containing all your data files. If you have multiple files, submit a compressed file (zip, rar, 7z, etc). Data files submitted to the Archive should be grouped together into collections in a way that make sense for them to be submitted and viewed together as a single record. Some examples of data collections are:</p>
                                 <ul>
                                 <li>Data from a field campaign that need to be viewed together - in this case you can submit all the data collected during that field campaign as a single collection.</li>
@@ -205,6 +205,8 @@
                                 ">?</b>
 
                             </h5>
+                            <small>(Only one data file is allowed per dataset)</small>
+                            <br><br>
                             <h6 class="hide file-exists js-file-exists"><b>Note:</b> This dataset already contains a file. If you upload a new file, you will be replacing the existing file.</h6>
                             <h6 class="js-existing-file hide">Filename: <span class="js-existing-file"></span></h6>
                             <!--h6>Allowed file types: Compressed/archive files (zip, rar, 7z...). To download free zipping software, click <a href="http://www.7-zip.org/" target="_blank">here</a></h6-->
@@ -215,12 +217,14 @@
 
                             <div class="file-name-wrapper js-file-name-wrapper hide">
                                 <span class="js-file-name"></span>
+                                <br><br>
+                                <button class="button secondary js-clear-file-btn">Clear</button>
+                                <br>
                                 <div class="js-progress-wrapper hide">
                                     Uploading:&nbsp;
                                     <span class="js-progress"></span>
                                     %
                                 </div>
-                                <button class="button secondary js-clear-file-btn">Clear</button>
                             </div>
                         </div>
                         <div class="small-12">
