@@ -142,59 +142,21 @@ $(document).ready(function(){
 
         case 'view':
         //$('.js-get-datasets').trigger('click');
-        $.when(getDataSets()).then(function(data) {
+        $.when(getDataSets(), getContacts()).then(function(data, contacts) {
             dataObj.datasets = data;
+            dataObj.contacts = contacts;
             //console.log(data);
             $('.js-text-dump').html('');
             $('.js-datasets').html('');
-            var approvedCount = 0;
-            for(var i=0;i<data.length;i++) {
-                
-                if(data[i].status == 2) {
-                    var tr = $('<tr/>');
-                    tr.append('<td>' + data[i].data_set_id + '</td>');
-                    var tag = $('<td/><div/>').addClass('js-view-dataset dataset');
-                    tag.append('<h5 class="title">' + (data[i].name ? data[i].name : 'NA') + '</h5>')
-                        .append('<p class="desc">' + (data[i].description ? data[i].description.substring(0, 199) + '...' : 'NA') + '</p>')
-                        .attr('data-url', data[i].url)
-                        .attr('data-index', i);
+            dataObj.approvedDatasets = [];
 
-                    tr.append(tag);
-
-                    for(var j=0;j<dataObj.contacts.length;j++) {
-                        if(dataObj.contacts[j].url.indexOf(data[i].contact) != -1) {
-                            tr.append('<td>' + dataObj.contacts[j].first_name + ' ' + dataObj.contacts[j].last_name + '</td>');
-                        }
-                    }
-
-                    tr.append('<td>' + data[i].modified_date + '</td>');
-
-                    approvedCount++;
-
-                    switch(data[i].access_level) {
-                        case '0': 
-                            tr.append('<td>Private</td>');
-                            break;
-
-                        case '1': 
-                            tr.append('<td>NGEE Tropics</td>');
-                            break;
-
-                        case '2':
-                            tr.append('<td>Public</td>');
-                            break;
-                    }
-
-                    $('.js-all-datasets tbody').append(tr); 
-                   
+            for(var i=0;i<dataObj.datasets.length;i++) {
+                if(dataObj.datasets[i].status == 2) {
+                    dataObj.approvedDatasets.push(dataObj.datasets[i]);
                 }
-                    /*$('.js-all-datasets').append((data[i].name ? data[i].name : 'NA') + '<br>')
-                                    .append((data[i].description ? data[i].description : 'NA') + '<br>')
-                                    .append('<button class="js-view-dataset button" data-url="' + data[i].url + '" data-index="' + i + '">View</button>')
-                                    .append('&nbsp;' + '<button class="js-delete-dataset button" data-url="' + data[i].url + '" data-index="' + i + '">Delete</button>' + '<br><br>');*/
-                
             }
-            $('.js-view.view-dataset-view h4').prepend(approvedCount + ' ');              
+
+            showApprovedDatasets();              
             $('.js-loading').addClass('hide');
         });
         break;
@@ -434,6 +396,29 @@ $(document).ready(function(){
             $('.js-plot-params').append(param);
         }
     });
+
+    function sortByField(a, b){
+        var aName = a[sortField].toLowerCase();
+        var bName = b[sortField].toLowerCase();
+
+        if(sortField == 'contact') {
+            for(var j=0; j<dataObj.contacts.length; j++) {
+                if(dataObj.contacts[j].url == a[sortField]) {
+                    aName = dataObj.contacts[j].first_name + ' ' + dataObj.contacts[j].last_name;
+                }
+                if(dataObj.contacts[j].url == b[sortField]) {
+                    bName = dataObj.contacts[j].first_name + ' ' + dataObj.contacts[j].last_name;
+                }
+            }
+        }
+
+        if(sortReverse) {
+            return ((aName > bName) ? -1 : ((aName < bName) ? 1 : 0));
+        }
+        else {
+            return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
+        }
+    }
 
     $('body').on('change', '.js-all-contacts', function() {
         if($(this).val() == 'add-new') {
@@ -1052,6 +1037,33 @@ $(document).ready(function(){
         $(this).closest('section').remove();
     });
 
+    $('body').on('click', '.js-sort-header', function() {
+        var newSortField = $(this).attr('data-sort');
+        if(newSortField == sortField) {
+            sortReverse = !sortReverse;
+        }
+        else {
+            sortField = newSortField;
+        }
+
+        $('.js-sort-icon.unsorted').removeClass('hide');
+        $('.js-sort-icon.sort-up').addClass('hide');
+        $('.js-sort-icon.sort-down').addClass('hide');
+
+        if(sortReverse) {
+            $(this).find('.sort-down').removeClass('hide');
+            $(this).find('.sort-up').addClass('hide');
+            $(this).find('.unsorted').addClass('hide');
+        }
+        else {
+            $(this).find('.sort-up').removeClass('hide');
+            $(this).find('.sort-down').addClass('hide');
+            $(this).find('.unsorted').addClass('hide');
+        }
+        dataObj.approvedDatasets.sort(sortByField);
+        showApprovedDatasets();
+    });
+
     $('body').on('click', '.js-view-dataset', function(event) {
         event.preventDefault();
         var index = $(this).attr('data-index');
@@ -1449,6 +1461,58 @@ function createDraft(submissionObj, submitMode) {
             scrollTop: $('.js-create-form').offset().top
         }, 500);
     }
+}
+
+function showApprovedDatasets() {
+    var approvedCount = 0;
+    $('.js-all-datasets table tbody').html('');
+    for(var i=0;i<dataObj.approvedDatasets.length;i++) {
+        
+        if(dataObj.approvedDatasets[i].status == 2) {
+            var tr = $('<tr/>');
+            tr.append('<td>' + dataObj.approvedDatasets[i].data_set_id + '</td>');
+            var tag = $('<td/><div/>').addClass('js-view-dataset dataset');
+            tag.append('<h5 class="title">' + (dataObj.approvedDatasets[i].name ? dataObj.approvedDatasets[i].name : 'NA') + '</h5>')
+                .append('<p class="desc">' + (dataObj.approvedDatasets[i].description ? dataObj.approvedDatasets[i].description.substring(0, 199) + '...' : 'NA') + '</p>')
+                .attr('data-url', dataObj.approvedDatasets[i].url)
+                .attr('data-index', i);
+
+            tr.append(tag);
+
+            for(var j=0;j<dataObj.contacts.length;j++) {
+                if(dataObj.contacts[j].url.indexOf(dataObj.approvedDatasets[i].contact) != -1) {
+                    tr.append('<td>' + dataObj.contacts[j].first_name + ' ' + dataObj.contacts[j].last_name + '</td>');
+                }
+            }
+
+            tr.append('<td>' + dataObj.approvedDatasets[i].modified_date + '</td>');
+
+            approvedCount++;
+
+            switch(dataObj.approvedDatasets[i].access_level) {
+                case '0': 
+                    tr.append('<td>Private</td>');
+                    break;
+
+                case '1': 
+                    tr.append('<td>NGEE Tropics</td>');
+                    break;
+
+                case '2':
+                    tr.append('<td>Public</td>');
+                    break;
+            }
+
+            $('.js-all-datasets tbody').append(tr); 
+           
+        }
+            /*$('.js-all-datasets').append((data[i].name ? data[i].name : 'NA') + '<br>')
+                            .append((data[i].description ? data[i].description : 'NA') + '<br>')
+                            .append('<button class="js-view-dataset button" data-url="' + data[i].url + '" data-index="' + i + '">View</button>')
+                            .append('&nbsp;' + '<button class="js-delete-dataset button" data-url="' + data[i].url + '" data-index="' + i + '">Delete</button>' + '<br><br>');*/
+        
+    }
+    $('.js-view.view-dataset-view h4 .js-count').html(approvedCount);
 }
 
 function completeEdit(submissionObj, url, submitMode) {

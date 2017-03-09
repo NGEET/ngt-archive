@@ -56,6 +56,28 @@ $light-orange: #ffa500;
     }
 }
 
+table {
+    thead {
+        th {
+            vertical-align: top;
+            white-space: nowrap;
+            padding-right: 10px;
+            
+            &:hover {
+                color: $dark-blue;
+            }
+
+            .unsorted {
+                width: 12px;
+            }
+
+            .sort-up, .sort-down {
+                width: 8px;
+            }
+        }
+    }
+}
+
 .desc-tooltip {
     background-color: $dark-blue;
     width: 20px;
