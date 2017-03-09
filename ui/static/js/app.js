@@ -3,6 +3,8 @@ var templates = {};
 var fileToUpload = '';
 var overrideMsg = false;
 var editingScreen = false;
+var sortField = 'modified_date';
+var sortReverse = false;
 
 function getParameterByName(name, url) {
     if (!url) {
@@ -150,6 +152,7 @@ $(document).ready(function(){
                 
                 if(data[i].status == 2) {
                     var tr = $('<tr/>');
+                    tr.append('<td>' + data[i].data_set_id + '</td>');
                     var tag = $('<td/><div/>').addClass('js-view-dataset dataset');
                     tag.append('<h5 class="title">' + (data[i].name ? data[i].name : 'NA') + '</h5>')
                         .append('<p class="desc">' + (data[i].description ? data[i].description.substring(0, 199) + '...' : 'NA') + '</p>')
@@ -163,6 +166,8 @@ $(document).ready(function(){
                             tr.append('<td>' + dataObj.contacts[j].first_name + ' ' + dataObj.contacts[j].last_name + '</td>');
                         }
                     }
+
+                    tr.append('<td>' + data[i].modified_date + '</td>');
 
                     approvedCount++;
 
