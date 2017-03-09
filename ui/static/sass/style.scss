@@ -339,6 +339,11 @@ body {
                     background: darken($light-orange, 2%);
                     color: white;
                     padding: 10px 0 15px;
+                    margin-bottom: 25px;
+                }
+
+                .file-name, .existing-file {
+                    background-color: #f5f5f5;
                 }
 
                 input[type="file"] {
@@ -352,6 +357,7 @@ body {
                         z-index: 2;
                         transform: translateX(-50%);
                         cursor: pointer;
+                        height: 40px;
                 }
 
                 .file-name-wrapper {

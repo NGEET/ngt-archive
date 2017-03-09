@@ -191,7 +191,7 @@
                     <form class="js-create-form dataset small-12 medium-9">
                         <div class="small-12 medium-9 small-centered medium-centered file-drop-zone js-file-drop-zone">
                             <h5>
-                                Drag and drop data file in this box <i class="required">*</i>
+                                Drag and drop data file into this box <i class="required">*</i>
                                 <b class="desc-tooltip js-file-tooltip" title="<p>Upload a single file containing all your data files. If you have multiple files, submit a compressed file (zip, rar, 7z, etc). Data files submitted to the Archive should be grouped together into collections in a way that make sense for them to be submitted and viewed together as a single record. Some examples of data collections are:</p>
                                 <ul>
                                 <li>Data from a field campaign that need to be viewed together - in this case you can submit all the data collected during that field campaign as a single collection.</li>
@@ -203,22 +203,22 @@
                                 For NGEE Tropics-sponsored datasets that are currently collecting data from permanently installed sensors, we require that the metadata reporting templates are also attached. (With link to the templates).
                                 </p>
                                 ">?</b>
-
                             </h5>
-                            <small>(Only one data file is allowed per dataset)</small>
+                            <small>Only one data file is allowed per dataset</small>
+                            <br>
+                            <small>You will need to click on 'Save as Draft / Update Draft' or 'Submit Dataset' to finish uploading the file.</small>
                             <br><br>
                             <h6 class="hide file-exists js-file-exists"><b>Note:</b> This dataset already contains a file. If you upload a new file, you will be replacing the existing file.</h6>
-                            <h6 class="js-existing-file hide">Filename: <span class="js-existing-file"></span></h6>
                             <!--h6>Allowed file types: Compressed/archive files (zip, rar, 7z...). To download free zipping software, click <a href="http://www.7-zip.org/" target="_blank">here</a></h6-->
                             <div class="button file-select-btn small-12 large-6">
                                 <input type="file" name="" class="js-file-input-btn">
                                 Select File
                             </div>
-
+                            <br>
+                            <div class="js-existing-file hide existing-file"></div>
                             <div class="file-name-wrapper js-file-name-wrapper hide">
-                                <span class="js-file-name"></span>
-                                <br><br>
-                                <button class="button secondary js-clear-file-btn">Clear</button>
+                                <div class="js-file-name file-name"></div><br>
+                                <button class="button secondary js-clear-file-btn">Clear File</button>
                                 <br>
                                 <div class="js-progress-wrapper hide">
                                     Uploading:&nbsp;
@@ -226,6 +226,7 @@
                                     %
                                 </div>
                             </div>
+                            <br>
                         </div>
                         <div class="small-12">
                             <button type="button" class="button small-10 large-3 js-create-dataset">Save as Draft</button>
