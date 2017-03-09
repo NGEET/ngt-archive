@@ -261,6 +261,7 @@ class DataSet(models.Model):
 
     class Meta:
         unique_together = ('ngt_id', 'version')
+        ordering = ('-modified_date',)
         permissions = (
             ("approve_submitted_dataset", "Can approve a 'submitted' dataset"),
             ("edit_own_draft_dataset", "Can edit own 'draft' dataset"),
