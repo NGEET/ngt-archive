@@ -461,6 +461,7 @@ $(document).ready(function(){
                 $('.js-file-name').html(files[0].name);
                 $('.js-file-name-wrapper').removeClass('hide');
                 fileToUpload = files[0];
+                $('.js-existing-file').addClass('hide');
             }
             else if(files.length > 1) {
                 alert('Only one file is allowed per dataset. If you have multiple files, please compress them into a single file and upload it.');
@@ -526,8 +527,8 @@ $(document).ready(function(){
 
         if(dataObj.datasets[index].archive) {
             $('.js-file-exists').removeClass('hide');
-            $('.js-existing-file').removeClass('hide');
-            $('.js-existing-file span').html(dataObj.datasets[index].archive_filename);
+            $('.js-existing-file').removeClass('hide')
+                                .html(dataObj.datasets[index].archive_filename);
         }
         else {
             $('.js-file-exists').addClass('hide');
@@ -585,6 +586,7 @@ $(document).ready(function(){
             fileToUpload = this.files[0];
             $('.js-file-name').html(this.files[0].name);
             $('.js-file-name-wrapper').removeClass('hide');
+            $('.js-existing-file').addClass('hide');
         }
         //console.log(this);
     });    
