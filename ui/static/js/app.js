@@ -110,13 +110,14 @@ $(document).ready(function(){
         break;
 
         case 'edit-draft':
-        $.when(getDataSets()).then(function(data) {
+        $.when(getDataSets(), getContacts()).then(function(data, contacts) {
             dataObj.datasets = data;
+            dataObj.contacts = contacts;
             //console.log(data);
             $('.js-text-dump').html('');
             $('.js-datasets').html('');
             var draftCount = 0;
-            for(var i=0;i<data.length;i++) {
+            /*for(var i=0;i<data.length;i++) {
                 if(data[i].status == 0) {
                     var tag = $('<div/>').addClass('js-view-dataset dataset');
                     tag.append('<h5 class="title">' + (data[i].name ? data[i].name : 'NA') + '</h5>')
@@ -131,8 +132,15 @@ $(document).ready(function(){
                                     .append((data[i].description ? data[i].description : 'NA') + '<br>')
                                     .append('<button class="js-view-dataset button" data-url="' + data[i].url + '" data-index="' + i + '">View</button>')
                                     .append('&nbsp;' + '<button class="js-delete-dataset button" data-url="' + data[i].url + '" data-index="' + i + '">Delete</button>' + '<br><br>');*/
+                /*}
+            }*/
+            dataObj.drafts = [];
+            for(var i=0;i<dataObj.datasets.length;i++) {
+                if(dataObj.datasets[i].status == 0) {
+                    dataObj.drafts.push(dataObj.datasets[i]);
                 }
             }
+            showDrafts();
             //$('.js-view.view-drafts-view h4').prepend(draftCount + ' ');
             $('.js-loading').addClass('hide');
             editingScreen = false;
@@ -398,25 +406,46 @@ $(document).ready(function(){
     });
 
     function sortByField(a, b){
-        var aName = a[sortField].toLowerCase();
-        var bName = b[sortField].toLowerCase();
+        var aName = a[sortField];
+        var bName = b[sortField];
 
-        if(sortField == 'contact') {
-            for(var j=0; j<dataObj.contacts.length; j++) {
-                if(dataObj.contacts[j].url == a[sortField]) {
-                    aName = dataObj.contacts[j].first_name + ' ' + dataObj.contacts[j].last_name;
-                }
-                if(dataObj.contacts[j].url == b[sortField]) {
-                    bName = dataObj.contacts[j].first_name + ' ' + dataObj.contacts[j].last_name;
-                }
+        if(aName == null || bName == null) {
+            if(sortReverse) {
+                return 0;
+            }
+            else {
+                return 1;
             }
         }
+        else if(aName && bName) {
+            aName = a[sortField].toLowerCase();
+            bName = b[sortField].toLowerCase();
 
-        if(sortReverse) {
-            return ((aName > bName) ? -1 : ((aName < bName) ? 1 : 0));
+            if(sortField == 'contact') {
+                for(var j=0; j<dataObj.contacts.length; j++) {
+                    if(dataObj.contacts[j].url == a[sortField]) {
+                        aName = dataObj.contacts[j].first_name + ' ' + dataObj.contacts[j].last_name;
+                    }
+                    if(dataObj.contacts[j].url == b[sortField]) {
+                        bName = dataObj.contacts[j].first_name + ' ' + dataObj.contacts[j].last_name;
+                    }
+                }
+            }
+
+            if(sortReverse) {
+                return ((aName > bName) ? -1 : ((aName < bName) ? 1 : 0));
+            }
+            else {
+                return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
+            }
         }
         else {
-            return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
+            if(sortReverse) {
+                return 0;
+            }
+            else {
+                return 1;
+            }
         }
     }
 
@@ -1060,8 +1089,15 @@ $(document).ready(function(){
             $(this).find('.sort-down').addClass('hide');
             $(this).find('.unsorted').addClass('hide');
         }
-        dataObj.approvedDatasets.sort(sortByField);
-        showApprovedDatasets();
+        if(dataObj.approvedDatasets) {
+            dataObj.approvedDatasets.sort(sortByField);
+            showApprovedDatasets();
+        }
+        if(dataObj.drafts) {
+            dataObj.drafts.sort(sortByField);
+            showDrafts();
+        }
+        
     });
 
     $('body').on('click', '.js-view-dataset', function(event) {
@@ -1463,6 +1499,70 @@ function createDraft(submissionObj, submitMode) {
     }
 }
 
+function showDrafts() {
+    var approvedCount = 0;
+    $('.js-all-datasets table tbody').html('');
+    for(var i=0;i<dataObj.drafts.length;i++) {
+        
+        if(dataObj.drafts[i].status == 0) {
+            var tr = $('<tr/>');
+            tr.append('<td>' + dataObj.drafts[i].data_set_id + '</td>');
+            var tag = $('<td/><div/>').addClass('js-view-dataset dataset');
+            tag.append('<h5 class="title">' + (dataObj.drafts[i].name ? dataObj.drafts[i].name : 'NA') + '</h5>')
+                .append('<p class="desc">' + (dataObj.drafts[i].description ? dataObj.drafts[i].description.substring(0, 199) + '...' : 'NA') + '</p>')
+                .attr('data-url', dataObj.drafts[i].url)
+                .attr('data-index', i)
+                .append('<button class="button js-edit-draft">Edit</button>')
+                .attr('data-url', dataObj.drafts[i].url)
+                .attr('data-index', i);
+
+            tr.append(tag);
+
+            var contact = false;
+            for(var j=0;j<dataObj.contacts.length;j++) {
+                if(dataObj.contacts[j].url.indexOf(dataObj.drafts[i].contact) != -1) {
+                    contact = true;
+                    tr.append('<td>' + dataObj.contacts[j].first_name + ' ' + dataObj.contacts[j].last_name + '</td>');
+                }
+            }
+
+            if(!contact) {
+                tr.append('<td></td>');
+            }
+
+            tr.append('<td>' + new Date(dataObj.drafts[i].modified_date).toLocaleString() + '</td>');
+
+            approvedCount++;
+
+            switch(dataObj.drafts[i].access_level) {
+                case '0': 
+                    tr.append('<td>Private</td>');
+                    break;
+
+                case '1': 
+                    tr.append('<td>NGEE Tropics</td>');
+                    break;
+
+                case '2':
+                    tr.append('<td>Public</td>');
+                    break;
+                default: 
+                    tr.append('<td></td>');
+                    break;
+            }
+
+            $('.js-all-datasets tbody').append(tr); 
+           
+        }
+            /*$('.js-all-datasets').append((data[i].name ? data[i].name : 'NA') + '<br>')
+                            .append((data[i].description ? data[i].description : 'NA') + '<br>')
+                            .append('<button class="js-view-dataset button" data-url="' + data[i].url + '" data-index="' + i + '">View</button>')
+                            .append('&nbsp;' + '<button class="js-delete-dataset button" data-url="' + data[i].url + '" data-index="' + i + '">Delete</button>' + '<br><br>');*/
+        
+    }
+    $('.js-view.view-drafts-view h4 .js-count').html(approvedCount);
+}
+
 function showApprovedDatasets() {
     var approvedCount = 0;
     $('.js-all-datasets table tbody').html('');
@@ -1485,7 +1585,7 @@ function showApprovedDatasets() {
                 }
             }
 
-            tr.append('<td>' + dataObj.approvedDatasets[i].modified_date + '</td>');
+            tr.append('<td>' + new Date(dataObj.approvedDatasets[i].modified_date).toLocaleString() + '</td>');
 
             approvedCount++;
 
