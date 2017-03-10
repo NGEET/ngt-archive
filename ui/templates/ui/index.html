@@ -14,7 +14,7 @@
         <link rel="stylesheet" type="text/css" href="static/js/jquery-ui/jquery-ui.css">
         <link rel="stylesheet" type="text/css" href="static/js/jquery-ui/jquery-ui.theme.css">
         <link rel="stylesheet" type="text/css" href="static/js/jquery-ui/jquery-ui.structure.css">
-        <script async defer src="static/js/gmaps.js?key=AIzaSyAllKgUfxh6WQorM4b-vnIBjY1kRGwG86g"></script>
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAllKgUfxh6WQorM4b-vnIBjY1kRGwG86g"></script>
         <script type="text/javascript" src="static/js/bootstrap.min.js"></script>
         <link rel="stylesheet" type="text/css" href="static/stylesheets/popover.css">
     </head>
@@ -203,10 +203,45 @@
                     </div>
                 </section>
                 <section class="js-view view-drafts-view hide" data-view="edit-draft">
-                    <h4>Drafts</h4>
+                    <h4><span class="js-count"></span> Drafts</h4>
                     <a href="/?view=edit-draft" class="hide js-edit-back-btn">Back</a>
-                    <div class="all-datasets js-all-datasets"></div>
-
+                    <div class="all-datasets js-all-datasets">
+                        <table class=" unstriped">
+                            <thead>
+                                <tr>
+                                    <th class="js-sort-header pointer" data-sort="data_set_id">
+                                        Dataset ID 
+                                        <img class="js-sort-icon sort-icon unsorted" src="static/img/unsorted.png">
+                                        <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
+                                        <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
+                                    </th>
+                                    <th class="js-sort-header pointer" data-sort="name">Dataset 
+                                        <img class="js-sort-icon sort-icon unsorted" src="static/img/unsorted.png">
+                                        <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
+                                        <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
+                                    </th>
+                                    <th class="js-sort-header pointer" data-sort="contact">Dataset Contact 
+                                        <img class="js-sort-icon sort-icon unsorted" src="static/img/unsorted.png">
+                                        <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
+                                        <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
+                                    </th>
+                                    <th class="js-sort-header pointer" data-sort="modified_date">Last Updated 
+                                        <img class="js-sort-icon sort-icon unsorted" src="static/img/unsorted.png">
+                                        <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
+                                        <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
+                                    </th>
+                                    <th class="js-sort-header pointer" data-sort="access_level">Access Level 
+                                        <img class="js-sort-icon sort-icon unsorted" src="static/img/unsorted.png">
+                                        <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
+                                        <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
+                                    </th>
+                                </tr>
+                                <tbody>
+                                    
+                                </tbody>
+                            </thead>
+                        </table>
+                    </div>
                 </section>
                 <section class="js-view create-dataset-view hide" data-view="create">
                     <h4>Create a Dataset</h4>
