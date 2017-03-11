@@ -2,6 +2,33 @@
 Releases
 ========
 
+v1.1.0
+======
+Bug fixes and usability enhancements
+
+- Add introductory text to home page **important** (`#287  <https://github.com/NGEET/ngt-archive/issues/287>`_) 
+- Chrome: Unsafe scripts being loaded **important** (`#281  <https://github.com/NGEET/ngt-archive/issues/281>`_) 
+- Login page minor text changes (`#280  <https://github.com/NGEET/ngt-archive/issues/280>`_)
+- "Leaving page" warning sign pops up after clicking Home in View Drafts (`#279 <https://github.com/NGEET/ngt-archive/issues/279>`_)
+- Fix link in data upload tooltip (`#278 <https://github.com/NGEET/ngt-archive/issues/278>`_)
+- File upload box - redesign enhancement **important** (`#276 <https://github.com/NGEET/ngt-archive/issues/276>`_)
+- Fields with N/A should not appear in "View Datasets" **important** (`#274 <https://github.com/NGEET/ngt-archive/issues/274>`_)
+- Dataset Field plot should not display if empty bug **important** (`#272 <https://github.com/NGEET/ngt-archive/issues/272>`_)
+- Add more spacing between footer and page content **enhancement** (`#271 <https://github.com/NGEET/ngt-archive/issues/271>`_)
+- Highlight navbar buttons **enhancement** (`#267 <https://github.com/NGEET/ngt-archive/issues/267>`_)
+- Remove footer links (`#266 <https://github.com/NGEET/ngt-archive/issues/266>`_)
+- Field titles to be changed in View Datasets/Edit drafts **enhancement** (`#252 <https://github.com/NGEET/ngt-archive/issues/252>`_)
+- Fix tooltip formatting enhancement **important** (`#245 <https://github.com/NGEET/ngt-archive/issues/245>`_)
+- DatasetContact - new collaborator error message incorrect **bug** (`#243 <https://github.com/NGEET/ngt-archive/issues/243>`_)
+- Add Data Policy link in main menu bar **enhancement** (`#240 <https://github.com/NGEET/ngt-archive/issues/240>`_)
+- Contact information for dataset should always display with email information **bug,critical** (`#239 <https://github.com/NGEET/ngt-archive/issues/239>`_)
+- Add spacing between buttons for newly uploaded data file **enhancement** (`#238 <https://github.com/NGEET/ngt-archive/issues/238>`_)
+- Unselected QA/QC status does not show up in draft view **bug** (`#233 <https://github.com/NGEET/ngt-archive/issues/233>`_)
+- provide previously uploaded filename on drafts enhancement **important** (`#204 <https://github.com/NGEET/ngt-archive/issues/204>`_)
+- View Sites: Submission contact is missing from detail (`#154 <https://github.com/NGEET/ngt-archive/issues/154>`_)
+- View Site contacts, PIs need to list email and institutions **bug,question** (`#152 <https://github.com/NGEET/ngt-archive/issues/152>`_)
+- application/x-tar should be an accepted file type enhancement **verify/wontfix** (`#142 <https://github.com/NGEET/ngt-archive/issues/142>`_)
+
 v1.0.2
 ======
 Bug fix release
