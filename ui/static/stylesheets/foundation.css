@@ -3220,10 +3220,13 @@ table {
     font-weight: bold;
     text-align: left; }
   table tbody tr:nth-child(even) {
-    background-color: #f1f1f1; }
+    /*background-color: #f1f1f1;*/ }
   table tbody th,
   table tbody td {
     padding: 0.5rem 0.625rem 0.625rem; }
+
+  table tbody td {
+    border-bottom: 1px solid #eee; }
 
 @media screen and (max-width: 63.9375em) {
   table.stack thead {
