@@ -7,6 +7,10 @@ $light-blue: #4fb9f9;
 $dark-blue: #0089bc;
 $light-orange: #ffa500;
 
+.pointer {
+    cursor: pointer;
+}
+
 .popover {
     max-width: 900px !important;
 
@@ -49,6 +53,28 @@ $light-orange: #ffa500;
             background-color: darken($dark-blue, 10%);
         }
 
+    }
+}
+
+table {
+    thead {
+        th {
+            vertical-align: top;
+            white-space: nowrap;
+            padding-right: 10px;
+            
+            &:hover {
+                color: $dark-blue;
+            }
+
+            .unsorted {
+                width: 12px;
+            }
+
+            .sort-up, .sort-down {
+                width: 8px;
+            }
+        }
     }
 }
 
@@ -259,10 +285,13 @@ body {
 
             a {
                 color: white;
-                margin: 0 10px;
+                padding: 0 20px;
+                height: 48px;
+                display: inline-block;
 
                 &:hover {
                     color: white;
+                    background-color: darken($dark-green, 10%);
                 }
             }
         }
@@ -336,6 +365,14 @@ body {
                     background: darken($light-orange, 2%);
                     color: white;
                     padding: 10px 0 15px;
+                    margin-bottom: 25px;
+                }
+
+                .file-name, .existing-file {
+                    //color: #000;
+                    font-weight: bold;
+                    padding: 5px 4px;
+                    margin: 5px 4px;
                 }
 
                 input[type="file"] {
@@ -349,6 +386,7 @@ body {
                         z-index: 2;
                         transform: translateX(-50%);
                         cursor: pointer;
+                        height: 40px;
                 }
 
                 .file-name-wrapper {
@@ -415,6 +453,7 @@ body {
         .all-datasets {
             .dataset {
                 margin-bottom: 32px;
+                width: 75%;
 
                 .title {
                     &:hover {
