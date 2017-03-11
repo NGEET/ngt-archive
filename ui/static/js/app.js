@@ -480,7 +480,13 @@ $(document).ready(function(){
                 $('.js-file-name').html(files[0].name);
                 $('.js-file-name-wrapper').removeClass('hide');
                 fileToUpload = files[0];
-                $('.js-existing-file').addClass('hide');
+                //$('.js-existing-file').addClass('hide');
+                if($('.js-existing-file').hasClass('hide')) {
+                    $('.js-new-file-msg').removeClass('hide');
+                }
+                else {
+                    $('.js-file-replace-msg').removeClass('hide');
+                }
             }
             else if(files.length > 1) {
                 alert('Only one file is allowed per dataset. If you have multiple files, please compress them into a single file and upload it.');
@@ -493,6 +499,8 @@ $(document).ready(function(){
         $('.js-file-input-btn').val('');
         $('.js-file-name').html('')
         $('.js-file-name-wrapper').addClass('hide');
+        $('.js-new-file-msg').addClass('hide');
+        $('.js-file-replace-msg').addClass('hide');
         fileToUpload = false;
     });
 
@@ -548,10 +556,14 @@ $(document).ready(function(){
             $('.js-file-exists').removeClass('hide');
             $('.js-existing-file').removeClass('hide')
                                 .html(dataObj.datasets[index].archive_filename);
+            $('.js-file-replace-msg').removeClass('hide');
+            //$('.js-new-file-msg').addClass('hide');
         }
         else {
             $('.js-file-exists').addClass('hide');
             $('.js-existing-file').addClass('hide');
+            $('.js-file-replace-msg').addClass('hide');
+            //$('.js-new-file-msg').removeClass('hide');
         }
 
         var siteStr = '';
@@ -605,7 +617,13 @@ $(document).ready(function(){
             fileToUpload = this.files[0];
             $('.js-file-name').html(this.files[0].name);
             $('.js-file-name-wrapper').removeClass('hide');
-            $('.js-existing-file').addClass('hide');
+            //$('.js-existing-file').addClass('hide');
+            if($('.js-existing-file').hasClass('hide')) {
+                $('.js-new-file-msg').removeClass('hide');
+            }
+            else {
+                $('.js-file-replace-msg').removeClass('hide');
+            }
         }
         //console.log(this);
     });    
