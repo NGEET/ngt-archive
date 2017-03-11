@@ -1,50 +1,74 @@
 /* line 10, ../sass/style.scss */
+.pointer {
+  cursor: pointer;
+}
+
+/* line 14, ../sass/style.scss */
 .popover {
   max-width: 900px !important;
 }
-/* line 13, ../sass/style.scss */
+/* line 17, ../sass/style.scss */
 .popover .arrow::after {
   border-right-color: #f7f7f7 !important;
 }
-/* line 17, ../sass/style.scss */
+/* line 21, ../sass/style.scss */
 .popover .popover-title {
   max-width: 600px !important;
 }
-/* line 20, ../sass/style.scss */
+/* line 24, ../sass/style.scss */
 .popover .popover-title p {
   margin-bottom: 0;
 }
-/* line 25, ../sass/style.scss */
+/* line 29, ../sass/style.scss */
 .popover .popover-content {
   display: none;
 }
 
-/* line 30, ../sass/style.scss */
+/* line 34, ../sass/style.scss */
 .button {
   background-color: #49bb76;
 }
-/* line 33, ../sass/style.scss */
+/* line 37, ../sass/style.scss */
 .button:focus, .button:active {
   background-color: #49bb76;
 }
-/* line 37, ../sass/style.scss */
+/* line 41, ../sass/style.scss */
 .button:hover {
   background-color: #3d9a61;
 }
-/* line 41, ../sass/style.scss */
+/* line 45, ../sass/style.scss */
 .button.blue {
   background-color: #0089bc;
 }
-/* line 44, ../sass/style.scss */
+/* line 48, ../sass/style.scss */
 .button.blue:focus, .button.blue:active {
   background-color: #0089bc;
 }
-/* line 48, ../sass/style.scss */
+/* line 52, ../sass/style.scss */
 .button.blue:hover {
   background-color: #006489;
 }
 
-/* line 55, ../sass/style.scss */
+/* line 61, ../sass/style.scss */
+table thead th {
+  vertical-align: top;
+  white-space: nowrap;
+  padding-right: 10px;
+}
+/* line 66, ../sass/style.scss */
+table thead th:hover {
+  color: #0089bc;
+}
+/* line 70, ../sass/style.scss */
+table thead th .unsorted {
+  width: 12px;
+}
+/* line 74, ../sass/style.scss */
+table thead th .sort-up, table thead th .sort-down {
+  width: 8px;
+}
+
+/* line 81, ../sass/style.scss */
 .desc-tooltip {
   background-color: #0089bc;
   width: 20px;
@@ -58,7 +82,7 @@
   cursor: default;
 }
 
-/* line 68, ../sass/style.scss */
+/* line 94, ../sass/style.scss */
 .tag {
   color: white;
   font-size: 12px;
@@ -72,26 +96,26 @@
   cursor: default;
   background-color: #4fb9f9;
 }
-/* line 81, ../sass/style.scss */
+/* line 107, ../sass/style.scss */
 .tag.draft {
   background-color: #ffa500;
 }
-/* line 85, ../sass/style.scss */
+/* line 111, ../sass/style.scss */
 .tag.submitted {
   background-color: #4fb9f9;
 }
-/* line 89, ../sass/style.scss */
+/* line 115, ../sass/style.scss */
 .tag.approved {
   background-color: #49bb76;
 }
 
-/* line 94, ../sass/style.scss */
+/* line 120, ../sass/style.scss */
 .ui-tooltip {
   max-width: 600px !important;
   width: 600px !important;
 }
 
-/* line 99, ../sass/style.scss */
+/* line 125, ../sass/style.scss */
 .loading {
   width: 100%;
   height: 100%;
@@ -101,7 +125,7 @@
   left: 0;
   z-index: 1001;
 }
-/* line 108, ../sass/style.scss */
+/* line 134, ../sass/style.scss */
 .loading img {
   display: block;
   position: relative;
@@ -109,7 +133,7 @@
   top: 20%;
   transform: translateX(-50%);
 }
-/* line 116, ../sass/style.scss */
+/* line 142, ../sass/style.scss */
 .loading h4 {
   display: block;
   position: relative;
@@ -133,23 +157,23 @@
   font-weight: 100;
   font-style: normal;
 }
-/* line 150, ../sass/style.scss */
+/* line 176, ../sass/style.scss */
 i.required {
   color: red;
 }
 
-/* line 154, ../sass/style.scss */
+/* line 180, ../sass/style.scss */
 .missing {
   background-color: #ffc9c9;
 }
 
-/* line 158, ../sass/style.scss */
+/* line 184, ../sass/style.scss */
 body {
   background-color: #fcfcfc;
   font-family: 'Helvetica Neue';
   margin: 0;
 }
-/* line 163, ../sass/style.scss */
+/* line 189, ../sass/style.scss */
 body #myModal {
   display: none;
   width: 75%;
@@ -161,48 +185,48 @@ body #myModal {
   transform: translateX(-50%);
   padding: 5px 15px 10px;
 }
-/* line 174, ../sass/style.scss */
+/* line 200, ../sass/style.scss */
 body #myModal .close-reveal-modal {
   /*position: absolute;
   top: 5px;
   right: 12px;*/
   font-size: 20px;
 }
-/* line 182, ../sass/style.scss */
+/* line 208, ../sass/style.scss */
 body #myModal .edit-btn {
   position: absolute;
   top: 16px;
   right: 50px;
 }
-/* line 188, ../sass/style.scss */
+/* line 214, ../sass/style.scss */
 body #myModal textarea {
   min-height: 80px;
 }
-/* line 193, ../sass/style.scss */
+/* line 219, ../sass/style.scss */
 body #myModal .modal-body .dataset-row {
   margin-bottom: 8px;
 }
-/* line 197, ../sass/style.scss */
+/* line 223, ../sass/style.scss */
 body #myModal .modal-body .dataset-row .row .columns.medium-9 {
   float: right;
 }
-/* line 204, ../sass/style.scss */
+/* line 230, ../sass/style.scss */
 body #myModal label[for="data-policy"] {
   margin-right: 0;
 }
-/* line 209, ../sass/style.scss */
+/* line 235, ../sass/style.scss */
 body #myModal .download-wrapper .button {
   float: right;
 }
-/* line 214, ../sass/style.scss */
+/* line 240, ../sass/style.scss */
 body #myModal .row:first-child {
   margin-bottom: 10px;
 }
-/* line 219, ../sass/style.scss */
+/* line 245, ../sass/style.scss */
 body main {
   background-color: #fff;
 }
-/* line 221, ../sass/style.scss */
+/* line 247, ../sass/style.scss */
 body main article {
   background-color: #fff;
   max-width: 1200px;
@@ -210,22 +234,22 @@ body main article {
   padding: 0 32px 32px;
   box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.22);
 }
-/* line 228, ../sass/style.scss */
+/* line 254, ../sass/style.scss */
 body main article code {
   display: block;
   min-height: 40px;
 }
-/* line 234, ../sass/style.scss */
+/* line 260, ../sass/style.scss */
 body main .logo {
   box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.22);
 }
-/* line 239, ../sass/style.scss */
+/* line 265, ../sass/style.scss */
 body main .logo img {
   max-width: 800px;
   display: block;
   margin: 0 auto;
 }
-/* line 246, ../sass/style.scss */
+/* line 272, ../sass/style.scss */
 body main nav.menu {
   max-width: 1200px;
   margin: 0 auto;
@@ -235,44 +259,47 @@ body main nav.menu {
   padding: 0 20px;
   box-shadow: 0px 8px 12px rgba(0, 0, 0, 0.22);
 }
-/* line 255, ../sass/style.scss */
+/* line 281, ../sass/style.scss */
 body main nav.menu .user {
   margin-right: 32px;
   font-weight: 600;
 }
-/* line 260, ../sass/style.scss */
+/* line 286, ../sass/style.scss */
 body main nav.menu a {
   color: white;
-  margin: 0 10px;
+  padding: 0 20px;
+  height: 48px;
+  display: inline-block;
 }
-/* line 264, ../sass/style.scss */
+/* line 292, ../sass/style.scss */
 body main nav.menu a:hover {
   color: white;
+  background-color: #2f754a;
 }
-/* line 271, ../sass/style.scss */
+/* line 300, ../sass/style.scss */
 body main .create-dataset-view .param, body main .view-drafts-view .param {
   padding: 5px 10px;
   margin-bottom: 5px;
   overflow-wrap: break-word;
 }
-/* line 277, ../sass/style.scss */
+/* line 306, ../sass/style.scss */
 body main .create-dataset-view .param section:first-of-type .del-param, body main .view-drafts-view .param section:first-of-type .del-param {
   display: none;
 }
-/* line 281, ../sass/style.scss */
+/* line 310, ../sass/style.scss */
 body main .create-dataset-view .param section:first-of-type input, body main .create-dataset-view .param section:first-of-type select, body main .create-dataset-view .param section:first-of-type div, body main .view-drafts-view .param section:first-of-type input, body main .view-drafts-view .param section:first-of-type select, body main .view-drafts-view .param section:first-of-type div {
   width: 100%;
 }
-/* line 286, ../sass/style.scss */
+/* line 315, ../sass/style.scss */
 body main .create-dataset-view .param button, body main .view-drafts-view .param button {
   margin-top: -8px;
 }
-/* line 291, ../sass/style.scss */
+/* line 320, ../sass/style.scss */
 body main .create-dataset-view .param section input, body main .create-dataset-view .param section select, body main .create-dataset-view .param section div, body main .view-drafts-view .param section input, body main .view-drafts-view .param section select, body main .view-drafts-view .param section div {
   width: 90%;
   display: inline-block;
 }
-/* line 296, ../sass/style.scss */
+/* line 325, ../sass/style.scss */
 body main .create-dataset-view .param section .del-param, body main .view-drafts-view .param section .del-param {
   width: 10%;
   display: inline-block;
@@ -284,24 +311,24 @@ body main .create-dataset-view .param section .del-param, body main .view-drafts
   line-height: 36px;
   color: #fff;
 }
-/* line 307, ../sass/style.scss */
+/* line 336, ../sass/style.scss */
 body main .create-dataset-view .param section .del-param:hover, body main .view-drafts-view .param section .del-param:hover {
   background-color: #5e5e5e;
 }
-/* line 311, ../sass/style.scss */
+/* line 340, ../sass/style.scss */
 body main .create-dataset-view .param section .del-param span, body main .view-drafts-view .param section .del-param span {
   text-align: center;
 }
-/* line 316, ../sass/style.scss */
+/* line 345, ../sass/style.scss */
 body main .create-dataset-view .param section .add-text, body main .view-drafts-view .param section .add-text {
   padding: 0 0.9375rem;
 }
-/* line 319, ../sass/style.scss */
+/* line 348, ../sass/style.scss */
 body main .create-dataset-view .param section .contact-wrapper, body main .view-drafts-view .param section .contact-wrapper {
   float: none;
   width: 100%;
 }
-/* line 326, ../sass/style.scss */
+/* line 355, ../sass/style.scss */
 body main .create-dataset-view .file-drop-zone, body main .view-drafts-view .file-drop-zone {
   text-align: center;
   border: 2px dashed #777;
@@ -310,13 +337,20 @@ body main .create-dataset-view .file-drop-zone, body main .view-drafts-view .fil
   margin-bottom: 2rem;
   margin-top: 2rem;
 }
-/* line 335, ../sass/style.scss */
+/* line 364, ../sass/style.scss */
 body main .create-dataset-view .file-drop-zone .file-exists, body main .view-drafts-view .file-drop-zone .file-exists {
   background: #f59e00;
   color: white;
   padding: 10px 0 15px;
+  margin-bottom: 25px;
 }
-/* line 341, ../sass/style.scss */
+/* line 371, ../sass/style.scss */
+body main .create-dataset-view .file-drop-zone .file-name, body main .create-dataset-view .file-drop-zone .existing-file, body main .view-drafts-view .file-drop-zone .file-name, body main .view-drafts-view .file-drop-zone .existing-file {
+  font-weight: bold;
+  padding: 5px 4px;
+  margin: 5px 4px;
+}
+/* line 378, ../sass/style.scss */
 body main .create-dataset-view .file-drop-zone input[type="file"], body main .view-drafts-view .file-drop-zone input[type="file"] {
   position: absolute;
   left: 0;
@@ -328,73 +362,75 @@ body main .create-dataset-view .file-drop-zone input[type="file"], body main .vi
   z-index: 2;
   transform: translateX(-50%);
   cursor: pointer;
+  height: 40px;
 }
-/* line 354, ../sass/style.scss */
+/* line 392, ../sass/style.scss */
 body main .create-dataset-view .file-drop-zone .file-name-wrapper, body main .view-drafts-view .file-drop-zone .file-name-wrapper {
   margin-top: 20px;
 }
-/* line 358, ../sass/style.scss */
+/* line 396, ../sass/style.scss */
 body main .create-dataset-view .file-drop-zone .file-select-btn, body main .view-drafts-view .file-drop-zone .file-select-btn {
   position: relative;
   display: block;
   margin: 0 auto;
 }
-/* line 370, ../sass/style.scss */
+/* line 408, ../sass/style.scss */
 body main .map-view {
   height: 400px;
 }
-/* line 376, ../sass/style.scss */
+/* line 414, ../sass/style.scss */
 body main .sites-container .site-info .title {
   border-bottom: 1px solid #ccc;
 }
-/* line 380, ../sass/style.scss */
+/* line 418, ../sass/style.scss */
 body main .sites-container .site-info .main-params, body main .sites-container .site-info .map-view {
   margin-top: 10px;
 }
-/* line 384, ../sass/style.scss */
+/* line 422, ../sass/style.scss */
 body main .sites-container .site-info .columns {
   padding: 0;
 }
-/* line 388, ../sass/style.scss */
+/* line 426, ../sass/style.scss */
 body main .sites-container .site-info .main-params {
   padding-right: 15px;
 }
-/* line 393, ../sass/style.scss */
+/* line 431, ../sass/style.scss */
 body main .sites-container .site-info .site-desc .columns {
   padding: 0;
 }
-/* line 397, ../sass/style.scss */
+/* line 435, ../sass/style.scss */
 body main .sites-container .site-info .site-desc .plot-title {
   margin-top: 30px;
 }
-/* line 401, ../sass/style.scss */
+/* line 439, ../sass/style.scss */
 body main .sites-container .site-info .site-desc .plot-info {
   margin-top: 10px;
   margin-bottom: 15px;
   padding: 10px 15px 15px;
   background-color: #f8f8f8;
 }
-/* line 408, ../sass/style.scss */
+/* line 446, ../sass/style.scss */
 body main .sites-container .site-info .site-desc .param {
   margin-bottom: 4px;
 }
-/* line 416, ../sass/style.scss */
+/* line 454, ../sass/style.scss */
 body main .all-datasets .dataset {
   margin-bottom: 32px;
+  width: 75%;
 }
-/* line 420, ../sass/style.scss */
+/* line 459, ../sass/style.scss */
 body main .all-datasets .dataset .title:hover {
   color: #006489;
 }
-/* line 430, ../sass/style.scss */
+/* line 469, ../sass/style.scss */
 body main .all-datasets .dataset .title, body main .all-datasets .dataset .desc {
   cursor: pointer;
 }
-/* line 437, ../sass/style.scss */
+/* line 476, ../sass/style.scss */
 body main footer {
   padding-top: 2rem;
 }
-/* line 440, ../sass/style.scss */
+/* line 479, ../sass/style.scss */
 body main footer img {
   max-width: 320px;
 }

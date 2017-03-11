@@ -28,7 +28,7 @@
             </div>
             <nav class="menu expanded">
                 <a href="/">Home</a>
-                <a href="https://drive.google.com/file/d/0B5RSGI83Og11cVlGbWcxeW5LQjg/view">Data Policy</a>
+                <a href="https://drive.google.com/file/d/0B5RSGI83Og11cVlGbWcxeW5LQjg/view" target="_blank">Data Policy</a>
                 <a href="https://docs.google.com/document/d/14idE53T_HyE5a9jaIGcdnW1zvg6WwT9bBY9aF7BfE3c/edit">Help and Support</a>
                 <a href="api/api-auth/logout/?next=/" class="float-right">Logout</a>
                 {% if user.is_authenticated  and user.is_activated %}
@@ -42,6 +42,10 @@
             <article class="main-article js-main-article">
                 <h3>NGEE Tropics Archive</h3>
                 <section class="row js-home-view home-view">
+                    <p>
+                    The term "Dataset" refers to data and metadata grouped together into a package in a way that make sense for them to be submitted and viewed together. The Datasets can comprise of single or multiple measurements. Examples of datasets include data and metadata from a field campaign, data in a publication, data products grouped with the raw data, or sensor data files downloaded at different times with metadata files.
+                    </p>
+                    <br>
                     <div class="columns small-centered small-4">
                         <button class="button js-view-toggle columns small-12" data-view="create">Create New Dataset</button>
                         <button class="button js-view-toggle columns small-12" data-view="edit-draft">Edit Draft Datasets</button>
@@ -137,8 +141,44 @@
 
                 <!--br><br-->
                 <section class="js-view view-dataset-view hide" data-view="view">
-                    <h4>Approved Datasets</h4>
-                    <div class="all-datasets js-all-datasets"></div>
+                    <h4><span class="js-count"></span> Approved Datasets</h4>
+                    <div class="all-datasets js-all-datasets">
+                        <table class=" unstriped">
+                            <thead>
+                                <tr>
+                                    <th class="js-sort-header pointer" data-sort="data_set_id">
+                                        Dataset ID 
+                                        <img class="js-sort-icon sort-icon unsorted" src="static/img/unsorted.png">
+                                        <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
+                                        <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
+                                    </th>
+                                    <th class="js-sort-header pointer" data-sort="name">Dataset 
+                                        <img class="js-sort-icon sort-icon unsorted" src="static/img/unsorted.png">
+                                        <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
+                                        <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
+                                    </th>
+                                    <th class="js-sort-header pointer" data-sort="contact">Dataset Contact 
+                                        <img class="js-sort-icon sort-icon unsorted" src="static/img/unsorted.png">
+                                        <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
+                                        <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
+                                    </th>
+                                    <th class="js-sort-header pointer" data-sort="modified_date">Last Updated 
+                                        <img class="js-sort-icon sort-icon unsorted" src="static/img/unsorted.png">
+                                        <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
+                                        <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
+                                    </th>
+                                    <th class="js-sort-header pointer" data-sort="access_level">Access Level 
+                                        <img class="js-sort-icon sort-icon unsorted" src="static/img/unsorted.png">
+                                        <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
+                                        <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
+                                    </th>
+                                </tr>
+                                <tbody>
+                                    
+                                </tbody>
+                            </thead>
+                        </table>
+                    </div>
                 </section>
                 <section class="js-view view-sites-view hide" data-view="view-sites">
                     <h4>Sites</h4>
@@ -163,10 +203,45 @@
                     </div>
                 </section>
                 <section class="js-view view-drafts-view hide" data-view="edit-draft">
-                    <h4>Drafts</h4>
+                    <h4><span class="js-count"></span> Drafts</h4>
                     <a href="/?view=edit-draft" class="hide js-edit-back-btn">Back</a>
-                    <div class="all-datasets js-all-datasets"></div>
-
+                    <div class="all-datasets js-all-datasets">
+                        <table class=" unstriped">
+                            <thead>
+                                <tr>
+                                    <th class="js-sort-header pointer" data-sort="data_set_id">
+                                        Dataset ID 
+                                        <img class="js-sort-icon sort-icon unsorted" src="static/img/unsorted.png">
+                                        <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
+                                        <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
+                                    </th>
+                                    <th class="js-sort-header pointer" data-sort="name">Dataset 
+                                        <img class="js-sort-icon sort-icon unsorted" src="static/img/unsorted.png">
+                                        <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
+                                        <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
+                                    </th>
+                                    <th class="js-sort-header pointer" data-sort="contact">Dataset Contact 
+                                        <img class="js-sort-icon sort-icon unsorted" src="static/img/unsorted.png">
+                                        <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
+                                        <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
+                                    </th>
+                                    <th class="js-sort-header pointer" data-sort="modified_date">Last Updated 
+                                        <img class="js-sort-icon sort-icon unsorted" src="static/img/unsorted.png">
+                                        <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
+                                        <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
+                                    </th>
+                                    <th class="js-sort-header pointer" data-sort="access_level">Access Level 
+                                        <img class="js-sort-icon sort-icon unsorted" src="static/img/unsorted.png">
+                                        <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
+                                        <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
+                                    </th>
+                                </tr>
+                                <tbody>
+                                    
+                                </tbody>
+                            </thead>
+                        </table>
+                    </div>
                 </section>
                 <section class="js-view create-dataset-view hide" data-view="create">
                     <h4>Create a Dataset</h4>
@@ -174,7 +249,7 @@
                     <form class="js-create-form dataset small-12 medium-9">
                         <div class="small-12 medium-9 small-centered medium-centered file-drop-zone js-file-drop-zone">
                             <h5>
-                                Drop data file here <i class="required">*</i>
+                                Drag and drop data file into this box <i class="required">*</i>
                                 <b class="desc-tooltip js-file-tooltip" title="<p>Upload a single file containing all your data files. If you have multiple files, submit a compressed file (zip, rar, 7z, etc). Data files submitted to the Archive should be grouped together into collections in a way that make sense for them to be submitted and viewed together as a single record. Some examples of data collections are:</p>
                                 <ul>
                                 <li>Data from a field campaign that need to be viewed together - in this case you can submit all the data collected during that field campaign as a single collection.</li>
@@ -186,24 +261,36 @@
                                 For NGEE Tropics-sponsored datasets that are currently collecting data from permanently installed sensors, we require that the metadata reporting templates are also attached. (With link to the templates).
                                 </p>
                                 ">?</b>
-
                             </h5>
-                            <h6 class="hide file-exists js-file-exists"><b>Note:</b> This dataset already contains a file. If you upload a new file, you will be replacing the existing file.</h6>
+                            <small>Only one data file is allowed per dataset.</small>
+                            <br>
+                            <small>You will need to click on 'Save as Draft / Update Draft' or 'Submit Dataset' to finish uploading the file.</small>
+                            <br><br>
+                            <h6 class="hide file-exists js-file-exists"><b>Note:</b> This dataset already contains the file:<br>
+                                <span class="js-existing-file hide existing-file"></span>
+                                <br> 
+                                If you upload a new file, you will be replacing the existing file.</h6>
                             <!--h6>Allowed file types: Compressed/archive files (zip, rar, 7z...). To download free zipping software, click <a href="http://www.7-zip.org/" target="_blank">here</a></h6-->
                             <div class="button file-select-btn small-12 large-6">
                                 <input type="file" name="" class="js-file-input-btn">
                                 Select File
                             </div>
-
+                            <br>
+                            
                             <div class="file-name-wrapper js-file-name-wrapper hide">
-                                <span class="js-file-name"></span>
+                                <span class="js-file-replace-msg hide">The following file will replace the existing file:<br></span>
+                                <span class="hide js-new-file-msg">The following file will be uploaded:</span>
+                                <div class="js-file-name file-name"></div>
+                                <br>
+                                <button class="button secondary js-clear-file-btn">Clear File</button>
+                                <br>
                                 <div class="js-progress-wrapper hide">
                                     Uploading:&nbsp;
                                     <span class="js-progress"></span>
                                     %
                                 </div>
-                                <button class="button secondary js-clear-file-btn">Clear</button>
                             </div>
+                            <br>
                         </div>
                         <div class="small-12">
                             <button type="button" class="button small-10 large-3 js-create-dataset">Save as Draft</button>
@@ -305,12 +392,12 @@
                     <div class="columns small-12 large-6">
                         <img src="static/img/us-department-logo.png">
                     </div>
-                    <div class="columns small-12 large-6 end text-right">
+                    <!--div class="columns small-12 large-6 end text-right">
                         <p class="text-right">&copy; 2017 NGEE Tropics</p>
                         <a class="float-right" href="https://drive.google.com/file/d/0B5RSGI83Og11cVlGbWcxeW5LQjg/view">Data Policy</a>
                         <br>
                         <a href="https://docs.google.com/document/d/14idE53T_HyE5a9jaIGcdnW1zvg6WwT9bBY9aF7BfE3c/edit">Help and Support</a>
-                    </div>
+                    </div-->
                 </footer>
             </article>
             <article class="error-article js-error-article hide">
@@ -333,7 +420,7 @@
                 <div class="js-download-wrapper hide row columns small-12">
                     <span class="js-data-policy-text">     
                         <input type="checkbox" name="data-policy"  id="data-policy" class="js-data-policy-check">
-                        <label for="data-policy">I have read and agree to the terms of the</label> <a href="https://drive.google.com/file/d/0B5RSGI83Og11cVlGbWcxeW5LQjg/view">NGEE Tropics data policy</a>.
+                        <label for="data-policy">I have read and agree to the terms of the</label> <a href="https://drive.google.com/file/d/0B5RSGI83Og11cVlGbWcxeW5LQjg/view" target="_blank">NGEE Tropics data policy</a>.
                     </span><br>
                     <a class="button download-btn js-file-download-btn disabled">Download Dataset</a>
                 </div>
