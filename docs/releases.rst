@@ -6,6 +6,7 @@ v1.1.0
 ======
 Bug fixes and usability enhancements
 
+- View Dataset showing invalid title at the top **bug,critical** (`#292  <https://github.com/NGEET/ngt-archive/issues/292>`_)
 - Add introductory text to home page **important** (`#287  <https://github.com/NGEET/ngt-archive/issues/287>`_) 
 - Chrome: Unsafe scripts being loaded **important** (`#281  <https://github.com/NGEET/ngt-archive/issues/281>`_) 
 - Login page minor text changes (`#280  <https://github.com/NGEET/ngt-archive/issues/280>`_)
