@@ -1125,7 +1125,7 @@ $(document).ready(function(){
 
         $.when(getDataSets(url)).done(function(datasetObj) {
             $('#myModal #modalTitle').html('')
-                                    .html('<div class="row js-title-row"><div class="columns small-12 medium-9">' + dataObj.datasets[index]['name'] + '</div><div class="columns small-12 medium-3 js-download-wrapper download-wrapper"></div></div>');
+                                    .html('<div class="row js-title-row"><div class="columns small-12 medium-9">' + datasetObj['name'] + '</div><div class="columns small-12 medium-3 js-download-wrapper download-wrapper"></div></div>');
             $('#myModal .js-modal-body').html('');
                 var inputString = '';
                 var citation = '';
@@ -1264,13 +1264,13 @@ $(document).ready(function(){
                 $('#myModal .js-modal-body').append('<div class="row js-dataset-row dataset-row"><div class="columns small-12 medium-3"><b class="js-param-name">Dataset Citation</b></div>'
                                              + '<div class="columns small-12 medium-9">' + citation + '</div></div>');
 
-                $('#myModal .js-save-btn').attr('data-url', dataObj.datasets[index]['url'])
-                                        .attr('data-id', dataObj.datasets[index]['data_set_id']);
+                $('#myModal .js-save-btn').attr('data-url', datasetObj['url'])
+                                        .attr('data-id', datasetObj['data_set_id']);
 
                 if(dataObj.datasets[index]['archive']) {                       
-                    $('.js-file-download-btn').attr('data-url', dataObj.datasets[index]['url'])
-                                        .attr('data-archive', dataObj.datasets[index]['archive'])
-                                        .attr('href', dataObj.datasets[index]['archive'])
+                    $('.js-file-download-btn').attr('data-url', datasetObj['url'])
+                                        .attr('data-archive', datasetObj['archive'])
+                                        .attr('href', datasetObj['archive'])
                                         //.clone()
                                         //.appendTo('.js-download-wrapper')
                                         .addClass('pull-right');
