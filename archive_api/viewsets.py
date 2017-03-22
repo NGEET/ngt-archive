@@ -243,7 +243,7 @@ class DataSetViewSet(ModelViewSet):
                                              context={'request': request})
             deserializer.is_valid(raise_exception=True)
             self.perform_update(deserializer)
-            if status == SUBMITTED and dataset.archive:
+            if status == SUBMITTED and dataset.archive and dataset.version == "0.0":
 
                 old_path, filename = os.path.split(dataset.archive.name)
                 dataset.version = "1.0"  # FIXME:  hard coded util statemachine is implemented
@@ -256,10 +256,6 @@ class DataSetViewSet(ModelViewSet):
 
                 dataset.archive.name = "{}/{}".format(new_path, filename)
                 dataset.save()
-
-                # dataset.archive.open()
-                # dataset.archive.field.clean(dataset.archive, dataset)
-                #dataset.archive.save()
 
         # Send the signal for the status change
         dataset_status_change.send(sender=self.__class__, request=request, user=request.user,
@@ -277,11 +273,12 @@ class DataSetViewSet(ModelViewSet):
 
         from django.db.models import Q  # for or clause
         if self.request.user.has_perm('archive_api.view_all_datasets'):
-            return DataSet.objects.all()
+            return DataSet.objects.filter(status__gte=DataSet.STATUS_DRAFT)
         else:
-            where_clause = Q(created_by=user) | Q(
+            where_clause = Q(created_by=user, status__gte=DataSet.STATUS_DRAFT) | Q(
                 access_level=DataSet.ACCESS_PUBLIC, status=DataSet.STATUS_APPROVED) | Q(
                 Q(cdiac_submission_contact__user=user,
+                  status__gte=DataSet.STATUS_DRAFT,
                   cdiac_import=True)
             )
 
