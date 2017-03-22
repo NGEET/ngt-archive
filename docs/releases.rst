@@ -2,6 +2,13 @@
 Releases
 ========
 
+v1.1.2
+======
+Critical Bug fixes
+
+- Dataset View: Issue with Viewing Metadata #296 **bug,critical** (`#296  <https://github.com/NGEET/ngt-archive/issues/296>`_)
+
+
 v1.1.1
 ======
 Critical Bug fixes
