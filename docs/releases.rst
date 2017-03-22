@@ -2,6 +2,13 @@
 Releases
 ========
 
+v1.1.1
+======
+Critical Bug fixes
+
+- DataSet Workflow: Can't Unsubmit and then Resubmit a dataset **bug,critical** (`#295  <https://github.com/NGEET/ngt-archive/issues/295>`_)
+- Incorrect Meta Data on Edit Dataset Screen **bug,critical** (`#294  <https://github.com/NGEET/ngt-archive/issues/294>`_)
+
 v1.1.0
 ======
 Bug fixes and usability enhancements
