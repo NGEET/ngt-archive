@@ -323,6 +323,7 @@ select "Edit Drafts" and then click the "Edit" button for NGT0004:FooBarBaz.
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
         self.assertEqual({'detail': 'You do not have permission to perform this action.'}, value)
 
+
     def test_admin_approve_workflow(self):
         """
         Test Admin dataset workflow
@@ -736,6 +737,24 @@ You will not be able to view this dataset until it has been approved.
             self.assertContains(response, '"success":true',
                                 status_code=status.HTTP_201_CREATED)
 
+        #########################################################################
+        # NGT User may not SUBMIT a dataset in DRAFT mode if they owne it
+        response = self.client.get("/api/v1/datasets/1/submit/")  # In draft mode, owned by auser
+        value = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual({'detail': 'DataSet has been submitted.', 'success': True}, value)
+
+        # Test unsubmit workflow
+
+        self.login_user("admin")
+        #########################################################################
+        # NGT User may not SUBMIT a dataset in DRAFT mode if they owne it
+        response = self.client.get("/api/v1/datasets/1/unsubmit/")  # In draft mode, owned by auser
+        value = json.loads(response.content.decode('utf-8'))
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual({'detail': 'DataSet has been unsubmitted.', 'success': True}, value)
+
+        self.login_user("auser")
         #########################################################################
         # NGT User may not SUBMIT a dataset in DRAFT mode if they owne it
         response = self.client.get("/api/v1/datasets/1/submit/")  # In draft mode, owned by auser
