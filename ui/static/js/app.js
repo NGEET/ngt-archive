@@ -189,6 +189,13 @@ $(document).ready(function(){
             $('.js-all-contacts').append(option);
         }
 
+        /* megha - uncomment this
+        for(var i=0;i<contacts.length;i++) {
+            var contact = $('.js-contact-list .js-contact.js-template').clone();
+            contact.find('label').html(contacts[i].last_name + ', ' + contacts[i].first_name);
+            contact.removeClass('js-template hide');
+            $('.js-contact-list').append(contact);
+        }
         //var addNewInput = $('<div class="js-input js-new-value"><><input type="text" class="hide" placeholder="First Name">');
 
         //addNewInput.insertAfter('.js-all-contacts');
@@ -1942,8 +1949,36 @@ function createEditForm(templateType) {
     });
     
     //$( document ).tooltip();
-    $('.js-tooltip').popover({html: true, trigger: 'hover focus', placement: 'right'});
-    $('.js-file-tooltip').popover({html: true, trigger: 'hover focus', placement: 'top'});
+    $('.js-tooltip').popover({trigger: "manual" , html: true, animation:false, placement: 'right'})
+    .on("mouseenter", function () {
+        var _this = this;
+        $(this).popover("show");
+        $(".popover").on("mouseleave", function () {
+            $(_this).popover('hide');
+        });
+    }).on("mouseleave", function () {
+        var _this = this;
+        setTimeout(function () {
+            if (!$(".popover:hover").length) {
+                $(_this).popover("hide");
+            }
+        }, 300);
+    });
+    $('.js-file-tooltip').popover({trigger: "manual" , html: true, animation:false, placement: 'top'})
+    .on("mouseenter", function () {
+        var _this = this;
+        $(this).popover("show");
+        $(".popover").on("mouseleave", function () {
+            $(_this).popover('hide');
+        });
+    }).on("mouseleave", function () {
+        var _this = this;
+        setTimeout(function () {
+            if (!$(".popover:hover").length) {
+                $(_this).popover("hide");
+            }
+        }, 300);
+    });
     /*$('.ui-tooltip').each(function() {
         $(this).html($(this).attr('title'));
     });*/
