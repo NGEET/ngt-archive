@@ -1005,8 +1005,20 @@ $(document).ready(function(){
                             
                             // no properties are specified. note that ngee tropics resources will always be set
                             // submit will also be present, which will be removed in the createDraft method
-                            
-                            completeEdit(submissionObj, url);
+                            var dupname = false;
+                            for(var k=0;k<dataObj.datasets.length;k++) {
+                                if(dataObj.datasets[k].name == submissionObj.name) {
+                                    dupname = true;
+                                }
+                            }
+                            if (dupname) {
+                                var proceed = confirm('Another dataset with the same name was found.\nDo you still want to proceed (Click Cancel to make changes)?');
+                                if(proceed) {
+                                    completeEdit(submissionObj, url);
+                                }
+                            } else {
+                                completeEdit(submissionObj, url);
+                            }
                             
                         }
                         else if(status.url) {
@@ -1049,7 +1061,20 @@ $(document).ready(function(){
         else {
             $('.js-loading').removeClass('hide');
             submissionObj = processForm(submissionObj, false, true);
-            completeEdit(submissionObj, url);
+            var dupname = false;
+            for(var k=0;k<dataObj.datasets.length;k++) {
+                if(dataObj.datasets[k].name == submissionObj.name) {
+                    dupname = true;
+                }
+            }
+            if (dupname) {
+                var proceed = confirm('Another dataset with the same name was found.\nDo you still want to proceed (Click Cancel to make changes)?');
+                if(proceed) {
+                    completeEdit(submissionObj, url);
+                }
+            } else {
+                completeEdit(submissionObj, url);
+            }
         }
     });
 
@@ -1713,7 +1738,7 @@ function completeEdit(submissionObj, url, submitMode) {
                             });
                         }
                         else {*/
-                            alert('Draft has been updated with the attached file.\nPlease note: The page will refresh now and take you back to the list of drafts.');
+                            alert('The dataset has been updated with the attached file.\nPlease note: The page will refresh now and take you back to the list of drafts.');
                             $('.js-clear-file').trigger('click');
                             $('.js-clear-form').trigger('click');
                         //}
@@ -1722,12 +1747,12 @@ function completeEdit(submissionObj, url, submitMode) {
 
                     fail: function(data) {
                         var detailObj = JSON.parse(data.responseText);
-                        alert('Fail: The draft was updated successfully but the file could not be uploaded. ' + detailObj.detail);
+                        alert('Fail: The dataset was updated successfully but the file could not be uploaded. ' + detailObj.detail);
                     },
 
                     error: function(data, errorThrown) {
                         var detailObj = JSON.parse(data.responseText);
-                        alert('Error: The draft was updated successfully but the file could not be uploaded. ' + detailObj.detail);
+                        alert('Error: The dataset was updated successfully but the file could not be uploaded. ' + detailObj.detail);
                     },
 
                     complete: function() {
@@ -1738,7 +1763,7 @@ function completeEdit(submissionObj, url, submitMode) {
 
             }
             else {
-                alert('Draft has been updated successfully.\nPlease note: The page will refresh now and take you back to the list of drafts.');
+                alert('Dataset has been updated successfully.\nPlease note: The page will refresh now and take you back to the list of drafts.');
                 $('.js-clear-form').trigger('click');
                 $('.js-clear-file').trigger('click');
             }
