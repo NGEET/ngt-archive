@@ -33,7 +33,11 @@
                 <a href="mailto:ngee-tropics-archive@googlegroups.com">Contact</a>
                 <a href="api/api-auth/logout/?next=/" class="float-right">Logout</a>
                 {% if user.is_authenticated  and user.is_activated %}
-                    <span class="float-right user">{{ user.get_username }}</span>
+                     {% if user.is_superuser %}
+                        <span class="float-right user js-auth" data-auth="admin">{{ user.get_username }}</span>
+                    {% else %}
+                        <span class="float-right user js-auth">{{ user.get_username }}</span>
+                    {% endif %}
                 {% elif user.is_authenticated  and user.is_activated == false %}
                     <span class="js-auth" data-auth="fluxnet"></span>
                 {% else %} 
@@ -49,7 +53,7 @@
                     <br>
                     <div class="columns small-centered small-4">
                         <button class="button js-view-toggle columns small-12" data-view="create">Create New Dataset</button>
-                        <button class="button js-view-toggle columns small-12" data-view="edit-draft">Edit Draft Datasets</button>
+                        <button class="button js-view-toggle columns small-12" data-view="edit-draft">Edit Datasets</button>
                         <button class="button js-view-toggle columns small-12" data-view="view">View Approved Datasets</button>
                         <a class="button columns small-12" data-view="view" href="/?view=view-sites">View Field Sites / Plots</a>
                     </div>
