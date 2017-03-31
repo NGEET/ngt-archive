@@ -434,3 +434,19 @@ body main footer {
 body main footer img {
   max-width: 320px;
 }
+
+/* line 486, ../sass/style.scss */
+.contact-list {
+  max-height: 400px;
+  overflow: scroll;
+  border: 1px solid #bbb;
+}
+/* line 492, ../sass/style.scss */
+.contact-list .contact input[type="checkbox"] {
+  width: 32px !important;
+  display: inline-block;
+}
+/* line 497, ../sass/style.scss */
+.contact-list .contact label {
+  display: inline-block;
+}

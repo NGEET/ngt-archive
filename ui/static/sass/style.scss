@@ -483,3 +483,19 @@ body {
     }
 }
 
+.contact-list {
+    max-height: 400px;
+    overflow: scroll;
+    border: 1px solid #bbb;
+
+    .contact {
+        input[type="checkbox"] {
+            width: 32px !important;
+            display: inline-block;
+        }
+
+        label {
+            display: inline-block;
+        }
+    }
+}
