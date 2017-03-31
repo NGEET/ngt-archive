@@ -98,7 +98,11 @@ $(document).ready(function(){
 
     switch(viewParam) {
         case 'create': 
-        $('.js-loading').addClass('hide');
+        $.when(getDataSets(), getContacts()).then(function(data, contacts) {
+            dataObj.datasets = data;
+            dataObj.contacts = contacts;
+            $('.js-loading').addClass('hide');
+        });
         break;
 
         case 'edit':
@@ -918,8 +922,21 @@ $(document).ready(function(){
             }
         }
         else {
+            var dupname = false;
             submissionObj = processForm(submissionObj, submitMode);
-            createDraft(submissionObj, submitMode);
+            for(var k=0;k<dataObj.datasets.length;k++) {
+                if(dataObj.datasets[k].name == submissionObj.name) {
+                    dupname = true;
+                }
+            }
+            if (dupname) {
+                var proceed = confirm('Another dataset with the same name was found.\nDo you still want to proceed (Click Cancel to make changes)?');
+                if(proceed) {
+                    createDraft(submissionObj, submitMode);
+                }
+            } else {
+                createDraft(submissionObj, submitMode);
+            }
             
         }
         
@@ -988,6 +1005,7 @@ $(document).ready(function(){
                             
                             // no properties are specified. note that ngee tropics resources will always be set
                             // submit will also be present, which will be removed in the createDraft method
+                            
                             completeEdit(submissionObj, url);
                             
                         }
