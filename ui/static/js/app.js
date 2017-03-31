@@ -136,7 +136,7 @@ $(document).ready(function(){
             }*/
             dataObj.drafts = [];
             for(var i=0;i<dataObj.datasets.length;i++) {
-                if(dataObj.datasets[i].status == 0) {
+                if(dataObj.datasets[i].status == 0 || dataObj.datasets[i].status == 1) {
                     dataObj.drafts.push(dataObj.datasets[i]);
                 }
             }
@@ -513,6 +513,14 @@ $(document).ready(function(){
         $('.js-edit-back-btn').removeClass('hide');
         $('.js-edit-form .js-all-plots').removeAttr('disabled');
 
+        if(dataObj.datasets[index].status == 0) {
+            $('.js-edit-dataset').html('Update Draft');
+            $('.js-submit-dataset').removeClass('hide');
+        }
+        else if(dataObj.datasets[index].status == 1) {
+            $('.js-edit-dataset').html('Update Dataset');
+            $('.js-submit-dataset').addClass('hide');
+        }
 
         if(dataObj.datasets[index].archive) {
             $('.js-file-exists').removeClass('hide');
@@ -1517,7 +1525,7 @@ function showDrafts() {
     $('.js-all-datasets table tbody').html('');
     for(var i=0;i<dataObj.drafts.length;i++) {
         
-        if(dataObj.drafts[i].status == 0) {
+        if(dataObj.drafts[i].status == 0 || dataObj.drafts[i].status == 1) {
             var tr = $('<tr/>');
             tr.append('<td>' + dataObj.drafts[i].data_set_id + '</td>');
             var tag = $('<td/><div/>').addClass('js-view-dataset dataset');
@@ -1525,9 +1533,12 @@ function showDrafts() {
                 .append('<p class="desc">' + (dataObj.drafts[i].description ? dataObj.drafts[i].description.substring(0, 199) + '...' : 'NA') + '</p>')
                 .attr('data-url', dataObj.drafts[i].url)
                 .attr('data-index', i)
-                .append('<button class="button js-edit-draft">Edit</button>')
                 .attr('data-url', dataObj.drafts[i].url)
                 .attr('data-index', i);
+
+            if($('.js-auth').attr('data-auth') == 'admin' || dataObj.drafts[i].status == 0) {
+                tag.append('<button class="button js-edit-draft">Edit</button>');
+            }
 
             tr.append(tag);
 
@@ -1542,6 +1553,17 @@ function showDrafts() {
             if(!contact) {
                 tr.append('<td></td>');
             }
+
+            switch(dataObj.drafts[i].status) {
+                case "0": tr.append('<td>Draft</td>');
+                break;
+
+                case "1": tr.append('<td>Submitted</td>');
+                break;
+
+                default: tr.append('<td></td>');
+                break;
+            };
 
             tr.append('<td>' + new Date(dataObj.drafts[i].modified_date).toLocaleString() + '</td>');
 
