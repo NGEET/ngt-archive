@@ -1016,6 +1016,9 @@ $(document).ready(function(){
                                 if(proceed) {
                                     completeEdit(submissionObj, url);
                                 }
+                                else {
+                                    $('.js-loading').addClass('hide');
+                                }
                             } else {
                                 completeEdit(submissionObj, url);
                             }
@@ -1071,6 +1074,9 @@ $(document).ready(function(){
                 var proceed = confirm('Another dataset with the same name was found.\nDo you still want to proceed (Click Cancel to make changes)?');
                 if(proceed) {
                     completeEdit(submissionObj, url);
+                }
+                else {
+                    $('.js-loading').addClass('hide');
                 }
             } else {
                 completeEdit(submissionObj, url);
