@@ -176,62 +176,6 @@ $(document).ready(function(){
     var popup = new Foundation.Reveal($('#myModal'));
     getFileTypes();
 
-    console.log('here');
-
-    $.when(getContacts()).done(function(contacts) {
-        console.log(contacts);
-        dataObj.contacts = contacts;
-        var contactList = [];
-
-        $('.js-all-contacts').append('<option value="add-new" data-index="-1" class="add-new-option"> - Add Collaborator - </option>');
-        for(var i=0;i<contacts.length;i++) {
-            var option = $('<option value="'+ contacts[i].url +'" data-index="' + i + '">' + contacts[i].last_name + ', ' + contacts[i].first_name + '</option>');
-            $('.js-all-contacts').append(option);
-        }
-
-        /* megha - uncomment this
-        for(var i=0;i<contacts.length;i++) {
-            var contact = $('.js-contact-list .js-contact.js-template').clone();
-            contact.find('label').html(contacts[i].last_name + ', ' + contacts[i].first_name);
-            contact.removeClass('js-template hide');
-            $('.js-contact-list').append(contact);
-        }
-        //var addNewInput = $('<div class="js-input js-new-value"><><input type="text" class="hide" placeholder="First Name">');
-
-        //addNewInput.insertAfter('.js-all-contacts');
-        /*for(var i=0;i<contacts.length;i++) {
-            contactList.push(contacts[i].first_name + ' ' + contacts[i].last_name);
-        }
-
-        $( ".js-contacts-widget" ).autocomplete({
-          source: contactList
-        });/*.autocomplete( "instance" )._renderItem = function( ul, item ) {
-          return $( "<li>" )
-            .append( "<div>" + item.first_name + " " + item.last_name + "</div>")
-            .appendTo( ul );
-            console.log('here');
-        };*/
-
-        /*$( ".js-contacts-widget" ).autocomplete({
-          minLength: 0,
-          source: contacts,
-          focus: function( event, ui ) {
-            $( ".js-contacts-widget" ).val( ui.item.first_name + ui.item.last_name );
-            return false;
-          },
-          select: function( event, ui ) {
-            $( ".js-contacts-widget" ).val( ui.item.first_name + ui.item.last_name );
-            $( ".js-contact-url" ).val(ui.item.url);
-            return false;
-          }
-        })
-        .autocomplete( "instance" )._renderItem = function( ul, item ) {
-          return $( "<li>" )
-            .append( "<div>" + item.first_name + " " + item.last_name + "</div>")
-            .appendTo( ul );
-        };*/
-    });
-
     $.when(getSites()).done(function(sites) {
         console.log(sites);
         dataObj.sites = sites;
@@ -259,6 +203,8 @@ $(document).ready(function(){
             $('.js-all-plots').append(option);
         }
     });
+
+    populateContacts();
 
     $('body').on('click', '.js-view-toggle', function(event) {
         var view = $(this).attr('data-view');
@@ -1014,6 +960,7 @@ $(document).ready(function(){
 
                     var fname = $(this).find('.js-first-name').val();
                     var lname = $(this).find('.js-last-name').val();
+                    var email = $(this).find('.js-email').val();
 
                     $.when(createContact(fname, lname, '', '')).done(function(status) {
                         //console.log(status);
@@ -1082,13 +1029,34 @@ $(document).ready(function(){
 
     $('body').on('click', '.js-create-contact', function(event) {
         event.preventDefault();
-        var status = createContact($('.js-contact-fname').val(), $('.js-contact-lname').val(), $('.js-contact-email').val(), $('.js-contact-institute').val());
+        /*var status = createContact($('.js-contact-fname').val(), $('.js-contact-lname').val(), $('.js-contact-email').val(), $('.js-contact-institute').val());
         if(status) {
             alert('Contact successfully created');
         }
         else {
             alert('Fail');
-        }
+        }*/
+        var parent = $(this).closest('.js-new-value');
+        var fname = parent.find('.js-first-name').val();
+        var lname = parent.find('.js-last-name').val();
+        var email = parent.find('.js-email').val();
+
+        $.when(createContact(fname, lname, email, '')).done(function(status) {
+            if(status.url) {
+                $.when(populateContacts()).done(function(done) {
+                    if(done) {
+                        alert('Collaborator has been added.');
+                        parent.closest('.js-contact-section').find('select').val(status.url);
+                        parent.addClass('hide').removeClass('js-input');
+                    }
+                });
+                
+            }
+            else {
+                alert('Please enter fist and last name, and email.');
+            }
+        });
+
     });
 
     $('body').on('click', '.js-get-datasets', function(event) {
@@ -1826,6 +1794,65 @@ function processForm(submissionObj, submitMode, editMode) {
     return submissionObj;
 }
 
+function populateContacts() {
+    var deferObj = jQuery.Deferred();
+    $.when(getContacts()).done(function(contacts) {
+        console.log(contacts);
+        dataObj.contacts = contacts;
+        var contactList = [];
+
+        $('.js-all-contacts').append('<option value="add-new" data-index="-1" class="add-new-option"> - Add Collaborator - </option>');
+        for(var i=0;i<contacts.length;i++) {
+            var option = $('<option value="'+ contacts[i].url +'" data-index="' + i + '">' + contacts[i].last_name + ', ' + contacts[i].first_name + '</option>');
+            $('.js-all-contacts').append(option);
+        }
+        return deferObj.resolve(true);
+        /* megha - uncomment this
+        for(var i=0;i<contacts.length;i++) {
+            var contact = $('.js-contact-list .js-contact.js-template').clone();
+            contact.find('label').html(contacts[i].last_name + ', ' + contacts[i].first_name);
+            contact.removeClass('js-template hide');
+            $('.js-contact-list').append(contact);
+        }
+        //var addNewInput = $('<div class="js-input js-new-value"><><input type="text" class="hide" placeholder="First Name">');
+
+        //addNewInput.insertAfter('.js-all-contacts');
+        /*for(var i=0;i<contacts.length;i++) {
+            contactList.push(contacts[i].first_name + ' ' + contacts[i].last_name);
+        }
+
+        $( ".js-contacts-widget" ).autocomplete({
+          source: contactList
+        });/*.autocomplete( "instance" )._renderItem = function( ul, item ) {
+          return $( "<li>" )
+            .append( "<div>" + item.first_name + " " + item.last_name + "</div>")
+            .appendTo( ul );
+            console.log('here');
+        };*/
+
+        /*$( ".js-contacts-widget" ).autocomplete({
+          minLength: 0,
+          source: contacts,
+          focus: function( event, ui ) {
+            $( ".js-contacts-widget" ).val( ui.item.first_name + ui.item.last_name );
+            return false;
+          },
+          select: function( event, ui ) {
+            $( ".js-contacts-widget" ).val( ui.item.first_name + ui.item.last_name );
+            $( ".js-contact-url" ).val(ui.item.url);
+            return false;
+          }
+        })
+        .autocomplete( "instance" )._renderItem = function( ul, item ) {
+          return $( "<li>" )
+            .append( "<div>" + item.first_name + " " + item.last_name + "</div>")
+            .appendTo( ul );
+        };*/
+    });
+
+    return deferObj.promise();
+}
+
 function createEditForm(templateType) {
     var formHTML = $('<div/>');
     var paramHTML = '';
@@ -2107,8 +2134,9 @@ function processEditingForm(submissionObj, url) {
 
                 var fname = $(this).find('.js-first-name').val();
                 var lname = $(this).find('.js-last-name').val();
+                var email = $(this).find('.js-email').val();
 
-                $.when(createContact(fname, lname, '', '')).done(function(status) {
+                $.when(createContact(fname, lname, email, '')).done(function(status) {
                     //console.log(status);
                     if(status.url && entryCount == $('.js-new-value.js-input').length - 1) {
                         if(!submissionObj[param] && param == 'authors') {
