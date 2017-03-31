@@ -926,11 +926,11 @@ $(document).ready(function(){
             submissionObj = processForm(submissionObj, submitMode);
             for(var k=0;k<dataObj.datasets.length;k++) {
                 if(dataObj.datasets[k].name == submissionObj.name) {
-                    dupname = true;
+                    dupname = dataObj.datasets[k].data_set_id;
                 }
             }
             if (dupname) {
-                var proceed = confirm('Another dataset with the same name was found.\nDo you still want to proceed (Click Cancel to make changes)?');
+                var proceed = confirm('Another dataset (' + dupname + ') with the same name was found.\nDo you still want to proceed (Click Cancel to make changes)?');
                 if(proceed) {
                     createDraft(submissionObj, submitMode);
                 }
