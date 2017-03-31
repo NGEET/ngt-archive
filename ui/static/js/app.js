@@ -1037,9 +1037,11 @@ $(document).ready(function(){
             alert('Fail');
         }*/
         var parent = $(this).closest('.js-new-value');
-        var fname = parent.find('.js-first-name').val();
-        var lname = parent.find('.js-last-name').val();
-        var email = parent.find('.js-email').val();
+        var fname = parent.find('.js-first-name').val().trim();
+        var lname = parent.find('.js-last-name').val().trim();
+        var email = parent.find('.js-email').val().trim();
+
+        if(fname && lname && email) {
 
         $.when(createContact(fname, lname, email, '')).done(function(status) {
             if(status.url) {
@@ -1053,9 +1055,18 @@ $(document).ready(function(){
                 
             }
             else {
-                alert('Please enter fist and last name, and email.');
+                var errorMsg = '';
+                for(var obj in status.responseJSON) {
+                    errorMsg += status.responseJSON[obj] + '\n';
+                }
+                alert(errorMsg);
             }
         });
+
+        }
+        else {
+            alert('Please enter fist and last name, and email.');
+        }
 
     });
 
