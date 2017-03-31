@@ -98,7 +98,11 @@ $(document).ready(function(){
 
     switch(viewParam) {
         case 'create': 
-        $('.js-loading').addClass('hide');
+        $.when(getDataSets(), getContacts()).then(function(data, contacts) {
+            dataObj.datasets = data;
+            dataObj.contacts = contacts;
+            $('.js-loading').addClass('hide');
+        });
         break;
 
         case 'edit':
@@ -136,7 +140,7 @@ $(document).ready(function(){
             }*/
             dataObj.drafts = [];
             for(var i=0;i<dataObj.datasets.length;i++) {
-                if(dataObj.datasets[i].status == 0) {
+                if(dataObj.datasets[i].status == 0 || dataObj.datasets[i].status == 1) {
                     dataObj.drafts.push(dataObj.datasets[i]);
                 }
             }
@@ -176,55 +180,6 @@ $(document).ready(function(){
     var popup = new Foundation.Reveal($('#myModal'));
     getFileTypes();
 
-    console.log('here');
-
-    $.when(getContacts()).done(function(contacts) {
-        console.log(contacts);
-        dataObj.contacts = contacts;
-        var contactList = [];
-
-        $('.js-all-contacts').append('<option value="add-new" data-index="-1" class="add-new-option"> - Add Collaborator - </option>');
-        for(var i=0;i<contacts.length;i++) {
-            var option = $('<option value="'+ contacts[i].url +'" data-index="' + i + '">' + contacts[i].last_name + ', ' + contacts[i].first_name + '</option>');
-            $('.js-all-contacts').append(option);
-        }
-
-        //var addNewInput = $('<div class="js-input js-new-value"><><input type="text" class="hide" placeholder="First Name">');
-
-        //addNewInput.insertAfter('.js-all-contacts');
-        /*for(var i=0;i<contacts.length;i++) {
-            contactList.push(contacts[i].first_name + ' ' + contacts[i].last_name);
-        }
-
-        $( ".js-contacts-widget" ).autocomplete({
-          source: contactList
-        });/*.autocomplete( "instance" )._renderItem = function( ul, item ) {
-          return $( "<li>" )
-            .append( "<div>" + item.first_name + " " + item.last_name + "</div>")
-            .appendTo( ul );
-            console.log('here');
-        };*/
-
-        /*$( ".js-contacts-widget" ).autocomplete({
-          minLength: 0,
-          source: contacts,
-          focus: function( event, ui ) {
-            $( ".js-contacts-widget" ).val( ui.item.first_name + ui.item.last_name );
-            return false;
-          },
-          select: function( event, ui ) {
-            $( ".js-contacts-widget" ).val( ui.item.first_name + ui.item.last_name );
-            $( ".js-contact-url" ).val(ui.item.url);
-            return false;
-          }
-        })
-        .autocomplete( "instance" )._renderItem = function( ul, item ) {
-          return $( "<li>" )
-            .append( "<div>" + item.first_name + " " + item.last_name + "</div>")
-            .appendTo( ul );
-        };*/
-    });
-
     $.when(getSites()).done(function(sites) {
         console.log(sites);
         dataObj.sites = sites;
@@ -252,6 +207,8 @@ $(document).ready(function(){
             $('.js-all-plots').append(option);
         }
     });
+
+    populateContacts();
 
     $('body').on('click', '.js-view-toggle', function(event) {
         var view = $(this).attr('data-view');
@@ -560,6 +517,14 @@ $(document).ready(function(){
         $('.js-edit-back-btn').removeClass('hide');
         $('.js-edit-form .js-all-plots').removeAttr('disabled');
 
+        if(dataObj.datasets[index].status == 0) {
+            $('.js-edit-dataset').html('Update Draft');
+            $('.js-submit-dataset').removeClass('hide');
+        }
+        else if(dataObj.datasets[index].status == 1) {
+            $('.js-edit-dataset').html('Update Dataset');
+            $('.js-submit-dataset').addClass('hide');
+        }
 
         if(dataObj.datasets[index].archive) {
             $('.js-file-exists').removeClass('hide');
@@ -957,8 +922,21 @@ $(document).ready(function(){
             }
         }
         else {
+            var dupname = false;
             submissionObj = processForm(submissionObj, submitMode);
-            createDraft(submissionObj, submitMode);
+            for(var k=0;k<dataObj.datasets.length;k++) {
+                if(dataObj.datasets[k].name == submissionObj.name) {
+                    dupname = true;
+                }
+            }
+            if (dupname) {
+                var proceed = confirm('Another dataset with the same name was found.\nDo you still want to proceed (Click Cancel to make changes)?');
+                if(proceed) {
+                    createDraft(submissionObj, submitMode);
+                }
+            } else {
+                createDraft(submissionObj, submitMode);
+            }
             
         }
         
@@ -1007,6 +985,7 @@ $(document).ready(function(){
 
                     var fname = $(this).find('.js-first-name').val();
                     var lname = $(this).find('.js-last-name').val();
+                    var email = $(this).find('.js-email').val();
 
                     $.when(createContact(fname, lname, '', '')).done(function(status) {
                         //console.log(status);
@@ -1026,7 +1005,23 @@ $(document).ready(function(){
                             
                             // no properties are specified. note that ngee tropics resources will always be set
                             // submit will also be present, which will be removed in the createDraft method
-                            completeEdit(submissionObj, url);
+                            var dupname = false;
+                            for(var k=0;k<dataObj.datasets.length;k++) {
+                                if(dataObj.datasets[k].name == submissionObj.name) {
+                                    dupname = true;
+                                }
+                            }
+                            if (dupname) {
+                                var proceed = confirm('Another dataset with the same name was found.\nDo you still want to proceed (Click Cancel to make changes)?');
+                                if(proceed) {
+                                    completeEdit(submissionObj, url);
+                                }
+                                else {
+                                    $('.js-loading').addClass('hide');
+                                }
+                            } else {
+                                completeEdit(submissionObj, url);
+                            }
                             
                         }
                         else if(status.url) {
@@ -1069,19 +1064,67 @@ $(document).ready(function(){
         else {
             $('.js-loading').removeClass('hide');
             submissionObj = processForm(submissionObj, false, true);
-            completeEdit(submissionObj, url);
+            var dupname = false;
+            for(var k=0;k<dataObj.datasets.length;k++) {
+                if(dataObj.datasets[k].name == submissionObj.name) {
+                    dupname = true;
+                }
+            }
+            if (dupname) {
+                var proceed = confirm('Another dataset with the same name was found.\nDo you still want to proceed (Click Cancel to make changes)?');
+                if(proceed) {
+                    completeEdit(submissionObj, url);
+                }
+                else {
+                    $('.js-loading').addClass('hide');
+                }
+            } else {
+                completeEdit(submissionObj, url);
+            }
         }
     });
 
     $('body').on('click', '.js-create-contact', function(event) {
         event.preventDefault();
-        var status = createContact($('.js-contact-fname').val(), $('.js-contact-lname').val(), $('.js-contact-email').val(), $('.js-contact-institute').val());
+        /*var status = createContact($('.js-contact-fname').val(), $('.js-contact-lname').val(), $('.js-contact-email').val(), $('.js-contact-institute').val());
         if(status) {
             alert('Contact successfully created');
         }
         else {
             alert('Fail');
+        }*/
+        var parent = $(this).closest('.js-new-value');
+        var fname = parent.find('.js-first-name').val().trim();
+        var lname = parent.find('.js-last-name').val().trim();
+        var email = parent.find('.js-email').val().trim();
+
+        if(fname && lname && email) {
+
+        $.when(createContact(fname, lname, email, '')).done(function(status) {
+            if(status.url) {
+                $.when(populateContacts()).done(function(done) {
+                    if(done) {
+                        alert('Collaborator has been added.');
+                        parent.closest('.js-contact-section').find('select').val(status.url);
+                        parent.addClass('hide').removeClass('js-input');
+                    }
+                });
+                
+            }
+            else {
+                var errorMsg = '';
+                for(var obj in status.responseJSON) {
+                    errorMsg += status.responseJSON[obj] + '\n';
+                }
+                alert(errorMsg);
+            }
+        });
+
         }
+        else {
+            alert('Please enter fist and last name, and email.');
+        }
+
     });
 
     $('body').on('click', '.js-get-datasets', function(event) {
@@ -1531,7 +1574,7 @@ function showDrafts() {
     $('.js-all-datasets table tbody').html('');
     for(var i=0;i<dataObj.drafts.length;i++) {
         
-        if(dataObj.drafts[i].status == 0) {
+        if(dataObj.drafts[i].status == 0 || dataObj.drafts[i].status == 1) {
             var tr = $('<tr/>');
             tr.append('<td>' + dataObj.drafts[i].data_set_id + '</td>');
             var tag = $('<td/><div/>').addClass('js-view-dataset dataset');
@@ -1539,9 +1582,12 @@ function showDrafts() {
                 .append('<p class="desc">' + (dataObj.drafts[i].description ? dataObj.drafts[i].description.substring(0, 199) + '...' : 'NA') + '</p>')
                 .attr('data-url', dataObj.drafts[i].url)
                 .attr('data-index', i)
-                .append('<button class="button js-edit-draft">Edit</button>')
                 .attr('data-url', dataObj.drafts[i].url)
                 .attr('data-index', i);
+
+            if($('.js-auth').attr('data-auth') == 'admin' || dataObj.drafts[i].status == 0) {
+                tag.append('<button class="button js-edit-draft">Edit</button>');
+            }
 
             tr.append(tag);
 
@@ -1556,6 +1602,17 @@ function showDrafts() {
             if(!contact) {
                 tr.append('<td></td>');
             }
+
+            switch(dataObj.drafts[i].status) {
+                case "0": tr.append('<td>Draft</td>');
+                break;
+
+                case "1": tr.append('<td>Submitted</td>');
+                break;
+
+                default: tr.append('<td></td>');
+                break;
+            };
 
             tr.append('<td>' + new Date(dataObj.drafts[i].modified_date).toLocaleString() + '</td>');
 
@@ -1687,7 +1744,7 @@ function completeEdit(submissionObj, url, submitMode) {
                             });
                         }
                         else {*/
-                            alert('Draft has been updated with the attached file.\nPlease note: The page will refresh now and take you back to the list of drafts.');
+                            alert('The dataset has been updated with the attached file.\nPlease note: The page will refresh now and take you back to the list of drafts.');
                             $('.js-clear-file').trigger('click');
                             $('.js-clear-form').trigger('click');
                         //}
@@ -1696,12 +1753,12 @@ function completeEdit(submissionObj, url, submitMode) {
 
                     fail: function(data) {
                         var detailObj = JSON.parse(data.responseText);
-                        alert('Fail: The draft was updated successfully but the file could not be uploaded. ' + detailObj.detail);
+                        alert('Fail: The dataset was updated successfully but the file could not be uploaded. ' + detailObj.detail);
                     },
 
                     error: function(data, errorThrown) {
                         var detailObj = JSON.parse(data.responseText);
-                        alert('Error: The draft was updated successfully but the file could not be uploaded. ' + detailObj.detail);
+                        alert('Error: The dataset was updated successfully but the file could not be uploaded. ' + detailObj.detail);
                     },
 
                     complete: function() {
@@ -1712,7 +1769,7 @@ function completeEdit(submissionObj, url, submitMode) {
 
             }
             else {
-                alert('Draft has been updated successfully.\nPlease note: The page will refresh now and take you back to the list of drafts.');
+                alert('Dataset has been updated successfully.\nPlease note: The page will refresh now and take you back to the list of drafts.');
                 $('.js-clear-form').trigger('click');
                 $('.js-clear-file').trigger('click');
             }
@@ -1817,6 +1874,65 @@ function processForm(submissionObj, submitMode, editMode) {
     }
 
     return submissionObj;
+}
+
+function populateContacts() {
+    var deferObj = jQuery.Deferred();
+    $.when(getContacts()).done(function(contacts) {
+        console.log(contacts);
+        dataObj.contacts = contacts;
+        var contactList = [];
+
+        $('.js-all-contacts').append('<option value="add-new" data-index="-1" class="add-new-option"> - Add Collaborator - </option>');
+        for(var i=0;i<contacts.length;i++) {
+            var option = $('<option value="'+ contacts[i].url +'" data-index="' + i + '">' + contacts[i].last_name + ', ' + contacts[i].first_name + '</option>');
+            $('.js-all-contacts').append(option);
+        }
+        return deferObj.resolve(true);
+        /* megha - uncomment this
+        for(var i=0;i<contacts.length;i++) {
+            var contact = $('.js-contact-list .js-contact.js-template').clone();
+            contact.find('label').html(contacts[i].last_name + ', ' + contacts[i].first_name);
+            contact.removeClass('js-template hide');
+            $('.js-contact-list').append(contact);
+        }
+        //var addNewInput = $('<div class="js-input js-new-value"><><input type="text" class="hide" placeholder="First Name">');
+
+        //addNewInput.insertAfter('.js-all-contacts');
+        /*for(var i=0;i<contacts.length;i++) {
+            contactList.push(contacts[i].first_name + ' ' + contacts[i].last_name);
+        }
+
+        $( ".js-contacts-widget" ).autocomplete({
+          source: contactList
+        });/*.autocomplete( "instance" )._renderItem = function( ul, item ) {
+          return $( "<li>" )
+            .append( "<div>" + item.first_name + " " + item.last_name + "</div>")
+            .appendTo( ul );
+            console.log('here');
+        };*/
+
+        /*$( ".js-contacts-widget" ).autocomplete({
+          minLength: 0,
+          source: contacts,
+          focus: function( event, ui ) {
+            $( ".js-contacts-widget" ).val( ui.item.first_name + ui.item.last_name );
+            return false;
+          },
+          select: function( event, ui ) {
+            $( ".js-contacts-widget" ).val( ui.item.first_name + ui.item.last_name );
+            $( ".js-contact-url" ).val(ui.item.url);
+            return false;
+          }
+        })
+        .autocomplete( "instance" )._renderItem = function( ul, item ) {
+          return $( "<li>" )
+            .append( "<div>" + item.first_name + " " + item.last_name + "</div>")
+            .appendTo( ul );
+        };*/
+    });
+
+    return deferObj.promise();
 }
 
 function createEditForm(templateType) {
@@ -1942,8 +2058,36 @@ function createEditForm(templateType) {
     });
     
     //$( document ).tooltip();
-    $('.js-tooltip').popover({html: true, trigger: 'hover focus', placement: 'right'});
-    $('.js-file-tooltip').popover({html: true, trigger: 'hover focus', placement: 'top'});
+    $('.js-tooltip').popover({trigger: "manual" , html: true, animation:false, placement: 'right'})
+    .on("mouseenter", function () {
+        var _this = this;
+        $(this).popover("show");
+        $(".popover").on("mouseleave", function () {
+            $(_this).popover('hide');
+        });
+    }).on("mouseleave", function () {
+        var _this = this;
+        setTimeout(function () {
+            if (!$(".popover:hover").length) {
+                $(_this).popover("hide");
+            }
+        }, 300);
+    });
+    $('.js-file-tooltip').popover({trigger: "manual" , html: true, animation:false, placement: 'top'})
+    .on("mouseenter", function () {
+        var _this = this;
+        $(this).popover("show");
+        $(".popover").on("mouseleave", function () {
+            $(_this).popover('hide');
+        });
+    }).on("mouseleave", function () {
+        var _this = this;
+        setTimeout(function () {
+            if (!$(".popover:hover").length) {
+                $(_this).popover("hide");
+            }
+        }, 300);
+    });
     /*$('.ui-tooltip').each(function() {
         $(this).html($(this).attr('title'));
     });*/
@@ -2072,8 +2216,9 @@ function processEditingForm(submissionObj, url) {
 
                 var fname = $(this).find('.js-first-name').val();
                 var lname = $(this).find('.js-last-name').val();
+                var email = $(this).find('.js-email').val();
 
-                $.when(createContact(fname, lname, '', '')).done(function(status) {
+                $.when(createContact(fname, lname, email, '')).done(function(status) {
                     //console.log(status);
                     if(status.url && entryCount == $('.js-new-value.js-input').length - 1) {
                         if(!submissionObj[param] && param == 'authors') {

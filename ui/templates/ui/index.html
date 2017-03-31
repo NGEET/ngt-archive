@@ -1,3 +1,4 @@
+{% load group_utils %}
 <!doctype html>
 <html>
     <head>
@@ -30,9 +31,14 @@
                 <a href="/">Home</a>
                 <a href="https://drive.google.com/file/d/0B5RSGI83Og11cVlGbWcxeW5LQjg/view" target="_blank">Data Policy</a>
                 <a href="https://docs.google.com/document/d/14idE53T_HyE5a9jaIGcdnW1zvg6WwT9bBY9aF7BfE3c/edit" target="_blank">Help Documentation</a>
+                <a href="mailto:ngee-tropics-archive@googlegroups.com">Contact</a>
                 <a href="api/api-auth/logout/?next=/" class="float-right">Logout</a>
                 {% if user.is_authenticated  and user.is_activated %}
-                    <span class="float-right user">{{ user.get_username }}</span>
+                     {% if user.is_superuser or user|has_group:"NGT Administrator" %}
+                        <span class="float-right user js-auth" data-auth="admin">{{ user.get_username }}</span>
+                    {% else %}
+                        <span class="float-right user js-auth">{{ user.get_username }}</span>
+                    {% endif %}
                 {% elif user.is_authenticated  and user.is_activated == false %}
                     <span class="js-auth" data-auth="fluxnet"></span>
                 {% else %} 
@@ -48,7 +54,7 @@
                     <br>
                     <div class="columns small-centered small-4">
                         <button class="button js-view-toggle columns small-12" data-view="create">Create New Dataset</button>
-                        <button class="button js-view-toggle columns small-12" data-view="edit-draft">Edit Draft Datasets</button>
+                        <button class="button js-view-toggle columns small-12" data-view="edit-draft">Edit Datasets</button>
                         <button class="button js-view-toggle columns small-12" data-view="view">View Approved Datasets</button>
                         <a class="button columns small-12" data-view="view" href="/?view=view-sites">View Field Sites / Plots</a>
                     </div>
@@ -162,6 +168,11 @@
                                         <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
                                         <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
                                     </th>
+                                    <th class="js-sort-header pointer" data-sort="status">Status 
+                                        <img class="js-sort-icon sort-icon unsorted" src="static/img/unsorted.png">
+                                        <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
+                                        <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
+                                    </th>
                                     <th class="js-sort-header pointer" data-sort="modified_date">Last Updated 
                                         <img class="js-sort-icon sort-icon unsorted" src="static/img/unsorted.png">
                                         <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
@@ -225,6 +236,11 @@
                                         <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
                                         <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
                                     </th>
+                                    <th class="js-sort-header pointer" data-sort="status">Status 
+                                        <img class="js-sort-icon sort-icon unsorted" src="static/img/unsorted.png">
+                                        <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
+                                        <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
+                                    </th>
                                     <th class="js-sort-header pointer" data-sort="modified_date">Last Updated 
                                         <img class="js-sort-icon sort-icon unsorted" src="static/img/unsorted.png">
                                         <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
@@ -258,7 +274,7 @@
                                 <li>Continuously generated sensor data - in this case, we suggest grouping raw data (such as those obtained from data loggers) and processed data as separate records so that each can be released at separate times.</li>
                                 </ul>
                                 <p>
-                                For NGEE Tropics-sponsored datasets that are currently collecting data from permanently installed sensors, we require that the metadata reporting templates are also attached. (With link to the templates).
+                                For NGEE Tropics-sponsored datasets that are currently collecting data from permanently installed sensors, we require that the <a href='https://ngt-data.lbl.gov/metadata' target='_blank'>metadata reporting templates</a> are also attached.
                                 </p>
                                 ">?</b>
                             </h5>
@@ -348,6 +364,16 @@
                             </div>
                         </div-->
                     </section>
+                    <!--section class="contact-list js-contact-list hide js-ref-list js-multi-container " data-list="contacts">
+                        <div class="hide">
+                            <input type="text" name="">
+                            <button>Add New Collaborator</button>
+                        </div>
+                        <div class="js-contact contact hide js-template">
+                            <input type="checkbox" name="" id="">
+                            <label for=""></label>
+                        </div>
+                    </section-->
                     <section class="contact-section js-contact-section hide js-ref-list js-multi-container add-new" data-list="contacts">
                         <select class="js-all-contacts all-contacts js-input">
                             <option selected disabled value="">Select</option>                        
@@ -363,6 +389,7 @@
                             <div class="columns small-6 contact-wrapper">
                                 <input class="js-email" type="text" name="" placeholder="Email">
                             </div>
+                            <button class="button js-create-contact">Add to Collaborators</button>
                         </div>
                     </section>
                     <!--section class="contact-section js-contact-section hide js-ref-list" data-list="contacts">
