@@ -926,11 +926,11 @@ $(document).ready(function(){
             submissionObj = processForm(submissionObj, submitMode);
             for(var k=0;k<dataObj.datasets.length;k++) {
                 if(dataObj.datasets[k].name == submissionObj.name) {
-                    dupname = true;
+                    dupname = dataObj.datasets[k].data_set_id;
                 }
             }
             if (dupname) {
-                var proceed = confirm('Another dataset with the same name was found.\nDo you still want to proceed (Click Cancel to make changes)?');
+                var proceed = confirm('Another dataset (' + dupname + ') with the same name was found.\nDo you still want to proceed (Click Cancel to make changes)?');
                 if(proceed) {
                     createDraft(submissionObj, submitMode);
                 }
@@ -1102,13 +1102,17 @@ $(document).ready(function(){
 
         $.when(createContact(fname, lname, email, '')).done(function(status) {
             if(status.url) {
-                $.when(populateContacts()).done(function(done) {
-                    if(done) {
+                //$.when(populateContacts()).done(function(done) {
+                    //if(done) {
                         alert('Collaborator has been added.');
-                        parent.closest('.js-contact-section').find('select').val(status.url);
+                        $('.js-all-contacts').each(function() {
+                            $(this).append('<option value="'+ status.url +'">' + lname + ', ' + fname + '</option>');
+                        });
+                        parent.closest('.js-contact-section').find('select').val(status.url)
+                                                            .addClass('js-input');
                         parent.addClass('hide').removeClass('js-input');
-                    }
-                });
+                    //}
+                //});
                 
             }
             else {
@@ -1418,6 +1422,7 @@ $(document).ready(function(){
             input.find('.js-new-value').addClass('hide').removeClass('js-input');
             input.find('.js-first-name').val('');
             input.find('.js-last-name').val('');
+            input.find('.js-email').val('');
         }
         input.insertBefore(this);
     });
@@ -1882,7 +1887,8 @@ function populateContacts() {
         console.log(contacts);
         dataObj.contacts = contacts;
         var contactList = [];
-
+        //$('.js-all-contacts').html('')
+        //.append('<option selected disabled value="">Select</option>')
         $('.js-all-contacts').append('<option value="add-new" data-index="-1" class="add-new-option"> - Add Collaborator - </option>');
         for(var i=0;i<contacts.length;i++) {
             var option = $('<option value="'+ contacts[i].url +'" data-index="' + i + '">' + contacts[i].last_name + ', ' + contacts[i].first_name + '</option>');
