@@ -1121,17 +1121,19 @@ $(document).ready(function(){
 
         $.when(createContact(fname, lname, email, '')).done(function(status) {
             if(status.url) {
-                //$.when(populateContacts()).done(function(done) {
-                    //if(done) {
-                        alert('Collaborator has been added.');
-                        $('.js-all-contacts').each(function() {
-                            $(this).append('<option value="'+ status.url +'">' + lname + ', ' + fname + '</option>');
-                        });
-                        parent.closest('.js-contact-section').find('select').val(status.url)
-                                                            .addClass('js-input');
-                        parent.addClass('hide').removeClass('js-input');
-                    //}
-                //});
+                var contact = $('.js-contact-list .js-contact.js-template').first().clone();
+                contact.find('input').val(status.url);
+                contact.find('label').append(status.last_name + ', ' + status.first_name);
+                contact.removeClass('js-template hide');
+                $('.js-contact-list').append(contact);
+                parent.closest('.js-ref-list')
+                    .find('.js-input[value="' + status.url + '"]')
+                    .closest('.js-contact')
+                    .trigger('click');
+                
+                alert('Collaborator has been added and selected.');
+                parent.find('input').val('');
+                parent.hide();
                 
             }
             else {
@@ -1978,7 +1980,7 @@ function populateContacts() {
         var contactList = [];
         //$('.js-all-contacts').html('')
         //.append('<option selected disabled value="">Select</option>')
-        $('.js-all-contacts').append('<option value="add-new" data-index="-1" class="add-new-option"> - Add Collaborator - </option>');
+        /*$('.js-all-contacts').append('<option value="add-new" data-index="-1" class="add-new-option"> - Add Collaborator - </option>');
 
         for(var i=0;i<contacts.length;i++) {
             var option = $('<option value="'+ contacts[i].url +'" data-index="' + i + '">' + contacts[i].last_name + ', ' + contacts[i].first_name + '</option>');
