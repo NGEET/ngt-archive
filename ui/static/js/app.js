@@ -68,8 +68,6 @@ $(document).ready(function(){
 
     $.getJSON( "static/js/metadata/dataset.json", function( data ) {  
         templates.datasets = data;
-        //console.log(templates.dataset);
-        //console.log(data);
         createEditForm('datasets');
     });
 
@@ -117,7 +115,6 @@ $(document).ready(function(){
         $.when(getDataSets(), getContacts()).then(function(data, contacts) {
             dataObj.datasets = data;
             dataObj.contacts = contacts;
-            //console.log(data);
             $('.js-text-dump').html('');
             $('.js-datasets').html('');
             var draftCount = 0;
@@ -157,7 +154,6 @@ $(document).ready(function(){
         $.when(getDataSets(), getContacts()).then(function(data, contacts) {
             dataObj.datasets = data;
             dataObj.contacts = contacts;
-            //console.log(data);
             $('.js-text-dump').html('');
             $('.js-datasets').html('');
             dataObj.approvedDatasets = [];
@@ -181,7 +177,6 @@ $(document).ready(function(){
     getFileTypes();
 
     $.when(getSites()).done(function(sites) {
-        console.log(sites);
         dataObj.sites = sites;
         for(var i=0;i<sites.length;i++) {
             var option = $('<option value="'+ sites[i].url +'" data-index="' + i + '">' + sites[i].site_id + ': ' + sites[i].name + '</option>');
@@ -190,7 +185,6 @@ $(document).ready(function(){
     });
 
     $.when(getVariables()).done(function(vars) {
-        console.log(vars);
         dataObj.variables = vars;
         for(var i=0;i<vars.length;i++) {
             var option = $('<option value="'+ vars[i].url +'" data-index="' + i + '">' + vars[i].name + '</option>');
@@ -199,7 +193,6 @@ $(document).ready(function(){
     });
 
     $.when(getPlots()).done(function(plots) {
-        console.log(plots);
         dataObj.plots = plots;
         $('.js-all-plots').append('<option value="">None</option>');
         for(var i=0;i<plots.length;i++) {
@@ -217,8 +210,19 @@ $(document).ready(function(){
         $('.js-home-view').addClass('hide');
     });
 
+    $('body').on('click', '.js-add-contact', function (event) {
+        event.preventDefault();
+        $(this).siblings('.js-new-value').removeClass('hide');
+        $(this).siblings('.js-new-value').find('input').val('');
+    });
+
+    $('body').on('click', '.js-cancel-contact', function (event) {
+        event.preventDefault();
+        $(this).closest('.js-new-value').find('input').val('');
+        $(this).closest('.js-new-value').addClass('hide');
+    });    
+
     $('body').on('change', '.js-all-sites', function() {
-        //console.log('here');
         var plotTitle = false;
         var index = $(this).find('option:selected').attr('data-index');
         $('.js-view-site-btn .js-site-id').html($(this).val());
@@ -351,7 +355,6 @@ $(document).ready(function(){
     });*/
 
     $('body').on('change', '.js-all-plots', function() {
-        //console.log('here');
         var index = $(this).find('option:selected').attr('data-index');
         $('.js-view-plot-btn .js-plot-id').html($(this).val());
         $('.js-plot-info').removeClass('hide');
@@ -478,15 +481,32 @@ $(document).ready(function(){
             for(var param in templates.datasets) {
                 if(param in dataObj.datasets[index]) {
                     if(Array.isArray(dataObj.datasets[index][param])) {
-                        for (var i = 0; i < dataObj.datasets[index][param].length; i++) {
-                            if(i > 0 ) {
-                                var position = $('.js-edit-form .js-param[data-param="'+ param +'"] section').last();
-                                var container = position.clone();
-                                container.find('.js-input').val(dataObj.datasets[index][param][i]);
-                                container.insertAfter(position);
+                        if(param == 'authors') {
+                            $('.js-sequence').each(function() {
+                                $(this).find('option:not(.js-order)').each(function(i) {
+                                    if(i < dataObj.datasets[index][param].length) {
+                                        $(this).removeClass('hide');
+                                    }
+                                });
+                            });
+
+                            for (var i = 0; i < dataObj.datasets[index][param].length; i++) {
+                                $('.js-edit-form .js-param[data-param="'+ param +'"] .js-input[value="' + dataObj.datasets[index][param][i] + '"]').prop('checked', true);
+                                $('.js-edit-form .js-param[data-param="'+ param +'"] .js-input[value="' + dataObj.datasets[index][param][i] + '"]').siblings('select').removeClass('hide');
+                                $('.js-edit-form .js-param[data-param="'+ param +'"] .js-input[value="' + dataObj.datasets[index][param][i] + '"]').siblings('select').val((i+1));
                             }
-                            else {
-                                $('.js-edit-form .js-param[data-param="'+ param +'"] .js-input').val(dataObj.datasets[index][param][i]);
+                        }
+                        else {
+                            for (var i = 0; i < dataObj.datasets[index][param].length; i++) {
+                                if(i > 0 ) {
+                                    var position = $('.js-edit-form .js-param[data-param="'+ param +'"] section').last();
+                                    var container = position.clone();
+                                    container.find('.js-input').val(dataObj.datasets[index][param][i]);
+                                    container.insertAfter(position);
+                                }
+                                else {
+                                    $('.js-edit-form .js-param[data-param="'+ param +'"] .js-input').val(dataObj.datasets[index][param][i]);
+                                }
                             }
                         }
                     }
@@ -498,7 +518,10 @@ $(document).ready(function(){
                             else if(dataObj.datasets[index][param] == false) {
                                 $('.js-edit-form .js-param[data-param="'+ param +'"] .js-input.js-false').prop('checked', true);
                             }
-                        }   
+                        }  
+                        else if(param == 'contact') {
+                            $('.js-edit-form .js-param[data-param="'+ param +'"] .js-input[value="' + dataObj.datasets[index][param] + '"]').prop('checked', true);
+                        }
                         else {
                             $('.js-edit-form .js-param[data-param="'+ param +'"] .js-input').val(dataObj.datasets[index][param]);
                         }
@@ -599,10 +622,8 @@ $(document).ready(function(){
                 $('.js-file-replace-msg').removeClass('hide');
             }
         }
-        //console.log(this);
     });    
     
-
     /*$('body').on('click', '.js-file-download-btn', function(event) {
         event.preventDefault();
         var archiveUrl = $(this).attr('data-archive');
@@ -699,7 +720,6 @@ $(document).ready(function(){
             }
 
         });
-        console.log(jsonObj);
         $.when(editDataset(jsonObj, url)).done(function(status) {
             if(status.result) {
                 alert('Your changes have been saved');
@@ -773,7 +793,6 @@ $(document).ready(function(){
                                 if(pc >= 100) {
                                     //this.filePointer.spinner.parent().addClass('hide');
                                     this.filePointer.progress = pc;
-                                    console.log(pc);
                                 }
                                 else {
                                     $('.js-progress-wrapper').removeClass('hide');
@@ -792,7 +811,6 @@ $(document).ready(function(){
                                 if(pc >= 100) {
                                     //this.filePointer.spinner.parent().addClass('hide');
                                     this.filePointer.progress = pc;
-                                    console.log(pc);
                                 }
                                 else {
                                     $('.js-progress-wrapper').removeClass('hide');
@@ -868,7 +886,6 @@ $(document).ready(function(){
                     var email = $(this).find('.js-email').val();
 
                     $.when(createContact(fname, lname, email, '')).done(function(status) {
-                        //console.log(status);
                         if(status.url && entryCount == $('.js-new-value.js-input').length - 1) {
                             if(!submissionObj[param] && param == 'authors') {
                                 submissionObj[param] = [];
@@ -884,6 +901,7 @@ $(document).ready(function(){
                             submissionObj = processForm(submissionObj, submitMode);
                             // no properties are specified. note that ngee tropics resources will always be set
                             // submit will also be present, which will be removed in the createDraft method
+                            submissionObj = finalizeSequence(submissionObj);
                             createDraft(submissionObj, submitMode);
                             
                         }
@@ -932,9 +950,11 @@ $(document).ready(function(){
             if (dupname) {
                 var proceed = confirm('Another dataset (' + dupname + ') with the same name was found.\nDo you still want to proceed (Click Cancel to make changes)?');
                 if(proceed) {
+                    submissionObj = finalizeSequence(submissionObj);
                     createDraft(submissionObj, submitMode);
                 }
             } else {
+                submissionObj = finalizeSequence(submissionObj);
                 createDraft(submissionObj, submitMode);
             }
             
@@ -988,7 +1008,6 @@ $(document).ready(function(){
                     var email = $(this).find('.js-email').val();
 
                     $.when(createContact(fname, lname, '', '')).done(function(status) {
-                        //console.log(status);
                         if(status.url && entryCount == $('.js-new-value.js-input').length - 1) {
                             if(!submissionObj[param] && param == 'authors') {
                                 submissionObj[param] = [];
@@ -1007,7 +1026,7 @@ $(document).ready(function(){
                             // submit will also be present, which will be removed in the createDraft method
                             var dupname = false;
                             for(var k=0;k<dataObj.datasets.length;k++) {
-                                if(dataObj.datasets[k].name == submissionObj.name) {
+                                if(dataObj.datasets[k].name == submissionObj.name && dataObj.datasets[k].url != url) {
                                     dupname = true;
                                 }
                             }
@@ -1066,7 +1085,7 @@ $(document).ready(function(){
             submissionObj = processForm(submissionObj, false, true);
             var dupname = false;
             for(var k=0;k<dataObj.datasets.length;k++) {
-                if(dataObj.datasets[k].name == submissionObj.name) {
+                if(dataObj.datasets[k].name == submissionObj.name && dataObj.datasets[k].url != url) {
                     dupname = true;
                 }
             }
@@ -1102,17 +1121,19 @@ $(document).ready(function(){
 
         $.when(createContact(fname, lname, email, '')).done(function(status) {
             if(status.url) {
-                //$.when(populateContacts()).done(function(done) {
-                    //if(done) {
-                        alert('Collaborator has been added.');
-                        $('.js-all-contacts').each(function() {
-                            $(this).append('<option value="'+ status.url +'">' + lname + ', ' + fname + '</option>');
-                        });
-                        parent.closest('.js-contact-section').find('select').val(status.url)
-                                                            .addClass('js-input');
-                        parent.addClass('hide').removeClass('js-input');
-                    //}
-                //});
+                var contact = $('.js-contact-list .js-contact.js-template').first().clone();
+                contact.find('input').val(status.url);
+                contact.find('label').append(status.last_name + ', ' + status.first_name);
+                contact.removeClass('js-template hide');
+                $('.js-contact-list').append(contact);
+                parent.closest('.js-ref-list')
+                    .find('.js-input[value="' + status.url + '"]')
+                    .closest('.js-contact')
+                    .trigger('click');
+                
+                alert('Collaborator has been added and selected.');
+                parent.find('input').val('');
+                parent.hide();
                 
             }
             else {
@@ -1427,10 +1448,60 @@ $(document).ready(function(){
         input.insertBefore(this);
     });
 
+    $('body').on('click', '.js-contact .js-sequence', function(event) {
+        event.stopPropagation();
+    });
+
+    $('body').on('click', '.js-contact', function(event) {
+        var multi = $(this).closest('.js-param').hasClass('multi');
+        //if(!$(this).hasClass('.js-sequence')) {
+            if($(this).find('input').prop('checked')) {
+                $(this).find('input').prop('checked', false);
+                $(this).find('.js-sequence').addClass('hide');
+            }
+            else {
+                if(!multi) {
+                    $(this).closest('.js-contact-list').find('input[type="checkbox"]').prop('checked', false);//.each(function() {
+                    //    $(this).prop('checked', false);
+                    //});
+                }
+                $(this).find('input').prop('checked', true);
+                if(multi) {
+                    $(this).find('.js-sequence').removeClass('hide');
+                }
+            }
+        //}
+        updateSequence();
+    });
+
 });
 
 function populateDatasets(filter, container) {
 
+}
+
+function updateSequence() {
+    var contactCount = $('.js-param.multi .js-ref-list.js-multi-container').first().find('.js-contact:not(.js-template)').length;
+    if(('.js-sequence option').length > (contactCount + 1)) {
+        extra = ('.js-sequence option').length - contactCount - 1;
+        //$('.js-sequence').append('<option disabled selected>Select ordering (optional)</option>');
+        for(var l=1;l<=extra;l++) {
+            $('.js-sequence').append('<option value="' + (l+contactCount) + '">' + (l+contactCount) + '</option>');
+        }
+    }
+    contactCount = $('.js-param.multi .js-ref-list.js-multi-container').first().find('.js-contact:not(.js-template)').length;
+    var checkedLength = $('.js-param.multi .js-ref-list.js-multi-container input:checked').length;
+    $('.js-sequence').each(function() {
+        $(this).find('option:not(.js-order)').each(function(index) {
+            if(index < checkedLength) {
+                $(this).removeClass('hide');
+            }
+            else {
+                $(this).addClass('hide');
+            }
+        });
+    });
+    
 }
 
 function createDraft(submissionObj, submitMode) {
@@ -1475,7 +1546,6 @@ function createDraft(submissionObj, submitMode) {
                                             if(pc >= 100) {
                                                 //this.filePointer.spinner.parent().addClass('hide');
                                                 this.filePointer.progress = pc;
-                                                console.log(pc);
                                             }
                                             else {
                                                 $('.js-progress-wrapper').removeClass('hide');
@@ -1494,7 +1564,6 @@ function createDraft(submissionObj, submitMode) {
                                             if(pc >= 100) {
                                                 //this.filePointer.spinner.parent().addClass('hide');
                                                 this.filePointer.progress = pc;
-                                                console.log(pc);
                                             }
                                             else {
                                                 $('.js-progress-wrapper').removeClass('hide');
@@ -1572,6 +1641,18 @@ function createDraft(submissionObj, submitMode) {
             scrollTop: $('.js-create-form').offset().top
         }, 500);
     }
+}
+
+function prepareLists() {
+    var index = 0;
+    $('.js-contact-list').each(function() {
+        $(this).find('.js-contact:not(.js-template)').each(function() {
+            //var timestamp = Math.floor(Date.now() / 1000);
+            $(this).find('input').attr('id', $(this).find('input').attr('id') + index);
+            $(this).find('label').attr('for', $(this).find('input').attr('id'));
+            index++;
+        });
+    });
 }
 
 function showDrafts() {
@@ -1713,6 +1794,8 @@ function completeEdit(submissionObj, url, submitMode) {
         submissionObj['sites'] = [];
     }
 
+    submissionObj = finalizeSequence(submissionObj);
+
     $.when(editDataset(submissionObj, url)).done(function(data) {
         if(data.result) {
             
@@ -1831,9 +1914,18 @@ function processForm(submissionObj, submitMode, editMode) {
                         if(!submissionObj[param]) {
                             submissionObj[param] = [];
                         }
-                        submissionObj[param].push($(this).val().trim());
+
+                        if($(this).hasClass('js-person') && $(this).prop('checked')) {
+                            submissionObj[param].push($(this).val().trim());
+                        }
+                        else if(!$(this).hasClass('js-person')) {
+                            submissionObj[param].push($(this).val().trim());
+                        }
                     }
-                    else {
+                    else if(param == 'contact' && $(this).hasClass('js-person') && $(this).prop('checked')) {
+                        submissionObj[param] = $(this).val().trim();
+                    }
+                    else if(param != 'contact'){
                         submissionObj[param] = $(this).val().trim();
                     }
                 }
@@ -1884,24 +1976,30 @@ function processForm(submissionObj, submitMode, editMode) {
 function populateContacts() {
     var deferObj = jQuery.Deferred();
     $.when(getContacts()).done(function(contacts) {
-        console.log(contacts);
         dataObj.contacts = contacts;
         var contactList = [];
         //$('.js-all-contacts').html('')
         //.append('<option selected disabled value="">Select</option>')
-        $('.js-all-contacts').append('<option value="add-new" data-index="-1" class="add-new-option"> - Add Collaborator - </option>');
+        /*$('.js-all-contacts').append('<option value="add-new" data-index="-1" class="add-new-option"> - Add Collaborator - </option>');
+
         for(var i=0;i<contacts.length;i++) {
             var option = $('<option value="'+ contacts[i].url +'" data-index="' + i + '">' + contacts[i].last_name + ', ' + contacts[i].first_name + '</option>');
             $('.js-all-contacts').append(option);
-        }
-        return deferObj.resolve(true);
-        /* megha - uncomment this
+        }*/
+        
         for(var i=0;i<contacts.length;i++) {
-            var contact = $('.js-contact-list .js-contact.js-template').clone();
-            contact.find('label').html(contacts[i].last_name + ', ' + contacts[i].first_name);
+            var contact = $('.js-contact-list .js-contact.js-template').first().clone();
+            //var timestamp = Math.floor(Date.now() / 1000);
+            contact.find('input').val(contacts[i].url);
+            contact.find('label').append(contacts[i].last_name + ', ' + contacts[i].first_name);
+                                //.attr('for', contacts[i].first_name.toLowerCase() + '-' + contacts[i].last_name.toLowerCase());
             contact.removeClass('js-template hide');
             $('.js-contact-list').append(contact);
+            $('.js-sequence').append('<option class="hide" value="' + (i+1) + '">' + (i+1) + '</option>');
         }
+
+        return deferObj.resolve(true);
+        
         //var addNewInput = $('<div class="js-input js-new-value"><><input type="text" class="hide" placeholder="First Name">');
 
         //addNewInput.insertAfter('.js-all-contacts');
@@ -1915,7 +2013,6 @@ function populateContacts() {
           return $( "<li>" )
             .append( "<div>" + item.first_name + " " + item.last_name + "</div>")
             .appendTo( ul );
-            console.log('here');
         };*/
 
         /*$( ".js-contacts-widget" ).autocomplete({
@@ -1939,6 +2036,28 @@ function populateContacts() {
     });
 
     return deferObj.promise();
+}
+
+function finalizeSequence(submissionObj) {
+    var authors = [];
+    for(var i=0;i<submissionObj.authors.length;i++) {
+        authors.push('');
+    }
+    $('.js-contact input:checked').each(function() {
+        var url = $(this).val();
+        if(!authors[sequence] && $(this).siblings('select').val() != -1) {
+            var sequence = $(this).siblings('select').val() - 1;
+            authors[sequence] = url;
+        }
+        else {
+            authors.push(url);
+        }
+    });
+
+    authors = authors.filter(Boolean);
+
+    submissionObj.authors = authors;
+    return submissionObj;
 }
 
 function createEditForm(templateType) {
@@ -2021,8 +2140,6 @@ function createEditForm(templateType) {
 
                 case "reference_list":
                 var list = templates[templateType][param]['list_name'];
-                //var tag = $();
-                console.log(list);
                 $('.js-ref-list[data-list="' + list + '"]').clone().removeClass('hide').appendTo(paramHTML);
                 break;
 
@@ -2032,7 +2149,7 @@ function createEditForm(templateType) {
                 break;
             }
 
-            if(templates[templateType][param].multiple) {
+            if(templates[templateType][param].multiple && param != 'authors') {
                 var multiBtn = $('.js-add-new').clone();
                 var delBtn = $('.js-del-param').clone();
                 multiBtn.attr('data-param', param);
@@ -2225,7 +2342,6 @@ function processEditingForm(submissionObj, url) {
                 var email = $(this).find('.js-email').val();
 
                 $.when(createContact(fname, lname, email, '')).done(function(status) {
-                    //console.log(status);
                     if(status.url && entryCount == $('.js-new-value.js-input').length - 1) {
                         if(!submissionObj[param] && param == 'authors') {
                             submissionObj[param] = [];
@@ -2558,17 +2674,14 @@ function getMetadata(templateType) {
         url: "api/v1/"+templateType+"/",
         dataType: "json",
         success: function(data) {
-            console.log(data.actions.POST);
             deferObj.resolve(data.actions.POST);
         },
 
         fail: function(jqXHR, textStatus, errorThrown) {
-            console.log(textStatus);
             deferObj.resolve(data);
         },
 
         error: function(jqXHR, textStatus, errorThrown) {
-            console.log(textStatus);
             deferObj.resolve(data);
         },
 

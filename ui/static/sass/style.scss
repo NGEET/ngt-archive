@@ -473,29 +473,51 @@ body {
             }
         }
 
+        .contact-list {
+            max-height: 350px;
+            overflow: scroll;
+            border: 1px solid #bbb;
+            padding: 0 10px;
+
+            .contact {
+                border-bottom: 1px solid #eee;
+                line-height: 45px;
+                cursor: pointer;
+
+                &:hover {
+                    background-color: #efefef;
+                }
+
+                input[type="checkbox"] {
+                    width: 32px !important;
+                    display: inline-block;
+                    margin: 0;
+                    transform: scale(1.25);
+                }
+
+                label {
+                    display: inline-block;
+                    width: 300px;
+                    cursor: pointer;
+                }
+
+                select {
+                    display: inline-block;
+                    margin: 0;
+                    width: auto !important;
+                    font-size: 14px;
+                    height: 35px;
+                    border-radius: 3px;
+                }
+            }
+        }
+
         footer {
             //border-top: 1px solid #ccc;
             padding-top: 3rem;
             img {
                 max-width: 320px;
             }
-        }
-    }
-}
-
-.contact-list {
-    max-height: 400px;
-    overflow: scroll;
-    border: 1px solid #bbb;
-
-    .contact {
-        input[type="checkbox"] {
-            width: 32px !important;
-            display: inline-block;
-        }
-
-        label {
-            display: inline-block;
         }
     }
 }

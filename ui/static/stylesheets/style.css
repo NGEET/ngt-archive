@@ -427,26 +427,49 @@ body main .all-datasets .dataset .title, body main .all-datasets .dataset .desc 
   cursor: pointer;
 }
 /* line 476, ../sass/style.scss */
+body main .contact-list {
+  max-height: 350px;
+  overflow: scroll;
+  border: 1px solid #bbb;
+  padding: 0 10px;
+}
+/* line 482, ../sass/style.scss */
+body main .contact-list .contact {
+  border-bottom: 1px solid #eee;
+  line-height: 45px;
+  cursor: pointer;
+}
+/* line 487, ../sass/style.scss */
+body main .contact-list .contact:hover {
+  background-color: #efefef;
+}
+/* line 491, ../sass/style.scss */
+body main .contact-list .contact input[type="checkbox"] {
+  width: 32px !important;
+  display: inline-block;
+  margin: 0;
+  transform: scale(1.25);
+}
+/* line 498, ../sass/style.scss */
+body main .contact-list .contact label {
+  display: inline-block;
+  width: 300px;
+  cursor: pointer;
+}
+/* line 504, ../sass/style.scss */
+body main .contact-list .contact select {
+  display: inline-block;
+  margin: 0;
+  width: auto !important;
+  font-size: 14px;
+  height: 35px;
+  border-radius: 3px;
+}
+/* line 515, ../sass/style.scss */
 body main footer {
   padding-top: 3rem;
 }
-/* line 479, ../sass/style.scss */
+/* line 518, ../sass/style.scss */
 body main footer img {
   max-width: 320px;
-}
-
-/* line 486, ../sass/style.scss */
-.contact-list {
-  max-height: 400px;
-  overflow: scroll;
-  border: 1px solid #bbb;
-}
-/* line 492, ../sass/style.scss */
-.contact-list .contact input[type="checkbox"] {
-  width: 32px !important;
-  display: inline-block;
-}
-/* line 497, ../sass/style.scss */
-.contact-list .contact label {
-  display: inline-block;
 }
