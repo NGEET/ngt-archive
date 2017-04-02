@@ -365,34 +365,37 @@
                             </div>
                         </div-->
                     </section>
-                    <!--section class="contact-list js-contact-list hide js-ref-list js-multi-container " data-list="contacts">
-                        <div class="hide">
-                            <input type="text" name="">
-                            <button>Add New Collaborator</button>
+                    <section class="hide js-ref-list js-multi-container " data-list="contacts">
+                        <a class="js-add-contact" href="">Add New Collaborator</a>
+                        <div class="js-new-value hide" class="row">
+                            <div class="columns small-3 contact-wrapper">
+                                <input class="js-first-name small-6" type="text" name="" placeholder="First name">
+                            </div>
+                            <div class="columns small-3 contact-wrapper">
+                                <input class="js-last-name small-6" type="text" name="" placeholder="Last name">
+                            </div>
+                            <div class="columns small-3 contact-wrapper">
+                                <input class="js-email small-6" type="text" name="" placeholder="Email">
+                            </div>
+                            <button class="button js-create-contact">Add to Collaborators</button>
+                            <button class="button js-cancel-contact secondary">Cancel</button>
                         </div>
-                        <div class="js-contact contact hide js-template">
-                            <input type="checkbox" name="" id="">
-                            <label for=""></label>
+                        <div class="contact-list js-contact-list">
+                            <div class="js-contact contact hide js-template">
+                                <input type="checkbox" name="name" id="" class="js-person js-input">
+                                <label for=""></label>
+                                <select class="js-sequence hide">
+                                    <option value="-1" selected class="js-order">Order in which to list (optional)</option>
+                                </select>
+                            </div>
                         </div>
-                    </section-->
-                    <section class="contact-section js-contact-section hide js-ref-list js-multi-container add-new" data-list="contacts">
+                    </section>
+                    <!--section class="contact-section js-contact-section hide js-ref-list js-multi-container add-new" data-list="contacts">
                         <select class="js-all-contacts all-contacts js-input">
                             <option selected disabled value="">Select</option>                        
                         </select>
-                        <div class="js-new-value hide" class="row">
-                            <h6 class="add-text">Add new entry here</h6>
-                            <div class="columns small-6 contact-wrapper">
-                                <input class="js-first-name" type="text" name="" placeholder="First name">
-                            </div>
-                            <div class="columns small-6 contact-wrapper">
-                                <input class="js-last-name" type="text" name="" placeholder="Last name">
-                            </div>
-                            <div class="columns small-6 contact-wrapper">
-                                <input class="js-email" type="text" name="" placeholder="Email">
-                            </div>
-                            <button class="button js-create-contact">Add to Collaborators</button>
-                        </div>
-                    </section>
+                        
+                    </section-->
                     <!--section class="contact-section js-contact-section hide js-ref-list" data-list="contacts">
                         <input type="text" class="searchable js-searchable js-contacts-widget" name="" placeholder="Type contact name to search">
                         <input type="hidden" class="js-input js-contact-url">
