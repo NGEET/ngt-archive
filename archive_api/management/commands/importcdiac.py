@@ -8,8 +8,7 @@ from django.core.files import File
 from django.core.management.base import BaseCommand
 from django.utils.datetime_safe import datetime
 
-from archive_api.models import DataSet, Person, Site, Plot, MeasurementVariable, Author, get_upload_path, \
-    DatasetArchiveField
+from archive_api.models import DataSet, Person, Site, Plot, MeasurementVariable, Author, get_upload_path
 
 
 class Command(BaseCommand):
@@ -44,13 +43,19 @@ class Command(BaseCommand):
                     print("\t - NGT{} does not have a single datafile directory".format(ngt_id))
                 else:
 
+                    content_types = ["application/zip", "application/x-bzip2",
+                                     "application/gzip", "application/x-lzip", "application/x-lzma",
+                                     "application/x-xz", "application/x-compress",
+                                     "application/x-compress", "application/x-7z-compressed",
+                                     "application/x-gtar", "application/x-rar-compressed"]
+
                     archive_files = os.listdir(datafiles[0])
                     archived = False
                     # Check to see if this is an archive file already
                     if len(archive_files) == 1:
                         content_type = mimetypes.guess_type(archive_files[0])
                         archive_file = os.path.join(datafiles[0], archive_files[0])
-                        if content_type[0] in DatasetArchiveField.CONTENT_TYPES:
+                        if content_type[0] in content_types:
                             filename = get_upload_path(dataset, archive_file)
                             with open(archive_file, 'rb') as f:
                                 dataset.archive.save(filename,
