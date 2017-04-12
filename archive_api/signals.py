@@ -49,14 +49,11 @@ def notify_admin_to_activate_user(sender, user, **kwargs):
             except Person.DoesNotExist:
                 person = Person.objects.get(email=user.email, user_role__lt=2)  # Person is a collaborator or team
         except Person.DoesNotExist:
+            pass # Do nothing
 
-            people = Person.objects.all().filter(first_name__iexact=user.first_name, last_name__iexact=user.last_name,
-                                                 user_role__lt=2)
-            if len(people) == 1:
-                person = people[0]
-
-        # They can only be activated if they have been assigned a user role
-        if person and person.user_role is not None:
+        # They can only be activated if they have been assigned a user role and there is 
+        # no user assined
+        if person and person.user_role is not None and person.user is None:
 
             with transaction.atomic():
                 # only add a them to a group if they don't have one
