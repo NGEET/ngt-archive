@@ -1674,6 +1674,20 @@ function showApprovedDatasets() {
                 }
             }
 
+            switch(dataObj.approvedDatasets[i].status) {
+                case "0": tr.append('<td>Draft</td>');
+                break;
+
+                case "1": tr.append('<td>Submitted</td>');
+                break;
+
+                case "2": tr.append('<td>Approved</td>');
+                break;
+
+                default: tr.append('<td></td>');
+                break;
+            };
+
             tr.append('<td>' + new Date(dataObj.approvedDatasets[i].modified_date).toLocaleString() + '</td>');
 
             approvedCount++;
