@@ -1,0 +1,63 @@
+version: '3.7'
+
+services:
+  app:
+    container_name: app-portal
+    build:
+      context: .
+      dockerfile: ./provision/Dockerfile
+    command: uwsgi --module ngt_archive.wsgi:application --http-socket 0.0.0.0:8088 --static-map /static=/app/static
+    environment:
+      - DATABASE=postgres
+      - SQL_HOST=db
+      - SQL_PASSWORD=a_secret
+      - SQL_USER=ngeet
+      - SQL_DATABASE=ngeet
+      - SQL_ENGINE=django.db.backends.postgresql_psycopg2
+      - EMAIL_NGEET_TEAM=$EMAIL_NGEET_TEAM
+      - EMAIL_SUBJECT_PREFIX=$EMAIL_SUBJECT_PREFIX
+      - GOOGLE_MAPS_KEY=$GOOGLE_MAPS_KEY
+      - FILE_UPLOAD_TEMP_DIR=${FILE_UPLOAD_TEMP_DIR:-/tmp}
+      - SECRET_KEY=$SECRET_KEY
+      - ADMIN_EMAIL=$ADMIN_EMAIL
+      - STATIC_ROOT=${STATIC_ROOT:-/app/static}
+      - AUTH_LDAP_SERVER_URI=$AUTH_LDAP_SERVER_URI
+      - AUTH_LDAP_BIND_DN=$AUTH_LDAP_BIND_DN
+      - AUTH_LDAP_BIND_PASSWORD=$AUTH_LDAP_BIND_PASSWORD
+      - AUTH_LDAP_USER_SEARCH=$AUTH_LDAP_USER_SEARCH
+      - DATASET_ARCHIVE_ROOT=${DATASET_ARCHIVE_ROOT:-/data}
+      - DJANGO_LOG_LEVEL=DEBUG
+
+    volumes:
+      - ${PWD}/.data:/data
+      - ${PWD}/.tmp:/tmp
+    depends_on:
+      - db
+    ports:
+      - 8088:8088
+
+  web:
+    container_name: web
+    image: nginx
+    depends_on:
+      - app
+    volumes:
+      - ${PWD}/static:/usr/share/nginx/html:ro
+      - ${PWD}/provision/nginx:/etc/nginx/conf.d
+    ports:
+      - 8000:8000
+  db:
+    hostname: db
+    image: postgres:12-alpine
+    # postgres (setting to sane development configuration parameters)
+    #    shared_bufferes (25% of RAM),
+    #    effective_cache_size (50% RAM, could go to 75%)
+    #    work_mem (total RAM / 3 / max_connections)
+    command: postgres -c 'max_connections=200' -c 'shared_buffers=512MB' -c 'effective_cache_size=4GB' -c 'work_mem=4MB'
+    environment:
+      POSTGRES_PASSWORD: a_secret
+      POSTGRES_USER: ngeet
+    volumes:
+      - ./var-postgres:/var/lib/postgresql/data
+
+

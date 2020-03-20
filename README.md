@@ -37,7 +37,7 @@ NGEE Tropics Archive is a Django application which requires:
 
 ### Setup Development
 There is an option for  local machine 
-development and virtual machine development using vagrant.
+development.
 
 #### Desktop
 Use these instructions for setting up development on a desktop computer.
@@ -66,19 +66,15 @@ Run the development server. Test users/passes are: `superadmin/ngeet2016`, `admi
 
     ./manage.py runserver
 
-#### Virtual Machine Development
-These instructions assume that you have [Vagrant](#vagrant) installed.
-The default setup is [Vagrant](#vagrant) with VirtualBox. If you would 
-like to manually prepare you own VM look at the `Vagrantfile` in the 
-root of this project.
+#### Docker Container Setup
+These instructions assume that you have [Docker](#docker) installed. 
 
-### Create main.yml
-Copy `main.copyme` as `main.yml` and put your sensitive information in 
+### Create environment file
+Copy `env.copyme` as `.env` and put your sensitive information in 
 there. If you don't know what this is, ask another developer.
 
-### <a name="vagrant"></a>Vagrant VM Configuration
-If you are using at  VirtualBox  and Vagrant a  development VM can be 
-configured using vagrant.
+### <a name="docker"></a>Docker Configuration
+To execute NGEE Tropics on docker.  Follow the steps below.
 
     # installation instructions here
     git clone git@github.com:NGEET/ngt-archive.git
@@ -87,32 +83,24 @@ configured using vagrant.
 The next command will take a while because it will be configuring the 
 box for the first time.
 
-    $ vagrant up
+    $ docker-compose up -d
+    $ docker-compose exec app ./manage.py loaddata archive_api/fixtures/test_auth.json archive_api/fixtures/test_archive_api.json
+
+Load Test Users *superadmin, admin, auser*. Passwords are 
+*ngeet2016, ngeetdata, ngeetdata* respectively.
     
-Once that finishes you may login to your VM with the following command. 
-The project directory is mounted into the VM at /vagrant.
+The web application has been deployed to apache on your container.
+This service starts up at http://0.0.0.0:8088
 
-    $ vagrant ssh
-    $ cd /vagrant
-    $ sudo ansible-playbook vagrant.yml
+
+
+When you are done for the day, you may stop container down:
+
+    $ docker-compose stop
     
-The web application has been deployed to apache on your VM.
-Use the *ngt_archive* service on ubuntu. This
-service starts up at http://0.0.0.0:9999
+To delete your stack:
 
-```
-sudo initctl start ngt_archive
-sudo initctl stop ngt_archive
-sudo initctl list | grep ngt_archive
-```
-
-When you are done for the day, you may shut your VM down:
-
-    $ vagrant halt
-    
-To delete your VM:
-
-    $ vagrant destroy
+    $ docker-compose rm -fs
 
 #### Local Machine Development
 

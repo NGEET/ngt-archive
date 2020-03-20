@@ -2,12 +2,14 @@
 *.egg-info/
 *.py[cod]
 .DS_Store
-.env.idea/
+.env
+.idea/
 .idea
 .menv/
 .vagrant/
 .venv/
 /static
+/var-postgress
 ORNL_Archive_Backup_20160916/
 __pycache__/
 _build/
@@ -20,8 +22,6 @@ archives
 build/
 db.sqlite3
 dist/
-local*.py
-local.py
 main.yml
 ngee_tropics.sql
 ngt-archive.log
@@ -34,3 +34,4 @@ ornl_backup/
 plots.txt
 sites.txt
 vagrant.retry
+var-postgres/

@@ -76,6 +76,27 @@ TEMPLATES = [
     },
 ]
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'WARNING',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            'propagate': False,
+        },
+    },
+}
+
 WSGI_APPLICATION = 'ngt_archive.wsgi.application'
 
 # Database
@@ -152,7 +173,7 @@ STATIC_ROOT = "static/"
 STATIC_URL = '/static/'
 
 ARCHIVE_API = {
-    'DATASET_ARCHIVE_ROOT': os.path.join(BASE_DIR, "archives/"),
+    'DATASET_ARCHIVE_ROOT': os.path.join(os.getenv('DATASET_ARCHIVE_ROOT', BASE_DIR), "archives/"),
     'DATASET_ARCHIVE_URL': '/archives/',  # not used
     'DATASET_ADMIN_MAX_UPLOAD_SIZE': 2147483648, # in bytes
     'DATASET_USER_MAX_UPLOAD_SIZE': 1073741824, # in bytes
@@ -161,6 +182,7 @@ ARCHIVE_API = {
 
 
 }
+
 
 GOOGLE_MAPS_KEY="a secret key"
 
