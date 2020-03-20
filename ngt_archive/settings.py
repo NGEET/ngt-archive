@@ -40,21 +40,21 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'daterange_filter',
     'archive_api.apps.ArchiveApiConfig',
     'ui.apps.UiConfig',
     'rest_framework',
+    'daterangefilter'
 ]
 
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE= [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'ngt_archive.urls'
@@ -75,6 +75,37 @@ TEMPLATES = [
         },
     },
 ]
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'WARNING',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            'propagate': True,
+        },
+        'ngt_archive': {
+            'handlers': ['console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            'propagate': True,
+        },
+        'archive_api': {
+            'handlers': ['console'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            'propagate': True,
+        }
+    },
+}
 
 WSGI_APPLICATION = 'ngt_archive.wsgi.application'
 
@@ -152,17 +183,19 @@ STATIC_ROOT = "static/"
 STATIC_URL = '/static/'
 
 ARCHIVE_API = {
-    'DATASET_ARCHIVE_ROOT': os.path.join(BASE_DIR, "archives/"),
-    'DATASET_ARCHIVE_URL': '/archives/',  # not used
+    'DATASET_ARCHIVE_ROOT': os.path.join(os.getenv('DATASET_ARCHIVE_ROOT', BASE_DIR), "archives/"),
+    # X-Sendfile (apache), X-Accel-Redirect (nginx)
+    'DATASET_ARCHIVE_SENDFILE_METHOD': os.getenv('DATASET_ARCHIVE_SENDFILE_METHOD', None),
+    'DATASET_ARCHIVE_URL': '/data',  # not used
     'DATASET_ADMIN_MAX_UPLOAD_SIZE': 2147483648, # in bytes
     'DATASET_USER_MAX_UPLOAD_SIZE': 1073741824, # in bytes
     'EMAIL_NGEET_TEAM': ['ngeet-team@testserver'],
-    'EMAIL_SUBJECT_PREFIX' : '[ngt-archive-test]',
+    'EMAIL_SUBJECT_PREFIX': '[ngt-archive-test]',
 
 
 }
 
-GOOGLE_MAPS_KEY="a secret key"
+GOOGLE_MAPS_KEY = "a secret key"
 
 try:
     try:
@@ -172,5 +205,42 @@ try:
         from settings.local import *
         print("DJANGO loading settings.local FOUND\n", file=sys.stdout)
 except ImportError:
-    print("DJANGO local settings NOT found. Using default settings", file=sys.stdout)
+    import logging
+    logging.info("DJANGO local settings NOT found. Using default settings")
 
+AUTH_LDAP_SERVER_URI = os.getenv('AUTH_LDAP_SERVER_URI', None)
+if AUTH_LDAP_SERVER_URI:
+    #####################
+    # LDAP configuration
+    #####################
+    import ldap
+
+    AUTH_LDAP_CONNECTION_OPTIONS = {
+                ldap.OPT_REFERRALS: 0
+                }
+
+    from django_auth_ldap.config import LDAPSearch
+
+
+    AUTH_LDAP_BIND_DN = os.getenv('AUTH_LDAP_BIND_DN')
+    AUTH_LDAP_BIND_PASSWORD = os.getenv('AUTH_LDAP_BIND_PASSWORD')
+    AUTH_LDAP_USER_SEARCH = LDAPSearch(os.getenv('AUTH_LDAP_USER_SEARCH'),
+                ldap.SCOPE_SUBTREE,
+                "(&(objectClass=user)(sAMAccountName=%(user)s))")
+
+    AUTH_LDAP_CACHE_GROUPS = True
+    AUTH_LDAP_GROUP_CACHE_TIMEOUT = 300
+
+
+    AUTH_LDAP_USER_ATTR_MAP = {
+                "first_name": "givenName",
+                    "last_name": "sn",
+                        "email": "mail"
+                        }
+
+    # Keep ModelBackend around for per-user permissions and maybe a local
+    # superuser.
+    AUTHENTICATION_BACKENDS = (
+        'archive_api.backends.LDAPBackend',
+        'archive_api.backends.ModelBackend',
+                    )

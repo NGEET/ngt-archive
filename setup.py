@@ -1,8 +1,9 @@
 #!/usr/bin/env python
-from setuptools import setup, find_packages
-import sys
-import subprocess
 import os
+import subprocess
+import sys
+
+from setuptools import find_packages, setup
 
 # Update version from latest git tags.
 # Create a version file in the root directory
@@ -24,29 +25,27 @@ try:
         code = compile(f.read(), version_py, 'exec')
         exec(code)
 except:
-    __release__=None
+    __release__ = None
 
-packages = find_packages(exclude=["*.tests",])
+packages = find_packages(exclude=["*.tests", ])
 
-if sys.version_info < (2,6):
-    sys.exit('Sorry, Python < 2.6 is not supported')
-elif sys.version_info < (2,7):
-    sys.exit('Sorry, Python < 2.7 is not supported')
+if sys.version_info < (3, 6):
+    sys.exit('Sorry, Python < 3.6 is not supported')
 
 setup(name='ngt_archive',
       version=__release__,
       description='NGEE Tropics Archive Service',
       author='Val Hendrix',
       author_email='vchendrix@lbl.gov',
-      packages = packages,
-      py_modules = ['manage'],
+      packages=packages,
+      py_modules=['manage'],
       include_package_data=True,
       install_requires=[
-            "django >= 1.8, < 2.0",
-            "djangorestframework == 3.4.3",
-            "django-filter ==  0.13.0",
-            "django-daterange-filter == 1.3.0",
-            "pyldap",
-            "django-auth-ldap == 1.2.8"
+          "Django >= 3.0.5",
+          "djangorestframework >= 3.11.0",
+          "django-filter >= 2.2.0",
+          "django-daterangefilter >= 1.0.0",
+          "pyldap>=3.0.0",
+          "django-auth-ldap>=2.1.1"
       ]
-     )
+      )

@@ -7,13 +7,13 @@ admin.autodiscover()
 from archive_api.viewsets import DataSetViewSet, MeasurementVariableViewSet, SiteViewSet, PersonViewSet, PlotViewSet
 
 router = routers.DefaultRouter()
-router.register(r'datasets', DataSetViewSet, base_name='dataset')
-router.register(r'sites', SiteViewSet, base_name='site')
-router.register(r'variables', MeasurementVariableViewSet, base_name='measurementvariable')
-router.register(r'people', PersonViewSet, base_name='person')
-router.register(r'plots', PlotViewSet, base_name='plot')
+router.register(r'datasets', DataSetViewSet, basename='dataset')
+router.register(r'sites', SiteViewSet, basename='site')
+router.register(r'variables', MeasurementVariableViewSet, basename='measurementvariable')
+router.register(r'people', PersonViewSet, basename='person')
+router.register(r'plots', PlotViewSet, basename='plot')
 
 urlpatterns = [
-    url(r'^v1/', include(router.urls, namespace='v1')),
+    url(r'^v1/', include((router.urls, 'archive_api'), namespace='v1')),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]

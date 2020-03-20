@@ -2,7 +2,7 @@
 from django.contrib import admin
 from django.contrib import messages
 from django.contrib.admin import ModelAdmin
-from daterange_filter.filter import DateRangeFilter
+from daterangefilter.filters import DateRangeFilter
 from django.contrib.admin.utils import model_ngettext
 from django.core.exceptions import PermissionDenied
 

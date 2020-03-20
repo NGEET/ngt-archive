@@ -1,10 +1,13 @@
 # Create your views here.
 import inspect
+import mimetypes
 import shutil
 from collections import OrderedDict
 
 import os
 from datetime import datetime
+from wsgiref.util import FileWrapper
+
 from django.conf import settings
 from django.db import transaction
 from django.http import HttpResponse
@@ -12,7 +15,7 @@ from django.utils import timezone
 from django.utils.encoding import smart_str
 from rest_framework import permissions
 from rest_framework import status as http_status
-from rest_framework.decorators import detail_route
+from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.metadata import SimpleMetadata
 from rest_framework.parsers import FormParser, MultiPartParser, JSONParser
@@ -29,6 +32,12 @@ from archive_api.serializers import DataSetSerializer, MeasurementVariableSerial
     SiteSerializer, PersonSerializer, \
     PlotSerializer
 from archive_api.signals import dataset_status_change
+
+# import the logging library
+import logging
+
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
 
 def get_ip_address(request):
@@ -47,19 +56,19 @@ def get_ip_address(request):
 
 class DataSetMetadata(SimpleMetadata):
     def determine_metadata(self, request, view):
-        """ Customize metadata from OPTIONS method to add detail_route information"""
+        """ Customize metadata from OPTIONS method to add action information"""
 
         data = super(DataSetMetadata, self).determine_metadata(request, view)
 
         for x, y in view.__class__.__dict__.items():
             if type(y) == FunctionType and hasattr(y, "detail"):
-                data.setdefault("detail_routes", default=OrderedDict())
-                data["detail_routes"].setdefault(x, default=OrderedDict())
-                detail_route = data["detail_routes"][x]
-                detail_route["allowed_methods"] = y.bind_to_methods
-                detail_route["description"] = inspect.getdoc(y)  # get clean text
+                data.setdefault("actions", OrderedDict())
+                data["actions"].setdefault(x, OrderedDict())
+                action = data["actions"][x]
+                action["allowed_methods"] = y.mapping.keys()
+                action["description"] = inspect.getdoc(y)  # get clean text
 
-        upload_route = data["detail_routes"]["upload"]
+        upload_route = data["actions"]["upload"]
         upload_route["parameters"] = {"attachment": {
             "type": "file",
             "required": True
@@ -99,7 +108,7 @@ class DataSetViewSet(ModelViewSet):
         if self.request.user.is_authenticated and serializer.is_valid():
             serializer.save(modified_by=self.request.user)
 
-    @detail_route(methods=['GET'],
+    @action(detail=True, methods=['GET'],
                   permission_classes=(
                   HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasArchivePermission))
     def archive(self, request, pk=None):
@@ -109,14 +118,28 @@ class DataSetViewSet(ModelViewSet):
         from django.conf import settings
         head, tail = os.path.split(dataset.archive.name)
 
-        fullpath = os.path.join(settings.ARCHIVE_API['DATASET_ARCHIVE_ROOT'], dataset.archive.name)
         if not dataset.archive:
             return Response({'success': False, 'detail': 'Not found'},
                             status=http_status.HTTP_404_NOT_FOUND)
 
-        response = HttpResponse()
-        response['X-Sendfile'] = smart_str(fullpath)
+        file_path = os.path.join(settings.ARCHIVE_API['DATASET_ARCHIVE_ROOT'], dataset.archive.name)
+        file_mimetype = mimetypes.guess_type(file_path)
+
+        sendfile_method = os.getenv('DATASET_ARCHIVE_SENDFILE_METHOD', None)
+        if not sendfile_method:
+            # This should only be the development method
+            file_wrapper = FileWrapper(open(file_path, 'rb'))
+            response = HttpResponse(file_wrapper, content_type=file_mimetype)
+        else:
+            # This should either be a setup for apache or nginx
+            response = HttpResponse(content_type=file_mimetype)
+            response[sendfile_method] = smart_str(file_path)
+            logger.info(f"{sendfile_method}:{response[sendfile_method]}")
+
+        response['Content-Length'] = os.stat(file_path).st_size
         response['Content-Disposition'] = 'attachment; filename={}'.format(tail)
+
+        logger.info(f"Content-Length:{response['Content-Length'] } Content-Disposition:{response['Content-Disposition']}")
 
         DataSetDownloadLog.objects.create(
             user=request.user,
@@ -128,7 +151,7 @@ class DataSetViewSet(ModelViewSet):
 
         return response
 
-    @detail_route(methods=['post'],
+    @action(detail=True, methods=['post'],
                   permission_classes=(
                   HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasUploadPermission))
     def upload(self, request, *args, **kwargs):
@@ -177,7 +200,7 @@ class DataSetViewSet(ModelViewSet):
             return Response({'success': False, 'detail': 'There is no file to upload'},
                             status=http_status.HTTP_400_BAD_REQUEST)
 
-    @detail_route(methods=['post', 'get'],
+    @action(detail=True, methods=['post', 'get'],
                   permission_classes=(
                   HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasApprovePermission))
     def approve(self, request, pk=None):
@@ -189,7 +212,7 @@ class DataSetViewSet(ModelViewSet):
         return Response({'success': True, 'detail': 'DataSet has been approved.'},
                         status=http_status.HTTP_200_OK)
 
-    @detail_route(methods=['post', 'get'],
+    @action(detail=True, methods=['post', 'get'],
                   permission_classes=(
                   HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasUnsubmitPermission))
     def unsubmit(self, request, pk=None):
@@ -201,7 +224,7 @@ class DataSetViewSet(ModelViewSet):
         return Response({'success': True, 'detail': 'DataSet has been unsubmitted.'},
                         status=http_status.HTTP_200_OK)
 
-    @detail_route(methods=['post', 'get'],
+    @action(detail=True, methods=['post', 'get'],
                   permission_classes=(
                           HasEditPermissionOrReadonly, permissions.IsAuthenticated,
                           HasUnapprovePermission))
@@ -216,7 +239,7 @@ class DataSetViewSet(ModelViewSet):
 
 
 
-    @detail_route(methods=['post', 'get'],
+    @action(detail=True, methods=['post', 'get'],
                   permission_classes=(
                   HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasSubmitPermission))
     def submit(self, request, pk=None):
@@ -227,7 +250,7 @@ class DataSetViewSet(ModelViewSet):
         return Response({'success': True, 'detail': 'DataSet has been submitted.'},
                         status=http_status.HTTP_200_OK)
 
-    @detail_route(methods=['post', 'get'],
+    @action(detail=True, methods=['post', 'get'],
                   permission_classes=(
                           HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasPublicationDatePermission))
     def publication_date(self, request, pk=None):

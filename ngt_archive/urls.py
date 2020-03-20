@@ -26,12 +26,12 @@ admin.site.site_title = 'NGEET Administration'
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    url(r'^', include(ui_urls)),   
+    url(r'^', include(ui_urls)),
     url(r'^api/', include(api_urls)),
     url(r'^admin/', admin.site.urls),
     url(r'^dois/(?P<ngt_id>[a-zA-Z0-9]+)/$', doi, name='doi'),
     url(r'^dois/$', dois, name='dois'),
     url(r'^download/(?P<ngt_id>[a-zA-Z0-9]+)', download, name='download'),
-    url(r'^login/$', auth_views.login, {'template_name': 'archive_api/login.html'}, name='login'),
-    url(r'^logout/$', auth_views.logout, name='logout'),
+    url(r'^login/$', auth_views.LoginView.as_view(template_name='archive_api/login.html'), name='login'),
+    url(r'^logout/$', auth_views.LogoutView.as_view(), name='logout'),
 ]

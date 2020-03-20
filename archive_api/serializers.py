@@ -3,7 +3,7 @@ from urllib.parse import urlparse
 import os
 
 from archive_api.models import DataSet, MeasurementVariable, Site, Person, Plot, Author
-from django.core.urlresolvers import resolve
+from django.urls import resolve
 from django.db import transaction
 from rest_framework import serializers
 

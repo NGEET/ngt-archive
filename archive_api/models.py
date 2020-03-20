@@ -125,7 +125,7 @@ class Person(models.Model):
     institution_affiliation = models.CharField(max_length=100, blank=True)
     user_role = models.IntegerField(choices=PERSON_ROLE_CHOICES,
                                     null=True, blank=True)
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, null=True, blank=True)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = ('first_name', 'last_name', 'institution_affiliation', 'email')
@@ -240,9 +240,9 @@ class DataSet(models.Model):
     publication_date = models.DateField(blank=True, null=True)
 
     # Owner is the person who created the dataset
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, editable=False, related_name='+')
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, editable=False, related_name='+', on_delete=models.CASCADE)
     created_date = models.DateTimeField(editable=False, auto_now_add=True)
-    modified_by = models.ForeignKey(settings.AUTH_USER_MODEL, editable=False, related_name='+')
+    modified_by = models.ForeignKey(settings.AUTH_USER_MODEL, editable=False, related_name='+', on_delete=models.CASCADE)
     modified_date = models.DateTimeField(editable=False, auto_now=True)
 
     # Relationships
@@ -311,8 +311,8 @@ class DataSet(models.Model):
 
 class Author(models.Model):
     """ Model for storing data about the Author relationship between DataSet and Person """
-    author = models.ForeignKey(Person)
-    dataset = models.ForeignKey(DataSet)
+    author = models.ForeignKey(Person, on_delete=models.CASCADE)
+    dataset = models.ForeignKey(DataSet, on_delete=models.CASCADE)
     order = models.PositiveIntegerField(default=0)
 
     class Meta:
