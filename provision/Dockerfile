@@ -43,7 +43,6 @@ COPY README.md /app
 RUN pip install --upgrade pip && \
     pip install psycopg2-binary && \
     pip install uwsgi && \
-    pip install pastescript && \
      pip install /app && \
     ls -ld /app/static && \
     python -c 'import ngt_archive.settings'

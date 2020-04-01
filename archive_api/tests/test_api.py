@@ -59,7 +59,7 @@ class DataSetClientTestCase(APITestCase):
 
     def test_set_publication_date_denied(self):
 
-        self.login_user("frost")
+        self.login_user("vibe")
 
         #########################################################################
         # User may NOT  publication date to now
@@ -103,7 +103,7 @@ class DataSetClientTestCase(APITestCase):
     def test_options(self):
         self.login_user("auser")
         response = self.client.options('/api/v1/datasets/')
-        self.assertContains(response, "detail_routes")
+        self.assertContains(response, "actions")
         self.assertContains(response, "upload")
         self.assertContains(response, "submit")
         self.assertContains(response, "approve")
@@ -130,9 +130,9 @@ class DataSetClientTestCase(APITestCase):
                             status_code=status.HTTP_200_OK)
 
         response = self.client.get('{}archive/'.format(dataset_url))
-        self.assertContains(response, '')
-        self.assertTrue("X-Sendfile" in response)
-        self.assertTrue(response["X-Sendfile"].find("archives/NGT0004_1.0_"))
+        self.assertContains(response, ''.encode('utf-8'))
+        self.assertTrue("Content-length" in response)
+        self.assertEqual(response["Content-length"], '7686')
         self.assertTrue("Content-Disposition" in response)
 
         self.assertTrue("attachment; filename=Archive_" in response['Content-Disposition'])
@@ -616,9 +616,9 @@ select "View Approved Datasets" and then click the "Approve" button for NGT0001:
                             status_code=status.HTTP_200_OK)
 
         response = self.client.get('/api/v1/datasets/1/archive/')
-        self.assertContains(response, '')
-        self.assertTrue("X-Sendfile" in response)
-        self.assertTrue(response["X-Sendfile"].find("archives/NGT1_1.0_"))
+        self.assertContains(response, ''.encode('utf-8'))
+        self.assertTrue("Content-length" in response)
+        self.assertEqual(response["Content-length" ], '7686')
         self.assertTrue("Content-Disposition" in response)
         self.assertTrue("attachment; filename=Archive_" in response['Content-Disposition'])
 
@@ -640,8 +640,8 @@ select "View Approved Datasets" and then click the "Approve" button for NGT0001:
 
         response = self.client.get('/api/v1/datasets/1/archive/')
         self.assertContains(response, '')
-        self.assertTrue("X-Sendfile" in response)
-        self.assertTrue(response["X-Sendfile"].find("archives/0000/0000/NGT0000/0.0/valid_upload") > -1)
+        self.assertTrue("Content-length" in response)
+        self.assertEqual(response["Content-length"], '17609')
         self.assertTrue("Content-Disposition" in response)
         self.assertTrue("attachment; filename=valid_upload_" in response['Content-Disposition'])
 
@@ -693,8 +693,8 @@ You will not be able to view this dataset until it has been approved.
 
         response = self.client.get('/api/v1/datasets/1/archive/')
         self.assertContains(response, '')
-        self.assertTrue("X-Sendfile" in response)
-        self.assertTrue(response["X-Sendfile"].find("archives/0000/0000/NGT0000/1.0/valid_upload") > -1)
+        self.assertTrue("Content-length" in response)
+        self.assertEqual(response["Content-length"], '17609')
         self.assertTrue("Content-Disposition" in response)
         self.assertTrue("attachment; filename=valid_upload_" in response['Content-Disposition'])
 
@@ -957,9 +957,8 @@ You will not be able to view this dataset until it has been approved.
 
             response = self.client.get( '/api/v1/datasets/1/archive/')
             self.assertContains(response, '')
-            self.assertTrue("X-Sendfile" in response)
-            self.assertTrue(
-                response["X-Sendfile"].find("archives/0000/0000/NGT0000/0.0/bigfile") > -1)
+            self.assertTrue("Content-length" in response)
+            self.assertEquals(response["Content-length"], '3145728')
             self.assertTrue("Content-Disposition" in response)
             self.assertTrue("attachment; filename=bigfile_" in
                              response['Content-Disposition'])

@@ -2,10 +2,12 @@
 *.egg-info/
 *.py[cod]
 .DS_Store
+.data
 .env
-.idea/
 .idea
+.idea/
 .menv/
+.tmp
 .vagrant/
 .venv/
 /static

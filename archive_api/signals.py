@@ -11,6 +11,7 @@ from archive_api import permissions
 from archive_api.models import DataSet, Person
 from django.contrib.auth.models import update_last_login
 
+
 # Signal for Dataset Status changes
 dataset_status_change = Signal(providing_args=['request', 'user', 'instance', 'original_status'])
 
@@ -37,6 +38,9 @@ def notify_admin_to_activate_user(sender, user, **kwargs):
     :return:
     """
     from archive_api.models import NGTUser
+    if not user.id:
+        user.save()
+
     ngt_user = NGTUser.objects.get(id = user.id)
 
     # Has the user been activated to access the NGEE Tropics
@@ -55,7 +59,7 @@ def notify_admin_to_activate_user(sender, user, **kwargs):
         except Person.DoesNotExist:
             pass # Do nothing
 
-        # They can only be activated if they have been assigned a user role and there is 
+        # They can only be activated if they have been assigned a user role and there is
         # no user assined
         if person and person.user_role is not None and person.user is None:
 
@@ -94,7 +98,8 @@ User '{}' is requesting access to NGEE Tropics Archive service.
 
 
 # This signal is sent after users log in with default django authentication
-user_logged_in.disconnect(update_last_login) # Disconnect the signal that updates last_login
+#     Disconnect the signal that updates last_login
+user_logged_in.disconnect(update_last_login, dispatch_uid='update_last_login')
 user_logged_in.connect(notify_admin_to_activate_user)
 
 # FROM https://pythonhosted.org/django-auth-ldap/reference.html#django_auth_ldap.backend.LDAPBackend.get_or_create_user

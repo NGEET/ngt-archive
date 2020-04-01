@@ -3,8 +3,6 @@ from django.core import mail
 from django.test import Client
 from django.test import TestCase
 from django.test import override_settings
-from django.utils import timezone
-
 from archive_api.models import Person
 
 
@@ -47,7 +45,7 @@ class TestLoginSignals(TestCase):
     def test_signal_notify_no_person(self):
         user = User.objects.get(username="flash")
 
-        self.assertEqual(user.is_active,False)
+        self.assertEqual(user.is_active, False)
 
         self.assertEqual(len(user.groups.all()), 0)
         self.client.force_login(user)
@@ -55,7 +53,7 @@ class TestLoginSignals(TestCase):
         self.assertEqual(len(user.groups.all()), 0)
         self.assertEqual(len(mail.outbox), 1)
 
-        self.assertEqual(user.is_active,True)
+        self.assertEqual(user.is_active, True)
 
         email = mail.outbox[0]
 
@@ -90,7 +88,7 @@ class TestLoginSignals(TestCase):
         self.assertEqual(len(user.groups.all()), 0)
         self.assertEqual(len(mail.outbox), 1)
 
-        self.assertEqual(user.is_active,True)
+        self.assertEqual(user.is_active, True)
 
         email = mail.outbox[0]
 
