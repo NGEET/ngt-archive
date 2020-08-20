@@ -43,7 +43,6 @@ file_env 'AUTH_LDAP_BIND_PASSWORD' 'change_me'
 
 DJANGO_USERS_JSON_FILE=${DJANGO_USERS_JSON_FILE:-/run/secrets/django_users_json}
 
-
 pip freeze
 
 # Collect the static files
@@ -52,7 +51,7 @@ python manage.py collectstatic --no-input
 # Migrate the database
 python manage.py migrate
 
-IS_LOADED=$(./manage.py shell -c "from django.contrib.auth.models import User; print(User.objects.count())")
+IS_LOADED=$(./manage.py shell -c "from django.contrib.auth.models import User; print(User.objects.count())" | tail -1 )
 echo "IS_LOADED:$IS_LOADED"
 
 if [ "${IS_LOADED}" == "0" ];
@@ -62,10 +61,11 @@ then
     if [ -f $DJANGO_USERS_JSON_FILE ];
     then
         python manage.py loaddata $DJANGO_USERS_JSON_FILE
+    else
+       # Create a default superuser
+       ./manage.py shell -c "from django.contrib.auth.models import User; User.objects.create_superuser('${ADMIN_USER:-admin}', '${ADMIN_EMAIL-ngee-tropics-archive@googlegroups.com}', '${ADMIN_PASSWORD}')"
     fi
 
-    # Create a default superuser
-    ./manage.py shell -c "from django.contrib.auth.models import User; User.objects.create_superuser('${ADMIN_USER:-admin}', '${ADMIN_EMAIL-ngee-tropics-archive@googlegroups.com}', '${ADMIN_PASSWORD}')"
 
 fi
 
