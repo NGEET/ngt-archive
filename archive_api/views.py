@@ -35,7 +35,7 @@ def doi(request, ngt_id=None):
 
     if (dataset.status == DataSet.STATUS_APPROVED and \
                     dataset.access_level in [DataSet.ACCESS_PUBLIC, DataSet.ACCESS_NGEET]):
-        author_list = ["{} {}".format(o.last_name, o.first_name[0]) for o in dataset.authors.all().order_by('archive_api_author.order')]
+        author_list = ["{} {}".format(o.author.last_name, o.author.first_name[0]) for o in dataset.author_set.all().order_by('order')]
         authors = "; ".join(author_list)
 
         site_id_list = [o.site_id for o in dataset.sites.all()]

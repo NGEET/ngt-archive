@@ -178,14 +178,12 @@
         <p>
 
 
-            {% if not dataset.doi == None %}
+            {% if not dataset.reference == None %}
 
-                {{ authors }} ({% if dataset.publication_date %}{{ dataset.publication_date | date:"Y"}}{% else %}{{ dataset.submission_date | date:"Y"}}{% endif %}): {{ dataset.name }}. {{ dataset.version }}.
-                NGEE Tropics Data Collection. (dataset). <a href="{{ dataset.doi }}">{{ dataset.doi }}</a>
+                {{ dataset.reference }}
 
             {% else %}
-                Citation information not available currently. Contact dataset author(s) for citation or
-                acknowledgement text.
+                This are no dataset references available.
             {% endif %}
         </p>
     </fieldset>
