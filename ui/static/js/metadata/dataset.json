@@ -140,10 +140,10 @@
         "type": "string",
         "required": false,
         "read_only": false,
-        "label": "Methods",
+        "label": "Method Description",
         "sequence": 14,
         "multiple": false,
-        "description": "<p>If any QA/QC has been performed, provide a brief description of the QA-QC Method. Alternatively you can provide a reference where the QA/QC method is described in detail, such as a publication where the data are used.</p>"
+        "description": "<p>Information about the methods employed in collecting or generating a data set or other resource. These include descriptions of sampling or experimental procedures, data QA/QC, processing and synthesis.</p>"
     },
     "ngee_tropics_resources": {
         "type": "boolean",
