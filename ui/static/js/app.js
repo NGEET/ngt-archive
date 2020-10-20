@@ -66,10 +66,8 @@ $(document).ready(function(){
         $('.js-error-article').removeClass('hide');
     }
 
-    $.getJSON( "static/js/metadata/dataset.json", function( data ) {
+    $.getJSON( "static/js/metadata/dataset.json?v=202010", function( data ) {
         templates.datasets = data;
-        //console.log(templates.dataset);
-        //console.log(data);
         createEditForm('datasets');
     });
 
@@ -1962,13 +1960,6 @@ function createEditForm(templateType) {
     var formHTML = $('<div/>');
     var paramHTML = '';
     for(var param in templates[templateType]) {
-        /*paramHTML = $('<div class="js-param param"></div>');
-        paramHTML.append($('<span class="js-display-name display-name"></span>').html(templates[templateType][param].display_name));
-        paramHTML.append($('.js-template' + '.' + templates[templateType][param].datatype).clone());
-        $(formHTML).append(paramHTML);
-        if(templates[templateType][param].multiple == 1) {
-            $(formHTML).append('<button class="js-add-param-btn button '+ templates[templateType][param].datatype + '">' + 'Add New' + '</button>');
-        }*/
         if(templates[templateType][param].read_only) {
             paramHTML = $('<input type="hidden">').addClass(param + (templates[templateType][param].required ? "required" : "") + ' js-param')
                                                 .val(templates[templateType][param].value)

@@ -140,7 +140,7 @@
         "type": "string",
         "required": false,
         "read_only": false,
-        "label": "QA/QC Method Description",
+        "label": "Methods",
         "sequence": 14,
         "multiple": false,
         "description": "<p>If any QA/QC has been performed, provide a brief description of the QA-QC Method. Alternatively you can provide a reference where the QA/QC method is described in detail, such as a publication where the data are used.</p>"
@@ -179,7 +179,7 @@
         "sequence": 18,
         "multiple": false,
         "label": "Dataset Acknowledgement(s)",
-        "description": "<p>Acknowledgement that you want the users of this data to include when they use the data (different from citation). Acknowledgements can include relevant DOI or paper(s), and/or funding for the site support. You can also indicate that you prefer to be contacted for acknowledgement text. If NGEE Tropics resources (financial, personnel etc.) were used, include the following line: 'Funding for NGEE-Tropics data resources was provided by the U.S. Department of Energy Office of Science, Office of Biological and Environmental Research.'</p>"    
+        "description": "<p>Acknowledgement that you want the users of this data to include when they use the data (different from citation). Acknowledgements can include relevant DOI or paper(s), and/or funding for the site support. You can also indicate that you prefer to be contacted for acknowledgement text. If NGEE Tropics resources (financial, personnel etc.) were used, include the following line: 'Funding for NGEE-Tropics data resources was provided by the U.S. Department of Energy Office of Science, Office of Biological and Environmental Research.'</p>"
     },
     "reference": {
         "type": "string",
@@ -254,7 +254,7 @@
         "label": "URL",
         "sequence": -1
     },
-    
+
     "status": {
         "type": "choice",
         "required": false,
@@ -269,7 +269,7 @@
         "label": "Status comment",
         "sequence": -1
     },
-    
+
     "submission_date": {
         "type": "field",
         "required": false,

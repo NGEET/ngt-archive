@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="static/stylesheets/foundation.css">
         <script type="text/javascript" src="static/js/jquery-2.1.4.min.js"></script>
         <script type="text/javascript" src="static/js/jquery-ui.js"></script>
-        <script type="text/javascript" src="static/js/app.js"></script>
+        <script type="text/javascript" src="static/js/app.js?v=202010"></script>
         <link rel="stylesheet" type="text/css" href="static/stylesheets/style.css">
         <script type="text/javascript" src="static/js/foundation.js"></script>
         <!--script type="text/javascript" src="static/js/foundation.reveal.js"></script-->
@@ -20,7 +20,7 @@
         <link rel="stylesheet" type="text/css" href="static/stylesheets/popover.css">
     </head>
     <body>
-        
+
         <main>
             <div class="logo">
                 <a href="/">
@@ -41,7 +41,7 @@
                     {% endif %}
                 {% elif user.is_authenticated  and user.is_activated == false %}
                     <span class="js-auth" data-auth="fluxnet"></span>
-                {% else %} 
+                {% else %}
                     <span class="js-auth" data-auth="false"></span>
                 {% endif %}
             </nav>
@@ -59,7 +59,7 @@
                         <a class="button columns small-12" data-view="view" href="/?view=view-sites">View Field Sites / Plots</a>
                     </div>
                 </section>
-                
+
                 <!--form>
                     <h4>Create a dataset</h4>
                     <div class="small-12 medium-9">
@@ -129,7 +129,7 @@
 
                 <!--h4>
                     View
-                </h4> 
+                </h4>
                 <button class="button js-get-datasets">Datasets</button>
                 <button class="button js-get-plots">Plots</button>
                 <button class="button js-get-vars">Variables</button>
@@ -153,39 +153,39 @@
                             <thead>
                                 <tr>
                                     <th class="js-sort-header pointer" data-sort="data_set_id">
-                                        Dataset ID 
+                                        Dataset ID
                                         <img class="js-sort-icon sort-icon unsorted" src="static/img/unsorted.png">
                                         <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
                                         <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
                                     </th>
-                                    <th class="js-sort-header pointer" data-sort="name">Dataset 
+                                    <th class="js-sort-header pointer" data-sort="name">Dataset
                                         <img class="js-sort-icon sort-icon unsorted" src="static/img/unsorted.png">
                                         <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
                                         <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
                                     </th>
-                                    <th class="js-sort-header pointer" data-sort="contact">Dataset Contact 
+                                    <th class="js-sort-header pointer" data-sort="contact">Dataset Contact
                                         <img class="js-sort-icon sort-icon unsorted" src="static/img/unsorted.png">
                                         <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
                                         <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
                                     </th>
-                                    <th class="js-sort-header pointer" data-sort="status">Status 
+                                    <th class="js-sort-header pointer" data-sort="status">Status
                                         <img class="js-sort-icon sort-icon unsorted" src="static/img/unsorted.png">
                                         <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
                                         <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
                                     </th>
-                                    <th class="js-sort-header pointer" data-sort="modified_date">Last Updated 
+                                    <th class="js-sort-header pointer" data-sort="modified_date">Last Updated
                                         <img class="js-sort-icon sort-icon unsorted" src="static/img/unsorted.png">
                                         <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
                                         <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
                                     </th>
-                                    <th class="js-sort-header pointer" data-sort="access_level">Access Level 
+                                    <th class="js-sort-header pointer" data-sort="access_level">Access Level
                                         <img class="js-sort-icon sort-icon unsorted" src="static/img/unsorted.png">
                                         <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
                                         <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
                                     </th>
                                 </tr>
                                 <tbody>
-                                    
+
                                 </tbody>
                             </thead>
                         </table>
@@ -209,7 +209,7 @@
                             <section class="js-params site-desc columns small-12">
 
                             </section>
-                            
+
                         </div>
                     </div>
                 </section>
@@ -221,39 +221,39 @@
                             <thead>
                                 <tr>
                                     <th class="js-sort-header pointer" data-sort="data_set_id">
-                                        Dataset ID 
+                                        Dataset ID
                                         <img class="js-sort-icon sort-icon unsorted" src="static/img/unsorted.png">
                                         <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
                                         <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
                                     </th>
-                                    <th class="js-sort-header pointer" data-sort="name">Dataset 
+                                    <th class="js-sort-header pointer" data-sort="name">Dataset
                                         <img class="js-sort-icon sort-icon unsorted" src="static/img/unsorted.png">
                                         <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
                                         <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
                                     </th>
-                                    <th class="js-sort-header pointer" data-sort="contact">Dataset Contact 
+                                    <th class="js-sort-header pointer" data-sort="contact">Dataset Contact
                                         <img class="js-sort-icon sort-icon unsorted" src="static/img/unsorted.png">
                                         <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
                                         <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
                                     </th>
-                                    <th class="js-sort-header pointer" data-sort="status">Status 
+                                    <th class="js-sort-header pointer" data-sort="status">Status
                                         <img class="js-sort-icon sort-icon unsorted" src="static/img/unsorted.png">
                                         <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
                                         <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
                                     </th>
-                                    <th class="js-sort-header pointer" data-sort="modified_date">Last Updated 
+                                    <th class="js-sort-header pointer" data-sort="modified_date">Last Updated
                                         <img class="js-sort-icon sort-icon unsorted" src="static/img/unsorted.png">
                                         <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
                                         <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
                                     </th>
-                                    <th class="js-sort-header pointer" data-sort="access_level">Access Level 
+                                    <th class="js-sort-header pointer" data-sort="access_level">Access Level
                                         <img class="js-sort-icon sort-icon unsorted" src="static/img/unsorted.png">
                                         <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
                                         <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
                                     </th>
                                 </tr>
                                 <tbody>
-                                    
+
                                 </tbody>
                             </thead>
                         </table>
@@ -284,7 +284,7 @@
                             <br><br>
                             <h6 class="hide file-exists js-file-exists"><b>Note:</b> This dataset already contains the file:<br>
                                 <span class="js-existing-file hide existing-file"></span>
-                                <br> 
+                                <br>
                                 If you upload a new file, you will be replacing the existing file.</h6>
                             <!--h6>Allowed file types: Compressed/archive files (zip, rar, 7z...). To download free zipping software, click <a href="http://www.7-zip.org/" target="_blank">here</a></h6-->
                             <div class="button file-select-btn small-12 large-6">
@@ -292,7 +292,7 @@
                                 Select File
                             </div>
                             <br>
-                            
+
                             <div class="file-name-wrapper js-file-name-wrapper hide">
                                 <span class="js-file-replace-msg hide">The following file will replace the existing file:<br></span>
                                 <span class="hide js-new-file-msg">The following file will be uploaded:</span>
@@ -333,9 +333,9 @@
                             <input type="radio" name="binary" class="js-true js-boolean js-input" id="" value="true">
                             <label for="" class="js-true-label">Yes</label>
                             <br>
-                            <input type="radio" name="binary" class="js-false js-boolean js-input" id="" value="false">                         
+                            <input type="radio" name="binary" class="js-false js-boolean js-input" id="" value="false">
                             <label for="" class="js-false-label">No</label>
-                            
+
                         </div>
                         <select class="js-template choice">
                             <option value="" selected disabled>Choose option</option>
@@ -376,7 +376,7 @@
                     </section-->
                     <section class="contact-section js-contact-section hide js-ref-list js-multi-container add-new" data-list="contacts">
                         <select class="js-all-contacts all-contacts js-input">
-                            <option selected disabled value="">Select</option>                        
+                            <option selected disabled value="">Select</option>
                         </select>
                         <div class="js-new-value hide" class="row">
                             <h6 class="add-text">Add new entry here</h6>
@@ -398,7 +398,7 @@
                     </section-->
                     <section class="plot-section js-site-section hide js-ref-list js-multi-container" data-list="plots">
                         <select class="js-all-plots all-plots js-input ">
-                            <option selected disabled value="">Select plot</option>                        
+                            <option selected disabled value="">Select plot</option>
                         </select>
                         <!--div class="js-plot-info hide">
                             <section class="js-plot-params columns small-12">
@@ -411,7 +411,7 @@
                     </section>
                     <section class="var-section js-var-section hide js-ref-list js-multi-container" data-list="variables">
                         <select class="js-all-vars all-vars js-input">
-                            <option selected disabled value="">Select variable</option>                        
+                            <option selected disabled value="">Select variable</option>
                         </select>
                     </section>
                 </section>
@@ -428,7 +428,7 @@
                 </footer>
             </article>
             <article class="error-article js-error-article hide">
-                <p>This FLUXNET account has not been authorized to access the NGEE Tropics Archive. A message has been sent to an administrator. We will be in touch with you shortly.</p>  
+                <p>This FLUXNET account has not been authorized to access the NGEE Tropics Archive. A message has been sent to an administrator. We will be in touch with you shortly.</p>
             </article>
             <div class="loading js-loading hide">
                 <img src="static/img/482_blk.gif">
@@ -441,17 +441,17 @@
                 </div>
                 <h5 id="modalTitle"></h5>
                 <section class="js-modal-body modal-body">
-                  
+
                 </section>
               <!--button class="button edit-btn js-edit-dataset-btn">Edit</button-->
                 <div class="js-download-wrapper hide row columns small-12">
-                    <span class="js-data-policy-text">     
+                    <span class="js-data-policy-text">
                         <input type="checkbox" name="data-policy"  id="data-policy" class="js-data-policy-check">
                         <label for="data-policy">I have read and agree to the terms of the</label> <a href="https://drive.google.com/file/d/0B5RSGI83Og11cVlGbWcxeW5LQjg/view" target="_blank">NGEE Tropics data policy</a>.
                     </span><br>
                     <a class="button download-btn js-file-download-btn disabled">Download Dataset</a>
                 </div>
-                
+
             </div>
         </main>
     </body>
