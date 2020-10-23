@@ -1,9 +1,10 @@
-import django.contrib.auth.models
 import os
+
+import django.contrib.auth.models
 from django.conf import settings
+from django.contrib.auth.models import Group
 from django.core.files.storage import FileSystemStorage
-from django.db import models
-from django.db import transaction
+from django.db import models, transaction
 from django.utils.datetime_safe import datetime
 
 
@@ -109,6 +110,11 @@ class NGTUser(django.contrib.auth.models.User):
         active = (self.is_active and self.person is not None \
                   and len(self.groups.all()) > 0)
         return active or self.is_superuser
+
+    def has_group(self, group_name):
+        """ Determine if a user is in a group"""
+        group = Group.objects.get(name=group_name)
+        return group in self.groups.all()
 
     @property
     def person(self):
@@ -226,7 +232,7 @@ class DataSet(models.Model):
     end_date = models.DateField(blank=True, null=True)
     qaqc_status = models.IntegerField(choices=QAQC_STATUS_CHOICES, blank=True, null=True)
     qaqc_method_description = models.TextField(blank=True, null=True)
-    ngee_tropics_resources = models.NullBooleanField(blank=True, null=True)
+    ngee_tropics_resources = models.BooleanField(blank=True, null=True)
     funding_organizations = models.TextField(blank=True, null=True)
     doe_funding_contract_numbers = models.CharField(max_length=100, blank=True, null=True)
     acknowledgement = models.TextField(blank=True, null=True)

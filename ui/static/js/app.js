@@ -119,23 +119,6 @@ $(document).ready(function(){
             $('.js-text-dump').html('');
             $('.js-datasets').html('');
             var draftCount = 0;
-            /*for(var i=0;i<data.length;i++) {
-                if(data[i].status == 0) {
-                    var tag = $('<div/>').addClass('js-view-dataset dataset');
-                    tag.append('<h5 class="title">' + (data[i].name ? data[i].name : 'NA') + '</h5>')
-                        .append('<p class="desc">' + (data[i].description ? data[i].description.substring(0, 199) + '...' : 'NA') + '</p>')
-                        .append('<button class="button js-edit-draft">Edit</button>')
-                        .attr('data-url', data[i].url)
-                        .attr('data-index', i);
-
-                    $('.js-all-datasets').append(tag);
-                    draftCount++;
-                    /*$('.js-all-datasets').append((data[i].name ? data[i].name : 'NA') + '<br>')
-                                    .append((data[i].description ? data[i].description : 'NA') + '<br>')
-                                    .append('<button class="js-view-dataset button" data-url="' + data[i].url + '" data-index="' + i + '">View</button>')
-                                    .append('&nbsp;' + '<button class="js-delete-dataset button" data-url="' + data[i].url + '" data-index="' + i + '">Delete</button>' + '<br><br>');*/
-                /*}
-            }*/
             dataObj.drafts = [];
             for(var i=0;i<dataObj.datasets.length;i++) {
                 if(dataObj.datasets[i].status == 0 || dataObj.datasets[i].status == 1) {
@@ -601,39 +584,6 @@ $(document).ready(function(){
     });
 
 
-    /*$('body').on('click', '.js-file-download-btn', function(event) {
-        event.preventDefault();
-        var archiveUrl = $(this).attr('data-archive');
-        //        https://ngt-dev.lbl.gov/api/v1/datasets/27/archive/
-        var csrftoken = getCookie('csrftoken');
-
-        $.ajaxSetup({
-            beforeSend: function(xhr, settings) {
-                xhr.setRequestHeader("X-CSRFToken", csrftoken);
-            }
-        });
-
-        $.ajax({
-            method: "GET",
-            dataType: 'application/json',
-            url: archiveUrl,
-            success: function(data) {
-                alert('Success');
-            },
-
-            fail: function(data) {
-                var detailObj = JSON.parse(data.responseText);
-                alert('Fail: ' + detailObj.detail);
-            },
-
-            error: function(data, errorThrown) {
-                var detailObj = JSON.parse(data.responseText);
-                alert('Fail: ' + detailObj.detail);
-            },
-
-        });
-    });*/
-
     $('body').on('click', '.js-delete-dataset', function(event) {
         event.preventDefault();
         var csrftoken = getCookie('csrftoken');
@@ -776,9 +726,6 @@ $(document).ready(function(){
                                 else {
                                     $('.js-progress-wrapper').removeClass('hide');
                                     $('.js-progress').html(pc);
-                                    //this.filePointer.spinner.parent().removeClass('hide');
-                                    //this.filePointer.spinner.html(pc + '%');
-                                    //this.filePointer.progress = pc;
                                 }
                             }
                         }, false);
@@ -945,27 +892,6 @@ $(document).ready(function(){
         var url = $('.js-edit-form').attr('data-url');
         var submissionObj = {};
         var validEntries = true;
-
-        /*$('.js-edit-form .js-param').each(function() {
-            var param = $(this).attr('data-param');
-            if($(this).find('.js-input').length == 1) {
-                var value = $(this).find('.js-input').val();
-                if(value) {
-                    submissionObj[param] = value;
-                }
-            }
-            else if($(this).find('.js-input').length > 1) {
-                var value = [];
-                $(this).find('.js-input').each(function() {
-                    if($(this).val().trim()) {
-                        value.push($(this).val().trim());
-                    }
-                });
-                if(value.length > 0) {
-                    submissionObj[param] = value;
-                }
-            }
-        });*/
         var entryCount = 0;
         if($('.js-new-value.js-input').length > 0) {
 
@@ -1644,11 +1570,6 @@ function showDrafts() {
             $('.js-all-datasets tbody').append(tr);
 
         }
-            /*$('.js-all-datasets').append((data[i].name ? data[i].name : 'NA') + '<br>')
-                            .append((data[i].description ? data[i].description : 'NA') + '<br>')
-                            .append('<button class="js-view-dataset button" data-url="' + data[i].url + '" data-index="' + i + '">View</button>')
-                            .append('&nbsp;' + '<button class="js-delete-dataset button" data-url="' + data[i].url + '" data-index="' + i + '">Delete</button>' + '<br><br>');*/
-
     }
     $('.js-view.view-drafts-view h4 .js-count').html(approvedCount);
 }
@@ -1710,10 +1631,6 @@ function showApprovedDatasets() {
             $('.js-all-datasets tbody').append(tr);
 
         }
-            /*$('.js-all-datasets').append((data[i].name ? data[i].name : 'NA') + '<br>')
-                            .append((data[i].description ? data[i].description : 'NA') + '<br>')
-                            .append('<button class="js-view-dataset button" data-url="' + data[i].url + '" data-index="' + i + '">View</button>')
-                            .append('&nbsp;' + '<button class="js-delete-dataset button" data-url="' + data[i].url + '" data-index="' + i + '">Delete</button>' + '<br><br>');*/
 
     }
     $('.js-view.view-dataset-view h4 .js-count').html(approvedCount);

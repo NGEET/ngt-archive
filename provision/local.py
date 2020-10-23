@@ -24,6 +24,11 @@ DEFAULT_FROM_EMAIL = 'NGEE Tropics Archive <no-reply@ngt-dev.lbl.gov>'
 
 # django app running behind a reverse proxy
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+USE_X_FORWARDED_HOST = True
+
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
 
 # Uncomment for Production (using a reverse proxy)
 DEBUG = False
@@ -98,5 +103,6 @@ AUTH_LDAP_USER_ATTR_MAP = {
 AUTHENTICATION_BACKENDS = (
     'archive_api.backends.LDAPBackend',
     'archive_api.backends.ModelBackend',
+    'archive_api.backends.OAuth2Backend',
                 )
 

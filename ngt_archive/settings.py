@@ -40,15 +40,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'archive_api.apps.ArchiveApiConfig',
     'ui.apps.UiConfig',
     'rest_framework',
-    'daterangefilter'
+    'archive_api.apps.ArchiveApiConfig',
+    'oauth2_provider',
+    'daterangefilter',
 ]
 
 MIDDLEWARE= [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'oauth2_provider.middleware.OAuth2TokenMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -153,6 +155,12 @@ USE_L10N = True
 
 USE_TZ = True
 
+OAUTH2_PROVIDER = {
+    # this is the list of available scopes
+    'SCOPES': {'read': 'Read scope', 'write': 'Write scope'},
+    'DEFAULT_SCOPES': ['read', 'write']
+}
+
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
@@ -168,6 +176,7 @@ REST_FRAMEWORK = {
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
     ),
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',  # Any other renders
@@ -243,4 +252,5 @@ if AUTH_LDAP_SERVER_URI:
     AUTHENTICATION_BACKENDS = (
         'archive_api.backends.LDAPBackend',
         'archive_api.backends.ModelBackend',
+        'archive_api.backends.OAuth2Backend',
                     )

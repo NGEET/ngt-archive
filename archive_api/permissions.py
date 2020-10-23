@@ -4,6 +4,7 @@ from rest_framework.permissions import BasePermission
 
 import archive_api
 
+
 DRAFT = archive_api.models.STATUS_CHOICES[0][0]
 SUBMITTED = archive_api.models.STATUS_CHOICES[1][0]
 APPROVED = archive_api.models.STATUS_CHOICES[2][0]
@@ -19,6 +20,8 @@ class IsActivated(BasePermission):
     """
 
     def has_permission(self, request, view):
+
+        # Make sure that this is the NGT User
         return request.user and request.user.is_activated
 
 
