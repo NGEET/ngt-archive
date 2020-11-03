@@ -42,10 +42,8 @@ class Command(BaseCommand):
                     raise CommandError('User "{}" does not have permissions to upload'.format(username))
 
                 # is this a valid content type?
-
-                filename = get_upload_path(dataset, archive_file)
                 with open(archive_file, 'rb') as f:
-                    dataset.archive.save(filename,
+                    dataset.archive.save(archive_file,
                                          File(f))
                 dataset.modified_by=user
                 dataset.save()
