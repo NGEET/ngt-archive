@@ -8,7 +8,7 @@ var sortReverse = false;
 
 function getParameterByName(name, url) {
     if (!url) {
-      url = window.location.href;
+        url = window.location.href;
     }
     name = name.replace(/[\[\]]/g, "\\$&");
     var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
@@ -19,18 +19,18 @@ function getParameterByName(name, url) {
 }
 
 function isURL(str) {
-  var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-  '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|'+ // domain name
-  '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-  '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-  '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-  '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
-  return pattern.test(str);
+    var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|' + // domain name
+        '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+        '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+        '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
+    return pattern.test(str);
 }
 
 function fileTypeAllowed(filetype) {
-    for(var i=0;i<dataObj.filetypes.length;i++) {
-        if(dataObj.filetypes[i].indexOf(filetype) !=-1) {
+    for (var i = 0; i < dataObj.filetypes.length; i++) {
+        if (dataObj.filetypes[i].indexOf(filetype) != -1) {
             return dataObj.filetypes[i].indexOf(filetype);
         }
     }
@@ -40,156 +40,156 @@ function fileTypeAllowed(filetype) {
 
 function dedupe(array) {
     var returnArray = [];
-    $.each(array, function(i, el){
-        if($.inArray(el, returnArray) === -1) returnArray.push(el);
+    $.each(array, function (i, el) {
+        if ($.inArray(el, returnArray) === -1) returnArray.push(el);
     });
 
     return returnArray;
 }
 
-$(document).ready(function(){
+$(document).ready(function () {
     $(document).foundation();
 
-    $(window).bind("beforeunload", function(event) {
-        if(!overrideMsg) {
-            if(window.location.href.indexOf('create') != -1 || (window.location.href.indexOf('edit-draft') != -1 && editingScreen)) {
+    $(window).bind("beforeunload", function (event) {
+        if (!overrideMsg) {
+            if (window.location.href.indexOf('create') != -1 || (window.location.href.indexOf('edit-draft') != -1 && editingScreen)) {
                 return confirm("Are you sure you want to leave this page? There may be unsaved changes.");
             }
         }
     });
 
-    if($('.js-auth').attr('data-auth') == 'false') {
+    if ($('.js-auth').attr('data-auth') == 'false') {
         window.location = 'api/api-auth/login/?next=/';
-    }
-    else if($('.js-auth').attr('data-auth') == 'fluxnet') {
+    } else if ($('.js-auth').attr('data-auth') == 'fluxnet') {
         $('.js-main-article').addClass('hide');
         $('.js-error-article').removeClass('hide');
     }
 
-    $.getJSON( "static/js/metadata/dataset.json?v=202010", function( data ) {
+    $.getJSON("static/js/metadata/dataset.json?v=202010", function (data) {
         templates.datasets = data;
         createEditForm('datasets');
     });
 
-    $.getJSON( "static/js/metadata/site.json", function( data ) {
+    $.getJSON("static/js/metadata/site.json", function (data) {
         templates.sites = data;
 
     });
 
-    $.getJSON( "static/js/metadata/plot.json", function( data ) {
+    $.getJSON("static/js/metadata/plot.json", function (data) {
         templates.plots = data;
 
     });
 
     var viewParam = getParameterByName('view', window.location.href);
 
-    if(viewParam && $('.js-view[data-view="' + viewParam + '"]').length == 1) {
+    if (viewParam && $('.js-view[data-view="' + viewParam + '"]').length == 1) {
         $('.js-loading').removeClass('hide');
         $('.js-view[data-view="' + viewParam + '"]').removeClass('hide');
         $('.js-home-view').addClass('hide');
     }
 
-    switch(viewParam) {
+    switch (viewParam) {
         case 'create':
-        $.when(getDataSets(), getContacts()).then(function(data, contacts) {
-            dataObj.datasets = data;
-            dataObj.contacts = contacts;
-            $('.js-loading').addClass('hide');
-        });
-        break;
+            $.when(getDataSets(), getContacts()).then(function (data, contacts) {
+                dataObj.datasets = data;
+                dataObj.contacts = contacts;
+                $('.js-loading').addClass('hide');
+            });
+            break;
 
         case 'edit':
-        $('.js-loading').addClass('hide');
-        break;
+            $('.js-loading').addClass('hide');
+            break;
 
         case 'view-sites':
-        $('.js-loading').addClass('hide');
-        break;
+            $('.js-loading').addClass('hide');
+            break;
 
         case 'edit-draft':
-        $.when(getDataSets(), getContacts()).then(function(data, contacts) {
-            dataObj.datasets = data;
-            dataObj.contacts = contacts;
-            $('.js-text-dump').html('');
-            $('.js-datasets').html('');
-            var draftCount = 0;
-            dataObj.drafts = [];
-            for(var i=0;i<dataObj.datasets.length;i++) {
-                if(dataObj.datasets[i].status == 0 || dataObj.datasets[i].status == 1) {
-                    dataObj.drafts.push(dataObj.datasets[i]);
+            $.when(getDataSets(), getContacts()).then(function (data, contacts) {
+                dataObj.datasets = data;
+                dataObj.contacts = contacts;
+                $('.js-text-dump').html('');
+                $('.js-datasets').html('');
+                var draftCount = 0;
+                dataObj.drafts = [];
+                for (var i = 0; i < dataObj.datasets.length; i++) {
+                    if (dataObj.datasets[i].status == 0 || dataObj.datasets[i].status == 1) {
+                        dataObj.drafts.push(dataObj.datasets[i]);
+                    }
                 }
-            }
-            showDrafts();
-            //$('.js-view.view-drafts-view h4').prepend(draftCount + ' ');
-            $('.js-loading').addClass('hide');
-            editingScreen = false;
+                showDrafts();
+                //$('.js-view.view-drafts-view h4').prepend(draftCount + ' ');
+                $('.js-loading').addClass('hide');
+                editingScreen = false;
 
-        });
-        break;
+            });
+            break;
 
         case 'view':
-        //$('.js-get-datasets').trigger('click');
-        $.when(getDataSets(), getContacts()).then(function(data, contacts) {
-            dataObj.datasets = data;
-            dataObj.contacts = contacts;
-            $('.js-text-dump').html('');
-            $('.js-datasets').html('');
-            dataObj.approvedDatasets = [];
+            //$('.js-get-datasets').trigger('click');
+            $.when(getDataSets(), getContacts()).then(function (data, contacts) {
+                dataObj.datasets = data;
+                dataObj.contacts = contacts;
+                $('.js-text-dump').html('');
+                $('.js-datasets').html('');
+                dataObj.approvedDatasets = [];
 
-            for(var i=0;i<dataObj.datasets.length;i++) {
-                if(dataObj.datasets[i].status == 2) {
-                    dataObj.approvedDatasets.push(dataObj.datasets[i]);
+                for (var i = 0; i < dataObj.datasets.length; i++) {
+                    if (dataObj.datasets[i].status == 2) {
+                        dataObj.approvedDatasets.push(dataObj.datasets[i]);
+                    }
                 }
-            }
 
-            showApprovedDatasets();
-            $('.js-loading').addClass('hide');
-        });
-        break;
+                showApprovedDatasets();
+                $('.js-loading').addClass('hide');
+            });
+            break;
 
-        default: break;
+        default:
+            break;
     }
 
 
     var popup = new Foundation.Reveal($('#myModal'));
     getFileTypes();
 
-    $.when(getSites()).done(function(sites) {
+    $.when(getSites()).done(function (sites) {
         dataObj.sites = sites;
-        for(var i=0;i<sites.length;i++) {
-            var option = $('<option value="'+ sites[i].url +'" data-index="' + i + '">' + sites[i].site_id + ': ' + sites[i].name + '</option>');
+        for (var i = 0; i < sites.length; i++) {
+            var option = $('<option value="' + sites[i].url + '" data-index="' + i + '">' + sites[i].site_id + ': ' + sites[i].name + '</option>');
             $('.js-all-sites').append(option);
         }
     });
 
-    $.when(getVariables()).done(function(vars) {
+    $.when(getVariables()).done(function (vars) {
         dataObj.variables = vars;
-        for(var i=0;i<vars.length;i++) {
-            var option = $('<option value="'+ vars[i].url +'" data-index="' + i + '">' + vars[i].name + '</option>');
+        for (var i = 0; i < vars.length; i++) {
+            var option = $('<option value="' + vars[i].url + '" data-index="' + i + '">' + vars[i].name + '</option>');
             $('.js-all-vars').append(option);
         }
     });
 
-    $.when(getPlots()).done(function(plots) {
+    $.when(getPlots()).done(function (plots) {
         console.log(plots);
         dataObj.plots = plots;
         $('.js-all-plots').append('<option value="">None</option>');
-        for(var i=0;i<plots.length;i++) {
-            var option = $('<option value="'+ plots[i].url +'" data-index="' + i + ' " disabled>' + (plots[i].plot_id ? plots[i].plot_id : 'N/A') + ': ' + plots[i].name + '</option>');
+        for (var i = 0; i < plots.length; i++) {
+            var option = $('<option value="' + plots[i].url + '" data-index="' + i + ' " disabled>' + (plots[i].plot_id ? plots[i].plot_id : 'N/A') + ': ' + plots[i].name + '</option>');
             $('.js-all-plots').append(option);
         }
     });
 
     populateContacts();
 
-    $('body').on('click', '.js-view-toggle', function(event) {
+    $('body').on('click', '.js-view-toggle', function (event) {
         var view = $(this).attr('data-view');
         $('.js-view[data-view="' + view + '"]').removeClass('hide');
         window.location = window.location.href + '?view=' + view;
         $('.js-home-view').addClass('hide');
     });
 
-    $('body').on('change', '.js-all-sites', function() {
+    $('body').on('change', '.js-all-sites', function () {
         //console.log('here');
         var plotTitle = false;
         var index = $(this).find('option:selected').attr('data-index');
@@ -200,61 +200,56 @@ $(document).ready(function(){
 
         var location = {lat: dataObj.sites[index].location_latitude, lng: dataObj.sites[index].location_longitude};
         var map = new google.maps.Map(document.getElementById('js-map-view'), {
-          zoom: 4,
-          center: location
+            zoom: 4,
+            center: location
         });
         var marker = new google.maps.Marker({
-          position: location,
-          map: map
+            position: location,
+            map: map
         });
         $('.js-params').html('');
         $('.js-site-info .js-title').html('').append('<h4>' + dataObj.sites[index]['site_id'] + ': ' + dataObj.sites[index]['name'] + '</h4>');
-        for(var prop in dataObj.sites[index]) {
-            if(prop != 'site_id' && prop != 'name') {
+        for (var prop in dataObj.sites[index]) {
+            if (prop != 'site_id' && prop != 'name') {
 
-                if(prop == 'description') {
+                if (prop == 'description') {
                     var param = $('<div>' + dataObj.sites[index][prop] + '</div>');
                     $('.js-main-params').html('').append(param);
-                }
-                else {
-                    var param = $('<div class="row param ' + ((templates.sites[prop] && templates.sites[prop].sequence === -1) ? 'hide' : '') +'"> <div class="columns small-12 medium-3">'  +'<b>' + (templates.sites[prop] ? templates.sites[prop].label : prop) + ' </b></div></div>');
-                    if(prop == 'contacts') {
-                        for(var i=0;i<dataObj.contacts.length;i++) {
-                            if(dataObj.sites[index][prop].indexOf(dataObj.contacts[i].url) != -1) {
+                } else {
+                    var param = $('<div class="row param ' + ((templates.sites[prop] && templates.sites[prop].sequence === -1) ? 'hide' : '') + '"> <div class="columns small-12 medium-3">' + '<b>' + (templates.sites[prop] ? templates.sites[prop].label : prop) + ' </b></div></div>');
+                    if (prop == 'contacts') {
+                        for (var i = 0; i < dataObj.contacts.length; i++) {
+                            if (dataObj.sites[index][prop].indexOf(dataObj.contacts[i].url) != -1) {
                                 var contactString = '<div class="columns small-12 medium-9 end float-right">' + dataObj.contacts[i].first_name + ' ' + dataObj.contacts[i].last_name;
-                                if(dataObj.contacts[i].email){
-                                    contactString += ' &lt; ' + dataObj.contacts[i].email +' &gt;';
+                                if (dataObj.contacts[i].email) {
+                                    contactString += ' &lt; ' + dataObj.contacts[i].email + ' &gt;';
                                 }
-                                contactString +=  '</div>';
+                                contactString += '</div>';
                                 param.append(contactString);
                             }
                         }
-                    }
-                    else if(prop == 'pis') {
-                        for(var j=0;j<dataObj.contacts.length;j++) {
-                            if(dataObj.sites[index][prop].indexOf(dataObj.contacts[j].url) != -1) {
+                    } else if (prop == 'pis') {
+                        for (var j = 0; j < dataObj.contacts.length; j++) {
+                            if (dataObj.sites[index][prop].indexOf(dataObj.contacts[j].url) != -1) {
                                 var contactString = '<div class="columns small-12 medium-9 end float-right">' +
-                                        dataObj.contacts[j].first_name + ' ' + dataObj.contacts[j].last_name ;
-                                if(dataObj.contacts[j].email){
-                                    contactString += ' &lt; ' + dataObj.contacts[j].email +' &gt;';
+                                    dataObj.contacts[j].first_name + ' ' + dataObj.contacts[j].last_name;
+                                if (dataObj.contacts[j].email) {
+                                    contactString += ' &lt; ' + dataObj.contacts[j].email + ' &gt;';
                                 }
-                                contactString +=  '</div>';
+                                contactString += '</div>';
                                 param.append(contactString);
                             }
                         }
-                    }
-                    else if(prop == 'site_urls') {
+                    } else if (prop == 'site_urls') {
                         var urls = dataObj.sites[index][prop].split(',');
                         //param.append('<div class="columns small-12 medium-9 end float-right">');
                         for (var k = 0; k < urls.length; k++) {
                             param.append('<div class="columns small-12 medium-9 end float-right"><a href="' + urls[k] + '">' + urls[k] + '</a></div>');
                         }
                         //param.append('</div>');
-                    }
-                    else if(prop == 'location_map_url') {
+                    } else if (prop == 'location_map_url') {
                         param.append('<div class="columns small-12 medium-9 end float-right">' + '<a href="' + dataObj.sites[index][prop] + '">' + (dataObj.sites[index][prop] ? 'Click here' : '') + '</a>' + '</div>');
-                    }
-                    else {
+                    } else {
                         param.append('<div class="columns small-12 medium-9">' + (dataObj.sites[index][prop] ? dataObj.sites[index][prop] : 'N/A') + '</div>');
                     }
                     $('.js-params').append(param);
@@ -263,51 +258,48 @@ $(document).ready(function(){
         }
 
         var siteStr = '';
-        $('.js-all-sites option:selected').each(function() {
+        $('.js-all-sites option:selected').each(function () {
             siteStr += $(this).val() + ' ';
         });
 
-        for(var i=0; i< dataObj.plots.length; i++) {
-            if(siteStr.indexOf(dataObj.plots[i].site) != -1) {
-                $('.js-all-plots option[value="' + dataObj.plots[i].url +'"]').prop('disabled', false);
-                if(!plotTitle) {
+        for (var i = 0; i < dataObj.plots.length; i++) {
+            if (siteStr.indexOf(dataObj.plots[i].site) != -1) {
+                $('.js-all-plots option[value="' + dataObj.plots[i].url + '"]').prop('disabled', false);
+                if (!plotTitle) {
                     plotTitle = true;
                     $('.js-params').append('<h4 class="plot-title">Plots in ' + dataObj.sites[index].site_id + '</h4>');
                 }
                 var plotContainer = $('<div class="plot-info js-plot-info"/>');
                 plotContainer.append('<h5>' + dataObj.plots[i].plot_id + ': ' + dataObj.plots[i].name + '</h5>');
 
-                for(var prop in dataObj.plots[i]) {
-                    if(prop != 'plot_id' && prop != 'name') {
-                        if(prop == 'pi') {
-                            for(var j=0;j<dataObj.contacts.length;j++) {
-                                if(dataObj.plots[i][prop] != null) {
-                                    if(dataObj.plots[i][prop].indexOf(dataObj.contacts[j].url) != -1) {
+                for (var prop in dataObj.plots[i]) {
+                    if (prop != 'plot_id' && prop != 'name') {
+                        if (prop == 'pi') {
+                            for (var j = 0; j < dataObj.contacts.length; j++) {
+                                if (dataObj.plots[i][prop] != null) {
+                                    if (dataObj.plots[i][prop].indexOf(dataObj.contacts[j].url) != -1) {
                                         var contactString = dataObj.contacts[j].first_name + ' ' + dataObj.contacts[j].last_name;
-                                        if(dataObj.contacts[j].email){
-                                            contactString += ' &lt; ' + dataObj.contacts[j].email +' &gt; ';
+                                        if (dataObj.contacts[j].email) {
+                                            contactString += ' &lt; ' + dataObj.contacts[j].email + ' &gt; ';
                                         }
 
-                                        var param = $('<div class="row param '+ (templates.plots[prop] && templates.plots[prop].sequence === -1 ? 'hide' : '') +'"><div class="columns small-12 medium-3"><b>' + (templates.plots[prop] ? templates.plots[prop].label : prop) + ' </b></div><div class="small-12 medium-9 columns">' + contactString + '</div></div>');
+                                        var param = $('<div class="row param ' + (templates.plots[prop] && templates.plots[prop].sequence === -1 ? 'hide' : '') + '"><div class="columns small-12 medium-3"><b>' + (templates.plots[prop] ? templates.plots[prop].label : prop) + ' </b></div><div class="small-12 medium-9 columns">' + contactString + '</div></div>');
                                         plotContainer.append(param);
                                     }
                                 }
                             }
-                        }
-                        else if(prop == 'location_kmz_url') {
-                            var param = $('<div class="row param '+ (templates.plots[prop] && templates.plots[prop].sequence === -1 ? 'hide' : '') +'"><div class="columns small-12 medium-3"><b>' + (templates.plots[prop] ? templates.plots[prop].label : prop) + ' </b></div><div class="small-12 medium-9 columns"><a href="' + dataObj.plots[i][prop] + '">' + (dataObj.plots[i][prop] ? 'Click here' : '') + '</a></div></div>');
+                        } else if (prop == 'location_kmz_url') {
+                            var param = $('<div class="row param ' + (templates.plots[prop] && templates.plots[prop].sequence === -1 ? 'hide' : '') + '"><div class="columns small-12 medium-3"><b>' + (templates.plots[prop] ? templates.plots[prop].label : prop) + ' </b></div><div class="small-12 medium-9 columns"><a href="' + dataObj.plots[i][prop] + '">' + (dataObj.plots[i][prop] ? 'Click here' : '') + '</a></div></div>');
                             plotContainer.append(param);
-                        }
-                        else {
-                            var param = $('<div class="row param '+ (templates.plots[prop] && templates.plots[prop].sequence === -1 ? 'hide' : '') +'"><div class="columns small-12 medium-3"><b>' + (templates.plots[prop] ? templates.plots[prop].label : prop) + ' </b></div><div class="small-12 medium-9 columns">' + (dataObj.plots[i][prop] ? dataObj.plots[i][prop] : '') + '</div></div>');
+                        } else {
+                            var param = $('<div class="row param ' + (templates.plots[prop] && templates.plots[prop].sequence === -1 ? 'hide' : '') + '"><div class="columns small-12 medium-3"><b>' + (templates.plots[prop] ? templates.plots[prop].label : prop) + ' </b></div><div class="small-12 medium-9 columns">' + (dataObj.plots[i][prop] ? dataObj.plots[i][prop] : '') + '</div></div>');
                             plotContainer.append(param);
                         }
                     }
                 }
                 $('.js-params').append(plotContainer);
-            }
-            else {
-                $('.js-all-plots option[value="' + dataObj.plots[i].url +'"]').each(function() {
+            } else {
+                $('.js-all-plots option[value="' + dataObj.plots[i].url + '"]').each(function () {
                     $(this).prop('disabled', true);
                 })
             }
@@ -322,108 +314,100 @@ $(document).ready(function(){
         }
     });*/
 
-    $('body').on('change', '.js-all-plots', function() {
+    $('body').on('change', '.js-all-plots', function () {
         //console.log('here');
         var index = $(this).find('option:selected').attr('data-index');
         $('.js-view-plot-btn .js-plot-id').html($(this).val());
         $('.js-plot-info').removeClass('hide');
         $('.js-plot-params').html('');
-        for(var prop in dataObj.sites[index]) {
+        for (var prop in dataObj.sites[index]) {
             var param = $('<p>' + prop + ': ' + dataObj.sites[index][prop] + '</p>');
             $('.js-plot-params').append(param);
         }
     });
 
-    function sortByField(a, b){
+    function sortByField(a, b) {
         var aName = a[sortField];
         var bName = b[sortField];
 
-        if(aName == null || bName == null) {
-            if(sortReverse) {
+        if (aName == null || bName == null) {
+            if (sortReverse) {
                 return 0;
-            }
-            else {
+            } else {
                 return 1;
             }
-        }
-        else if(aName && bName) {
+        } else if (aName && bName) {
             aName = a[sortField].toLowerCase();
             bName = b[sortField].toLowerCase();
 
-            if(sortField == 'contact') {
-                for(var j=0; j<dataObj.contacts.length; j++) {
-                    if(dataObj.contacts[j].url == a[sortField]) {
+            if (sortField == 'contact') {
+                for (var j = 0; j < dataObj.contacts.length; j++) {
+                    if (dataObj.contacts[j].url == a[sortField]) {
                         aName = dataObj.contacts[j].first_name + ' ' + dataObj.contacts[j].last_name;
                     }
-                    if(dataObj.contacts[j].url == b[sortField]) {
+                    if (dataObj.contacts[j].url == b[sortField]) {
                         bName = dataObj.contacts[j].first_name + ' ' + dataObj.contacts[j].last_name;
                     }
                 }
             }
 
-            if(sortReverse) {
+            if (sortReverse) {
                 return ((aName > bName) ? -1 : ((aName < bName) ? 1 : 0));
-            }
-            else {
+            } else {
                 return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
             }
-        }
-        else {
-            if(sortReverse) {
+        } else {
+            if (sortReverse) {
                 return 0;
-            }
-            else {
+            } else {
                 return 1;
             }
         }
     }
 
-    $('body').on('change', '.js-all-contacts', function() {
-        if($(this).val() == 'add-new') {
+    $('body').on('change', '.js-all-contacts', function () {
+        if ($(this).val() == 'add-new') {
             $(this).closest('select').removeClass('js-input');
             $(this).closest('select').siblings('.js-new-value').removeClass('hide').addClass('js-input');
-        }
-        else {
+        } else {
             $(this).closest('select').addClass('js-input');
             $(this).closest('select').siblings('.js-new-value').addClass('hide').removeClass('js-input');
         }
     });
 
-    $("html").on("dragover", function(event) {
+    $("html").on("dragover", function (event) {
         event.preventDefault();
         event.stopPropagation();
     });
 
-    $("html").on("dragleave", function(event) {
+    $("html").on("dragleave", function (event) {
         event.preventDefault();
         event.stopPropagation();
     });
 
-    $("html").on("drop", '.js-file-drop-zone',function(event) {
+    $("html").on("drop", '.js-file-drop-zone', function (event) {
         event.preventDefault();
         event.stopPropagation();
         var files = event.originalEvent.dataTransfer.files;
         //$('.js-file-input-btn').val(files[0]);
-        if(files) {
-            if(files.length == 1) {
+        if (files) {
+            if (files.length == 1) {
                 $('.js-file-name').html(files[0].name);
                 $('.js-file-name-wrapper').removeClass('hide');
                 fileToUpload = files[0];
                 //$('.js-existing-file').addClass('hide');
-                if($('.js-existing-file').hasClass('hide')) {
+                if ($('.js-existing-file').hasClass('hide')) {
                     $('.js-new-file-msg').removeClass('hide');
-                }
-                else {
+                } else {
                     $('.js-file-replace-msg').removeClass('hide');
                 }
-            }
-            else if(files.length > 1) {
+            } else if (files.length > 1) {
                 alert('Only one file is allowed per dataset. If you have multiple files, please compress them into a single file and upload it.');
             }
         }
     });
 
-    $('body').on('click', '.js-clear-file-btn', function(event) {
+    $('body').on('click', '.js-clear-file-btn', function (event) {
         event.preventDefault();
         $('.js-file-input-btn').val('');
         $('.js-file-name').html('')
@@ -433,46 +417,42 @@ $(document).ready(function(){
         fileToUpload = false;
     });
 
-    $('body').on('click', '.js-edit-draft', function(event) {
+    $('body').on('click', '.js-edit-draft', function (event) {
         event.preventDefault();
         event.stopPropagation();
         var url = $(this).closest('.js-view-dataset').attr('data-url');
         var index = -1;
         //var index = $(this).closest('.js-view-dataset').attr('data-index');
 
-        for(var j=0;j<dataObj.datasets.length;j++) {
-            if(dataObj.datasets[j].url == url) {
+        for (var j = 0; j < dataObj.datasets.length; j++) {
+            if (dataObj.datasets[j].url == url) {
                 index = j;
             }
         }
 
-        if(index != -1) {
-            for(var param in templates.datasets) {
-                if(param in dataObj.datasets[index]) {
-                    if(Array.isArray(dataObj.datasets[index][param])) {
+        if (index != -1) {
+            for (var param in templates.datasets) {
+                if (param in dataObj.datasets[index]) {
+                    if (Array.isArray(dataObj.datasets[index][param])) {
                         for (var i = 0; i < dataObj.datasets[index][param].length; i++) {
-                            if(i > 0 ) {
-                                var position = $('.js-edit-form .js-param[data-param="'+ param +'"] section').last();
+                            if (i > 0) {
+                                var position = $('.js-edit-form .js-param[data-param="' + param + '"] section').last();
                                 var container = position.clone();
                                 container.find('.js-input').val(dataObj.datasets[index][param][i]);
                                 container.insertAfter(position);
-                            }
-                            else {
-                                $('.js-edit-form .js-param[data-param="'+ param +'"] .js-input').val(dataObj.datasets[index][param][i]);
-                            }
-                        }
-                    }
-                    else {
-                        if($('.js-edit-form .js-param[data-param="'+ param +'"] .js-input').hasClass('js-boolean')) {
-                            if(dataObj.datasets[index][param] == true) {
-                                $('.js-edit-form .js-param[data-param="'+ param +'"] .js-input.js-true').prop('checked', true);
-                            }
-                            else if(dataObj.datasets[index][param] == false) {
-                                $('.js-edit-form .js-param[data-param="'+ param +'"] .js-input.js-false').prop('checked', true);
+                            } else {
+                                $('.js-edit-form .js-param[data-param="' + param + '"] .js-input').val(dataObj.datasets[index][param][i]);
                             }
                         }
-                        else {
-                            $('.js-edit-form .js-param[data-param="'+ param +'"] .js-input').val(dataObj.datasets[index][param]);
+                    } else {
+                        if ($('.js-edit-form .js-param[data-param="' + param + '"] .js-input').hasClass('js-boolean')) {
+                            if (dataObj.datasets[index][param] == true) {
+                                $('.js-edit-form .js-param[data-param="' + param + '"] .js-input.js-true').prop('checked', true);
+                            } else if (dataObj.datasets[index][param] == false) {
+                                $('.js-edit-form .js-param[data-param="' + param + '"] .js-input.js-false').prop('checked', true);
+                            }
+                        } else {
+                            $('.js-edit-form .js-param[data-param="' + param + '"] .js-input').val(dataObj.datasets[index][param]);
                         }
                     }
                 }
@@ -489,23 +469,21 @@ $(document).ready(function(){
         $('.js-edit-back-btn').removeClass('hide');
         $('.js-edit-form .js-all-plots').removeAttr('disabled');
 
-        if(dataObj.datasets[index].status == 0) {
+        if (dataObj.datasets[index].status == 0) {
             $('.js-edit-dataset').html('Update Draft');
             $('.js-submit-dataset').removeClass('hide');
-        }
-        else if(dataObj.datasets[index].status == 1) {
+        } else if (dataObj.datasets[index].status == 1) {
             $('.js-edit-dataset').html('Update Dataset');
             $('.js-submit-dataset').addClass('hide');
         }
 
-        if(dataObj.datasets[index].archive) {
+        if (dataObj.datasets[index].archive) {
             $('.js-file-exists').removeClass('hide');
             $('.js-existing-file').removeClass('hide')
-                                .html(dataObj.datasets[index].archive_filename);
+                .html(dataObj.datasets[index].archive_filename);
             $('.js-file-replace-msg').removeClass('hide');
             //$('.js-new-file-msg').addClass('hide');
-        }
-        else {
+        } else {
             $('.js-file-exists').addClass('hide');
             $('.js-existing-file').addClass('hide');
             $('.js-file-replace-msg').addClass('hide');
@@ -513,18 +491,17 @@ $(document).ready(function(){
         }
 
         var siteStr = '';
-        $('.js-all-sites option:selected').each(function() {
+        $('.js-all-sites option:selected').each(function () {
             siteStr += $(this).val() + ' ';
         });
 
-        for(var i=0; i< dataObj.plots.length; i++) {
-            if(siteStr.indexOf(dataObj.plots[i].site) != -1) {
-                $('.js-all-plots option[value="' + dataObj.plots[i].url +'"]').each(function() {
+        for (var i = 0; i < dataObj.plots.length; i++) {
+            if (siteStr.indexOf(dataObj.plots[i].site) != -1) {
+                $('.js-all-plots option[value="' + dataObj.plots[i].url + '"]').each(function () {
                     $(this).prop('disabled', false);
                 });
-            }
-            else {
-                $('.js-all-plots option[value="' + dataObj.plots[i].url +'"]').each(function() {
+            } else {
+                $('.js-all-plots option[value="' + dataObj.plots[i].url + '"]').each(function () {
                     $(this).addClass('disabled', true);
                 });
             }
@@ -540,13 +517,13 @@ $(document).ready(function(){
     });
 
 
-    $('body').on('click', '.js-file-upload-btn', function(event) {
+    $('body').on('click', '.js-file-upload-btn', function (event) {
         event.preventDefault();
         event.stopPropagation();
         $('.js-file-input-btn').trigger('click');
     });
 
-    $(document).on('focus',".datepicker_recurring_start", function(){
+    $(document).on('focus', ".datepicker_recurring_start", function () {
         $(this).datepicker({
             dateFormat: "yy-mm-dd",
             changeMonth: true,
@@ -555,8 +532,8 @@ $(document).ready(function(){
         });
     });
 
-    $('body').on('change', '.js-file-input-btn', function(event) {
-        if(this.files) {
+    $('body').on('change', '.js-file-input-btn', function (event) {
+        if (this.files) {
             event.preventDefault();
             event.stopPropagation();
             var dataFile = this.files[0];
@@ -564,10 +541,9 @@ $(document).ready(function(){
             $('.js-file-name').html(this.files[0].name);
             $('.js-file-name-wrapper').removeClass('hide');
             //$('.js-existing-file').addClass('hide');
-            if($('.js-existing-file').hasClass('hide')) {
+            if ($('.js-existing-file').hasClass('hide')) {
                 $('.js-new-file-msg').removeClass('hide');
-            }
-            else {
+            } else {
                 $('.js-file-replace-msg').removeClass('hide');
             }
         }
@@ -575,13 +551,13 @@ $(document).ready(function(){
     });
 
 
-    $('body').on('click', '.js-delete-dataset', function(event) {
+    $('body').on('click', '.js-delete-dataset', function (event) {
         event.preventDefault();
         var csrftoken = getCookie('csrftoken');
         var url = $(this).attr('data-url');
 
         $.ajaxSetup({
-            beforeSend: function(xhr, settings) {
+            beforeSend: function (xhr, settings) {
                 xhr.setRequestHeader("X-CSRFToken", csrftoken);
             }
         });
@@ -594,62 +570,59 @@ $(document).ready(function(){
             },
             url: url,
             dataType: "json",
-            success: function(data) {
+            success: function (data) {
                 alert('Dataset deleted');
             },
 
-            fail: function(data) {
+            fail: function (data) {
                 alert('Fail');
             },
 
-            error: function(data, errorThrown) {
+            error: function (data, errorThrown) {
                 alert('Error: ' + data.statusText);
             },
         });
     });
 
-    $('body').on('click', '.js-cancel-btn', function(event) {
+    $('body').on('click', '.js-cancel-btn', function (event) {
         event.preventDefault();
         overrideMsg = true;
         location.reload();
     })
 
-    $('body').on('click', '.js-save-btn', function(event) {
+    $('body').on('click', '.js-save-btn', function (event) {
         event.preventDefault();
         var url = $(this).attr('data-url');
         var id = $(this).attr('data-id');
 
         var jsonObj = {};
 
-        $('.js-editable-section .js-attr').each(function() {
+        $('.js-editable-section .js-attr').each(function () {
             var attr = $(this).find('.js-attr-name').html();
-            if($(this).find('.js-attr-val').length > 1) {
+            if ($(this).find('.js-attr-val').length > 1) {
                 jsonObj[attr] = [];
-                $(this).find('.js-attr-val').each(function() {
+                $(this).find('.js-attr-val').each(function () {
                     jsonObj[attr].push($(this).val());
                 });
 
-            }
-            else if($(this).find('.js-attr-val').length == 1) {
+            } else if ($(this).find('.js-attr-val').length == 1) {
                 jsonObj[attr] = $(this).find('.js-attr-val').val();
-            }
-            else if($(this).find('.js-attr-val').length == 0) {
+            } else if ($(this).find('.js-attr-val').length == 0) {
                 jsonObj[attr] = "";
             }
 
         });
-        $.when(editDataset(jsonObj, url)).done(function(status) {
-            if(status.result ) {
+        $.when(editDataset(jsonObj, url)).done(function (status) {
+            if (status.result) {
                 alert('Your changes have been saved');
-            }
-            else {
-                 handleFormErrors(status, '\'There was an error with the update.')
+            } else {
+                handleFormErrors(status, '\'There was an error with the update.')
             }
         });
 
     })
 
-    $('body').on('click', '.js-clear-form', function(event) {
+    $('body').on('click', '.js-clear-form', function (event) {
         event.preventDefault();
         overrideMsg = true;
         location.reload();
@@ -662,7 +635,7 @@ $(document).ready(function(){
         });*/
     });
 
-    $('body').on('click', '.js-submit-dataset', function(event) {
+    $('body').on('click', '.js-submit-dataset', function (event) {
         event.preventDefault();
 
         var submissionObj = {};
@@ -671,12 +644,12 @@ $(document).ready(function(){
         var url = $('.js-edit-form').attr('data-url');
 
 
-        if(fileToUpload) {
+        if (fileToUpload) {
 
             var csrftoken = getCookie('csrftoken');
 
             $.ajaxSetup({
-                beforeSend: function(xhr, settings) {
+                beforeSend: function (xhr, settings) {
                     xhr.setRequestHeader("X-CSRFToken", csrftoken);
                 }
             });
@@ -688,104 +661,100 @@ $(document).ready(function(){
             var formData = new FormData();
             formData.append('attachment', fileToUpload);
             $('.js-loading').removeClass('hide');
-                $.ajax({
-                    xhr: function() {
+            $.ajax({
+                xhr: function () {
 
-                        var xhr = new window.XMLHttpRequest();
-                        xhr.filePointer = formData;
-                        xhr.upload.filePointer = formData;
-                        //Upload progress
-                        xhr.upload.addEventListener("progress", function(e, data){
+                    var xhr = new window.XMLHttpRequest();
+                    xhr.filePointer = formData;
+                    xhr.upload.filePointer = formData;
+                    //Upload progress
+                    xhr.upload.addEventListener("progress", function (e, data) {
 
-                            if (e.lengthComputable) {
-                                var pc = parseInt(e.loaded / e.total * 100);
-                                if(pc >= 100) {
-                                    //this.filePointer.spinner.parent().addClass('hide');
-                                    this.filePointer.progress = pc;
-                                    console.log(pc);
-                                }
-                                else {
-                                    $('.js-progress-wrapper').removeClass('hide');
-                                    $('.js-progress').html(pc);
-                                }
+                        if (e.lengthComputable) {
+                            var pc = parseInt(e.loaded / e.total * 100);
+                            if (pc >= 100) {
+                                //this.filePointer.spinner.parent().addClass('hide');
+                                this.filePointer.progress = pc;
+                                console.log(pc);
+                            } else {
+                                $('.js-progress-wrapper').removeClass('hide');
+                                $('.js-progress').html(pc);
                             }
-                        }, false);
+                        }
+                    }, false);
 
-                        xhr.addEventListener("progress", function(e, data){
+                    xhr.addEventListener("progress", function (e, data) {
 
-                            if (e.lengthComputable) {
-                                var pc = parseInt(e.loaded / e.total * 100);
-                                if(pc >= 100) {
-                                    //this.filePointer.spinner.parent().addClass('hide');
-                                    this.filePointer.progress = pc;
-                                    console.log(pc);
-                                }
-                                else {
-                                    $('.js-progress-wrapper').removeClass('hide');
-                                    $('.js-progress').html(pc);
-                                    //this.filePointer.spinner.parent().removeClass('hide');
-                                    //this.filePointer.spinner.html(pc + '%');
-                                    //this.filePointer.progress = pc;
-                                }
+                        if (e.lengthComputable) {
+                            var pc = parseInt(e.loaded / e.total * 100);
+                            if (pc >= 100) {
+                                //this.filePointer.spinner.parent().addClass('hide');
+                                this.filePointer.progress = pc;
+                                console.log(pc);
+                            } else {
+                                $('.js-progress-wrapper').removeClass('hide');
+                                $('.js-progress').html(pc);
+                                //this.filePointer.spinner.parent().removeClass('hide');
+                                //this.filePointer.spinner.html(pc + '%');
+                                //this.filePointer.progress = pc;
                             }
-                        }, false);
-                        return xhr;
-                    },
-                    method: "POST",
-                    contentType: false,
-                    data: formData,
-                    processData: false,
-                    url: url + "upload/",
-                    success: function(data) {
+                        }
+                    }, false);
+                    return xhr;
+                },
+                method: "POST",
+                contentType: false,
+                data: formData,
+                processData: false,
+                url: url + "upload/",
+                success: function (data) {
 
-                        processEditingForm(submissionObj, url);
+                    processEditingForm(submissionObj, url);
 
 
-                    },
-                    complete: function() {
-                        $('.js-loading').addClass('hide');
-                    },
+                },
+                complete: function () {
+                    $('.js-loading').addClass('hide');
+                },
 
             });
 
-        }
-        else if(!$('.js-file-exists').hasClass('hide')) {
+        } else if (!$('.js-file-exists').hasClass('hide')) {
             processEditingForm(submissionObj, url);
-        }
-        else {
+        } else {
             alert('Please upload a file in order to submit the dataset.');
         }
     });
 
-    $('body').on('click', '.js-create-dataset', function(event) {
+    $('body').on('click', '.js-create-dataset', function (event) {
         event.preventDefault();
         var submissionObj = {};
         submissionObj.submit = true;
         var submitMode = false;
 
-        if($(this).hasClass('js-submit')) {
+        if ($(this).hasClass('js-submit')) {
             submitMode = true;
         }
 
-        $('.js-param.missing').each(function() {
+        $('.js-param.missing').each(function () {
             $(this).removeClass('missing');
         });
 
         var entryCount = 0;
         var validEntries = true;
         //find all the contacts and authors first before processing others
-        if($('.js-new-value.js-input').length > 0) {
+        if ($('.js-new-value.js-input').length > 0) {
 
 
-            $('.js-new-value.js-input').each(function(index) {
-                if(!$(this).find('.js-first-name').val() || !$(this).find('.js-last-name').val() || !$(this).find('.js-email').val()) {
+            $('.js-new-value.js-input').each(function (index) {
+                if (!$(this).find('.js-first-name').val() || !$(this).find('.js-last-name').val() || !$(this).find('.js-email').val()) {
                     validEntries = false;
                 }
             });
 
-            if(validEntries) {
+            if (validEntries) {
 
-                $('.js-new-value.js-input').each(function(index) {
+                $('.js-new-value.js-input').each(function (index) {
 
                     var param = $(this).closest('.js-param').attr('data-param');
 
@@ -793,17 +762,15 @@ $(document).ready(function(){
                     var lname = $(this).find('.js-last-name').val();
                     var email = $(this).find('.js-email').val();
 
-                    $.when(createContact(fname, lname, email, '')).done(function(status) {
+                    $.when(createContact(fname, lname, email, '')).done(function (status) {
                         //console.log(status);
-                        if(status.url && entryCount == $('.js-new-value.js-input').length - 1) {
-                            if(!submissionObj[param] && param == 'authors') {
+                        if (status.url && entryCount == $('.js-new-value.js-input').length - 1) {
+                            if (!submissionObj[param] && param == 'authors') {
                                 submissionObj[param] = [];
                                 submissionObj[param].push(status.url);
-                            }
-                            else if(param == 'contact') {
+                            } else if (param == 'contact') {
                                 submissionObj[param] = status.url;
-                            }
-                            else if(param == 'authors') {
+                            } else if (param == 'authors') {
                                 submissionObj[param].push(status.url);
                             }
                             entryCount++;
@@ -812,26 +779,22 @@ $(document).ready(function(){
                             // submit will also be present, which will be removed in the createDraft method
                             createDraft(submissionObj, submitMode);
 
-                        }
-                        else if(status.url) {
-                            if(!submissionObj[param] && param == 'authors') {
+                        } else if (status.url) {
+                            if (!submissionObj[param] && param == 'authors') {
                                 submissionObj[param] = [];
                                 submissionObj[param].push(status.url);
-                            }
-                            else if(param == 'contact') {
+                            } else if (param == 'contact') {
                                 submissionObj[param] = status.url;
-                            }
-                            else if(param == 'authors') {
+                            } else if (param == 'authors') {
                                 submissionObj[param].push(status.url);
                             }
                             entryCount++;
-                        }
-                        else {
+                        } else {
                             var responseStr = '';
-                            if(status.responseText) {
+                            if (status.responseText) {
 
                                 var response = JSON.parse(status.responseText);
-                                for(var prop in response) {
+                                for (var prop in response) {
                                     responseStr += prop + ': ' + response[prop] + '\n';
                                 }
                             }
@@ -841,23 +804,20 @@ $(document).ready(function(){
                     });
 
                 });
-            }
-
-            else {
+            } else {
                 alert('Please enter first and last names, and email address for all new contacts/authors');
             }
-        }
-        else {
+        } else {
             var dupname = false;
             submissionObj = processForm(submissionObj, submitMode);
-            for(var k=0;k<dataObj.datasets.length;k++) {
-                if(dataObj.datasets[k].name == submissionObj.name) {
+            for (var k = 0; k < dataObj.datasets.length; k++) {
+                if (dataObj.datasets[k].name == submissionObj.name) {
                     dupname = dataObj.datasets[k].data_set_id;
                 }
             }
             if (dupname) {
                 var proceed = confirm('Another dataset (' + dupname + ') with the same name was found.\nDo you still want to proceed (Click Cancel to make changes)?');
-                if(proceed) {
+                if (proceed) {
                     createDraft(submissionObj, submitMode);
                 }
             } else {
@@ -868,23 +828,23 @@ $(document).ready(function(){
 
     });
 
-    $('body').on('click', '.js-edit-dataset', function(event) {
+    $('body').on('click', '.js-edit-dataset', function (event) {
         event.preventDefault();
         var url = $('.js-edit-form').attr('data-url');
         var submissionObj = {};
         var validEntries = true;
         var entryCount = 0;
-        if($('.js-new-value.js-input').length > 0) {
+        if ($('.js-new-value.js-input').length > 0) {
 
-            $('.js-new-value.js-input').each(function(index) {
-                if(!$(this).find('.js-first-name').val() || !$(this).find('.js-last-name').val()) {
+            $('.js-new-value.js-input').each(function (index) {
+                if (!$(this).find('.js-first-name').val() || !$(this).find('.js-last-name').val()) {
                     validEntries = false;
                 }
             });
 
-            if(validEntries) {
+            if (validEntries) {
                 $('.js-loading').removeClass('hide');
-                $('.js-new-value.js-input').each(function(index) {
+                $('.js-new-value.js-input').each(function (index) {
 
                     var param = $(this).closest('.js-param').attr('data-param');
 
@@ -892,17 +852,15 @@ $(document).ready(function(){
                     var lname = $(this).find('.js-last-name').val();
                     var email = $(this).find('.js-email').val();
 
-                    $.when(createContact(fname, lname, '', '')).done(function(status) {
+                    $.when(createContact(fname, lname, '', '')).done(function (status) {
                         //console.log(status);
-                        if(status.url && entryCount == $('.js-new-value.js-input').length - 1) {
-                            if(!submissionObj[param] && param == 'authors') {
+                        if (status.url && entryCount == $('.js-new-value.js-input').length - 1) {
+                            if (!submissionObj[param] && param == 'authors') {
                                 submissionObj[param] = [];
                                 submissionObj[param].push(status.url);
-                            }
-                            else if(param == 'contact') {
+                            } else if (param == 'contact') {
                                 submissionObj[param] = status.url;
-                            }
-                            else if(param == 'authors') {
+                            } else if (param == 'authors') {
                                 submissionObj[param].push(status.url);
                             }
                             entryCount++;
@@ -911,43 +869,38 @@ $(document).ready(function(){
                             // no properties are specified. note that ngee tropics resources will always be set
                             // submit will also be present, which will be removed in the createDraft method
                             var dupname = false;
-                            for(var k=0;k<dataObj.datasets.length;k++) {
-                                if(dataObj.datasets[k].name == submissionObj.name) {
+                            for (var k = 0; k < dataObj.datasets.length; k++) {
+                                if (dataObj.datasets[k].name == submissionObj.name) {
                                     dupname = true;
                                 }
                             }
                             if (dupname) {
                                 var proceed = confirm('Another dataset with the same name was found.\nDo you still want to proceed (Click Cancel to make changes)?');
-                                if(proceed) {
+                                if (proceed) {
                                     completeEdit(submissionObj, url);
-                                }
-                                else {
+                                } else {
                                     $('.js-loading').addClass('hide');
                                 }
                             } else {
                                 completeEdit(submissionObj, url);
                             }
 
-                        }
-                        else if(status.url) {
-                            if(!submissionObj[param] && param == 'authors') {
+                        } else if (status.url) {
+                            if (!submissionObj[param] && param == 'authors') {
                                 submissionObj[param] = [];
                                 submissionObj[param].push(status.url);
-                            }
-                            else if(param == 'contact') {
+                            } else if (param == 'contact') {
                                 submissionObj[param] = status.url;
-                            }
-                            else if(param == 'authors') {
+                            } else if (param == 'authors') {
                                 submissionObj[param].push(status.url);
                             }
                             entryCount++;
-                        }
-                        else {
+                        } else {
                             var responseStr = '';
-                            if(status.responseText) {
+                            if (status.responseText) {
 
                                 var response = JSON.parse(status.responseText);
-                                for(var prop in response) {
+                                for (var prop in response) {
                                     responseStr += prop + ': ' + response[prop] + '\n';
                                 }
                             }
@@ -959,28 +912,24 @@ $(document).ready(function(){
                     });
 
                 });
-            }
-
-            else {
+            } else {
                 alert('Please enter first and last names, and email for all new contacts/authors');
             }
 
-        }
-        else {
+        } else {
             $('.js-loading').removeClass('hide');
             submissionObj = processForm(submissionObj, false, true);
             var dupname = false;
-            for(var k=0;k<dataObj.datasets.length;k++) {
-                if(dataObj.datasets[k].name == submissionObj.name) {
+            for (var k = 0; k < dataObj.datasets.length; k++) {
+                if (dataObj.datasets[k].name == submissionObj.name) {
                     dupname = true;
                 }
             }
             if (dupname) {
                 var proceed = confirm('Another dataset with the same name was found.\nDo you still want to proceed (Click Cancel to make changes)?');
-                if(proceed) {
+                if (proceed) {
                     completeEdit(submissionObj, url);
-                }
-                else {
+                } else {
                     $('.js-loading').addClass('hide');
                 }
             } else {
@@ -989,7 +938,7 @@ $(document).ready(function(){
         }
     });
 
-    $('body').on('click', '.js-create-contact', function(event) {
+    $('body').on('click', '.js-create-contact', function (event) {
         event.preventDefault();
         /*var status = createContact($('.js-contact-fname').val(), $('.js-contact-lname').val(), $('.js-contact-email').val(), $('.js-contact-institute').val());
         if(status) {
@@ -1003,54 +952,51 @@ $(document).ready(function(){
         var lname = parent.find('.js-last-name').val().trim();
         var email = parent.find('.js-email').val().trim();
 
-        if(fname && lname && email) {
+        if (fname && lname && email) {
 
-        $.when(createContact(fname, lname, email, '')).done(function(status) {
-            if(status.url) {
-                //$.when(populateContacts()).done(function(done) {
+            $.when(createContact(fname, lname, email, '')).done(function (status) {
+                if (status.url) {
+                    //$.when(populateContacts()).done(function(done) {
                     //if(done) {
-                        alert('Collaborator has been added.');
-                        $('.js-all-contacts').each(function() {
-                            $(this).append('<option value="'+ status.url +'">' + lname + ', ' + fname + '</option>');
-                        });
-                        parent.closest('.js-contact-section').find('select').val(status.url)
-                                                            .addClass('js-input');
-                        parent.addClass('hide').removeClass('js-input');
+                    alert('Collaborator has been added.');
+                    $('.js-all-contacts').each(function () {
+                        $(this).append('<option value="' + status.url + '">' + lname + ', ' + fname + '</option>');
+                    });
+                    parent.closest('.js-contact-section').find('select').val(status.url)
+                        .addClass('js-input');
+                    parent.addClass('hide').removeClass('js-input');
                     //}
-                //});
+                    //});
 
-            }
-            else {
-                var errorMsg = '';
-                for(var obj in status.responseJSON) {
-                    errorMsg += status.responseJSON[obj] + '\n';
+                } else {
+                    var errorMsg = '';
+                    for (var obj in status.responseJSON) {
+                        errorMsg += status.responseJSON[obj] + '\n';
+                    }
+                    alert(errorMsg);
                 }
-                alert(errorMsg);
-            }
-        });
+            });
 
-        }
-        else {
+        } else {
             alert('Please enter fist and last name, and email.');
         }
 
     });
 
-    $('body').on('click', '.js-get-datasets', function(event) {
+    $('body').on('click', '.js-get-datasets', function (event) {
         event.preventDefault();
 
     });
 
-    $('body').on('click', '.js-del-param', function(event) {
+    $('body').on('click', '.js-del-param', function (event) {
         $(this).closest('section').remove();
     });
 
-    $('body').on('click', '.js-sort-header', function() {
+    $('body').on('click', '.js-sort-header', function () {
         var newSortField = $(this).attr('data-sort');
-        if(newSortField == sortField) {
+        if (newSortField == sortField) {
             sortReverse = !sortReverse;
-        }
-        else {
+        } else {
             sortField = newSortField;
         }
 
@@ -1058,196 +1004,179 @@ $(document).ready(function(){
         $('.js-sort-icon.sort-up').addClass('hide');
         $('.js-sort-icon.sort-down').addClass('hide');
 
-        if(sortReverse) {
+        if (sortReverse) {
             $(this).find('.sort-down').removeClass('hide');
             $(this).find('.sort-up').addClass('hide');
             $(this).find('.unsorted').addClass('hide');
-        }
-        else {
+        } else {
             $(this).find('.sort-up').removeClass('hide');
             $(this).find('.sort-down').addClass('hide');
             $(this).find('.unsorted').addClass('hide');
         }
-        if(dataObj.approvedDatasets) {
+        if (dataObj.approvedDatasets) {
             dataObj.approvedDatasets.sort(sortByField);
             showApprovedDatasets();
         }
-        if(dataObj.drafts) {
+        if (dataObj.drafts) {
             dataObj.drafts.sort(sortByField);
             showDrafts();
         }
 
     });
 
-    $('body').on('click', '.js-view-dataset', function(event) {
+    $('body').on('click', '.js-view-dataset', function (event) {
         event.preventDefault();
         var index = $(this).attr('data-index');
         var url = $(this).attr('data-url');
 
-        $.when(getDataSets(url)).done(function(datasetObj) {
+        $.when(getDataSets(url)).done(function (datasetObj) {
             $('#myModal #modalTitle').html('')
-                                    .html('<div class="row js-title-row"><div class="columns small-12 medium-9">' + datasetObj['name'] + '</div><div class="columns small-12 medium-3 js-download-wrapper download-wrapper"></div></div>');
+                .html('<div class="row js-title-row"><div class="columns small-12 medium-9">' + datasetObj['name'] + '</div><div class="columns small-12 medium-3 js-download-wrapper download-wrapper"></div></div>');
             $('#myModal .js-modal-body').html('');
-                var inputString = '';
-                var citation = '';
+            var inputString = '';
+            var citation = '';
 
-                for(var prop in templates.datasets) {
-                    if(prop in datasetObj && templates.datasets[prop].sequence != -1 && datasetObj[prop] != null && datasetObj[prop].length > 0) {
+            for (var prop in templates.datasets) {
+                if (prop in datasetObj && templates.datasets[prop].sequence != -1 && datasetObj[prop] != null && datasetObj[prop].length > 0) {
 
-                            var substring = '<div class="row">';
+                    var substring = '<div class="row">';
 
-                            substring += '<div class="columns small-12 medium-3"><b class="js-param-name ' + prop + '">' + templates.datasets[prop].label + ( templates.datasets[prop].multiple ? '(s)' : '' ) + '</b>' + '&nbsp;</div>';
-                            if((prop == 'contact' || prop == 'sites' || prop == 'plots' || prop == 'authors' || prop == 'variables' ||  prop == 'cdiac_submission_contact') &&  datasetObj[prop] && datasetObj[prop] != null) {
-                                if(prop == 'contact' || prop == 'authors' || prop == 'cdiac_submission_contact') {
-                                    if(Array.isArray(datasetObj[prop])) {
-                                        for(var q=0;q<datasetObj[prop].length; q++) {
-                                            for(var i=0;i<dataObj.contacts.length;i++) {
-                                                if(datasetObj[prop][q].indexOf(dataObj.contacts[i].url) != -1) {
-                                                    substring += '<div class="columns small-12 medium-9"><span class="js-param-val ' + prop + '">' +
-                                                        dataObj.contacts[i].first_name + ' ' +
-                                                        dataObj.contacts[i].last_name ;
-                                                    if(dataObj.contacts[i].email){
-                                                        substring += ' &lt; ' + dataObj.contacts[i].email +' &gt;';
-                                                    }
-                                                    substring +=  '</span></div>';
-                                                }
-
-                                                if(prop == 'authors' && datasetObj[prop][q].indexOf(dataObj.contacts[i].url) != -1) {
-                                                    citation += dataObj.contacts[i].first_name + ' ' + dataObj.contacts[i].last_name + ', ';
-                                                }
+                    substring += '<div class="columns small-12 medium-3"><b class="js-param-name ' + prop + '">' + templates.datasets[prop].label + (templates.datasets[prop].multiple ? '(s)' : '') + '</b>' + '&nbsp;</div>';
+                    if ((prop == 'contact' || prop == 'sites' || prop == 'plots' || prop == 'authors' || prop == 'variables' || prop == 'cdiac_submission_contact') && datasetObj[prop] && datasetObj[prop] != null) {
+                        if (prop == 'contact' || prop == 'authors' || prop == 'cdiac_submission_contact') {
+                            if (Array.isArray(datasetObj[prop])) {
+                                for (var q = 0; q < datasetObj[prop].length; q++) {
+                                    for (var i = 0; i < dataObj.contacts.length; i++) {
+                                        if (datasetObj[prop][q].indexOf(dataObj.contacts[i].url) != -1) {
+                                            substring += '<div class="columns small-12 medium-9"><span class="js-param-val ' + prop + '">' +
+                                                dataObj.contacts[i].first_name + ' ' +
+                                                dataObj.contacts[i].last_name;
+                                            if (dataObj.contacts[i].email) {
+                                                substring += ' &lt; ' + dataObj.contacts[i].email + ' &gt;';
                                             }
+                                            substring += '</span></div>';
                                         }
-                                    }
-                                    else {
-                                        for(var i=0;i<dataObj.contacts.length;i++) {
-                                            if(datasetObj[prop].indexOf(dataObj.contacts[i].url) != -1) {
-                                                substring += '<div class="columns small-12 medium-9"><span class="js-param-val ' + prop + '">' +
-                                                    dataObj.contacts[i].first_name + ' ' +
-                                                    dataObj.contacts[i].last_name ;
-                                                if(dataObj.contacts[i].email){
-                                                    substring += ' &lt; ' + dataObj.contacts[i].email +' &gt;';
-                                                }
-                                                substring +=  '</span></div>';
-                                            }
-                                        }
-                                    }
-                                    $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
 
+                                        if (prop == 'authors' && datasetObj[prop][q].indexOf(dataObj.contacts[i].url) != -1) {
+                                            citation += dataObj.contacts[i].first_name + ' ' + dataObj.contacts[i].last_name + ', ';
+                                        }
+                                    }
                                 }
-                                else if(prop == 'sites') {
-                                    for(var j=0;j<dataObj.sites.length;j++) {
-                                        if(datasetObj[prop].indexOf(dataObj.sites[j].url) != -1) {
-                                            substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + dataObj.sites[j].site_id + ': ' + dataObj.sites[j].name + '</span></div>';
-
+                            } else {
+                                for (var i = 0; i < dataObj.contacts.length; i++) {
+                                    if (datasetObj[prop].indexOf(dataObj.contacts[i].url) != -1) {
+                                        substring += '<div class="columns small-12 medium-9"><span class="js-param-val ' + prop + '">' +
+                                            dataObj.contacts[i].first_name + ' ' +
+                                            dataObj.contacts[i].last_name;
+                                        if (dataObj.contacts[i].email) {
+                                            substring += ' &lt; ' + dataObj.contacts[i].email + ' &gt;';
                                         }
-                                    }
-                                    $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
-                                }
-
-                                else if(prop == 'plots') {
-                                    for(var l=0;l<dataObj.plots.length;l++) {
-                                        if(datasetObj[prop].indexOf(dataObj.plots[l].url) != -1) {
-                                            substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + dataObj.plots[l].plot_id + ': ' + dataObj.plots[l].name + '</span></div>';
-
-                                        }
-                                    }
-                                    $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
-                                }
-
-                                else if(prop == 'variables') {
-                                    for(var m=0;m<dataObj.variables.length;m++) {
-                                        if(datasetObj[prop].indexOf(dataObj.variables[m].url) != -1) {
-                                            substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + dataObj.variables[m].name + '</span></div>';
-
-                                        }
-                                    }
-                                    $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
-                                }
-                            }
-                            else if(prop == 'access_level') {
-                                for(var k=0;k<templates.datasets.access_level.choices.length;k++) {
-                                    if(datasetObj[prop] == templates.datasets.access_level.choices[k].value) {
-                                        substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + templates.datasets.access_level.choices[k].display_name + '</span></div>';
-                                        $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
+                                        substring += '</span></div>';
                                     }
                                 }
                             }
-                            else if(prop == 'ngee_tropics_resources') {
-                                if(datasetObj[prop] == true) {
-                                    substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + 'Yes' + '</span></div>';
-                                    $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
-                                }
-                                else if(datasetObj[prop] == false) {
-                                    substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + 'No' + '</span></div>';
-                                    $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
-                                }
-                                else {
-                                    substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + '</span></div>';
-                                    $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
+                            $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
+
+                        } else if (prop == 'sites') {
+                            for (var j = 0; j < dataObj.sites.length; j++) {
+                                if (datasetObj[prop].indexOf(dataObj.sites[j].url) != -1) {
+                                    substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + dataObj.sites[j].site_id + ': ' + dataObj.sites[j].name + '</span></div>';
+
                                 }
                             }
-                            else if(prop == 'qaqc_status') {
-                                for(var n=0;n<templates.datasets.qaqc_status.choices.length;n++) {
-                                    if(datasetObj[prop] == templates.datasets.qaqc_status.choices[n].value) {
-                                        substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + templates.datasets.qaqc_status.choices[n].display_name + '</span></div>';
-                                        $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
-                                    }
+                            $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
+                        } else if (prop == 'plots') {
+                            for (var l = 0; l < dataObj.plots.length; l++) {
+                                if (datasetObj[prop].indexOf(dataObj.plots[l].url) != -1) {
+                                    substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + dataObj.plots[l].plot_id + ': ' + dataObj.plots[l].name + '</span></div>';
+
                                 }
                             }
-                            else if(prop == 'doi'){
-                                substring += '<div class="columns small-12 medium-9"><a href="' + (datasetObj[prop] == null ? '' : datasetObj[prop]) + '"><span class="js-param-val">' + (datasetObj[prop] == null ? '' : datasetObj[prop]) + '</span></a></div>';
+                            $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
+                        } else if (prop == 'variables') {
+                            for (var m = 0; m < dataObj.variables.length; m++) {
+                                if (datasetObj[prop].indexOf(dataObj.variables[m].url) != -1) {
+                                    substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + dataObj.variables[m].name + '</span></div>';
+
+                                }
+                            }
+                            $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
+                        }
+                    } else if (prop == 'access_level') {
+                        for (var k = 0; k < templates.datasets.access_level.choices.length; k++) {
+                            if (datasetObj[prop] == templates.datasets.access_level.choices[k].value) {
+                                substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + templates.datasets.access_level.choices[k].display_name + '</span></div>';
                                 $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
                             }
-                            else {
-                                if(prop == 'cdiac_submission_contact') {
-                                    substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + ($('.js-param-val.contact').html() ? $('.js-param-val.contact').html() : 'N/A') + '</span></div>';
-                                    $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
-                                }
-                                else {
-                                    substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + (datasetObj[prop] == null ? 'N/A' : datasetObj[prop]) + '</span></div>';
-                                    $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
-                                }
+                        }
+                    } else if (prop == 'ngee_tropics_resources') {
+                        if (datasetObj[prop] == true) {
+                            substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + 'Yes' + '</span></div>';
+                            $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
+                        } else if (datasetObj[prop] == false) {
+                            substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + 'No' + '</span></div>';
+                            $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
+                        } else {
+                            substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + '</span></div>';
+                            $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
+                        }
+                    } else if (prop == 'qaqc_status') {
+                        for (var n = 0; n < templates.datasets.qaqc_status.choices.length; n++) {
+                            if (datasetObj[prop] == templates.datasets.qaqc_status.choices[n].value) {
+                                substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + templates.datasets.qaqc_status.choices[n].display_name + '</span></div>';
+                                $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
                             }
-
-
-
+                        }
+                    } else if (prop == 'doi') {
+                        substring += '<div class="columns small-12 medium-9"><a href="' + (datasetObj[prop] == null ? '' : datasetObj[prop]) + '"><span class="js-param-val">' + (datasetObj[prop] == null ? '' : datasetObj[prop]) + '</span></a></div>';
+                        $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
+                    } else {
+                        if (prop == 'cdiac_submission_contact') {
+                            substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + ($('.js-param-val.contact').html() ? $('.js-param-val.contact').html() : 'N/A') + '</span></div>';
+                            $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
+                        } else {
+                            substring += '<div class="columns small-12 medium-9"><span class="js-param-val">' + (datasetObj[prop] == null ? 'N/A' : datasetObj[prop]) + '</span></div>';
+                            $('#myModal .js-modal-body').append($('</div><div/>').append(substring).addClass('js-dataset-row dataset-row'));
+                        }
                     }
 
-                }
-                if(citation.length >= 2) {
-                    citation = citation.substring(0, citation.length - 2);
 
                 }
-                if (datasetObj['submission_date'])
-                    citation += '(' +datasetObj['submission_date'].substring(0,4)+'). ';
 
-                citation += datasetObj['name'] + '. ' + 'NGEE Tropics Data Collection. Accessed at <a href="' + datasetObj['doi'] + '">' + datasetObj['doi'] + '</a>.';
-                if(! datasetObj['doi']) {
-                    citation = 'Citation information not available currently. Contact dataset author(s) for citation or acknowledgement text.';
-                }
-                $('#myModal .js-modal-body').append('<div class="row js-dataset-row dataset-row"><div class="columns small-12 medium-3"><b class="js-param-name">Dataset Citation</b></div>'
-                                             + '<div class="columns small-12 medium-9">' + citation + '</div></div>');
+            }
+            if (citation.length >= 2) {
+                citation = citation.substring(0, citation.length - 2);
 
-                $('#myModal .js-save-btn').attr('data-url', datasetObj['url'])
-                                        .attr('data-id', datasetObj['data_set_id']);
+            }
+            if (datasetObj['submission_date'])
+                citation += '(' + datasetObj['submission_date'].substring(0, 4) + '). ';
 
-                if(dataObj.datasets[index]['archive']) {
-                    $('.js-file-download-btn').attr('data-url', datasetObj['url'])
-                                        .attr('data-archive', datasetObj['archive'])
-                                        .attr('href', datasetObj['archive'])
-                                        //.clone()
-                                        //.appendTo('.js-download-wrapper')
-                                        .addClass('pull-right');
-                    $('.js-download-wrapper').removeClass('hide');
-                }
+            citation += datasetObj['name'] + '. ' + 'NGEE Tropics Data Collection. Accessed at <a href="' + datasetObj['doi'] + '">' + datasetObj['doi'] + '</a>.';
+            if (!datasetObj['doi']) {
+                citation = 'Citation information not available currently. Contact dataset author(s) for citation or acknowledgement text.';
+            }
+            $('#myModal .js-modal-body').append('<div class="row js-dataset-row dataset-row"><div class="columns small-12 medium-3"><b class="js-param-name">Dataset Citation</b></div>'
+                + '<div class="columns small-12 medium-9">' + citation + '</div></div>');
+
+            $('#myModal .js-save-btn').attr('data-url', datasetObj['url'])
+                .attr('data-id', datasetObj['data_set_id']);
+
+            if (dataObj.datasets[index]['archive']) {
+                $('.js-file-download-btn').attr('data-url', datasetObj['url'])
+                    .attr('data-archive', datasetObj['archive'])
+                    .attr('href', datasetObj['archive'])
+                    //.clone()
+                    //.appendTo('.js-download-wrapper')
+                    .addClass('pull-right');
+                $('.js-download-wrapper').removeClass('hide');
+            }
 
             //}
-            if(!datasetObj.archive) {
+            if (!datasetObj.archive) {
                 //$('.js-data-policy-check').addClass('hide');
                 $('.js-data-policy-text').addClass('hide');
                 $('.js-file-download-btn').addClass('hide');
-            }
-            else {
+            } else {
                 //$('.js-data-policy-check').removeClass('hide');
                 $('.js-data-policy-text').removeClass('hide');
                 $('.js-file-download-btn').removeClass('hide');
@@ -1259,74 +1188,73 @@ $(document).ready(function(){
 
     });
 
-    $('body').on('click', '.js-data-policy-check', function() {
-        if($('.js-data-policy-check').prop('checked')) {
+    $('body').on('click', '.js-data-policy-check', function () {
+        if ($('.js-data-policy-check').prop('checked')) {
             $('.js-file-download-btn').removeClass('disabled');
-        }
-        else {
+        } else {
             $('.js-file-download-btn').addClass('disabled');
         }
     });
 
-    $('body').on('click', '.js-close-modal', function(event) {
+    $('body').on('click', '.js-close-modal', function (event) {
         event.preventDefault();
         popup.close();
     });
 
-    $('body').on('click', '.js-get-sites', function(event) {
+    $('body').on('click', '.js-get-sites', function (event) {
         event.preventDefault();
-        $.when(getSites()).then(function(data) {
+        $.when(getSites()).then(function (data) {
             dataObj.sites = data;
             $('.js-text-dump').html('');
-            for(var i=0;i<data.length;i++) {
+            for (var i = 0; i < data.length; i++) {
                 $('.js-text-dump').append('Site Name: ' + (data[i].name ? data[i].name : 'NA') + '<br>')
-                                .append('ID: ' + (data[i].siteId ? data[i].siteId : 'NA') + '<br>')
-                                .append('Description: ' + (data[i].description ? data[i].description : 'NA') + '<br>')
-                                .append('Country: ' + (data[i].country ? data[i].country : 'NA') + '<br>')
-                                .append('State/Province: ' + (data[i].stateProvince ? data[i].stateProvince : 'NA') + '<br>')
-                                .append('UTC Offset: ' + (data[i].utcOffset ? data[i].utcOffset : 'NA') + '<br>')
-                                .append('Latitude: ' + (data[i].locationLatitude ? data[i].locationLatitude : 'NA') + '<br>')
-                                .append('Longitude: ' + (data[i].locationLongitude ? data[i].locationLongitude : 'NA') + '<br>')
-                                .append('Elevation: ' + (data[i].locationElevation ? data[i].locationElevation : 'NA') + '<br>')
-                                .append('Location URL: ' + (data[i].locationMapUrl ? data[i].locationMapUrl : 'NA') + '<br>')
-                                .append('Bounding Box Ul Lat: ' + (data[i].locationBoundingBoxUlLatitude ? data[i].locationBoundingBoxUlLatitude : 'NA') + '<br>')
-                                .append('Bounding Box Ul Lon: ' + (data[i].locationBoundingBoxUlLongitude ? data[i].locationBoundingBoxUlLongitude : 'NA') + '<br>')
-                                .append('Bounding Box Lr Lat: ' + (data[i].locationBoundingBoxLrLatitude ? data[i].locationBoundingBoxLrLatitude : 'NA') + '<br>')
-                                .append('Bounding Box Lr Lat: ' + (data[i].locationBoundingBoxLrLongitude ? data[i].locationBoundingBoxLrLongitude : 'NA') + '<br>')
-                                .append('Site URL: ' + (data[i].siteUrls ? data[i].siteUrls : 'NA') + '<br>')
-                                .append('Submission Date: ' + (data[i].submissionDate ? data[i].submissionDate : 'NA') + '<br>')
-                                .append('Submission: ' + (data[i].submission ? data[i].submission : 'NA') + '<br><br>');
+                    .append('ID: ' + (data[i].siteId ? data[i].siteId : 'NA') + '<br>')
+                    .append('Description: ' + (data[i].description ? data[i].description : 'NA') + '<br>')
+                    .append('Country: ' + (data[i].country ? data[i].country : 'NA') + '<br>')
+                    .append('State/Province: ' + (data[i].stateProvince ? data[i].stateProvince : 'NA') + '<br>')
+                    .append('UTC Offset: ' + (data[i].utcOffset ? data[i].utcOffset : 'NA') + '<br>')
+                    .append('Latitude: ' + (data[i].locationLatitude ? data[i].locationLatitude : 'NA') + '<br>')
+                    .append('Longitude: ' + (data[i].locationLongitude ? data[i].locationLongitude : 'NA') + '<br>')
+                    .append('Elevation: ' + (data[i].locationElevation ? data[i].locationElevation : 'NA') + '<br>')
+                    .append('Location URL: ' + (data[i].locationMapUrl ? data[i].locationMapUrl : 'NA') + '<br>')
+                    .append('Bounding Box Ul Lat: ' + (data[i].locationBoundingBoxUlLatitude ? data[i].locationBoundingBoxUlLatitude : 'NA') + '<br>')
+                    .append('Bounding Box Ul Lon: ' + (data[i].locationBoundingBoxUlLongitude ? data[i].locationBoundingBoxUlLongitude : 'NA') + '<br>')
+                    .append('Bounding Box Lr Lat: ' + (data[i].locationBoundingBoxLrLatitude ? data[i].locationBoundingBoxLrLatitude : 'NA') + '<br>')
+                    .append('Bounding Box Lr Lat: ' + (data[i].locationBoundingBoxLrLongitude ? data[i].locationBoundingBoxLrLongitude : 'NA') + '<br>')
+                    .append('Site URL: ' + (data[i].siteUrls ? data[i].siteUrls : 'NA') + '<br>')
+                    .append('Submission Date: ' + (data[i].submissionDate ? data[i].submissionDate : 'NA') + '<br>')
+                    .append('Submission: ' + (data[i].submission ? data[i].submission : 'NA') + '<br><br>');
             }
         });
     });
 
-    $('body').on('click', '.js-get-plots', function(event) {
+    $('body').on('click', '.js-get-plots', function (event) {
         event.preventDefault();
-        $.when(getPlots()).then(function(data) {
+        $.when(getPlots()).then(function (data) {
             dataObj.plots = data;
             $('.js-text-dump').html('');
-            for(var i=0;i<data.length;i++) {
+            for (var i = 0; i < data.length; i++) {
                 $('.js-text-dump').append('Plot ID: ' + (data[i].plotId ? data[i].plotId : 'NA') + '<br>')
-                                .append('Name: ' + (data[i].name ? data[i].name : 'NA') + '<br>')
-                                .append('Description: ' + (data[i].description ? data[i].description : 'NA') + '<br>')
-                                .append('Size: ' + (data[i].size ? data[i].size : 'NA') + '<br>')
-                                .append('Elevation: ' + (data[i].locationElevation ? data[i].locationElevation : 'NA') + '<br>')
-                                .append('KMZ URL: ' + (data[i].locationKmzUrl ? data[i].locationKmzUrl : 'NA') + '<br>')
-                                .append('Submission Date: ' + (data[i].submissionDate ? data[i].submissionDate : 'NA') + '<br>')
-                                .append('PI: ' + (data[i].pi ? data[i].pi : 'NA') + '<br>')
-                                .append('Site: ' + (data[i].site ? data[i].site : 'NA') + '<br>')
-                                .append('Submission: ' + (data[i].submission ? data[i].submission : 'NA') + '<br><br>');
+                    .append('Name: ' + (data[i].name ? data[i].name : 'NA') + '<br>')
+                    .append('Description: ' + (data[i].description ? data[i].description : 'NA') + '<br>')
+                    .append('Size: ' + (data[i].size ? data[i].size : 'NA') + '<br>')
+                    .append('Elevation: ' + (data[i].locationElevation ? data[i].locationElevation : 'NA') + '<br>')
+                    .append('KMZ URL: ' + (data[i].locationKmzUrl ? data[i].locationKmzUrl : 'NA') + '<br>')
+                    .append('Submission Date: ' + (data[i].submissionDate ? data[i].submissionDate : 'NA') + '<br>')
+                    .append('PI: ' + (data[i].pi ? data[i].pi : 'NA') + '<br>')
+                    .append('Site: ' + (data[i].site ? data[i].site : 'NA') + '<br>')
+                    .append('Submission: ' + (data[i].submission ? data[i].submission : 'NA') + '<br><br>');
 
             }
         });
     });
 
-    $('body').on('click', '.js-add-new', function(event) {
+    $('body').on('click', '.js-add-new', function (event) {
         event.preventDefault();
         var input = $(this).closest('.js-param').find('.js-multi-container').first().clone();
         $(input).val('')
             .prop('checked');
-        if(input.attr('data-list') == 'contacts') {
+        if (input.attr('data-list') == 'contacts') {
             input.find('.js-new-value').addClass('hide').removeClass('js-input');
             input.find('.js-first-name').val('');
             input.find('.js-last-name').val('');
@@ -1342,128 +1270,121 @@ function populateDatasets(filter, container) {
 }
 
 function createDraft(submissionObj, submitMode) {
-    if(submissionObj.submit) {
-        if(submitMode && !fileToUpload) {
+    if (submissionObj.submit) {
+        if (submitMode && !fileToUpload) {
             alert('Please upload an archive file in order to submit the dataset.');
-        }
-        else {
+        } else {
             $('.js-loading').removeClass('hide');
             delete submissionObj.submit;
-            $.when(createDataset(submissionObj)).done(function(statusObj) {
-                if(statusObj.result || statusObj.status == '0') {
-                    if(fileToUpload) {
+            $.when(createDataset(submissionObj)).done(function (statusObj) {
+                if (statusObj.result || statusObj.status == '0') {
+                    if (fileToUpload) {
 
-                            var csrftoken = getCookie('csrftoken');
-                            $('.js-loading').removeClass('hide');
-                            $.ajaxSetup({
-                                beforeSend: function(xhr, settings) {
-                                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                        var csrftoken = getCookie('csrftoken');
+                        $('.js-loading').removeClass('hide');
+                        $.ajaxSetup({
+                            beforeSend: function (xhr, settings) {
+                                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                            }
+                        });
+
+                        var data = {
+                            attachment: fileToUpload
+                        };
+
+                        var formData = new FormData();
+                        formData.append('attachment', fileToUpload);
+
+                        $.ajax({
+                            xhr: function () {
+
+                                var xhr = new window.XMLHttpRequest();
+                                xhr.filePointer = formData;
+                                xhr.upload.filePointer = formData;
+                                //Upload progress
+                                xhr.upload.addEventListener("progress", function (e, data) {
+
+                                    if (e.lengthComputable) {
+                                        var pc = parseInt(e.loaded / e.total * 100);
+                                        if (pc >= 100) {
+                                            //this.filePointer.spinner.parent().addClass('hide');
+                                            this.filePointer.progress = pc;
+                                            console.log(pc);
+                                        } else {
+                                            $('.js-progress-wrapper').removeClass('hide');
+                                            $('.js-progress').html(pc);
+                                            //this.filePointer.spinner.parent().removeClass('hide');
+                                            //this.filePointer.spinner.html(pc + '%');
+                                            //this.filePointer.progress = pc;
+                                        }
+                                    }
+                                }, false);
+
+                                xhr.addEventListener("progress", function (e, data) {
+
+                                    if (e.lengthComputable) {
+                                        var pc = parseInt(e.loaded / e.total * 100);
+                                        if (pc >= 100) {
+                                            //this.filePointer.spinner.parent().addClass('hide');
+                                            this.filePointer.progress = pc;
+                                            console.log(pc);
+                                        } else {
+                                            $('.js-progress-wrapper').removeClass('hide');
+                                            $('.js-progress').html(pc);
+                                            //this.filePointer.spinner.parent().removeClass('hide');
+                                            //this.filePointer.spinner.html(pc + '%');
+                                            //this.filePointer.progress = pc;
+                                        }
+                                    }
+                                }, false);
+                                return xhr;
+                            },
+                            method: "POST",
+                            contentType: false,
+                            data: formData,
+                            processData: false,
+                            url: statusObj.url + "upload/",
+                            success: function (data) {
+                                if (submitMode) {
+                                    $.when(submitDataset(statusObj.url)).done(function (submitStatus) {
+                                        if (submitStatus.result) {
+                                            alert(submitStatus.detail + '\n\n You will not be able to view this dataset until it is approved. \nPlease note: The screen will refresh after you click OK.');
+                                            $('.js-clear-form').trigger('click');
+                                            $('.js-clear-file').trigger('click');
+                                        } else {
+                                            handleFormErrors(submitStatus, "Dataset submission failed. Please check the fields and try again.");
+                                        }
+                                    });
+                                } else {
+                                    alert('Dataset has been created with the attached file.\nPlease note: The screen will refresh after you click OK.');
+                                    $('.js-clear-form').trigger('click');
+                                    $('.js-clear-file').trigger('click');
                                 }
-                            });
+                            },
 
-                            var data = {
-                                attachment: fileToUpload
-                            };
-
-                            var formData = new FormData();
-                            formData.append('attachment', fileToUpload);
-
-                            $.ajax({
-                                xhr: function() {
-
-                                    var xhr = new window.XMLHttpRequest();
-                                    xhr.filePointer = formData;
-                                    xhr.upload.filePointer = formData;
-                                    //Upload progress
-                                    xhr.upload.addEventListener("progress", function(e, data){
-
-                                        if (e.lengthComputable) {
-                                            var pc = parseInt(e.loaded / e.total * 100);
-                                            if(pc >= 100) {
-                                                //this.filePointer.spinner.parent().addClass('hide');
-                                                this.filePointer.progress = pc;
-                                                console.log(pc);
-                                            }
-                                            else {
-                                                $('.js-progress-wrapper').removeClass('hide');
-                                                $('.js-progress').html(pc);
-                                                //this.filePointer.spinner.parent().removeClass('hide');
-                                                //this.filePointer.spinner.html(pc + '%');
-                                                //this.filePointer.progress = pc;
-                                            }
-                                        }
-                                    }, false);
-
-                                    xhr.addEventListener("progress", function(e, data){
-
-                                        if (e.lengthComputable) {
-                                            var pc = parseInt(e.loaded / e.total * 100);
-                                            if(pc >= 100) {
-                                                //this.filePointer.spinner.parent().addClass('hide');
-                                                this.filePointer.progress = pc;
-                                                console.log(pc);
-                                            }
-                                            else {
-                                                $('.js-progress-wrapper').removeClass('hide');
-                                                $('.js-progress').html(pc);
-                                                //this.filePointer.spinner.parent().removeClass('hide');
-                                                //this.filePointer.spinner.html(pc + '%');
-                                                //this.filePointer.progress = pc;
-                                            }
-                                        }
-                                    }, false);
-                                    return xhr;
-                                },
-                                method: "POST",
-                                contentType: false,
-                                data: formData,
-                                processData: false,
-                                url: statusObj.url + "upload/",
-                                success: function(data) {
-                                    if(submitMode) {
-                                        $.when(submitDataset(statusObj.url)).done(function(submitStatus) {
-                                            if ( submitStatus.result ) {
-                                                alert(submitStatus.detail + '\n\n You will not be able to view this dataset until it is approved. \nPlease note: The screen will refresh after you click OK.');
-                                                $('.js-clear-form').trigger('click');
-                                                $('.js-clear-file').trigger('click');
-                                            }
-                                            else {
-                                                handleFormErrors(submitStatus, "Dataset submission failed. Please check the fields and try again.");
-                                            }
-                                        });
-                                    }
-                                    else {
-                                        alert('Dataset has been created with the attached file.\nPlease note: The screen will refresh after you click OK.');
-                                        $('.js-clear-form').trigger('click');
-                                        $('.js-clear-file').trigger('click');
-                                    }
-                                },
-
-                            fail: function(data) {
+                            fail: function (data) {
                                 var detailObj = JSON.parse(data.responseText);
                                 alert('[FAIL] The draft was created successfully but the file could not be uploaded: ' + data.detail);
                             },
 
-                            error: function(data, errorThrown) {
+                            error: function (data, errorThrown) {
                                 var detailObj = JSON.parse(data.responseText);
                                 alert('[ERROR] The draft was created successfully but the file could not be uploaded: ' + detailObj.detail);
                             },
 
-                            complete: function() {
+                            complete: function () {
                                 $('.js-loading').addClass('hide');
                             },
 
                         });
 
-                    }
-                    else {
+                    } else {
                         alert('Dataset has been created successfully. You can make further changes to it by going to Home > Edit Drafts.\nPlease note: The screen will refresh after you click OK.');
                         $('.js-clear-form').trigger('click');
                         $('.js-clear-file').trigger('click');
                         $('.js-loading').addClass('hide');
                     }
-                }
-                else {
+                } else {
                     handleFormErrors(statusObj, "There was an error creating the draft.");
                     $('.js-loading').addClass('hide');
                 }
@@ -1471,8 +1392,7 @@ function createDraft(submissionObj, submitMode) {
             });
         }
 
-    }
-    else {
+    } else {
         alert('Please fill all the required fields.');
         $('body').animate({
             scrollTop: $('.js-create-form').offset().top
@@ -1483,9 +1403,9 @@ function createDraft(submissionObj, submitMode) {
 function showDrafts() {
     var approvedCount = 0;
     $('.js-all-datasets table tbody').html('');
-    for(var i=0;i<dataObj.drafts.length;i++) {
+    for (var i = 0; i < dataObj.drafts.length; i++) {
 
-        if(dataObj.drafts[i].status == 0 || dataObj.drafts[i].status == 1) {
+        if (dataObj.drafts[i].status == 0 || dataObj.drafts[i].status == 1) {
             var tr = $('<tr/>');
             tr.append('<td>' + dataObj.drafts[i].data_set_id + '</td>');
             var tag = $('<td/><div/>').addClass('js-view-dataset dataset');
@@ -1496,40 +1416,44 @@ function showDrafts() {
                 .attr('data-url', dataObj.drafts[i].url)
                 .attr('data-index', i);
 
-            if($('.js-auth').attr('data-auth') == 'admin' || dataObj.drafts[i].status == 0) {
+            if ($('.js-auth').attr('data-auth') == 'admin' || dataObj.drafts[i].status == 0) {
                 tag.append('<button class="button js-edit-draft">Edit</button>');
             }
 
             tr.append(tag);
 
             var contact = false;
-            for(var j=0;j<dataObj.contacts.length;j++) {
-                if(dataObj.contacts[j].url.indexOf(dataObj.drafts[i].contact) != -1) {
+            for (var j = 0; j < dataObj.contacts.length; j++) {
+                if (dataObj.contacts[j].url.indexOf(dataObj.drafts[i].contact) != -1) {
                     contact = true;
                     tr.append('<td>' + dataObj.contacts[j].first_name + ' ' + dataObj.contacts[j].last_name + '</td>');
                 }
             }
 
-            if(!contact) {
+            if (!contact) {
                 tr.append('<td></td>');
             }
 
-            switch(dataObj.drafts[i].status) {
-                case "0": tr.append('<td>Draft</td>');
-                break;
+            switch (dataObj.drafts[i].status) {
+                case "0":
+                    tr.append('<td>Draft</td>');
+                    break;
 
-                case "1": tr.append('<td>Submitted</td>');
-                break;
+                case "1":
+                    tr.append('<td>Submitted</td>');
+                    break;
 
-                default: tr.append('<td></td>');
-                break;
-            };
+                default:
+                    tr.append('<td></td>');
+                    break;
+            }
+            ;
 
             tr.append('<td>' + new Date(dataObj.drafts[i].modified_date).toLocaleString() + '</td>');
 
             approvedCount++;
 
-            switch(dataObj.drafts[i].access_level) {
+            switch (dataObj.drafts[i].access_level) {
                 case '0':
                     tr.append('<td>Private</td>');
                     break;
@@ -1556,9 +1480,9 @@ function showDrafts() {
 function showApprovedDatasets() {
     var approvedCount = 0;
     $('.js-all-datasets table tbody').html('');
-    for(var i=0;i<dataObj.approvedDatasets.length;i++) {
+    for (var i = 0; i < dataObj.approvedDatasets.length; i++) {
 
-        if(dataObj.approvedDatasets[i].status == 2) {
+        if (dataObj.approvedDatasets[i].status == 2) {
             var tr = $('<tr/>');
             tr.append('<td>' + dataObj.approvedDatasets[i].data_set_id + '</td>');
             var tag = $('<td/><div/>').addClass('js-view-dataset dataset');
@@ -1569,31 +1493,36 @@ function showApprovedDatasets() {
 
             tr.append(tag);
 
-            for(var j=0;j<dataObj.contacts.length;j++) {
-                if(dataObj.contacts[j].url.indexOf(dataObj.approvedDatasets[i].contact) != -1) {
+            for (var j = 0; j < dataObj.contacts.length; j++) {
+                if (dataObj.contacts[j].url.indexOf(dataObj.approvedDatasets[i].contact) != -1) {
                     tr.append('<td>' + dataObj.contacts[j].first_name + ' ' + dataObj.contacts[j].last_name + '</td>');
                 }
             }
 
-            switch(dataObj.approvedDatasets[i].status) {
-                case "0": tr.append('<td>Draft</td>');
-                break;
+            switch (dataObj.approvedDatasets[i].status) {
+                case "0":
+                    tr.append('<td>Draft</td>');
+                    break;
 
-                case "1": tr.append('<td>Submitted</td>');
-                break;
+                case "1":
+                    tr.append('<td>Submitted</td>');
+                    break;
 
-                case "2": tr.append('<td>Approved</td>');
-                break;
+                case "2":
+                    tr.append('<td>Approved</td>');
+                    break;
 
-                default: tr.append('<td></td>');
-                break;
-            };
+                default:
+                    tr.append('<td></td>');
+                    break;
+            }
+            ;
 
             tr.append('<td>' + new Date(dataObj.approvedDatasets[i].modified_date).toLocaleString() + '</td>');
 
             approvedCount++;
 
-            switch(dataObj.approvedDatasets[i].access_level) {
+            switch (dataObj.approvedDatasets[i].access_level) {
                 case '0':
                     tr.append('<td>Private</td>');
                     break;
@@ -1616,23 +1545,23 @@ function showApprovedDatasets() {
 }
 
 function completeEdit(submissionObj, url, submitMode) {
-    if(!submissionObj['plots']) {
+    if (!submissionObj['plots']) {
         submissionObj['plots'] = [];
     }
 
-    if(!submissionObj['sites']) {
+    if (!submissionObj['sites']) {
         submissionObj['sites'] = [];
     }
 
-    $.when(editDataset(submissionObj, url)).done(function(data) {
-        if(data.result) {
+    $.when(editDataset(submissionObj, url)).done(function (data) {
+        if (data.result) {
 
-            if(fileToUpload) {
+            if (fileToUpload) {
 
                 var csrftoken = getCookie('csrftoken');
 
                 $.ajaxSetup({
-                    beforeSend: function(xhr, settings) {
+                    beforeSend: function (xhr, settings) {
                         xhr.setRequestHeader("X-CSRFToken", csrftoken);
                     }
                 });
@@ -1652,7 +1581,7 @@ function completeEdit(submissionObj, url, submitMode) {
                     data: formData,
                     processData: false,
                     url: url + "upload/",
-                    success: function(data) {
+                    success: function (data) {
 
                         alert('The dataset has been updated with the attached file.\nPlease note: The page will refresh now and take you back to the list of drafts.');
                         $('.js-clear-file').trigger('click');
@@ -1660,30 +1589,28 @@ function completeEdit(submissionObj, url, submitMode) {
 
                     },
 
-                    fail: function(data) {
+                    fail: function (data) {
                         var detailObj = JSON.parse(data.responseText);
                         alert('[FAIL] The dataset was updated successfully but the file could not be uploaded: ' + detailObj.detail);
                     },
 
-                    error: function(data, errorThrown) {
+                    error: function (data, errorThrown) {
                         var detailObj = JSON.parse(data.responseText);
-                        alert('[ERROR] The dataset was updated successfully but the file could not be uploaded: ' +  detailObj.detail);
+                        alert('[ERROR] The dataset was updated successfully but the file could not be uploaded: ' + detailObj.detail);
                     },
 
-                    complete: function() {
+                    complete: function () {
                         $('.js-loading').addClass('hide');
                     }
 
                 });
 
-            }
-            else {
+            } else {
                 alert('Dataset has been updated successfully.\nPlease note: The page will refresh now and take you back to the list of drafts.');
                 $('.js-clear-form').trigger('click');
                 $('.js-clear-file').trigger('click');
             }
-        }
-        else {
+        } else {
             handleFormErrors(data, "There was an error with the update.");
             $('.js-loading').addClass('hide');
         }
@@ -1694,52 +1621,46 @@ function completeEdit(submissionObj, url, submitMode) {
 function processForm(submissionObj, submitMode, editMode) {
     var params = $('.js-create-form .js-param');
 
-    if(editMode) {
+    if (editMode) {
         params = $('.js-edit-form .js-param');
     }
 
-    params.each(function() {
+    params.each(function () {
         var param = $(this).attr('data-param');
         var required = $(this).hasClass('required');
         var multi = $(this).hasClass('multi')
 
-        $(this).find('.js-input').each(function() {
-            if($(this).val() != null) {
-                if($(this).val().trim()) {
-                    if($(this).hasClass('js-new-value')) {
+        $(this).find('.js-input').each(function () {
+            if ($(this).val() != null) {
+                if ($(this).val().trim()) {
+                    if ($(this).hasClass('js-new-value')) {
                         ;
-                    }
-                    else if($(this).hasClass('js-boolean')) {
-                        if($(this).prop('checked') && $(this).val() == 'true') {
+                    } else if ($(this).hasClass('js-boolean')) {
+                        if ($(this).prop('checked') && $(this).val() == 'true') {
                             submissionObj[param] = true;
-                        }
-                        else if($(this).prop('checked') && $(this).val() == 'false') {
+                        } else if ($(this).prop('checked') && $(this).val() == 'false') {
                             submissionObj[param] = false;
                         }
 
-                        if($('.js-boolean:checked').length == 0 && submitMode) {
+                        if ($('.js-boolean:checked').length == 0 && submitMode) {
                             submissionObj.submit = false;
                             $(this).closest('.js-param').addClass('missing');
                         }
-                    }
-                    else if(multi) {
-                        if(!submissionObj[param]) {
+                    } else if (multi) {
+                        if (!submissionObj[param]) {
                             submissionObj[param] = [];
                         }
                         submissionObj[param].push($(this).val().trim());
-                    }
-                    else {
+                    } else {
                         submissionObj[param] = $(this).val().trim();
                     }
-                }
-                else if(editMode && !$(this).val().trim()) {
+                } else if (editMode && !$(this).val().trim()) {
 
-                    if(multi) {
-                        if(!submissionObj[param]) {
+                    if (multi) {
+                        if (!submissionObj[param]) {
                             submissionObj[param] = [];
                         }
-                    }
-                    else {
+                    } else {
                         submissionObj[param] = null;
                     }
 
@@ -1747,19 +1668,16 @@ function processForm(submissionObj, submitMode, editMode) {
                         submissionObj.submit = false;
                         $(this).closest('.js-param').addClass('missing');
                     }*/
-                }
-                else if(submitMode && required) {
-                    if($(this).hasClass('js-new-value') && submissionObj[param]) {
+                } else if (submitMode && required) {
+                    if ($(this).hasClass('js-new-value') && submissionObj[param]) {
                         ;
-                    }
-                    else {
+                    } else {
                         submissionObj.submit = false;
                         $(this).closest('.js-param').addClass('missing');
                     }
                 }
 
-            }
-            else if ($(this).val() == null && submitMode && required) {
+            } else if ($(this).val() == null && submitMode && required) {
                 submissionObj.submit = false;
                 $(this).closest('.js-param').addClass('missing');
             }
@@ -1767,8 +1685,8 @@ function processForm(submissionObj, submitMode, editMode) {
         });
     });
 
-    for(var prop in submissionObj) {
-        if(Array.isArray(submissionObj[prop])) {
+    for (var prop in submissionObj) {
+        if (Array.isArray(submissionObj[prop])) {
             submissionObj[prop] = dedupe(submissionObj[prop]);
         }
     }
@@ -1778,15 +1696,15 @@ function processForm(submissionObj, submitMode, editMode) {
 
 function populateContacts() {
     var deferObj = jQuery.Deferred();
-    $.when(getContacts()).done(function(contacts) {
+    $.when(getContacts()).done(function (contacts) {
         console.log(contacts);
         dataObj.contacts = contacts;
         var contactList = [];
         //$('.js-all-contacts').html('')
         //.append('<option selected disabled value="">Select</option>')
         $('.js-all-contacts').append('<option value="add-new" data-index="-1" class="add-new-option"> - Add Collaborator - </option>');
-        for(var i=0;i<contacts.length;i++) {
-            var option = $('<option value="'+ contacts[i].url +'" data-index="' + i + '">' + contacts[i].last_name + ', ' + contacts[i].first_name + '</option>');
+        for (var i = 0; i < contacts.length; i++) {
+            var option = $('<option value="' + contacts[i].url + '" data-index="' + i + '">' + contacts[i].last_name + ', ' + contacts[i].first_name + '</option>');
             $('.js-all-contacts').append(option);
         }
         return deferObj.resolve(true);
@@ -1839,88 +1757,87 @@ function populateContacts() {
 function createEditForm(templateType) {
     var formHTML = $('<div/>');
     var paramHTML = '';
-    for(var param in templates[templateType]) {
-        if(templates[templateType][param].read_only) {
+    for (var param in templates[templateType]) {
+        if (templates[templateType][param].read_only) {
             paramHTML = $('<input type="hidden">').addClass(param + (templates[templateType][param].required ? "required" : "") + ' js-param')
-                                                .val(templates[templateType][param].value)
-                                                .attr('data-param', param);
-        }
-        else {
+                .val(templates[templateType][param].value)
+                .attr('data-param', param);
+        } else {
             paramHTML = $('<div class="js-param ' + (templates[templateType][param].required ? ' required ' : '') + (templates[templateType][param].multiple ? ' multi ' : '') + ' param"></div>').addClass(param)
-                        .attr('data-param', param);
+                .attr('data-param', param);
             var label = templates[templateType][param].label;
 
-            if(templates[templateType][param].multiple) {
+            if (templates[templateType][param].multiple) {
                 label += '(s)';
             }
 
-            if(templates[templateType][param].required) {
+            if (templates[templateType][param].required) {
                 label += '<i class="required">*</i>';
             }
 
             var tooltip = '<b class="desc-tooltip js-tooltip" title="' + templates[templateType][param].description + '" > ?</b>';
 
-            paramHTML.append($('<span class="js-display-name display-name"></span>').html(label  + '&nbsp;&nbsp;' + tooltip));
-            switch(templates[templateType][param].type) {
+            paramHTML.append($('<span class="js-display-name display-name"></span>').html(label + '&nbsp;&nbsp;' + tooltip));
+            switch (templates[templateType][param].type) {
                 case "string":
-                var tag = $('.js-template' + '.' + templates[templateType][param].type).clone();
-                if(templates[templateType][param].max_length) {
-                    tag.attr('maxlength', templates[templateType][param].max_length);
-                }
-                tag.removeClass('js-template').addClass('js-input');
-                paramHTML.append(tag);
-                break;
+                    var tag = $('.js-template' + '.' + templates[templateType][param].type).clone();
+                    if (templates[templateType][param].max_length) {
+                        tag.attr('maxlength', templates[templateType][param].max_length);
+                    }
+                    tag.removeClass('js-template').addClass('js-input');
+                    paramHTML.append(tag);
+                    break;
 
                 case "date":
-                var tag = $('.js-template' + '.' + templates[templateType][param].type).clone();
-                tag.removeClass('js-template').addClass('js-input');
-                paramHTML.append(tag);
-                break;
+                    var tag = $('.js-template' + '.' + templates[templateType][param].type).clone();
+                    tag.removeClass('js-template').addClass('js-input');
+                    paramHTML.append(tag);
+                    break;
 
                 case "datetime":
-                var tag = $('.js-template' + '.' + templates[templateType][param].type).clone();
-                tag.removeClass('js-template').addClass('js-input');
-                paramHTML.append(tag);
-                break;
+                    var tag = $('.js-template' + '.' + templates[templateType][param].type).clone();
+                    tag.removeClass('js-template').addClass('js-input');
+                    paramHTML.append(tag);
+                    break;
 
                 case "boolean":
-                var tag =  $('.js-template' + '.' + templates[templateType][param].type).clone();
-                var d = new Date();
-                var n = d.getTime();
-                tag.find('.js-true').attr('id', 'true-' + n);
-                tag.find('.js-true-label').attr('for', 'true-' + n);
-                tag.find('.js-false').attr('id', 'false-' + n);
-                tag.find('.js-false-label').attr('for', 'false-' + n);
-                tag.removeClass('js-template');
-                paramHTML.append(tag);
-                break;
+                    var tag = $('.js-template' + '.' + templates[templateType][param].type).clone();
+                    var d = new Date();
+                    var n = d.getTime();
+                    tag.find('.js-true').attr('id', 'true-' + n);
+                    tag.find('.js-true-label').attr('for', 'true-' + n);
+                    tag.find('.js-false').attr('id', 'false-' + n);
+                    tag.find('.js-false-label').attr('for', 'false-' + n);
+                    tag.removeClass('js-template');
+                    paramHTML.append(tag);
+                    break;
 
                 case "choice":
-                var tag = $('.js-template' + '.' + templates[templateType][param].type).clone();
+                    var tag = $('.js-template' + '.' + templates[templateType][param].type).clone();
 
-                for (var choice in templates[templateType][param].choices) {
-                    var option = $('<option/>').val(templates[templateType][param].choices[choice].value)
-                                                .html(templates[templateType][param].choices[choice].display_name);
-                    tag.append(option);
-                }
-                tag.removeClass('js-template').addClass('js-input');
-                paramHTML.append(tag);
-                break;
+                    for (var choice in templates[templateType][param].choices) {
+                        var option = $('<option/>').val(templates[templateType][param].choices[choice].value)
+                            .html(templates[templateType][param].choices[choice].display_name);
+                        tag.append(option);
+                    }
+                    tag.removeClass('js-template').addClass('js-input');
+                    paramHTML.append(tag);
+                    break;
 
                 case "reference_list":
-                var list = templates[templateType][param]['list_name'];
-                //var tag = $();
-                console.log(list);
-                $('.js-ref-list[data-list="' + list + '"]').clone().removeClass('hide').appendTo(paramHTML);
-                break;
+                    var list = templates[templateType][param]['list_name'];
+                    //var tag = $();
+                    console.log(list);
+                    $('.js-ref-list[data-list="' + list + '"]').clone().removeClass('hide').appendTo(paramHTML);
+                    break;
 
                 default:
-                var tag = $('<textarea/>').addClass('js-input');
-                paramHTML.append(tag);
-                break;
+                    var tag = $('<textarea/>').addClass('js-input');
+                    paramHTML.append(tag);
+                    break;
             }
 
-            if(templates[templateType][param].multiple) {
+            if (templates[templateType][param].multiple) {
                 var multiBtn = $('.js-add-new').clone();
                 var delBtn = $('.js-del-param').clone();
                 multiBtn.attr('data-param', param);
@@ -1952,14 +1869,14 @@ function createEditForm(templateType) {
     });
 
     //$( document ).tooltip();
-    $('.js-tooltip').popover({trigger: "manual" , html: true, animation:false, placement: 'right'})
-    .on("mouseenter", function () {
-        var _this = this;
-        $(this).popover("show");
-        $(".popover").on("mouseleave", function () {
-            $(_this).popover('hide');
-        });
-    }).on("mouseleave", function () {
+    $('.js-tooltip').popover({trigger: "manual", html: true, animation: false, placement: 'right'})
+        .on("mouseenter", function () {
+            var _this = this;
+            $(this).popover("show");
+            $(".popover").on("mouseleave", function () {
+                $(_this).popover('hide');
+            });
+        }).on("mouseleave", function () {
         var _this = this;
         setTimeout(function () {
             if (!$(".popover:hover").length) {
@@ -1967,14 +1884,14 @@ function createEditForm(templateType) {
             }
         }, 300);
     });
-    $('.js-file-tooltip').popover({trigger: "manual" , html: true, animation:false, placement: 'top'})
-    .on("mouseenter", function () {
-        var _this = this;
-        $(this).popover("show");
-        $(".popover").on("mouseleave", function () {
-            $(_this).popover('hide');
-        });
-    }).on("mouseleave", function () {
+    $('.js-file-tooltip').popover({trigger: "manual", html: true, animation: false, placement: 'top'})
+        .on("mouseenter", function () {
+            var _this = this;
+            $(this).popover("show");
+            $(".popover").on("mouseleave", function () {
+                $(_this).popover('hide');
+            });
+        }).on("mouseleave", function () {
         var _this = this;
         setTimeout(function () {
             if (!$(".popover:hover").length) {
@@ -2008,7 +1925,7 @@ function createDataset(submissionObj) {
     var csrftoken = getCookie('csrftoken');
 
     $.ajaxSetup({
-        beforeSend: function(xhr, settings) {
+        beforeSend: function (xhr, settings) {
             xhr.setRequestHeader("X-CSRFToken", csrftoken);
         }
     });
@@ -2022,17 +1939,17 @@ function createDataset(submissionObj) {
         url: "api/v1/datasets/",
         dataType: "json",
         data: JSON.stringify(submissionObj),
-        success: function(data) {
+        success: function (data) {
             data.result = true;
             deferObj.resolve(data);
         },
 
-        fail: function(jqXHR, textStatus, errorThrown) {
+        fail: function (jqXHR, textStatus, errorThrown) {
             jqXHR.result = false;
             deferObj.resolve(jqXHR);
         },
 
-        error: function(jqXHR, textStatus, errorThrown) {
+        error: function (jqXHR, textStatus, errorThrown) {
             jqXHR.result = false;
             deferObj.resolve(jqXHR);
         },
@@ -2048,7 +1965,7 @@ function editDataset(submissionObj, url) {
     var csrftoken = getCookie('csrftoken');
 
     $.ajaxSetup({
-        beforeSend: function(xhr, settings) {
+        beforeSend: function (xhr, settings) {
             xhr.setRequestHeader("X-CSRFToken", csrftoken);
         }
     });
@@ -2062,17 +1979,17 @@ function editDataset(submissionObj, url) {
         url: url,
         dataType: "json",
         data: JSON.stringify(submissionObj),
-        success: function(data) {
+        success: function (data) {
             data.result = true;
             deferObj.resolve(data);
         },
 
-        fail: function(jqXHR, textStatus, errorThrown) {
+        fail: function (jqXHR, textStatus, errorThrown) {
             jqXHR.result = false;
             deferObj.resolve(jqXHR);
         },
 
-        error: function(jqXHR, textStatus, errorThrown) {
+        error: function (jqXHR, textStatus, errorThrown) {
             jqXHR.result = false;
             deferObj.resolve(jqXHR);
         },
@@ -2085,24 +2002,24 @@ function editDataset(submissionObj, url) {
 function processEditingForm(submissionObj, url) {
     var submitMode = true;
 
-    $('.js-edit-form .js-param.missing').each(function() {
+    $('.js-edit-form .js-param.missing').each(function () {
         $(this).removeClass('missing');
     });
 
     var entryCount = 0;
     //find all the contacts and authors first before processing others
-    if($('.js-new-value.js-input').length > 0) {
+    if ($('.js-new-value.js-input').length > 0) {
         var validEntries = true;
 
-        $('.js-new-value.js-input').each(function(index) {
-            if(!$(this).find('.js-first-name').val() || !$(this).find('.js-last-name').val()) {
+        $('.js-new-value.js-input').each(function (index) {
+            if (!$(this).find('.js-first-name').val() || !$(this).find('.js-last-name').val()) {
                 validEntries = false;
             }
         });
 
-        if(validEntries) {
+        if (validEntries) {
 
-            $('.js-edit-form .js-new-value.js-input').each(function(index) {
+            $('.js-edit-form .js-new-value.js-input').each(function (index) {
 
                 var param = $(this).closest('.js-param').attr('data-param');
 
@@ -2110,65 +2027,56 @@ function processEditingForm(submissionObj, url) {
                 var lname = $(this).find('.js-last-name').val();
                 var email = $(this).find('.js-email').val();
 
-                $.when(createContact(fname, lname, email, '')).done(function(status) {
+                $.when(createContact(fname, lname, email, '')).done(function (status) {
                     //console.log(status);
-                    if(status.url && entryCount == $('.js-new-value.js-input').length - 1) {
-                        if(!submissionObj[param] && param == 'authors') {
+                    if (status.url && entryCount == $('.js-new-value.js-input').length - 1) {
+                        if (!submissionObj[param] && param == 'authors') {
                             submissionObj[param] = [];
                             submissionObj[param].push(status.url);
-                        }
-                        else if(param == 'contact') {
+                        } else if (param == 'contact') {
                             submissionObj[param] = status.url;
-                        }
-                        else if(param == 'authors') {
+                        } else if (param == 'authors') {
                             submissionObj[param].push(status.url);
                         }
                         entryCount++;
                         submissionObj = processForm(submissionObj, submitMode, true);
-                        if(submissionObj.submit) {
+                        if (submissionObj.submit) {
                             delete submissionObj.submit;
-                            $.when(editDataset(submissionObj, url)).done(function(status) {
-                                if(status.result) {
-                                    $.when(submitDataset(url)).done(function(submitStatus) {
-                                        if(submitStatus.result && submitStatus.detail) {
+                            $.when(editDataset(submissionObj, url)).done(function (status) {
+                                if (status.result) {
+                                    $.when(submitDataset(url)).done(function (submitStatus) {
+                                        if (submitStatus.result && submitStatus.detail) {
                                             alert(submitStatus.detail + ' You will not be able to view this dataset until it is approved. \nPlease note: The screen will refresh after you click OK.');
                                             $('.js-clear-form').trigger('click');
                                             $('.js-clear-file').trigger('click');
-                                        }
-                                        else {
+                                        } else {
                                             handleFormErrors(submitStatus, "Dataset submission failed. Please check the fields and try again.");
                                         }
                                     });
-                                }
-                                else {
+                                } else {
                                     handleFormErrors(status, "There was an error with the update.");
                                 }
                             });
 
-                        }
-                        else {
+                        } else {
                             alert('Please check your entries and try again.');
                         }
-                    }
-                    else if(status.url) {
-                        if(!submissionObj[param] && param == 'authors') {
+                    } else if (status.url) {
+                        if (!submissionObj[param] && param == 'authors') {
                             submissionObj[param] = [];
                             submissionObj[param].push(status.url);
-                        }
-                        else if(param == 'contact') {
+                        } else if (param == 'contact') {
                             submissionObj[param] = status.url;
-                        }
-                        else if(param == 'authors') {
+                        } else if (param == 'authors') {
                             submissionObj[param].push(status.url);
                         }
                         entryCount++;
-                    }
-                    else {
+                    } else {
                         var responseStr = '';
-                        if(status.responseText) {
+                        if (status.responseText) {
 
                             var response = JSON.parse(status.responseText);
-                            for(var prop in response) {
+                            for (var prop in response) {
                                 responseStr += prop + ': ' + response[prop] + '\n';
                             }
                         }
@@ -2177,35 +2085,29 @@ function processEditingForm(submissionObj, url) {
                 });
 
             });
-        }
-
-        else {
+        } else {
             alert('Please enter first and last names, and email for all new contacts/authors.');
         }
-    }
-    else {
+    } else {
         submissionObj = processForm(submissionObj, submitMode, true);
-        if(submissionObj.submit) {
+        if (submissionObj.submit) {
             delete submissionObj.submit;
-            $.when(editDataset(submissionObj, url)).done(function(status) {
-                if(status.result) {
-                    $.when(submitDataset(url)).done(function(submitStatus) {
-                        if(submitStatus.result && submitStatus.detail) {
+            $.when(editDataset(submissionObj, url)).done(function (status) {
+                if (status.result) {
+                    $.when(submitDataset(url)).done(function (submitStatus) {
+                        if (submitStatus.result && submitStatus.detail) {
                             alert(submitStatus.detail + ' You will not be able to view this dataset until it is approved. \nPlease note: The screen will refresh after you click OK.');
                             $('.js-clear-form').trigger('click');
                             $('.js-clear-file').trigger('click');
-                        }
-                        else {
+                        } else {
                             handleFormErrors(submitStatus, "Dataset submission failed. Please check the fields and try again.");
                         }
                     });
-                }
-                else {
+                } else {
                     handleFormErrors(status, "There was an error with the update.");
                 }
             });
-        }
-        else {
+        } else {
             alert('Please fill in all the required fields.');
             $('body').animate({
                 scrollTop: $('.js-edit-form').offset().top
@@ -2216,14 +2118,16 @@ function processEditingForm(submissionObj, url) {
 
 function createContact(fname, lname, email, institute) {
     var deferObj = jQuery.Deferred();
-    var data = { "first_name": fname,
+    var data = {
+        "first_name": fname,
         "last_name": lname,
         "email": email,
-        "institution_affiliation": institute };
+        "institution_affiliation": institute
+    };
     var csrftoken = getCookie('csrftoken');
 
     $.ajaxSetup({
-        beforeSend: function(xhr, settings) {
+        beforeSend: function (xhr, settings) {
             xhr.setRequestHeader("X-CSRFToken", csrftoken);
         }
     });
@@ -2238,17 +2142,17 @@ function createContact(fname, lname, email, institute) {
         url: "api/v1/people/",
         dataType: "json",
         data: JSON.stringify(data),
-        success: function(data) {
+        success: function (data) {
             data.result = true;
             deferObj.resolve(data);
         },
 
-        fail: function(jqXHR, textStatus, errorThrown) {
+        fail: function (jqXHR, textStatus, errorThrown) {
             jqXHR.result = false;
             deferObj.resolve(jqXHR);
         },
 
-        error: function(jqXHR, textStatus, errorThrown) {
+        error: function (jqXHR, textStatus, errorThrown) {
             jqXHR.result = false;
             deferObj.resolve(jqXHR);
         },
@@ -2264,17 +2168,17 @@ function getDataSets(url) {
         method: "GET",
         url: (url ? url : "api/v1/datasets/"),
         dataType: "json",
-        success: function(data) {
+        success: function (data) {
             data.result = true;
             deferObj.resolve(data);
         },
 
-        fail: function(jqXHR, textStatus, errorThrown) {
+        fail: function (jqXHR, textStatus, errorThrown) {
             jqXHR.result = false;
             deferObj.resolve(jqXHR);
         },
 
-        error: function(jqXHR, textStatus, errorThrown) {
+        error: function (jqXHR, textStatus, errorThrown) {
             jqXHR.result = false;
             deferObj.resolve(jqXHR);
         },
@@ -2290,17 +2194,17 @@ function getVariables() {
         method: "GET",
         url: "api/v1/variables/",
         dataType: "json",
-        success: function(data) {
+        success: function (data) {
             data.result = true;
             deferObj.resolve(data);
         },
 
-        fail: function(jqXHR, textStatus, errorThrown) {
+        fail: function (jqXHR, textStatus, errorThrown) {
             jqXHR.result = false;
             deferObj.resolve(jqXHR);
         },
 
-        error: function(jqXHR, textStatus, errorThrown) {
+        error: function (jqXHR, textStatus, errorThrown) {
             jqXHR.result = false;
             deferObj.resolve(jqXHR);
         },
@@ -2316,17 +2220,17 @@ function getSites() {
         method: "GET",
         url: "api/v1/sites/",
         dataType: "json",
-        success: function(data) {
+        success: function (data) {
             data.result = true;
             deferObj.resolve(data);
         },
 
-        fail: function(jqXHR, textStatus, errorThrown) {
+        fail: function (jqXHR, textStatus, errorThrown) {
             jqXHR.result = false;
             deferObj.resolve(jqXHR);
         },
 
-        error: function(jqXHR, textStatus, errorThrown) {
+        error: function (jqXHR, textStatus, errorThrown) {
             jqXHR.result = false;
             deferObj.resolve(jqXHR);
         },
@@ -2342,17 +2246,17 @@ function getContacts() {
         method: "GET",
         url: "api/v1/people/",
         dataType: "json",
-        success: function(data) {
+        success: function (data) {
             data.result = true;
             deferObj.resolve(data);
         },
 
-        fail: function(jqXHR, textStatus, errorThrown) {
+        fail: function (jqXHR, textStatus, errorThrown) {
             jqXHR.result = false;
             deferObj.resolve(jqXHR);
         },
 
-        error: function(jqXHR, textStatus, errorThrown) {
+        error: function (jqXHR, textStatus, errorThrown) {
             jqXHR.result = false;
             deferObj.resolve(jqXHR);
         },
@@ -2368,17 +2272,17 @@ function getPlots() {
         method: "GET",
         url: "api/v1/plots/",
         dataType: "json",
-        success: function(data) {
+        success: function (data) {
             data.result = true;
             deferObj.resolve(data);
         },
 
-        fail: function(jqXHR, textStatus, errorThrown) {
+        fail: function (jqXHR, textStatus, errorThrown) {
             jqXHR.result = false;
             deferObj.resolve(jqXHR);
         },
 
-        error: function(jqXHR, textStatus, errorThrown) {
+        error: function (jqXHR, textStatus, errorThrown) {
             jqXHR.result = false;
             deferObj.resolve(jqXHR);
         },
@@ -2398,14 +2302,14 @@ function getFileTypes() {
         },
         url: "api/v1/datasets/",
         dataType: "json",
-        success: function(data) {
+        success: function (data) {
             dataObj.filetypes = data.actions.upload.parameters.attachment.allowed_mime_types;
         },
-        fail: function(data) {
+        fail: function (data) {
             deferObj.resolve(false);
         },
 
-        error: function(data, errorThrown) {
+        error: function (data, errorThrown) {
             deferObj.resolve(false);
         },
     });
@@ -2420,17 +2324,17 @@ function getMetadata(templateType) {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
-        url: "api/v1/"+templateType+"/",
+        url: "api/v1/" + templateType + "/",
         dataType: "json",
-        success: function(data) {
+        success: function (data) {
             deferObj.resolve(data.actions.POST);
         },
 
-        fail: function(jqXHR, textStatus, errorThrown) {
+        fail: function (jqXHR, textStatus, errorThrown) {
             deferObj.resolve(data);
         },
 
-        error: function(jqXHR, textStatus, errorThrown) {
+        error: function (jqXHR, textStatus, errorThrown) {
             deferObj.resolve(data);
         },
 
@@ -2442,7 +2346,7 @@ function submitDataset(url) {
     var csrftoken = getCookie('csrftoken');
 
     $.ajaxSetup({
-        beforeSend: function(xhr, settings) {
+        beforeSend: function (xhr, settings) {
             xhr.setRequestHeader("X-CSRFToken", csrftoken);
         }
     });
@@ -2452,17 +2356,17 @@ function submitDataset(url) {
         method: "GET",
         url: url + 'submit/',
         dataType: "json",
-        success: function(data) {
+        success: function (data) {
             data.result = true;
             deferObj.resolve(data);
         },
 
-        fail: function(jqXHR, textStatus, errorThrown) {
+        fail: function (jqXHR, textStatus, errorThrown) {
             jqXHR.result = false;
             deferObj.resolve(jqXHR);
         },
 
-        error: function(jqXHR, textStatus, errorThrown) {
+        error: function (jqXHR, textStatus, errorThrown) {
             jqXHR.result = false;
             deferObj.resolve(jqXHR);
         },
@@ -2482,7 +2386,7 @@ function handleFormErrors(httpResponse, errorPrefixMessage) {
     var responseStr = '';
 
     // if status 400 then collect the errors
-    if (httpResponse.status  === 400) {
+    if (httpResponse.status === 400) {
         if (httpResponse.responseText) {
 
             var response = JSON.parse(httpResponse.responseText);
@@ -2494,7 +2398,7 @@ function handleFormErrors(httpResponse, errorPrefixMessage) {
 
                         var field = response.missingRequiredFields[i];
                         responseStr += templates.datasets[field].label + ': Missing \n';
-                }
+                    }
                 else {
                     responseStr += templates.datasets[prop].label + ': ' + response[prop] + '\n';
                 }
