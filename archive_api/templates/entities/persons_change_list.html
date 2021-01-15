@@ -1,0 +1,9 @@
+{% extends 'admin/change_list.html' %}
+
+{% block object-tools %}
+    <a href="update-orcids/">Update ORCiDs</a> <br/>
+    Upload CSV file with headers (first_name, last_name, institution_affiliation, email, orcid). <br/>
+    The ORCiD will only be updated if a matching first, last, institution names and email are found.
+    <br />
+    {{ block.super }}
+{% endblock %}

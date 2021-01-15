@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 
 from archive_api.models import DataSet, Site, Plot, Person, MeasurementVariable
 from django.test import TestCase
@@ -95,6 +96,27 @@ class PersonTestCase(TestCase):
                                  institution_affiliation="FooBar")
         self.assertIsNotNone(foo)
         self.assertEqual(str(foo), "Cook, Jane - FooBar")
+
+    def test_update_orcid_fail(self):
+        """ Assert that the Persons throw validation errors """
+        foo = Person(first_name="Mary", last_name="Cook", email="mcook@foobar.com",
+                                  institution_affiliation="FooBar", orcid="Bad orcid")
+
+        with self.assertRaises(ValidationError):
+            # `full_clean` will raise a ValidationError
+            #   if any fields fail validation
+            if foo.full_clean():
+                foo.save()
+
+    def test_update_orcid_success(self):
+        """ Assert that the Persons throw validation errors """
+        foo = Person(first_name="Jane", last_name="Cook", email="mcook@foobar.com",
+                                  institution_affiliation="FooBar", orcid="https://orcid.org/0000-0000-0000-0000")
+
+        # `full_clean` will raise a ValidationError
+        #   if any fields fail validation
+        if foo.full_clean():
+            foo.save()
 
     def test_list(self):
         """Assert that all Persons were found"""

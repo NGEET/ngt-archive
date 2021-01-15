@@ -1,11 +1,15 @@
 import os
+import re
 
 import django.contrib.auth.models
 from django.conf import settings
 from django.contrib.auth.models import Group
+from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
+from django.core.validators import RegexValidator
 from django.db import models, transaction
 from django.utils.datetime_safe import datetime
+from django.utils.translation import gettext_lazy as _
 
 
 class DatasetArchiveStorage(FileSystemStorage):
@@ -129,6 +133,9 @@ class Person(models.Model):
     last_name = models.CharField(max_length=50, blank=True)
     email = models.EmailField(blank=True)
     institution_affiliation = models.CharField(max_length=100, blank=True)
+    orcid = models.CharField(max_length=40, blank=True, validators=[
+        RegexValidator("^https?://orcid.org/[0-9]{4}-?[0-9]{4}-?[0-9]{4}-?([0-9]{4}|[0-9]{3}X)(/)*$",
+                       'Enter a valid ORCiD (e.g. https://orcid.org/xxxx-xxxx-xxxx-xxxx)')])
     user_role = models.IntegerField(choices=PERSON_ROLE_CHOICES,
                                     null=True, blank=True)
     user = models.OneToOneField(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.CASCADE)

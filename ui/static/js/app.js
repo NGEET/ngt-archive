@@ -761,8 +761,9 @@ $(document).ready(function () {
                     var fname = $(this).find('.js-first-name').val();
                     var lname = $(this).find('.js-last-name').val();
                     var email = $(this).find('.js-email').val();
+                    var orcid = $(this).find('.js-orcid').val();
 
-                    $.when(createContact(fname, lname, email, '')).done(function (status) {
+                    $.when(createContact(fname, lname, email, '', orcid)).done(function(status) {
                         //console.log(status);
                         if (status.url && entryCount == $('.js-new-value.js-input').length - 1) {
                             if (!submissionObj[param] && param == 'authors') {
@@ -851,8 +852,9 @@ $(document).ready(function () {
                     var fname = $(this).find('.js-first-name').val();
                     var lname = $(this).find('.js-last-name').val();
                     var email = $(this).find('.js-email').val();
+                    var orcid = $(this).find('.js-orcid').val();
 
-                    $.when(createContact(fname, lname, '', '')).done(function (status) {
+                    $.when(createContact(fname, lname, '', '', orcid)).done(function(status) {
                         //console.log(status);
                         if (status.url && entryCount == $('.js-new-value.js-input').length - 1) {
                             if (!submissionObj[param] && param == 'authors') {
@@ -940,42 +942,34 @@ $(document).ready(function () {
 
     $('body').on('click', '.js-create-contact', function (event) {
         event.preventDefault();
-        /*var status = createContact($('.js-contact-fname').val(), $('.js-contact-lname').val(), $('.js-contact-email').val(), $('.js-contact-institute').val());
-        if(status) {
-            alert('Contact successfully created');
-        }
-        else {
-            alert('Fail');
-        }*/
         var parent = $(this).closest('.js-new-value');
         var fname = parent.find('.js-first-name').val().trim();
         var lname = parent.find('.js-last-name').val().trim();
         var email = parent.find('.js-email').val().trim();
+        var orcid = parent.find('.js-orcid').val().trim();
 
         if (fname && lname && email) {
 
-            $.when(createContact(fname, lname, email, '')).done(function (status) {
-                if (status.url) {
-                    //$.when(populateContacts()).done(function(done) {
-                    //if(done) {
-                    alert('Collaborator has been added.');
-                    $('.js-all-contacts').each(function () {
-                        $(this).append('<option value="' + status.url + '">' + lname + ', ' + fname + '</option>');
-                    });
-                    parent.closest('.js-contact-section').find('select').val(status.url)
-                        .addClass('js-input');
-                    parent.addClass('hide').removeClass('js-input');
-                    //}
-                    //});
+        $.when(createContact(fname, lname, email, '', orcid)).done(function(status) {
+            if(status.url) {
 
-                } else {
-                    var errorMsg = '';
-                    for (var obj in status.responseJSON) {
-                        errorMsg += status.responseJSON[obj] + '\n';
-                    }
-                    alert(errorMsg);
+                alert('Collaborator has been added.');
+                $('.js-all-contacts').each(function() {
+                    $(this).append('<option value="'+ status.url +'">' + lname + ', ' + fname + '</option>');
+                });
+                parent.closest('.js-contact-section').find('select').val(status.url)
+                                                    .addClass('js-input');
+                parent.addClass('hide').removeClass('js-input');
+
+
+            }
+            else {
+                var errorMsg = 'The following error(s) have occurred:\n\n';
+                for(var obj in status.responseJSON) {
+                    errorMsg += status.responseJSON[obj] + '\n';
                 }
-            });
+                alert(errorMsg)
+            }});
 
         } else {
             alert('Please enter fist and last name, and email.');
@@ -1259,6 +1253,7 @@ $(document).ready(function () {
             input.find('.js-first-name').val('');
             input.find('.js-last-name').val('');
             input.find('.js-email').val('');
+            input.find('.js-orcid').val('');
         }
         input.insertBefore(this);
     });
@@ -1699,56 +1694,17 @@ function populateContacts() {
     $.when(getContacts()).done(function (contacts) {
         console.log(contacts);
         dataObj.contacts = contacts;
-        var contactList = [];
-        //$('.js-all-contacts').html('')
-        //.append('<option selected disabled value="">Select</option>')
         $('.js-all-contacts').append('<option value="add-new" data-index="-1" class="add-new-option"> - Add Collaborator - </option>');
-        for (var i = 0; i < contacts.length; i++) {
-            var option = $('<option value="' + contacts[i].url + '" data-index="' + i + '">' + contacts[i].last_name + ', ' + contacts[i].first_name + '</option>');
+        for(var i=0;i<contacts.length;i++) {
+            var contactDisplay =  contacts[i].last_name + ', ' + contacts[i].first_name
+            if (contacts[i].orcid.length > 0) {
+                contactDisplay += " (" +contacts[i].orcid + ")";
+            }
+            var option = $('<option value="'+ contacts[i].url +'" data-index="' + i + '">' + contactDisplay + '</option>');
             $('.js-all-contacts').append(option);
         }
         return deferObj.resolve(true);
-        /* megha - uncomment this
-        for(var i=0;i<contacts.length;i++) {
-            var contact = $('.js-contact-list .js-contact.js-template').clone();
-            contact.find('label').html(contacts[i].last_name + ', ' + contacts[i].first_name);
-            contact.removeClass('js-template hide');
-            $('.js-contact-list').append(contact);
-        }
-        //var addNewInput = $('<div class="js-input js-new-value"><><input type="text" class="hide" placeholder="First Name">');
 
-        //addNewInput.insertAfter('.js-all-contacts');
-        /*for(var i=0;i<contacts.length;i++) {
-            contactList.push(contacts[i].first_name + ' ' + contacts[i].last_name);
-        }
-
-        $( ".js-contacts-widget" ).autocomplete({
-          source: contactList
-        });/*.autocomplete( "instance" )._renderItem = function( ul, item ) {
-          return $( "<li>" )
-            .append( "<div>" + item.first_name + " " + item.last_name + "</div>")
-            .appendTo( ul );
-            console.log('here');
-        };*/
-
-        /*$( ".js-contacts-widget" ).autocomplete({
-          minLength: 0,
-          source: contacts,
-          focus: function( event, ui ) {
-            $( ".js-contacts-widget" ).val( ui.item.first_name + ui.item.last_name );
-            return false;
-          },
-          select: function( event, ui ) {
-            $( ".js-contacts-widget" ).val( ui.item.first_name + ui.item.last_name );
-            $( ".js-contact-url" ).val(ui.item.url);
-            return false;
-          }
-        })
-        .autocomplete( "instance" )._renderItem = function( ul, item ) {
-          return $( "<li>" )
-            .append( "<div>" + item.first_name + " " + item.last_name + "</div>")
-            .appendTo( ul );
-        };*/
     });
 
     return deferObj.promise();
@@ -2026,8 +1982,9 @@ function processEditingForm(submissionObj, url) {
                 var fname = $(this).find('.js-first-name').val();
                 var lname = $(this).find('.js-last-name').val();
                 var email = $(this).find('.js-email').val();
+                var orcid = $(this).find('.js-orcid').val();
 
-                $.when(createContact(fname, lname, email, '')).done(function (status) {
+                $.when(createContact(fname, lname, email, '', orcid)).done(function(status) {
                     //console.log(status);
                     if (status.url && entryCount == $('.js-new-value.js-input').length - 1) {
                         if (!submissionObj[param] && param == 'authors') {
@@ -2116,14 +2073,14 @@ function processEditingForm(submissionObj, url) {
     }
 }
 
-function createContact(fname, lname, email, institute) {
+function createContact(fname, lname, email, institute, orcid) {
     var deferObj = jQuery.Deferred();
     var data = {
         "first_name": fname,
         "last_name": lname,
         "email": email,
-        "institution_affiliation": institute
-    };
+        "institution_affiliation": institute,
+        "orcid": orcid};
     var csrftoken = getCookie('csrftoken');
 
     $.ajaxSetup({

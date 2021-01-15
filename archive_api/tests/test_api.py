@@ -1110,7 +1110,7 @@ class ContactClientTestCase(APITestCase):
         response = self.client.get('/api/v1/people/2/')
         self.assertEqual(json.loads(response.content.decode('utf-8')),
                          {"url": "http://testserver/api/v1/people/2/", "first_name": "Luke",
-                          "last_name": "Cage", "email": "lcage@foobar.baz", "institution_affiliation": "POWER"})
+                          "last_name": "Cage", "email": "lcage@foobar.baz", "institution_affiliation": "POWER", "orcid": ""})
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_client_post(self):
@@ -1119,7 +1119,7 @@ class ContactClientTestCase(APITestCase):
                                     content_type='application/json')
         self.assertEqual(json.loads(response.content.decode('utf-8')),
                          {"url": "http://testserver/api/v1/people/7/", "first_name": "Killer", "last_name": "Frost",
-                          "email": "kfrost@earth2.baz", "institution_affiliation": "ZOOM"})
+                          "email": "kfrost@earth2.baz", "institution_affiliation": "ZOOM", "orcid": ""})
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
 
     def test_client_put(self):

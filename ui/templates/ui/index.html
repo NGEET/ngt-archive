@@ -7,10 +7,9 @@
         <link rel="stylesheet" href="static/stylesheets/foundation.css">
         <script type="text/javascript" src="static/js/jquery-2.1.4.min.js"></script>
         <script type="text/javascript" src="static/js/jquery-ui.js"></script>
-        <script type="text/javascript" src="static/js/app.js?v=202010"></script>
+        <script type="text/javascript" src="static/js/app.js?v=202101"></script>
         <link rel="stylesheet" type="text/css" href="static/stylesheets/style.css">
         <script type="text/javascript" src="static/js/foundation.js"></script>
-        <!--script type="text/javascript" src="static/js/foundation.reveal.js"></script-->
         <script type="text/javascript" src="static/js/what-input.js"></script>
         <link rel="stylesheet" type="text/css" href="static/js/jquery-ui/jquery-ui.css">
         <link rel="stylesheet" type="text/css" href="static/js/jquery-ui/jquery-ui.theme.css">
@@ -60,92 +59,6 @@
                     </div>
                 </section>
 
-                <!--form>
-                    <h4>Create a dataset</h4>
-                    <div class="small-12 medium-9">
-                        <label>Name
-                            <input class="js-dataset-name" type="text" placeholder="Dataset name">
-                        </label>
-                    </div>
-                    <div class="small-12 medium-9">
-                        <label>Description
-                            <textarea class="js-dataset-desc" placeholder="Dataset description"></textarea>
-                        </label>
-                    </div>
-                    <div class="small-12 medium-9 text-center">
-                        <button type="button" class="button small-10 medium-6 js-create-dataset">Create Dataset</button>
-                        <input type="reset" class="button secondary small-10 medium-6 js-clear-form" value="Clear form">
-                    </div>
-                </form-->
-                <!--form>
-                    <h4>Create a contact</h4>
-                    <div class="small-12 medium-6">
-                        <label>First Name
-                            <input class="js-contact-fname" type="text" placeholder="Contact first name">
-                        </label>
-                    </div>
-                    <div class="small-12 medium-6">
-                        <label>Last Name
-                            <input class="js-contact-lname" type="text" placeholder="Contact last name">
-                        </label>
-                    </div>
-                    <div class="small-12 medium-6">
-                        <label>Email
-                            <input class="js-contact-email" type="email" placeholder="Contact email">
-                        </label>
-                    </div>
-                    <div class="small-12 medium-6">
-                        <label>Institute
-                            <input class="js-contact-institute" type="text" placeholder="Contact institute">
-                        </label>
-                    </div>
-                    <div class="small-12 medium-6 text-center">
-                        <button type="button" class="button small-10 medium-6 js-create-contact">Create Dataset</button>
-                        <input type="reset" class="button secondary small-10 medium-6" value="Clear form">
-                    </div>
-                </form-->
-
-                <!--h4>Enter ID of the dataset you want to upload a file to</h4>
-                <div class="small-6">
-                <input type="text" name="" class="js-upload-dataset-id">
-                </div>
-                <button class="button js-file-upload-btn">Choose File to Upload</button>
-                <input type="file" name="" class="js-file-input-btn hide">
-
-                <div>
-                    <input type="text" class="searchable js-searchable js-contacts-widget" name="" placeholder="Type contact name to search">
-                    <span data-tooltip="737ro7-tooltip" aria-haspopup="true" class="has-tip" data-disable-hover="false" tabindex="1" title="dfgjkfd kjfdhgkjfd " aria-describedby="q5hp54-tooltip" data-yeti-box="q5hp54-tooltip" data-toggle="q5hp54-tooltip" data-resize="q5hp54-tooltip" style="
-                        margin-bottom: 100px;
-                        background-color: #3f8fd4;
-                        color: #fff;
-                        width: 32px;
-                        text-align: center;
-                        border-radius: 64px;
-                        height: 32px;
-                        line-height: 32px;
-                    ">?</span>
-
-                </div-->
-
-                <!--h4>
-                    View
-                </h4>
-                <button class="button js-get-datasets">Datasets</button>
-                <button class="button js-get-plots">Plots</button>
-                <button class="button js-get-vars">Variables</button>
-                <button class="button js-get-contacts">Contacts</button-->
-                <!--button class="button js-get-sites">Sites</button-->
-                <!--div class="small-12 medium-6">
-                    <label>Description
-                        <textarea class="js-text-dump" placeholder="Dataset description"></textarea>
-                    </label>
-                </div>
-                <code class="js-text-dump small-12 medium-9"></code>
-
-                <section class="js-datasets">
-                </section-->
-
-                <!--br><br-->
                 <section class="js-view view-dataset-view hide" data-view="view">
                     <h4><span class="js-count"></span> Approved Datasets</h4>
                     <div class="all-datasets js-all-datasets">
@@ -389,25 +302,16 @@
                             <div class="columns small-6 contact-wrapper">
                                 <input class="js-email" type="text" name="" placeholder="Email">
                             </div>
+                            <div class="columns small-6 contact-wrapper">
+                                <input class="js-orcid" type="text" name="" placeholder="ORCiD (e.g. https://orcid.org/xxxx-xxxx-xxxx-xxxx)">
+                            </div>
                             <button class="button js-create-contact">Add to Collaborators</button>
                         </div>
                     </section>
-                    <!--section class="contact-section js-contact-section hide js-ref-list" data-list="contacts">
-                        <input type="text" class="searchable js-searchable js-contacts-widget" name="" placeholder="Type contact name to search">
-                        <input type="hidden" class="js-input js-contact-url">
-                    </section-->
                     <section class="plot-section js-site-section hide js-ref-list js-multi-container" data-list="plots">
                         <select class="js-all-plots all-plots js-input ">
                             <option selected disabled value="">Select plot</option>
                         </select>
-                        <!--div class="js-plot-info hide">
-                            <section class="js-plot-params columns small-12">
-
-                            </section>
-                            <div class="columns small-12">
-                                <button class="js-view-plot-btn button">View more information for <span class="js-plot-id"></span></button>
-                            </div>
-                        </div-->
                     </section>
                     <section class="var-section js-var-section hide js-ref-list js-multi-container" data-list="variables">
                         <select class="js-all-vars all-vars js-input">
@@ -419,12 +323,6 @@
                     <div class="columns small-12 large-6">
                         <img src="static/img/us-department-logo.png">
                     </div>
-                    <!--div class="columns small-12 large-6 end text-right">
-                        <p class="text-right">&copy; 2017 NGEE Tropics</p>
-                        <a class="float-right" href="https://drive.google.com/file/d/0B5RSGI83Og11cVlGbWcxeW5LQjg/view">Data Policy</a>
-                        <br>
-                        <a href="https://docs.google.com/document/d/14idE53T_HyE5a9jaIGcdnW1zvg6WwT9bBY9aF7BfE3c/edit">Help and Support</a>
-                    </div-->
                 </footer>
             </article>
             <article class="error-article js-error-article hide">
