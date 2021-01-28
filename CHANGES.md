@@ -1,5 +1,19 @@
 # NGEE Tropics Archive Releases
 
+## v2.2.0
+Enable collection of ORCiD for People in the database. Also,
+improves handling of errors in Dataset edit form. 
+
+Enables collection of ORCiD for Person records.
+    - Enables orcid management in API and UI
+    - Enhances Person Admin UI
+         + download csv of all Person records
+         + batch update orcids for Person records via uploaded csv
+
+
++ Implements #337 - Collect ORCiDs for Users
++ Fixes #59 - Dataset UI does not handle HTTP 500 errors
+
 ## v2.1.0
 Usability and bug fixes as well as an enhancement that enables
 programmatic access to the archive web service API using 
