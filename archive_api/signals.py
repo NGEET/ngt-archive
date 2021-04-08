@@ -139,7 +139,7 @@ Thanks for submitting your data to the NGEE Tropics Archive!
 
 Sincerely
 The NGEE Tropics Archive Team
-""".format(**{"fullname": instance.created_by.get_full_name(), "dataset_id": instance.data_set_id(),
+""".format(**{"fullname": instance.managed_by.get_full_name(), "dataset_id": instance.data_set_id(),
               "dataset_name": dataset_name, "root_url": root_url, "ngeet_team":ngeet_team})
         elif original_status == permissions.DRAFT and instance.status == permissions.SUBMITTED:
             content = """Dear {fullname},
@@ -176,7 +176,7 @@ The NGEE Tropics Archive Team
             pass  # do nothing for now
 
         if content:
-            content = content.format(**{"fullname": instance.created_by.get_full_name(), "dataset_id": instance.data_set_id(),
+            content = content.format(**{"fullname": instance.managed_by.get_full_name(), "dataset_id": instance.data_set_id(),
                 "dataset_name": instance.name, "root_url": root_url, "ngeet_team":ngeet_team, "created_date":instance.created_date})
 
     if content:
@@ -185,7 +185,7 @@ The NGEE Tropics Archive Team
                                                 archive_api.models.STATUS_CHOICES[int(instance.status)][1],
                                                            instance.data_set_id()),
             body=content,
-            to=[instance.created_by.email],
+            to=[instance.managed_by.email],
             cc=get_setting("EMAIL_NGEET_TEAM"),
             reply_to=get_setting("EMAIL_NGEET_TEAM")).send()
 

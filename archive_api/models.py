@@ -253,7 +253,7 @@ class DataSet(models.Model):
     publication_date = models.DateField(blank=True, null=True)
 
     # Owner is the person who created the dataset
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, editable=False, related_name='+', on_delete=models.CASCADE)
+    managed_by = models.ForeignKey(settings.AUTH_USER_MODEL, editable=True, related_name='+', on_delete=models.CASCADE)
     created_date = models.DateTimeField(editable=False, auto_now_add=True)
     modified_by = models.ForeignKey(settings.AUTH_USER_MODEL, editable=False, related_name='+', on_delete=models.CASCADE)
     modified_date = models.DateTimeField(editable=False, auto_now=True)

@@ -63,7 +63,7 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
         DataSet serializer that converts models.DataSet
 
     """
-    created_by = serializers.ReadOnlyField(source='created_by.username')
+    managed_by = serializers.ReadOnlyField(source='managed_by.username')
     modified_by = serializers.ReadOnlyField(source='modified_by.username')
     archive_filename = serializers.SerializerMethodField()
     submission_date = serializers.ReadOnlyField()
@@ -125,10 +125,10 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
                   'access_level', 'additional_access_information', 'originating_institution',
                   'submission_date', 'contact', 'sites', 'authors', 'plots', 'variables', 'archive',
                   'archive_filename',
-                  'created_by', 'created_date', 'modified_by', 'modified_date'
+                  'managed_by', 'created_date', 'modified_by', 'modified_date'
                   , 'cdiac_import', 'cdiac_submission_contact','publication_date')
         read_only_fields = ('cdiac_import', 'cdiac_submission_contact',
-            'url', 'version', 'created_by', 'created_date', 'modified_by', 'modified_date', 'status', 'archive',
+            'url', 'version', 'managed_by', 'created_date', 'modified_by', 'modified_date', 'status', 'archive',
             'archive_filename',
             'submission_date', 'data_set_id','publication_date')
 

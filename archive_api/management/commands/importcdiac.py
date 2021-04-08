@@ -81,7 +81,7 @@ class Command(BaseCommand):
         metadata = xmldoc.getElementsByTagName('metadata')[0]
         ptcontac = xmldoc.getElementsByTagName('ptcontac')[0]
         metc = xmldoc.getElementsByTagName('metc')[0]
-        # Get the username for created_by and modified by
+        # Get the username for managed_by and modified by
         create_by = User.objects.get(username=options['username'])
         # Determine if the dataset already exists
         try:
@@ -91,7 +91,7 @@ class Command(BaseCommand):
             return dataset
         except DataSet.DoesNotExist:
 
-            dataset = DataSet(ngt_id=int(ngt_id), created_by=create_by, modified_by=create_by,version="1.0")
+            dataset = DataSet(ngt_id=int(ngt_id), managed_by=create_by, modified_by=create_by,version="1.0")
             dataset.save()
 
         # Origin are the authors in order of precedence

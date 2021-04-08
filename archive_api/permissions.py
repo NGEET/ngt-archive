@@ -34,7 +34,7 @@ class HasArchivePermission(permissions.BasePermission):
         if request.user.has_perm("archive_api.view_all_datasets"):
             return True  # Admin always has access
         elif obj.access_level == PRIVATE:
-            return obj.created_by == request.user  # owner always has access
+            return obj.managed_by == request.user  # owner always has access
         elif obj.access_level == NGEET:
             return request.user.has_perm("archive_api.view_ngeet_approved_datasets")
         else:
@@ -49,11 +49,11 @@ class HasSubmitPermission(permissions.BasePermission):
             return False
 
         if obj.status != DRAFT:
-            if (obj.created_by == request.user  and request.user.has_perm('archive_api.edit_own_draft_dataset')) \
+            if (obj.managed_by == request.user  and request.user.has_perm('archive_api.edit_own_draft_dataset')) \
                     or request.user.has_perm('archive_api.edit_all_draft_dataset'):
                 raise PermissionDenied(detail='Only a data set in DRAFT status may be submitted')
         elif obj.status == DRAFT :
-            return (obj.created_by == request.user  and request.user.has_perm('archive_api.edit_own_draft_dataset')) \
+            return (obj.managed_by == request.user  and request.user.has_perm('archive_api.edit_own_draft_dataset')) \
                 or request.user.has_perm('archive_api.edit_all_draft_dataset')
 
         return False
@@ -113,7 +113,7 @@ class HasUploadPermission(permissions.BasePermission):
             return False
 
         if obj.status == DRAFT :
-            return (obj.created_by == request.user  and request.user.has_perm('archive_api.edit_own_draft_dataset')) \
+            return (obj.managed_by == request.user  and request.user.has_perm('archive_api.edit_own_draft_dataset')) \
                 or request.user.has_perm('archive_api.edit_all_draft_dataset')
         elif obj.status  == SUBMITTED :
             return request.user.has_perm('archive_api.edit_all_submitted_dataset')
@@ -128,7 +128,7 @@ class HasPublicationDatePermission(permissions.BasePermission):
         if "/publication_date" not in path_info:
             return False
 
-        has_permission  = (obj.created_by == request.user and request.user.has_perm('archive_api.edit_own_draft_dataset')) \
+        has_permission  = (obj.managed_by == request.user and request.user.has_perm('archive_api.edit_own_draft_dataset')) \
                    or request.user.has_perm('archive_api.edit_all_draft_dataset')
 
         # Only submitted and approved dataset may have the publication date set
@@ -144,7 +144,7 @@ class HasPublicationDatePermission(permissions.BasePermission):
 class HasEditPermissionOrReadonly(permissions.BasePermission):
     """
        Object-level permission to only allow owners of an object  or administrators to edit it.
-       Assumes the model instance has an `created_by` attribute.
+       Assumes the model instance has an `managed_by` attribute.
     """
 
     def has_object_permission(self, request, view, obj):
@@ -158,7 +158,7 @@ class HasEditPermissionOrReadonly(permissions.BasePermission):
         if request.method == "DELETE":
             return False
         elif obj.status == DRAFT :
-            return (obj.created_by == request.user and request.user.has_perm('archive_api.edit_own_draft_dataset') )\
+            return (obj.managed_by == request.user and request.user.has_perm('archive_api.edit_own_draft_dataset') )\
                     or request.user.has_perm('archive_api.edit_all_draft_dataset')
         elif obj.status == SUBMITTED:
             return request.user.has_perm('archive_api.edit_all_submitted_dataset')

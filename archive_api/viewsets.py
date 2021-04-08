@@ -91,10 +91,10 @@ class DataSetViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         """
-        Override the update method to update the created_by and modified by fields.]
+        Override the update method to update the managed_by and modified by fields.]
         """
         if self.request.user.is_authenticated and serializer.is_valid():
-            instance = serializer.save(created_by=self.request.user, modified_by=self.request.user)
+            instance = serializer.save(managed_by=self.request.user, modified_by=self.request.user)
 
             # Send signal for the status change
             dataset_status_change.send(sender=self.__class__, request=self.request,
@@ -334,7 +334,7 @@ class DataSetViewSet(ModelViewSet):
         if self.request.user.has_perm('archive_api.view_all_datasets'):
             return DataSet.objects.filter(status__gte=DataSet.STATUS_DRAFT)
         else:
-            where_clause = Q(created_by=user, status__gte=DataSet.STATUS_DRAFT) | Q(
+            where_clause = Q(managed_by=user, status__gte=DataSet.STATUS_DRAFT) | Q(
                 access_level=DataSet.ACCESS_PUBLIC, status=DataSet.STATUS_APPROVED) | Q(
                 Q(cdiac_submission_contact__user=user,
                   status__gte=DataSet.STATUS_DRAFT,

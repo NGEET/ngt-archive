@@ -24,9 +24,8 @@ class MeasurementVariableAdmin(ModelAdmin):
 
 @admin.register(Person)
 class PersonAdmin(ModelAdmin):
-
     change_list_template = "entities/persons_change_list.html"
-    list_display = ('first_name', 'last_name', 'institution_affiliation','email', 'orcid')
+    list_display = ('first_name', 'last_name', 'institution_affiliation', 'email', 'orcid')
     actions = ('download_csv',)
 
     def get_urls(self):
@@ -63,7 +62,8 @@ class PersonAdmin(ModelAdmin):
                     if not header:
                         header = row
                         if expected_headers.difference(set(header)):
-                            self.message_user(request, f"Cancelling update. Your header row is missing: {expected_headers.difference(set(header))}")
+                            self.message_user(request,
+                                              f"Cancelling update. Your header row is missing: {expected_headers.difference(set(header))}")
                             break
                     else:
                         if len(header) != len(row):
@@ -93,15 +93,17 @@ class PersonAdmin(ModelAdmin):
                                 person.save()
                                 updated_count += 1
                             except Person.DoesNotExist:
-                                self.message_user(request, f"NOT FOUND {list(result_dict.values())}", level=messages.WARNING)
+                                self.message_user(request, f"NOT FOUND {list(result_dict.values())}",
+                                                  level=messages.WARNING)
                             except ValidationError as e:
                                 # Do something based on the errors contained in e.message_dict.
                                 # Display them to a user, or handle them programmatically.
                                 for msg in e.messages:
-                                    self.message_user(request, f"{msg} {list(result_dict.values())}", level=messages.ERROR)
+                                    self.message_user(request, f"{msg} {list(result_dict.values())}",
+                                                      level=messages.ERROR)
 
                 self.message_user(request, f"{updated_count} records found and were updated.",
-                                      level=updated_count and messages.INFO or messages.WARNING)
+                                  level=updated_count and messages.INFO or messages.WARNING)
 
             else:
                 self.message_user(request, "File must be text/csv. Your csv file has NOT been imported")
@@ -143,7 +145,6 @@ class PersonAdmin(ModelAdmin):
     download_csv.short_description = "Download CSV file for selected people"
 
 
-
 @admin.register(Plot)
 class PlotAdmin(ModelAdmin):
     list_display = ('plot_id', 'description',)
@@ -156,10 +157,14 @@ class SiteAdmin(ModelAdmin):
 
 @admin.register(DataSet)
 class DraftDataSetAdmin(ModelAdmin):
-
     actions = ("mark_as_deleted",)
-    list_display = ('ngt_id', 'version','name', 'created_by', 'created_date','modified_by','modified_date',)
-    readonly_fields = ('ngt_id', 'version', 'name', 'created_by', 'created_date','modified_by','modified_date',)
+    exclude = ("archive", "cdiac_import", "doi", "status", "description", "start_date", "end_date", "qaqc_status",
+               "ngee_tropics_resources", "qaqc_method_description", "submission_date", "publication_date",
+               "status_comment", "funding_organizations", "acknowledgement", "reference", "doe_funding_contract_numbers",
+               "additional_reference_information", "originating_institution", "additional_access_information",
+               "sites", "plots", "variables", "contact", "cdiac_submission_contact", "access_level")
+    list_display = ('ngt_id', 'version', 'name', 'managed_by', 'created_date', 'modified_by', 'modified_date',)
+    readonly_fields = ('ngt_id', 'version', 'name', 'created_date', 'modified_by', 'modified_date',)
 
     def __init__(self, *args, **kwargs):
         """
@@ -169,11 +174,15 @@ class DraftDataSetAdmin(ModelAdmin):
         :param kwargs:
         """
         super(self.__class__, self).__init__(*args, **kwargs)
-        self.list_display_links = None  # no display links
 
         # This will affect the Title of the page on in the Admin site
         self.model._meta.verbose_name = 'Draft data set'
         self.model._meta.verbose_name_plural = 'Draft data sets'
+
+    def save_model(self, request, obj, form, change):
+        """Override save to set modified by"""
+        obj.modified_by = request.user
+        super().save_model(request, obj, form, change)
 
     def get_actions(self, request):
         """Overrides parent. Removed the delete selected action"""
@@ -186,7 +195,7 @@ class DraftDataSetAdmin(ModelAdmin):
         """
         Returns a QuerySet of all DRAFT DataSets
         """
-        qs = super(DraftDataSetAdmin,self).get_queryset(request)
+        qs = super(DraftDataSetAdmin, self).get_queryset(request)
         return qs.filter(status=DataSet.STATUS_DRAFT)
 
     def has_add_permission(self, request):
@@ -221,10 +230,10 @@ class DraftDataSetAdmin(ModelAdmin):
                 obj.save()
 
             self.message_user(request,
-                                    "Successfully marked %(count)d %(items)s as DELETED." % {
-                                        "count": n,
-                                        "items": model_ngettext(self.opts, n)
-                                    }, messages.SUCCESS)
+                              "Successfully marked %(count)d %(items)s as DELETED." % {
+                                  "count": n,
+                                  "items": model_ngettext(self.opts, n)
+                              }, messages.SUCCESS)
         # Return None to display the change list page again.
         return None
 
@@ -237,7 +246,7 @@ class DataSetDownloadLogAdmin(ModelAdmin):
     This Admin interface allows user to search by date range and user.  The resulting items
     in the list may be downloaded to a CSV file
     """
-    list_filter = (('datetime',DateRangeFilter),'user',)
+    list_filter = (('datetime', DateRangeFilter), 'user',)
     actions = ('download_csv',)
     list_display = ('datetime', 'user_name', 'dataset_status', 'dataset', 'request_url',)
     readonly_fields = ('datetime', 'user', 'dataset_status', 'dataset', 'request_url', 'ip_address')
@@ -308,7 +317,7 @@ class DataSetDownloadLogAdmin(ModelAdmin):
         writer.writerow(["datetime", "user_name", "dataset_status", 'dataset_name', "ip_address", "request_url"])
 
         for row in queryset:
-            writer.writerow([row.datetime, self.user_name(row),row.get_dataset_status_display(),
+            writer.writerow([row.datetime, self.user_name(row), row.get_dataset_status_display(),
                              str(row.dataset), row.ip_address, row.request_url
                              ])
 
@@ -318,5 +327,3 @@ class DataSetDownloadLogAdmin(ModelAdmin):
         return response
 
     download_csv.short_description = "Download CSV file for selected download activity."
-
-

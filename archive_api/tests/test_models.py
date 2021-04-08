@@ -13,11 +13,11 @@ class DataSetTestCaseNew(TestCase):
 
     def test_create(self):
 
-        id1 = DataSet.objects.create(description="A Fantastic dataset", created_by=self.user, modified_by=self.user).id
-        id2=DataSet.objects.create(description="Another Fantastic dataset", created_by=self.user, modified_by=self.user).id
-        id3= DataSet.objects.create(description="A Fantastic dataset", created_by=self.user, modified_by=self.user,
+        id1 = DataSet.objects.create(description="A Fantastic dataset", managed_by=self.user, modified_by=self.user).id
+        id2=DataSet.objects.create(description="Another Fantastic dataset", managed_by=self.user, modified_by=self.user).id
+        id3= DataSet.objects.create(description="A Fantastic dataset", managed_by=self.user, modified_by=self.user,
                                ngt_id=0, version="1.0").id
-        id4 = DataSet.objects.create(description="A Third dataset", created_by=self.user, modified_by=self.user).ngt_id
+        id4 = DataSet.objects.create(description="A Third dataset", managed_by=self.user, modified_by=self.user).ngt_id
 
         # Test NGT increment
         self.assertEqual(2,id4)
@@ -38,7 +38,7 @@ class DataSetTestCaseNew(TestCase):
         self.assertEqual(foo.description, "A Fantastic dataset")
 
         from django.db.utils import IntegrityError
-        self.assertRaises(IntegrityError,DataSet.objects.create,description="Another Fantastic dataset", created_by=self.user, modified_by=self.user,
+        self.assertRaises(IntegrityError,DataSet.objects.create,description="Another Fantastic dataset", managed_by=self.user, modified_by=self.user,
                                version="1.0")
 
 

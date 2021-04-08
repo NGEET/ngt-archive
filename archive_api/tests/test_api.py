@@ -164,7 +164,7 @@ class DataSetClientTestCase(APITestCase):
                           'data_set_id': 'NGT0001', 'archive_filename': None,
                           'modified_by': 'auser', 'status': '1', 'ngee_tropics_resources': True, 'qaqc_status': None,
                           'end_date': None, 'additional_reference_information': '', 'name': 'Data Set 2',
-                          'created_by': 'auser', 'sites': ['http://testserver/api/v1/sites/1/'],
+                          'managed_by': 'auser', 'sites': ['http://testserver/api/v1/sites/1/'],
                           'originating_institution': "LBNL", 'version': '0.0',
                           'url': 'http://testserver/api/v1/datasets/2/', 'access_level': '0',
                           'publication_date': None,
@@ -196,7 +196,7 @@ select "Edit Drafts" and then click the "Edit" button for NGT0004:FooBarBaz.
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(value['access_level'], '0')
         self.assertEqual(value['sites'], [])
-        self.assertEqual(value['created_by'], 'auser')
+        self.assertEqual(value['managed_by'], 'auser')
         self.assertEqual(value['end_date'], None)
         self.assertEqual(value['doe_funding_contract_numbers'], None)
         self.assertEqual(value['funding_organizations'], None)
