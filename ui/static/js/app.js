@@ -6,6 +6,51 @@ var editingScreen = false;
 var sortField = 'modified_date';
 var sortReverse = false;
 
+/**
+ * Test if the string is a valid JSON String
+ * @param value
+ * @returns {boolean}
+ * @constructor
+ */
+function isJson(value) {
+    try {
+        JSON.parse(value);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}
+
+/**
+ * Prepare the upload error message from the
+ * provided response
+ * @param response
+ * @returns {string}
+ */
+function dataUploadFail (response) {
+    var errorMessage = response.statusText;
+    if (isJson(response.responseText)) {
+        errorMessage = response.responseJSON.detail;
+    }
+    else if (response.readyState == 4){
+        // We probably got an HTML page just look for the
+        // title of the page
+        var el = document.createElement('html');
+        el.innerHTML=response.responseText;
+        titleElement = el.getElementsByTagName( 'title' )
+        // If there is no title use the default error message
+        if (titleElement != undefined && titleElement.length > 0 && titleElement[0].innerText) {
+            errorMessage = titleElement[0].innerText
+        }
+    }
+    else if (response.readyState == 0)
+    {
+        errorMessage = "Network Error"
+    }
+
+    return errorMessage;
+}
+
 function getParameterByName(name, url) {
     if (!url) {
         url = window.location.href;
@@ -1308,9 +1353,6 @@ function createDraft(submissionObj, submitMode) {
                                         } else {
                                             $('.js-progress-wrapper').removeClass('hide');
                                             $('.js-progress').html(pc);
-                                            //this.filePointer.spinner.parent().removeClass('hide');
-                                            //this.filePointer.spinner.html(pc + '%');
-                                            //this.filePointer.progress = pc;
                                         }
                                     }
                                 }, false);
@@ -1320,15 +1362,11 @@ function createDraft(submissionObj, submitMode) {
                                     if (e.lengthComputable) {
                                         var pc = parseInt(e.loaded / e.total * 100);
                                         if (pc >= 100) {
-                                            //this.filePointer.spinner.parent().addClass('hide');
                                             this.filePointer.progress = pc;
                                             console.log(pc);
                                         } else {
                                             $('.js-progress-wrapper').removeClass('hide');
                                             $('.js-progress').html(pc);
-                                            //this.filePointer.spinner.parent().removeClass('hide');
-                                            //this.filePointer.spinner.html(pc + '%');
-                                            //this.filePointer.progress = pc;
                                         }
                                     }
                                 }, false);
@@ -1357,14 +1395,12 @@ function createDraft(submissionObj, submitMode) {
                                 }
                             },
 
-                            fail: function (data) {
-                                var detailObj = JSON.parse(data.responseText);
-                                alert('[FAIL] The draft was created successfully but the file could not be uploaded: ' + data.detail);
+                            fail: function (data, textStatus, errorThrown) {
+                                alert('[FAIL] The draft was created successfully but the file could not be uploaded: ' + dataUploadFail(data));
                             },
 
-                            error: function (data, errorThrown) {
-                                var detailObj = JSON.parse(data.responseText);
-                                alert('[ERROR] The draft was created successfully but the file could not be uploaded: ' + detailObj.detail);
+                            error: function (data, textStatus, errorThrown) {
+                                alert('[ERROR] The draft was created successfully but the file could not be uploaded: ' + dataUploadFail(data));
                             },
 
                             complete: function () {
@@ -1584,14 +1620,15 @@ function completeEdit(submissionObj, url, submitMode) {
 
                     },
 
-                    fail: function (data) {
-                        var detailObj = JSON.parse(data.responseText);
-                        alert('[FAIL] The dataset was updated successfully but the file could not be uploaded: ' + detailObj.detail);
+                    fail: function (data, textStatus, errorThrown) {
+
+                        alert('[FAIL] The dataset was updated successfully but the file could not be uploaded: ' + dataUploadFail(data));
+
+
                     },
 
-                    error: function (data, errorThrown) {
-                        var detailObj = JSON.parse(data.responseText);
-                        alert('[ERROR] The dataset was updated successfully but the file could not be uploaded: ' + detailObj.detail);
+                    error: function (data, textStatus, errorThrown) {
+                        alert('[ERROR] The dataset was updated successfully but the file could not be uploaded: ' + dataUploadFail(data));
                     },
 
                     complete: function () {
