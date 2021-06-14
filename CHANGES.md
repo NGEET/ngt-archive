@@ -1,5 +1,16 @@
 # NGEE Tropics Archive Releases
 
+## v2.2.2
+Enables more robust error handling of data upload.
+
+ - Issue #340 - Error Uploading 1.7 GB file
+
+## v2.2.1
+Allow admins to change who can manage data sets
+
+ - Issue #338 
+
+
 ## v2.2.0
 Enable collection of ORCiD for People in the database. Also,
 improves handling of errors in Dataset edit form. 
