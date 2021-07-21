@@ -60,6 +60,10 @@ class DataSetMetadata(SimpleMetadata):
 
         data = super(DataSetMetadata, self).determine_metadata(request, view)
 
+        max_file_length = request.user.has_perm("archive_api.upload_large_file_dataset") and \
+                            settings.ARCHIVE_API['DATASET_ADMIN_MAX_UPLOAD_SIZE'] or \
+                            settings.ARCHIVE_API['DATASET_USER_MAX_UPLOAD_SIZE']
+
         for x, y in view.__class__.__dict__.items():
             if type(y) == FunctionType and hasattr(y, "detail"):
                 data.setdefault("actions", OrderedDict())
@@ -71,7 +75,8 @@ class DataSetMetadata(SimpleMetadata):
         upload_route = data["actions"]["upload"]
         upload_route["parameters"] = {"attachment": {
             "type": "file",
-            "required": True
+            "required": True,
+            "max_length": max_file_length
         }}
 
         return data

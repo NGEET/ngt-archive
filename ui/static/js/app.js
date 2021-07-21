@@ -22,6 +22,110 @@ function isJson(value) {
 }
 
 /**
+ * Upload a data file to the specified data set
+ *
+ * @param dataSetUrl - the url to the dataset
+ * @param uploadFile - The file to upload
+ * @param uploadType - (optional) The edit action (create,update). default: create
+ * @param onSuccess  - (optional) The success event callback
+ */
+function uploadData(dataSetUrl, uploadFile, uploadType="create", onSuccess = null){
+
+    var state = "dataset";
+    if (uploadType == "create"){
+        state = "draft"
+    }
+
+    // Check to see if the user is uploading a valid file size
+    if (uploadFile.size > templates.uploadMaxSize ){
+        alert('[ERROR] The ' + state + ' was '+ uploadType  +'d successfully but the file could not be uploaded ' +
+              'You may not upload a file greater than '+ (templates.uploadMaxSize/(1024*1024*1024)) +'GB');
+        $('.js-loading').addClass('hide');
+        return;
+    }
+
+    var csrftoken = getCookie('csrftoken');
+    $('.js-loading').removeClass('hide');
+    $.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+
+        }
+    });
+
+    // progress on transfers from the server to the client (downloads)
+    function updateProgress (e) {
+      if (e.lengthComputable) {
+            var pc = parseInt(e.loaded / e.total * 100);
+            if (pc >= 100) {
+                this.filePointer.progress = pc;
+            } else {
+                $('.js-progress-wrapper').removeClass('hide');
+                $('.js-progress').html(pc);
+            }
+        }
+    }
+
+    function transferError(data) {
+       alert('[ERROR] The ' + state + ' was '+ uploadType  +'d successfully but the file could not be uploaded: ' + dataUploadFail(data));
+    }
+
+    function transferFailed(data) {
+       alert('[FAIL] The  ' + state + ' was '+ uploadType  +'d successfully but the file could not be uploaded: ' + dataUploadFail(data));
+    }
+
+    function transferCanceled(data) {
+      alert("[ERROR] The transfer has been canceled by the user.");
+    }
+
+    function transferSuccess(data) {
+        alert('The ' + state + ' has been '+ uploadType  +'d with the attached file.\nPlease note: The page will refresh now and take you back to the list of drafts.');
+            $('.js-clear-file').trigger('click');
+            $('.js-clear-form').trigger('click');
+    }
+
+    function transferComplete(data){
+        $('.js-loading').addClass('hide');
+    }
+
+    var onError = transferError;
+    var onFail = transferFailed;
+    var onComplete = transferComplete
+
+    if (!onSuccess) {
+        onSuccess = transferSuccess;
+    }
+
+    var formData = new FormData();
+    formData.append('attachment', uploadFile);
+    $('.js-loading').removeClass('hide');
+    $.ajax({
+        xhr: function () {
+
+            var xhr = new window.XMLHttpRequest();
+            xhr.filePointer = formData;
+            xhr.upload.filePointer = formData;
+            //Upload progress
+            xhr.upload.addEventListener("progress", updateProgress, false);
+
+            xhr.addEventListener("progress", updateProgress, false);
+            return xhr;
+        },
+        method: "POST",
+        data: formData,
+        contentType: false,
+        processData: false,
+        url: dataSetUrl + "upload/",
+        success: onSuccess,
+        error: onError,
+        fail: onFail,
+        complete: onComplete,
+
+    });
+
+}
+
+/**
  * Prepare the upload error message from the
  * provided response
  * @param response
@@ -109,6 +213,27 @@ $(document).ready(function () {
         $('.js-main-article').addClass('hide');
         $('.js-error-article').removeClass('hide');
     }
+
+
+    csrftoken = getCookie('csrftoken')
+    $.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    });
+
+    $.ajax({
+        dataType: "json",
+        url: '/api/v1/datasets',
+        method: 'options',
+        success: function (data){
+            templates.uploadMaxSize = data['actions']['upload']['parameters']['attachment']['max_length']
+            console.log(data);
+        },
+        error: function(error){
+            console.log(error);
+        }
+    });
 
     $.getJSON("static/js/metadata/dataset.json?v=202010", function (data) {
         templates.datasets = data;
@@ -440,7 +565,6 @@ $(document).ready(function () {
                 $('.js-file-name').html(files[0].name);
                 $('.js-file-name-wrapper').removeClass('hide');
                 fileToUpload = files[0];
-                //$('.js-existing-file').addClass('hide');
                 if ($('.js-existing-file').hasClass('hide')) {
                     $('.js-new-file-msg').removeClass('hide');
                 } else {
@@ -585,14 +709,12 @@ $(document).ready(function () {
             fileToUpload = this.files[0];
             $('.js-file-name').html(this.files[0].name);
             $('.js-file-name-wrapper').removeClass('hide');
-            //$('.js-existing-file').addClass('hide');
             if ($('.js-existing-file').hasClass('hide')) {
                 $('.js-new-file-msg').removeClass('hide');
             } else {
                 $('.js-file-replace-msg').removeClass('hide');
             }
         }
-        //console.log(this);
     });
 
 
@@ -671,13 +793,7 @@ $(document).ready(function () {
         event.preventDefault();
         overrideMsg = true;
         location.reload();
-        /*$('.js-create-form .js-input').each(function() {
-            $(this).val('');
-        });
 
-        $('.js-param.missing').each(function() {
-            $(this).removeClass('missing');
-        });*/
     });
 
     $('body').on('click', '.js-submit-dataset', function (event) {
@@ -688,81 +804,11 @@ $(document).ready(function () {
         var submitMode = true;
         var url = $('.js-edit-form').attr('data-url');
 
-
         if (fileToUpload) {
 
-            var csrftoken = getCookie('csrftoken');
-
-            $.ajaxSetup({
-                beforeSend: function (xhr, settings) {
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                }
-            });
-
-            var data = {
-                attachment: fileToUpload
-            };
-
-            var formData = new FormData();
-            formData.append('attachment', fileToUpload);
-            $('.js-loading').removeClass('hide');
-            $.ajax({
-                xhr: function () {
-
-                    var xhr = new window.XMLHttpRequest();
-                    xhr.filePointer = formData;
-                    xhr.upload.filePointer = formData;
-                    //Upload progress
-                    xhr.upload.addEventListener("progress", function (e, data) {
-
-                        if (e.lengthComputable) {
-                            var pc = parseInt(e.loaded / e.total * 100);
-                            if (pc >= 100) {
-                                //this.filePointer.spinner.parent().addClass('hide');
-                                this.filePointer.progress = pc;
-                                console.log(pc);
-                            } else {
-                                $('.js-progress-wrapper').removeClass('hide');
-                                $('.js-progress').html(pc);
-                            }
-                        }
-                    }, false);
-
-                    xhr.addEventListener("progress", function (e, data) {
-
-                        if (e.lengthComputable) {
-                            var pc = parseInt(e.loaded / e.total * 100);
-                            if (pc >= 100) {
-                                //this.filePointer.spinner.parent().addClass('hide');
-                                this.filePointer.progress = pc;
-                                console.log(pc);
-                            } else {
-                                $('.js-progress-wrapper').removeClass('hide');
-                                $('.js-progress').html(pc);
-                                //this.filePointer.spinner.parent().removeClass('hide');
-                                //this.filePointer.spinner.html(pc + '%');
-                                //this.filePointer.progress = pc;
-                            }
-                        }
-                    }, false);
-                    return xhr;
-                },
-                method: "POST",
-                contentType: false,
-                data: formData,
-                processData: false,
-                url: url + "upload/",
-                success: function (data) {
-
+            uploadData(url, fileToUpload, uploadType="update", onSuccess=function (data) {
                     processEditingForm(submissionObj, url);
-
-
-                },
-                complete: function () {
-                    $('.js-loading').addClass('hide');
-                },
-
-            });
+                });
 
         } else if (!$('.js-file-exists').hasClass('hide')) {
             processEditingForm(submissionObj, url);
@@ -1320,64 +1366,7 @@ function createDraft(submissionObj, submitMode) {
                 if (statusObj.result || statusObj.status == '0') {
                     if (fileToUpload) {
 
-                        var csrftoken = getCookie('csrftoken');
-                        $('.js-loading').removeClass('hide');
-                        $.ajaxSetup({
-                            beforeSend: function (xhr, settings) {
-                                xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                            }
-                        });
-
-                        var data = {
-                            attachment: fileToUpload
-                        };
-
-                        var formData = new FormData();
-                        formData.append('attachment', fileToUpload);
-
-                        $.ajax({
-                            xhr: function () {
-
-                                var xhr = new window.XMLHttpRequest();
-                                xhr.filePointer = formData;
-                                xhr.upload.filePointer = formData;
-                                //Upload progress
-                                xhr.upload.addEventListener("progress", function (e, data) {
-
-                                    if (e.lengthComputable) {
-                                        var pc = parseInt(e.loaded / e.total * 100);
-                                        if (pc >= 100) {
-                                            //this.filePointer.spinner.parent().addClass('hide');
-                                            this.filePointer.progress = pc;
-                                            console.log(pc);
-                                        } else {
-                                            $('.js-progress-wrapper').removeClass('hide');
-                                            $('.js-progress').html(pc);
-                                        }
-                                    }
-                                }, false);
-
-                                xhr.addEventListener("progress", function (e, data) {
-
-                                    if (e.lengthComputable) {
-                                        var pc = parseInt(e.loaded / e.total * 100);
-                                        if (pc >= 100) {
-                                            this.filePointer.progress = pc;
-                                            console.log(pc);
-                                        } else {
-                                            $('.js-progress-wrapper').removeClass('hide');
-                                            $('.js-progress').html(pc);
-                                        }
-                                    }
-                                }, false);
-                                return xhr;
-                            },
-                            method: "POST",
-                            contentType: false,
-                            data: formData,
-                            processData: false,
-                            url: statusObj.url + "upload/",
-                            success: function (data) {
+                       uploadData(statusObj.url, fileToUpload, uploadType="create",onSuccess = function (data) {
                                 if (submitMode) {
                                     $.when(submitDataset(statusObj.url)).done(function (submitStatus) {
                                         if (submitStatus.result) {
@@ -1393,21 +1382,7 @@ function createDraft(submissionObj, submitMode) {
                                     $('.js-clear-form').trigger('click');
                                     $('.js-clear-file').trigger('click');
                                 }
-                            },
-
-                            fail: function (data, textStatus, errorThrown) {
-                                alert('[FAIL] The draft was created successfully but the file could not be uploaded: ' + dataUploadFail(data));
-                            },
-
-                            error: function (data, textStatus, errorThrown) {
-                                alert('[ERROR] The draft was created successfully but the file could not be uploaded: ' + dataUploadFail(data));
-                            },
-
-                            complete: function () {
-                                $('.js-loading').addClass('hide');
-                            },
-
-                        });
+                            });
 
                     } else {
                         alert('Dataset has been created successfully. You can make further changes to it by going to Home > Edit Drafts.\nPlease note: The screen will refresh after you click OK.');
@@ -1589,53 +1564,7 @@ function completeEdit(submissionObj, url, submitMode) {
 
             if (fileToUpload) {
 
-                var csrftoken = getCookie('csrftoken');
-
-                $.ajaxSetup({
-                    beforeSend: function (xhr, settings) {
-                        xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                    }
-                });
-
-                var data = {
-                    attachment: fileToUpload
-                };
-
-                var formData = new FormData();
-                formData.append('attachment', fileToUpload);
-
-                //data = JSON.parse(data);
-
-                $.ajax({
-                    method: "POST",
-                    contentType: false,
-                    data: formData,
-                    processData: false,
-                    url: url + "upload/",
-                    success: function (data) {
-
-                        alert('The dataset has been updated with the attached file.\nPlease note: The page will refresh now and take you back to the list of drafts.');
-                        $('.js-clear-file').trigger('click');
-                        $('.js-clear-form').trigger('click');
-
-                    },
-
-                    fail: function (data, textStatus, errorThrown) {
-
-                        alert('[FAIL] The dataset was updated successfully but the file could not be uploaded: ' + dataUploadFail(data));
-
-
-                    },
-
-                    error: function (data, textStatus, errorThrown) {
-                        alert('[ERROR] The dataset was updated successfully but the file could not be uploaded: ' + dataUploadFail(data));
-                    },
-
-                    complete: function () {
-                        $('.js-loading').addClass('hide');
-                    }
-
-                });
+                uploadData(url, fileToUpload, uploadType='update');
 
             } else {
                 alert('Dataset has been updated successfully.\nPlease note: The page will refresh now and take you back to the list of drafts.');
@@ -1696,10 +1625,6 @@ function processForm(submissionObj, submitMode, editMode) {
                         submissionObj[param] = null;
                     }
 
-                    /*if(required) {
-                        submissionObj.submit = false;
-                        $(this).closest('.js-param').addClass('missing');
-                    }*/
                 } else if (submitMode && required) {
                     if ($(this).hasClass('js-new-value') && submissionObj[param]) {
                         ;

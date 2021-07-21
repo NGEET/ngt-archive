@@ -71,7 +71,7 @@ Run the development server. Test users/passes are: `superadmin/ngeet2016`, `admi
 These instructions assume that you have [Docker](#docker) installed. 
 
 ### Create environment file
-Copy `env.copyme` as `.env` and put your sensitive information in 
+Copy `env.copyme` as `.env` and put your sensitive informaticon in 
 there. If you don't know what this is, ask another developer.
 
 ### <a name="docker"></a>Docker Configuration
