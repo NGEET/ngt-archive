@@ -51,6 +51,7 @@ def load_groups(sender, **kwargs):
 
 class ArchiveApiConfig(AppConfig):
     name = 'archive_api'
+    default_auto_field = 'django.db.models.AutoField'
 
     def ready(self):
         post_migrate.connect(load_groups, sender=self)
