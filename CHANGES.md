@@ -1,5 +1,11 @@
 # NGEE Tropics Archive Releases
 
+## v2.2.3
+Bug fixes
+
+ - Issue  #341 - jquery vulnerabilities found in …/js/jquery-2.1.4.min.js
+ - Issue  #339 - Warning in logs for Django ORM models
+
 ## v2.2.2
 Enables more robust error handling of data upload.
 
