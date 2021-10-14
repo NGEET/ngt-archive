@@ -1,13 +1,106 @@
-# Create your views here.
+# Create your views here
+import csv
+
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.http import (
-    Http404, HttpResponseRedirect,
+    Http404, HttpResponse, HttpResponseRedirect,
 )
 from django.shortcuts import render, get_object_or_404, get_list_or_404
+from django.utils import timezone
+from django.utils.datetime_safe import datetime
 
-# Create your views here.
+from archive_api.models import DataSet, DataSetDownloadLog
 
-from archive_api.models import DataSet
+from archive_api.forms import MetricsFilterForm
+from archive_api.report import report_datasets
+
+
+def _get_citation_author_list(dataset: DataSet) -> str:
+    """
+    Return the citation formatted author list
+
+    :param dataset: The dataset
+    :return: A citation formatted author list
+    :rtype: str
+    """
+
+    author_list = ["{} {}".format(o.author.last_name, o.author.first_name[0]) for o in
+                   dataset.author_set.all().order_by('order')]
+    return "; ".join(author_list)
+
+
+def metrics_datasets(request):
+    """
+    Handles metrics requests
+
+    :param request:
+    :return:
+    """
+
+    # Check the request to see if a search was performed
+    if request.POST and "clear" not in request.POST:
+        form = MetricsFilterForm(request.POST)
+    else:
+        # no search or clear (use default parameters)
+        form = MetricsFilterForm({
+            'start_date': '2016-01-01',
+            'end_date': timezone.now().strftime("%Y-%m-%d")
+        })
+
+    metrics_users = []
+    metrics_datasets = []
+    if form.is_valid():
+
+        # Get the start and end dates and set them to the server timezone
+        current_tz = timezone.get_current_timezone()
+        start_date = datetime.strptime(form.data['start_date'], "%Y-%m-%d")
+        start_date = current_tz.localize(start_date)
+        end_date = datetime.strptime(form.data['end_date'], "%Y-%m-%d")
+        end_date = current_tz.localize(end_date)
+
+        # Build the datasets metrics for statuses (Submitted, Approved)
+        dataset_report = report_datasets(start_date, end_date, request.user)
+        metrics_datasets = dataset_report['metrics']
+
+        # Get the user meterics
+        metrics_users = []
+        metrics_users.append({"label": "Registered", "num": User.objects.filter(date_joined__gte=start_date,
+                                                                                date_joined__lte=end_date).count()})
+        metrics_users.append({"label": "Data Downloads",
+                              "num": DataSetDownloadLog.objects.filter(datetime__gte=start_date,
+                                                                       datetime__lte=end_date).count()})
+
+        if request.POST and 'download' in request.POST:
+            response = HttpResponse(
+                content_type='text/csv'
+            )
+            response[
+                'Content-Disposition'] = f'attachment; filename="dataset_report_{start_date:%Y%m%d}_{end_date:%Y%m%d}.csv"'
+
+            writer = csv.writer(response)
+            writer.writerow(
+                ['NGT ID', 'Status', 'Access Level', 'Title', 'Approval Date', 'Contact', 'Authors', 'DOI', 'Downloads'
+                                                                                                            'Citation'])
+            for dataset in dataset_report['datasets']:
+                writer.writerow([dataset.data_set_id(),
+                                 dataset.get_status_display(),
+                                 dataset.get_access_level_display(),
+                                 dataset.name,
+                                 dataset.status == DataSet.STATUS_APPROVED and dataset.modified_date or '',
+                                 dataset.contact and str(dataset.contact) or '',
+                                 _get_citation_author_list(dataset), dataset.doi,
+                                 DataSetDownloadLog.objects.filter(datetime__gte=start_date,
+                                                                   datetime__lte=end_date,
+                                                                   dataset__ngt_id=dataset.ngt_id).count(),
+                                 dataset.citation])
+
+            return response
+
+    return render(request, 'archive_api/metrics.html', context={'user': request.user,
+                                                                'metrics_datasets': metrics_datasets,
+                                                                'metrics_users': metrics_users,
+                                                                'form': form})
 
 
 def dois(request):
@@ -18,10 +111,10 @@ def dois(request):
     """
 
     data_sets = get_list_or_404(DataSet, status=DataSet.STATUS_APPROVED,
-                                         access_level__in=(DataSet.ACCESS_NGEET, DataSet.ACCESS_PUBLIC))
+                                access_level__in=(DataSet.ACCESS_NGEET, DataSet.ACCESS_PUBLIC))
 
     return render(request, 'archive_api/dois.html', context={'user': request.user,
-                                                            'datasets': data_sets})
+                                                             'datasets': data_sets})
 
 
 def doi(request, ngt_id=None):
@@ -34,9 +127,8 @@ def doi(request, ngt_id=None):
     dataset = get_object_or_404(DataSet, ngt_id=int(ngt_id[3:]))
 
     if (dataset.status == DataSet.STATUS_APPROVED and \
-                    dataset.access_level in [DataSet.ACCESS_PUBLIC, DataSet.ACCESS_NGEET]):
-        author_list = ["{} {}".format(o.author.last_name, o.author.first_name[0]) for o in dataset.author_set.all().order_by('order')]
-        authors = "; ".join(author_list)
+            dataset.access_level in [DataSet.ACCESS_PUBLIC, DataSet.ACCESS_NGEET]):
+        authors = _get_citation_author_list(dataset)
 
         site_id_list = [o.site_id for o in dataset.sites.all()]
         site_ids = "; ".join(site_id_list)
@@ -48,11 +140,11 @@ def doi(request, ngt_id=None):
         variables = "; ".join(variable_list)
 
         return render(request, 'archive_api/doi.html', context={'user': request.user,
-                                                       'dataset': dataset,
-                                                       'authors': authors,
-                                                       'site_ids': site_ids,
-                                                       'sites': sites,
-                                                       'variables': variables})
+                                                                'dataset': dataset,
+                                                                'authors': authors,
+                                                                'site_ids': site_ids,
+                                                                'sites': sites,
+                                                                'variables': variables})
     else:
         raise Http404('That dataset does not exist')
 
@@ -68,5 +160,4 @@ def download(request, ngt_id):
     """
 
     dataset = get_object_or_404(DataSet, ngt_id=int(ngt_id[3:]))
-    return HttpResponseRedirect("/api/v1/datasets/{}/archive".format(dataset.id),)
-
+    return HttpResponseRedirect("/api/v1/datasets/{}/archive".format(dataset.id), )

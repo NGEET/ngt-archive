@@ -1,0 +1,117 @@
+{% extends "archive_api/doi-base.html" %}
+
+{% block content %}
+    <link rel="stylesheet" href="/static/stylesheets/foundation.css">
+    <style>
+
+
+        .errorlist {
+            color: #ec5840;
+            list-style-type: none;
+        }
+
+        .button {
+            font-size: 15px;
+            color: white;
+            float: right;
+            margin: 10px;
+
+        }
+
+        .button.left {
+            font-size: 15px;
+            color: white;
+            background-color: #49bb76;
+            float: left;
+            margin: 10px;
+
+        }
+
+        .button.clear {
+            font-size: 15px;
+            color: white;
+            float: right;
+            margin: 10px;
+            background-color: #777;
+
+        }
+
+    </style>
+    <div>
+        <form method="POST">
+            <table style="border: none">
+                <tbody>
+                <tr style="vertical-align: top;">
+                    <td>
+                        {{ form.start_date.label }} {{ form.start_date }}
+                        {{ form.start_date.errors }}
+                    </td>
+                    <td>
+                        {{ form.end_date.label }} {{ form.end_date }}
+                        {{ form.end_date.errors }}
+                    </td>
+                </tr>
+                <tr>
+
+                    <td style="align: right;" colspan="2">
+                        {% csrf_token %}
+                        <input class="button" type="submit" class="btn btn-primary" value="Filter">
+                        {% if  user.is_authenticated %}
+                            <input class="button left" type="submit" name="download" value="Download">
+                        {% endif %}
+
+                        <input class="button clear" name="clear" type="submit" value="Clear">
+
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+
+        </form>
+    </div>
+    <div>
+        <table>
+            <tbody>
+            <tr>
+                <td colspan="4"><h4 class="title">Datasets</h4></td>
+            </tr>
+            {% for m in metrics_datasets %}
+                <tr>
+                    <td></td>
+                    <td>
+                        <h5 class="title">{{ m.label }}</h5></td>
+                    <td style="text-align: right">{{ m.num }}</td>
+                    <td></td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td>Sorry, no metrics.</td>
+                </tr>
+            {% endfor %}
+
+            <tr>
+                <td colspan="4"><h4 class="title">Users</h4></td>
+            </tr>
+            {% for m in metrics_users %}
+                <tr>
+                    <td></td>
+                    <td>
+                        <h5 class="title">{{ m.label }}</h5></td>
+                    <td style="text-align: right">{{ m.num }}</td>
+                    <td></td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td>Sorry, no metrics.</td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+    <p align="center">
+        <a href="{{ request.META.HTTP_REFERER }}">Back to Previous Page</a>
+    </p>
+    </div>
+{% endblock %}
