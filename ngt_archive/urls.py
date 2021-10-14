@@ -19,7 +19,7 @@ from django.urls import path
 
 from archive_api import urls as api_urls
 from ui import urls as ui_urls
-from archive_api.views import doi, download, dois
+from archive_api.views import doi, download, dois, metrics_datasets
 from django.contrib.auth import views as auth_views
 import oauth2_provider.views as oauth2_views
 from django.contrib.auth.decorators import user_passes_test
@@ -58,6 +58,7 @@ urlpatterns = [
     path('o/', include((oauth2_endpoint_views,'oauth2_provider'), namespace='oauth2_provider')),
     url(r'^api/', include(api_urls)),
     url(r'^admin/', admin.site.urls),
+    url(r'^metrics/', metrics_datasets, name='metrics'),
     url(r'^dois/(?P<ngt_id>[a-zA-Z0-9]+)/$', doi, name='doi'),
     url(r'^dois/$', dois, name='dois'),
     url(r'^download/(?P<ngt_id>[a-zA-Z0-9]+)', download, name='download'),

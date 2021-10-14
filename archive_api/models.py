@@ -274,6 +274,21 @@ class DataSet(models.Model):
     archive = models.FileField(upload_to=get_upload_path, storage=dataset_archive_storage,
                                null=True)
 
+    @property
+    def citation(self):
+        """Generate the citation for this dataset """
+        author_list = ["{} {}".format(o.author.last_name, o.author.first_name[0]) for o in
+                       self.author_set.all().order_by('order')]
+        authors = "; ".join(author_list)
+
+        citation_string = "Citation information not available currently. Contact dataset author(s) for citation or " \
+                          "acknowledgement text."
+        if self.doi and self.submission_date:
+            citation_string = f'{ authors } ({self.submission_date:%Y}): { self.name }. { self.version }. ' \
+                f'NGEE Tropics Data Collection. (dataset). { self.doi }'
+
+        return citation_string
+
     class Meta:
         unique_together = ('ngt_id', 'version')
         ordering = ('-modified_date',)

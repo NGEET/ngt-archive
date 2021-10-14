@@ -24,6 +24,7 @@ def get_max_size(size):
 
     def get_size():
         return size
+
     return get_size()
 
 
@@ -146,9 +147,10 @@ class DataSetClientTestCase(APITestCase):
         self.login_user("auser")
         response = self.client.get('/api/v1/datasets/2/')
         value = json.loads(response.content.decode('utf-8'))
-        self.maxDiff=None
+        self.maxDiff = None
         self.assertEqual(value,
-                         {'modified_date': '2016-10-28T23:01:20.066913Z', 'doi': '', 'start_date': '2016-10-28',
+                         {'modified_date': '2016-10-28T23:01:20.066913Z',
+                          'doi': 'https://dx.doi.org/10.1111/892375dkfnsi', 'start_date': '2016-10-28',
                           'status_comment': '', 'plots': ['http://testserver/api/v1/plots/1/'],
                           'created_date': '2016-10-28T19:15:35.013361Z',
                           'funding_organizations': 'A few funding organizations',
@@ -185,12 +187,12 @@ class DataSetClientTestCase(APITestCase):
         self.assertEqual(len(mail.outbox), 1)
         email = mail.outbox[0]
 
-        self.assertEqual(email.subject,"[ngt-archive-test] Dataset Draft (NGT0004)")
+        self.assertEqual(email.subject, "[ngt-archive-test] Dataset Draft (NGT0004)")
         self.assertTrue(email.body.find("""The dataset NGT0004:FooBarBaz has been saved as a draft in the NGEE Tropics Archive.
 The dataset can be viewed at http://testserver.  Login with your account credentials,
 select "Edit Drafts" and then click the "Edit" button for NGT0004:FooBarBaz.
 """) > 0)
-        self.assertEqual(email.to,['myuser@foo.bar'])
+        self.assertEqual(email.to, ['myuser@foo.bar'])
         self.assertEqual(email.reply_to, settings.ARCHIVE_API['EMAIL_NGEET_TEAM'])
 
         value = json.loads(response.content.decode('utf-8'))
@@ -226,7 +228,8 @@ select "Edit Drafts" and then click the "Edit" button for NGT0004:FooBarBaz.
         response = self.client.get("/api/v1/datasets/5/publication_date/")
         value = json.loads(response.content.decode('utf-8'))
 
-        self.assertEqual({'detail': 'Only a dataset in SUBMITTED or APPROVED status may have a publication date set.'}, value)
+        self.assertEqual({'detail': 'Only a dataset in SUBMITTED or APPROVED status may have a publication date set.'},
+                         value)
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
 
         # The submit action should fail
@@ -307,8 +310,9 @@ select "Edit Drafts" and then click the "Edit" button for NGT0004:FooBarBaz.
         response = self.client.get("/api/v1/datasets/1/submit/")  # In draft mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
-        self.assertEqual({'missingRequiredFields': ['archive','authors', 'funding_organizations', 'originating_institution']},
-                         value)
+        self.assertEqual(
+            {'missingRequiredFields': ['archive', 'authors', 'funding_organizations', 'originating_institution']},
+            value)
 
         response = self.client.put('/api/v1/datasets/1/',
                                    data='{"data_set_id":"FooBarBaz","description":"A FooBarBaz DataSet",'
@@ -340,7 +344,7 @@ select "Edit Drafts" and then click the "Edit" button for NGT0004:FooBarBaz.
 
         #########################################################################
         # NGT User may not SUBMIT a dataset in DRAFT mode if they owne it
-        #Make sure file is uploaded first
+        # Make sure file is uploaded first
         with open('{}/Archive.zip'.format(dirname(__file__)), 'rb') as fp:
             response = self.client.post('/api/v1/datasets/1/upload/', {'attachment': fp})
             self.assertContains(response, '"success":true',
@@ -368,8 +372,9 @@ select "Edit Drafts" and then click the "Edit" button for NGT0004:FooBarBaz.
         # NGT Administrator may edit any DRAFT status (this will fail due to missing fields)
         response = self.client.get("/api/v1/datasets/1/submit/")  # In draft mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
-        self.assertEqual({'missingRequiredFields': ['archive','authors', 'funding_organizations', 'originating_institution']},
-                         value)
+        self.assertEqual(
+            {'missingRequiredFields': ['archive', 'authors', 'funding_organizations', 'originating_institution']},
+            value)
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
         self.assertEqual(0, len(mail.outbox))  # no notification emails sent
@@ -442,7 +447,7 @@ select "Edit Drafts" and then click the "Edit" button for NGT0004:FooBarBaz.
         self.assertEqual(value["sites"], ["http://testserver/api/v1/sites/1/"])
         self.assertEqual(value["plots"], ["http://testserver/api/v1/plots/1/"])
         self.assertEqual(value["variables"],
-                         ["http://testserver/api/v1/variables/2/","http://testserver/api/v1/variables/1/"])
+                         ["http://testserver/api/v1/variables/2/", "http://testserver/api/v1/variables/1/"])
 
         #########################################################################
         # A dataset that is not in SUBMITTED status may not be approved
@@ -516,7 +521,6 @@ select "View Approved Datasets" and then click the "Approve" button for NGT0001:
 
         # Make sure no additional notification was sent
         self.assertEqual(len(mail.outbox), 1)
-
 
         response = self.client.get("/api/v1/datasets/2/unapprove/")  # In approved mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
@@ -618,13 +622,12 @@ select "View Approved Datasets" and then click the "Approve" button for NGT0001:
         response = self.client.get('/api/v1/datasets/1/archive/')
         self.assertContains(response, ''.encode('utf-8'))
         self.assertTrue("Content-length" in response)
-        self.assertEqual(response["Content-length" ], '7686')
+        self.assertEqual(response["Content-length"], '7686')
         self.assertTrue("Content-Disposition" in response)
         self.assertTrue("attachment; filename=Archive_" in response['Content-Disposition'])
 
         downloadlog = DataSetDownloadLog.objects.all()
-        self.assertEqual(len(downloadlog),1)
-
+        self.assertEqual(len(downloadlog), 1)
 
         # Now try to upload a text file (no restr
         with open('{}/valid_upload.txt'.format(dirname(__file__)), 'r') as fp:
@@ -752,7 +755,7 @@ You will not be able to view this dataset until it has been approved.
 
         response = self.client.get('/api/v1/datasets/1/')
         self.assertContains(response, 'http://testserver/api/v1/datasets/1/archive/',
-                               status_code=status.HTTP_200_OK)
+                            status_code=status.HTTP_200_OK)
 
         response = self.client.get('http://testserver/api/v1/datasets/1/archive/')
         self.assertEqual(status.HTTP_200_OK, response.status_code)
@@ -828,7 +831,7 @@ You will not be able to view this dataset until it has been approved.
                                          '"plots":["http://testserver/api/v1/plots/1/"],'
                                          '"variables":["http://testserver/api/v1/variables/1/"]  }',
                                     content_type='application/json')
-        self.assertEqual(status.HTTP_400_BAD_REQUEST,response.status_code)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
         self.assertEqual(json.loads(response.content.decode('utf-8')),
                          {"plots": ["A site must be selected."]})
 
@@ -842,7 +845,7 @@ You will not be able to view this dataset until it has been approved.
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
         self.assertEqual(json.loads(response.content.decode('utf-8')),
                          {'plots': ['Select the site corresponding to plot CC-CCPD1:Central City '
-                                     'CCPD Plot 1']})
+                                    'CCPD Plot 1']})
 
     def test_issue_173(self):
         """DataSet.name should not be unique #173"""
@@ -865,8 +868,6 @@ You will not be able to view this dataset until it has been approved.
                                          '"variables":["http://testserver/api/v1/variables/1/"]  }',
                                     content_type='application/json')
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
-
-
 
     def test_issue_74(self):
         self.login_user("auser")
@@ -915,7 +916,6 @@ You will not be able to view this dataset until it has been approved.
         self.assertContains(response,
                             "http://testserver/api/v1/plots/1/")
 
-
     @mock.patch('django.core.files.uploadedfile.InMemoryUploadedFile.size', new_callable=PropertyMock)
     def test_issue_117(self, mock_file_size):
         """Is the backend enforcing a file size limit? Testing limits for admin and regular users"""
@@ -925,7 +925,7 @@ You will not be able to view this dataset until it has been approved.
             response = self.client.post('/api/v1/datasets/1/upload/', {'attachment': fp})
             self.assertContains(response, '"success":false',
                                 status_code=status.HTTP_400_BAD_REQUEST)
-            self.assertContains(response,"Uploaded file size is 2048.0 MB. Max upload size is 1024.0 MB",
+            self.assertContains(response, "Uploaded file size is 2048.0 MB. Max upload size is 1024.0 MB",
                                 status_code=status.HTTP_400_BAD_REQUEST)
 
         mock_file_size.return_value = 3147483648
@@ -955,13 +955,13 @@ You will not be able to view this dataset until it has been approved.
             self.assertContains(response, "uploaded",
                                 status_code=status.HTTP_201_CREATED)
 
-            response = self.client.get( '/api/v1/datasets/1/archive/')
+            response = self.client.get('/api/v1/datasets/1/archive/')
             self.assertContains(response, '')
             self.assertTrue("Content-length" in response)
             self.assertEquals(response["Content-length"], '3145728')
             self.assertTrue("Content-Disposition" in response)
             self.assertTrue("attachment; filename=bigfile_" in
-                             response['Content-Disposition'])
+                            response['Content-Disposition'])
 
         try:
             os.remove('{}/bigfile.dat'.format(dirname(__file__)))
@@ -1037,7 +1037,6 @@ class PlotClientTestCase(APITestCase):
         self.client = Client()
         self.login_user("auser")
 
-
     def test_client_list(self):
         # Unauthorized user that is not in any groups
         self.login_user("vibe")
@@ -1110,7 +1109,8 @@ class ContactClientTestCase(APITestCase):
         response = self.client.get('/api/v1/people/2/')
         self.assertEqual(json.loads(response.content.decode('utf-8')),
                          {"url": "http://testserver/api/v1/people/2/", "first_name": "Luke",
-                          "last_name": "Cage", "email": "lcage@foobar.baz", "institution_affiliation": "POWER", "orcid": ""})
+                          "last_name": "Cage", "email": "lcage@foobar.baz", "institution_affiliation": "POWER",
+                          "orcid": ""})
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_client_post(self):

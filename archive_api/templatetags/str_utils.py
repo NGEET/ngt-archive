@@ -15,3 +15,8 @@ def breadcrumb_name(value, url):
         return values[-1].title()
     else:
         return value
+
+@register.filter(name='dict_key')
+def dict_key(d, k):
+    """Returns the given key from a dictionary."""
+    return d[k]
