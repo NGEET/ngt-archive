@@ -1,5 +1,10 @@
 # NGEE Tropics Archive Releases
 
+## v2.3.0
+NGEE Tropics Metrics page
+
+ - Issue #334 - Archive Metrics Page
+
 ## v2.2.3
 Bug fixes
 
