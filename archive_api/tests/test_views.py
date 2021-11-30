@@ -123,8 +123,8 @@ HTML_METRICS_ADMIN = """<table>
 
             </table>"""
 
-HTML_FILTER_START_DATE = """Start Date <input type="text" name="start_date" value="2016-01-01" maxlength="10" required id="id_start_date">"""
-HTML_BUTTON_DOWNLOAD = """<input class="button left" type="submit" name="download" value="Download">"""
+HTML_FILTER_START_DATE = """<input type="text" name="start_date" value="2016-01-01" maxlength="10" required id="id_start_date">"""
+HTML_BUTTON_DOWNLOAD = """<input class="button left" type="submit" name="download" value="Download Metrics">"""
 
 
 class MetricsPageTestCase(TestCase):
