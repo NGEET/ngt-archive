@@ -8,6 +8,7 @@
         .errorlist {
             color: #ec5840;
             list-style-type: none;
+            margin-left: 0;
         }
 
         .button {
@@ -36,34 +37,55 @@
 
         }
 
+        .help-text.metrics {
+            margin-top: 5px;
+        }
+
+        .help-text.metrics.right {
+            margin-top: 5px;
+            float: right;
+        }
+
+        .no-padding-vertical {
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
+
     </style>
     <div>
         <form method="POST">
             <table style="border: none">
                 <tbody>
                 <tr style="vertical-align: top;">
-                    <td>
-                        {{ form.start_date.label }} {{ form.start_date }}
+                    <td style="border: none">
+                        {{ form.start_date.label }} <div class="help-text metrics">{{ form.start_date.help_text}}</div> {{ form.start_date }}
                         {{ form.start_date.errors }}
                     </td>
-                    <td>
-                        {{ form.end_date.label }} {{ form.end_date }}
+                    <td style="border: none">
+                        {{ form.end_date.label }} <div class="help-text metrics">{{ form.end_date.help_text}}</div>{{ form.end_date }}
                         {{ form.end_date.errors }}
                     </td>
                 </tr>
-                <tr>
+                <tr class="no-padding-vertical">
 
-                    <td style="align: right;" colspan="2">
+                    <td style="align: right; border: none;" colspan="2" class="no-padding-vertical">
                         {% csrf_token %}
-                        <input class="button" type="submit" class="btn btn-primary" value="Filter">
+                        <input class="button" type="submit" class="btn btn-primary" value="Filter Metrics">
                         {% if  user.is_authenticated %}
-                            <input class="button left" type="submit" name="download" value="Download">
+                            <input class="button left" type="submit" name="download" value="Download Metrics">
                         {% endif %}
 
-                        <input class="button clear" name="clear" type="submit" value="Clear">
+                        <input class="button clear" name="clear" type="submit" value="Reset Date Filter">
 
                     </td>
                 </tr>
+                <tr class="no-padding-vertical"><td class="no-padding-vertical" style="padding-left: 15px;" colspan="2">
+                    {% if  user.is_authenticated %}
+                    <span class="help-text metrics left">Download CSV of dataset metrics.</span>
+                    {%  endif %}
+                    <span class="help-text metrics right" style="padding-right: 15px;">Filter metrics by start and end dates.</span>
+                </td></tr>
                 </tbody>
             </table>
 
