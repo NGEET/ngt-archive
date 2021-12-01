@@ -166,10 +166,9 @@ class MetricsPageTestCase(TestCase):
                                                          "end_date": "2021-01-01"})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'], "text/csv")
-        print(response.content.decode())
 
         # Using assertInHTML because it is more forgiving.
-        self.assertInHTML("""NGT ID,Status,Access Level,Title,Approval Date,Contact,Authors,DOI,DownloadsCitation
+        self.assertInHTML("""NGT ID,Status,Access Level,Title,Approval Date,Contact,Authors,DOI,Downloads,Citation
 NGT0002,Submitted,Private,Data Set 3,,"Cage, Luke - POWER",Cage L,,0,Citation information not available currently. Contact dataset author(s) for citation or acknowledgement text.
 NGT0000,Draft,Private,Data Set 1,,"Cage, Luke - POWER",,,0,Citation information not available currently. Contact dataset author(s) for citation or acknowledgement text.
 NGT0001,Submitted,Private,Data Set 2,,"Cage, Luke - POWER",Cage L,https://dx.doi.org/10.1111/892375dkfnsi,0,Cage L (2016): Data Set 2. 0.0. NGEE Tropics Data Collection. (dataset). https://dx.doi.org/10.1111/892375dkfnsi

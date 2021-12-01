@@ -80,7 +80,7 @@ def metrics_datasets(request):
 
             writer = csv.writer(response)
             writer.writerow(
-                ['NGT ID', 'Status', 'Access Level', 'Title', 'Approval Date', 'Contact', 'Authors', 'DOI', 'Downloads'
+                ['NGT ID', 'Status', 'Access Level', 'Title', 'Approval Date', 'Contact', 'Authors', 'DOI', 'Downloads',
                                                                                                             'Citation'])
             for dataset in dataset_report['datasets']:
                 writer.writerow([dataset.data_set_id(),
