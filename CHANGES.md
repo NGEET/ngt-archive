@@ -1,5 +1,10 @@
 # NGEE Tropics Archive Releases
 
+## v2.3.1
+Bug fix release
+
+ - Issue #346 - Metrics report download headers too short
+
 ## v2.3.0
 NGEE Tropics Metrics page
 
