@@ -25,7 +25,7 @@ def get_setting(setting_name):
     return settings.ARCHIVE_API[setting_name]
 
 
-def notify_admin_to_activate_user(sender, user, **kwargs):
+def notify_new_account(sender, user, **kwargs):
     """
     After the user is authenticated check to see if they have any groups. If they do
     not, look them up in the Person table.  If they exist, add them to the 'NGT Team' or 'NGT Collaborator' group.
@@ -76,14 +76,44 @@ def notify_admin_to_activate_user(sender, user, **kwargs):
         elif not user.last_login:
             # Make sure the activation request is only sent once
             EmailMessage(
-                subject="{} user '{}' requesting activation".format(get_setting("EMAIL_SUBJECT_PREFIX"),user.username),
-                body="""Dear NGEE Tropics Admins,
+                subject=f"{get_setting('EMAIL_SUBJECT_PREFIX')} NGEE-Tropics Account Created for '{user.username}'",
+                to=[user.email],
+                cc=get_setting("EMAIL_NGEET_TEAM"),
+                reply_to=get_setting("EMAIL_NGEET_TEAM"),
+                body=f"""Greetings {user.username},
 
-User '{}' is requesting access to NGEE Tropics Archive service.
+Your access to the NGEE-Tropics Archive has been configured and you can now download data from the portal. Thank you for your participation in this project.
 
-            """.format(user.username),
-                to=get_setting("EMAIL_NGEET_TEAM"),
-                reply_to=get_setting("EMAIL_NGEET_TEAM")).send()
+You can access the portal datasets using this link:
+https://ngt-data.lbl.gov/dois
+
+
+------------------
+Contributing data.
+
+If you also want the ability to contribute/upload data packages to the NGEE-Tropics Archive or access other team resources, please send the information below to ngee-tropics-archive@lbl.gov
+- First/Last name
+- Email address
+- Your ORCID (to create one, access: https://orcid.org/)
+- Your Affiliation/Institution
+- Indicated if you are funded by NGEE-Tropics: Yes/No (note that NGEE-Tropics collaborators, even if not funded by the project, are welcome to deposit their data with the archive)
+
+
+-----------------
+More information.
+
+- You can find more information about the NGEE-Tropics Data in this link:
+https://ngee-tropics.lbl.gov/research/data/
+
+- If you need other help with your account or access to the NGEE-Tropics Archive, please send a message detailing the issue to:
+ngee-tropics-archive@lbl.gov
+
+- If you would like to change your password, please access:
+https://ameriflux-data.lbl.gov/Pages/ResetFluxPassword.aspx
+
+- If you have forgotten your login, please access:
+https://ameriflux-data.lbl.gov/Pages/ForgotFluxUsername.aspx
+            """).send()
 
         # Any authenticated use should be set as active
         # This will allow access to download public datasets
@@ -100,16 +130,15 @@ User '{}' is requesting access to NGEE Tropics Archive service.
 # This signal is sent after users log in with default django authentication
 #     Disconnect the signal that updates last_login
 user_logged_in.disconnect(update_last_login, dispatch_uid='update_last_login')
-user_logged_in.connect(notify_admin_to_activate_user)
+user_logged_in.connect(notify_new_account)
 
 # FROM https://pythonhosted.org/django-auth-ldap/reference.html#django_auth_ldap.backend.LDAPBackend.get_or_create_user
-# This is a Django signal that is sent when clients should perform additional
-# customization of a User object. It is sent after a user has been authenticated
-# and the backend has finished populating it, and just before it is saved. The
-# client may take this opportunity to populate additional model fields, perhaps
-# based on ldap_user.attrs. This signal has two keyword arguments: user is the
+# This is a Django signal that is sent to the user to confirm that a new
+# account was created. It is sent after a user has been authenticated
+# and the backend has finished populating it, and just before it is saved.
+# This signal has two keyword arguments: user is the
 # User object and ldap_user is the same as user.ldap_user. The sender is the LDAPBackend class.
-django_auth_ldap.backend.populate_user.connect(notify_admin_to_activate_user)
+django_auth_ldap.backend.populate_user.connect(notify_new_account)
 
 
 def dataset_notify_status_change(sender, **kwargs):

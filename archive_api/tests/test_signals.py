@@ -57,10 +57,11 @@ class TestLoginSignals(TestCase):
 
         email = mail.outbox[0]
 
-        self.assertEqual(email.to, ['ngeet-team@testserver'])
+        self.assertEqual(email.to, [user.email])
+        self.assertEqual(email.cc, ['ngeet-team@testserver'])
         self.assertEqual(email.reply_to, ['ngeet-team@testserver'])
-        self.assertEqual(email.subject, "[ngt-archive-test] user 'flash' requesting activation")
-        self.assertTrue(email.body.find("User 'flash' is requesting access to NGEE Tropics Archive service.") > -1)
+        self.assertEqual(email.subject, "[ngt-archive-test] NGEE-Tropics Account Created for 'flash'")
+        self.assertTrue(email.body.find("Greetings flash") > -1)
 
     def test_signal_notify_no_person_last_login(self):
         user = User.objects.get(username="arrow")
@@ -92,10 +93,11 @@ class TestLoginSignals(TestCase):
 
         email = mail.outbox[0]
 
-        self.assertEqual(email.to, ['ngeet-team@testserver'])
+        self.assertEqual(email.to, [user.email])
+        self.assertEqual(email.cc, ['ngeet-team@testserver'])
         self.assertEqual(email.reply_to, ['ngeet-team@testserver'])
-        self.assertEqual(email.subject, "[ngt-archive-test] user 'vibe' requesting activation")
-        self.assertTrue(email.body.find("User 'vibe' is requesting access to NGEE Tropics Archive service.") > -1)
+        self.assertEqual(email.subject, "[ngt-archive-test] NGEE-Tropics Account Created for 'vibe'")
+        self.assertTrue(email.body.find("Greetings vibe,") > -1)
 
     def test_signal_no_notify(self):
         user = User.objects.get(username="superadmin")

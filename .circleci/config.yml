@@ -1,12 +1,12 @@
 jobs:
   test:
       docker:
-        - image: circleci/python:3.7-rc-node
+        - image: circleci/python:3.9-rc-node
       steps:
         - checkout
         - run:
             command: |
-              sudo apt-get update; sudo apt-get install sqlite3 libsqlite3-dev libldap2-dev libsasl2-dev libssl-dev
+              sudo apt-get update --allow-releaseinfo-change; sudo apt-get install sqlite3 libsqlite3-dev libldap2-dev libsasl2-dev libssl-dev
               mkdir -p ./venv
               virtualenv ./venv
               . venv/bin/activate
