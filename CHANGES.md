@@ -1,5 +1,10 @@
 # NGEE Tropics Archive Releases
 
+## v2.3.2
+Minor change to user registrations notification
+
+  - Issue #347 - New user registration email should notify user
+
 ## v2.3.1
 Bug fix release
 
