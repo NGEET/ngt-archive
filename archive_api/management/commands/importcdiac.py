@@ -60,6 +60,7 @@ class Command(BaseCommand):
                             with open(archive_file, 'rb') as f:
                                 dataset.archive.save(filename,
                                                      File(f))
+                            dataset._change_reason = f'Uploaded {archive_file}'
                             dataset.save()
                             archived = True
 
@@ -71,6 +72,7 @@ class Command(BaseCommand):
                         with open(archive_file, 'rb') as f:
                             dataset.archive.save(filename,
                                                  File(f))
+                        dataset._change_reason = f'Zipped and uploaded {archive_file}'
                         dataset.save()
 
     def extract_metadata(self, options, ngt_id,xml_file):
@@ -91,7 +93,8 @@ class Command(BaseCommand):
             return dataset
         except DataSet.DoesNotExist:
 
-            dataset = DataSet(ngt_id=int(ngt_id), managed_by=create_by, modified_by=create_by,version="1.0")
+            dataset = DataSet(ngt_id=int(ngt_id), managed_by=create_by, modified_by=create_by, version="1.0")
+            dataset._change_reason = f'New Dataset'
             dataset.save()
 
         # Origin are the authors in order of precedence

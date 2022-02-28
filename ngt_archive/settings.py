@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'archive_api.apps.ArchiveApiConfig',
     'oauth2_provider',
     'daterangefilter',
+    "simple_history"
 ]
 
 MIDDLEWARE= [
@@ -56,6 +57,7 @@ MIDDLEWARE= [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'simple_history.middleware.HistoryRequestMiddleware',
 
 ]
 

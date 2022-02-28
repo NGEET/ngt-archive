@@ -5,11 +5,11 @@ import shutil
 from collections import OrderedDict
 
 import os
-from datetime import datetime
 from wsgiref.util import FileWrapper
 
 from django.conf import settings
 from django.db import transaction
+from django.db.models import F
 from django.http import HttpResponse
 from django.utils import timezone
 from django.utils.encoding import smart_str
@@ -23,11 +23,10 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from types import FunctionType
 
-from archive_api.models import DataSet, MeasurementVariable, Site, Person, Plot, DataSetDownloadLog
+from archive_api.models import DataSet, MeasurementVariable, STATUS_CHOICES, Site, Person, Plot, DataSetDownloadLog
 from archive_api.permissions import HasArchivePermission, HasSubmitPermission, HasApprovePermission, \
-    HasUnsubmitPermission, \
-    HasUnapprovePermission, HasUploadPermission, HasEditPermissionOrReadonly, APPROVED, DRAFT, \
-    SUBMITTED, IsActivated, HasPublicationDatePermission
+    HasUploadPermission, HasEditPermissionOrReadonly, APPROVED, DRAFT, \
+    SUBMITTED, IsActivated
 from archive_api.serializers import DataSetSerializer, MeasurementVariableSerializer, \
     SiteSerializer, PersonSerializer, \
     PlotSerializer
@@ -186,8 +185,12 @@ class DataSetViewSet(ModelViewSet):
                 with transaction.atomic():
                     # Validate the archive field with clean()
                     dataset.archive.field.clean(upload, dataset)
+                    dataset._change_reason = f'{request.path}: Saved upload file "{upload.name}"'
                     dataset.archive.save(upload.name, upload)
                     dataset.modified_by = request.user
+                    if dataset.managed_by == request.user:
+                        dataset.status = dataset.STATUS_DRAFT
+                    dataset._change_reason = f'{request.path}: Saved dataset with file path "{dataset.archive}"'
                     dataset.save()
             except ValidationError as ve:
                 return Response({'success': False, 'detail': ve.detail},
@@ -214,32 +217,6 @@ class DataSetViewSet(ModelViewSet):
         return Response({'success': True, 'detail': 'DataSet has been approved.'},
                         status=http_status.HTTP_200_OK)
 
-    @action(detail=True, methods=['post', 'get'],
-                  permission_classes=(
-                  HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasUnsubmitPermission))
-    def unsubmit(self, request, pk=None):
-        """
-        Unsubmit action.  Changes the dataset from SUBMITTED to DRAFT status. User must have permissions for this action
-        """
-
-        self.change_status(request, DRAFT)
-        return Response({'success': True, 'detail': 'DataSet has been unsubmitted.'},
-                        status=http_status.HTTP_200_OK)
-
-    @action(detail=True, methods=['post', 'get'],
-                  permission_classes=(
-                          HasEditPermissionOrReadonly, permissions.IsAuthenticated,
-                          HasUnapprovePermission))
-    def unapprove(self, request, pk=None):
-        """
-        Unapprove action.  Changes the dataset from APPROVED to SUBMITTED status. User must have permissions for this action
-        """
-
-        self.change_status(request, SUBMITTED)
-        return Response({'success': True, 'detail': 'DataSet has been unapproved.'},
-                        status=http_status.HTTP_200_OK)
-
-
 
     @action(detail=True, methods=['post', 'get'],
                   permission_classes=(
@@ -254,36 +231,14 @@ class DataSetViewSet(ModelViewSet):
 
     @action(detail=True, methods=['post', 'get'],
                   permission_classes=(
-                          HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasPublicationDatePermission))
-    def publication_date(self, request, pk=None):
+                  HasEditPermissionOrReadonly, permissions.IsAuthenticated))
+    def draft(self, request, pk=None):
         """
-        Update the publication date.
+        Submit action. Changes the dataset from DRAFT to SUBMITTED status. User must have permissions for this action.
         """
-        dataset = self.get_object()  # this will initiate a permissions check
-
-        # Defaults to current date if no publication date set
-        if not dataset.publication_date:
-            dataset.publication_date = timezone.now()
-
-        if "date" in request.GET:
-            try:
-                dataset.publication_date = datetime.strptime(request.GET["date"], "%m/%d/%Y")
-
-            except Exception as e:
-
-                return Response({'success': False, 'detail': "Invalid format for Publication date. Must be %m/%d/%Y"},
-                            status=http_status.HTTP_400_BAD_REQUEST)
-
-        dataset.modified_by = request.user
-        serializer = DataSetSerializer(dataset, context={'request': request})
-        deserializer = DataSetSerializer(dataset, data=serializer.data,
-                                         context={'request': request})
-        deserializer.is_valid(raise_exception=True)
-        self.perform_update(deserializer)
-
-        return Response({'success': True, 'detail': 'Publication date has been set.'},
-                    status=http_status.HTTP_200_OK)
-
+        self.change_status(request, DRAFT)
+        return Response({'success': True, 'detail': 'DataSet has been update.'},
+                        status=http_status.HTTP_200_OK)
 
     def change_status(self, request, status):
         """
@@ -292,37 +247,51 @@ class DataSetViewSet(ModelViewSet):
         """
         dataset = self.get_object()  # this will initiate a permissions check
         original_status = dataset.status
-        dataset.status = status
+        now = timezone.now()
 
         # This will rollback the transaction on failure
         with transaction.atomic():
-            # Validate the archive field with clean()
-            dataset.submission_date = timezone.now()
-            dataset.modified_by = request.user
-            serializer = DataSetSerializer(dataset, context={'request': request})
-            deserializer = DataSetSerializer(dataset, data=serializer.data,
-                                             context={'request': request})
-            deserializer.is_valid(raise_exception=True)
-            self.perform_update(deserializer)
-            if status == SUBMITTED and dataset.archive and dataset.version == "0.0":
 
-                old_path, filename = os.path.split(dataset.archive.name)
-                dataset.version = "1.0"  # FIXME:  hard coded util statemachine is implemented
-                new_path = old_path.replace("0.0", dataset.version)
-                os.makedirs(os.path.join(settings.ARCHIVE_API['DATASET_ARCHIVE_ROOT'], new_path),
-                            exist_ok=True)
-                shutil.copy2(
-                    os.path.join(settings.ARCHIVE_API['DATASET_ARCHIVE_ROOT'], old_path, filename),
-                    os.path.join(settings.ARCHIVE_API['DATASET_ARCHIVE_ROOT'], new_path, filename))
+            if original_status != status:
+                # Validate the archive field with clean()
+                dataset.modified_by = request.user
+                dataset.status = status
+                serializer = DataSetSerializer(dataset, context={'request': request})
+                deserializer = DataSetSerializer(dataset, data=serializer.data,
+                                                 context={'request': request})
+                deserializer.is_valid(raise_exception=True)
 
-                dataset.archive.name = "{}/{}".format(new_path, filename)
-                dataset.save()
+                # The status has changed
+                if status == SUBMITTED:
+                    # This is the first time that dataset is being submitted
+                    dataset.submission_date = now
+                    if dataset.archive and dataset.version == "0.0":
+                        old_path, filename = os.path.split(dataset.archive.name)
+                        dataset.version = "1.0"  # FIXME:  hard coded util statemachine is implemented
+                        new_path = old_path.replace("0.0", dataset.version)
+                        os.makedirs(os.path.join(settings.ARCHIVE_API['DATASET_ARCHIVE_ROOT'], new_path),
+                                    exist_ok=True)
+                        shutil.copy2(
+                            os.path.join(settings.ARCHIVE_API['DATASET_ARCHIVE_ROOT'], old_path, filename),
+                            os.path.join(settings.ARCHIVE_API['DATASET_ARCHIVE_ROOT'], new_path, filename))
 
-        # Send the signal for the status change
-        dataset_status_change.send(sender=self.__class__, request=request, user=request.user,
+                        dataset.archive.name = "{}/{}".format(new_path, filename)
+                elif status == APPROVED:
+                    dataset.approval_date = now
+                    if original_status == SUBMITTED:
+                        # The dataset is NOT LIVE yet and is being approved for the first time
+                        dataset.publication_date = now
+                        dataset.status = status
+
+                dataset._change_reason = f'{request.path}: Changed Status from {STATUS_CHOICES[original_status]} to ' \
+                                         f'{STATUS_CHOICES[status]}'
+                dataset.save(modified_date=now)
+
+                # Send the signal for the status change
+                dataset_status_change.send(sender=self.__class__, request=request, user=request.user,
                                    instance=dataset, original_status=original_status)
 
-    def get_queryset(self):
+    def get_queryset(self,):
         """
         This view should return a list of all the datasets
         for the currently authenticated user.
@@ -331,11 +300,18 @@ class DataSetViewSet(ModelViewSet):
         NGT Team and Collaborators are allow to view public, their own private and approved NGEET datasets
         """
         user = self.request.user
+        managed_by = self.request.query_params.get('managed_by', None)
+        needs_approval = self.request.query_params.get('needs_approval', None)
+        is_published = self.request.query_params.get('is_published', None)
 
         from django.db.models import Q  # for or clause
+
+        # Filter by datasets the current user has permissions for
         if self.request.user.has_perm('archive_api.view_all_datasets'):
-            return DataSet.objects.filter(status__gte=DataSet.STATUS_DRAFT)
+            # This user can view all datasets
+            where_clause = Q(status__gte=DataSet.STATUS_DRAFT)
         else:
+            # This user can only view their own and public datasets
             where_clause = Q(managed_by=user, status__gte=DataSet.STATUS_DRAFT) | Q(
                 access_level=DataSet.ACCESS_PUBLIC, status=DataSet.STATUS_APPROVED) | Q(
                 Q(cdiac_submission_contact__user=user,
@@ -346,7 +322,26 @@ class DataSetViewSet(ModelViewSet):
             if self.request.user.has_perm('archive_api.view_ngeet_approved_datasets'):
                 where_clause = where_clause | Q(access_level=DataSet.ACCESS_NGEET,
                                                 status=DataSet.STATUS_APPROVED)
-            return DataSet.objects.filter(where_clause)
+
+        # Filter by is_published
+        if is_published == 'true':
+            where_clause = where_clause & Q(publication_date__isnull=False, publication_date__lt=timezone.now())
+        elif is_published == 'false':
+            where_clause = where_clause & Q(publication_date__isnull=True)
+
+        # Filter by managed_by
+        if managed_by:
+            where_clause = where_clause & Q(managed_by__username=managed_by)
+
+        # Filter by needs approval
+        if needs_approval == 'true':
+            where_clause = where_clause & Q(status__gte=DataSet.STATUS_SUBMITTED) & \
+                                          Q(Q(approval_date__lt=F('modified_date')) | Q(approval_date__gt=F('modified_date')) |\
+                                            Q(approval_date=None))
+        elif needs_approval == 'false':
+            where_clause = where_clause & Q(status__lt=DataSet.STATUS_SUBMITTED) | Q(approval_date=F('modified_date'))
+
+        return DataSet.objects.filter(where_clause)
 
 
 class MeasurementVariableViewSet(ModelViewSet):

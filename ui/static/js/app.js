@@ -22,6 +22,26 @@ function isJson(value) {
 }
 
 /**
+ * Check for duplicate dataset names
+ * @param submissionObj
+ * @returns {boolean}
+ */
+function checkDuplicates(submissionObj) {
+    var dupname = false;
+    var proceed = true;
+    for (var k = 0; k < dataObj.datasets.length; k++) {
+        if (dataObj.datasets[k].name == submissionObj.name) {
+            dupname = dataObj.datasets[k].data_set_id;
+        }
+    }
+    if (dupname) {
+        proceed = confirm('Another dataset (' + dupname + ') with the same name was found.\n' +
+            'Do you still want to proceed (Click Cancel to make changes)?');
+    }
+    return !proceed;
+}
+
+/**
  * Upload a data file to the specified data set
  *
  * @param dataSetUrl - the url to the dataset
@@ -201,7 +221,7 @@ $(document).ready(function () {
 
     $(window).bind("beforeunload", function (event) {
         if (!overrideMsg) {
-            if (window.location.href.indexOf('create') != -1 || (window.location.href.indexOf('edit-draft') != -1 && editingScreen)) {
+            if (window.location.href.indexOf('create') != -1 || (window.location.href.indexOf('edit-list') != -1 && editingScreen)) {
                 return confirm("Are you sure you want to leave this page? There may be unsaved changes.");
             }
         }
@@ -228,14 +248,13 @@ $(document).ready(function () {
         method: 'options',
         success: function (data){
             templates.uploadMaxSize = data['actions']['upload']['parameters']['attachment']['max_length']
-            console.log(data);
         },
         error: function(error){
             console.log(error);
         }
     });
 
-    $.getJSON("static/js/metadata/dataset.json?v=202010", function (data) {
+    $.getJSON("static/js/metadata/dataset.json?v=202202", function (data) {
         templates.datasets = data;
         createEditForm('datasets');
     });
@@ -275,21 +294,22 @@ $(document).ready(function () {
             $('.js-loading').addClass('hide');
             break;
 
-        case 'edit-draft':
+        case 'edit-list':
             $.when(getDataSets(), getContacts()).then(function (data, contacts) {
                 dataObj.datasets = data;
                 dataObj.contacts = contacts;
                 $('.js-text-dump').html('');
                 $('.js-datasets').html('');
-                var draftCount = 0;
-                dataObj.drafts = [];
+                dataObj.editDatasets = [];
+
+                // Show datasets managed by the user or if the user is an adminiastrator
                 for (var i = 0; i < dataObj.datasets.length; i++) {
-                    if (dataObj.datasets[i].status == 0 || dataObj.datasets[i].status == 1) {
-                        dataObj.drafts.push(dataObj.datasets[i]);
+                    if ($('.js-auth').attr('data-auth') == 'admin' ||
+                        $('.js-auth').attr('data-auth') == dataObj.datasets[i].managed_by) {
+                        dataObj.editDatasets.push(dataObj.datasets[i]);
                     }
                 }
-                showDrafts();
-                //$('.js-view.view-drafts-view h4').prepend(draftCount + ' ');
+                showEditDatasets();
                 $('.js-loading').addClass('hide');
                 editingScreen = false;
 
@@ -297,7 +317,6 @@ $(document).ready(function () {
             break;
 
         case 'view':
-            //$('.js-get-datasets').trigger('click');
             $.when(getDataSets(), getContacts()).then(function (data, contacts) {
                 dataObj.datasets = data;
                 dataObj.contacts = contacts;
@@ -341,7 +360,6 @@ $(document).ready(function () {
     });
 
     $.when(getPlots()).done(function (plots) {
-        console.log(plots);
         dataObj.plots = plots;
         $('.js-all-plots').append('<option value="">None</option>');
         for (var i = 0; i < plots.length; i++) {
@@ -360,7 +378,6 @@ $(document).ready(function () {
     });
 
     $('body').on('change', '.js-all-sites', function () {
-        //console.log('here');
         var plotTitle = false;
         var index = $(this).find('option:selected').attr('data-index');
         $('.js-view-site-btn .js-site-id').html($(this).val());
@@ -478,14 +495,7 @@ $(document).ready(function () {
 
     });
 
-    /*$('body').on('click', '.js-param.plots', function() {
-        if($('.js-all-plots').attr('disabled')) {
-            alert('Please select a site first.');
-        }
-    });*/
-
     $('body').on('change', '.js-all-plots', function () {
-        //console.log('here');
         var index = $(this).find('option:selected').attr('data-index');
         $('.js-view-plot-btn .js-plot-id').html($(this).val());
         $('.js-plot-info').removeClass('hide');
@@ -586,18 +596,11 @@ $(document).ready(function () {
         fileToUpload = false;
     });
 
-    $('body').on('click', '.js-edit-draft', function (event) {
+    $('body').on('click', '.js-edit-list', function (event) {
         event.preventDefault();
         event.stopPropagation();
         var url = $(this).closest('.js-view-dataset').attr('data-url');
-        var index = -1;
-        //var index = $(this).closest('.js-view-dataset').attr('data-index');
-
-        for (var j = 0; j < dataObj.datasets.length; j++) {
-            if (dataObj.datasets[j].url == url) {
-                index = j;
-            }
-        }
+        var index = $(this).closest('.js-view-dataset').attr('data-index');
 
         if (index != -1) {
             for (var param in templates.datasets) {
@@ -639,10 +642,8 @@ $(document).ready(function () {
         $('.js-edit-form .js-all-plots').removeAttr('disabled');
 
         if (dataObj.datasets[index].status == 0) {
-            $('.js-edit-dataset').html('Update Draft');
             $('.js-submit-dataset').removeClass('hide');
-        } else if (dataObj.datasets[index].status == 1) {
-            $('.js-edit-dataset').html('Update Dataset');
+        } else {
             $('.js-submit-dataset').addClass('hide');
         }
 
@@ -651,12 +652,10 @@ $(document).ready(function () {
             $('.js-existing-file').removeClass('hide')
                 .html(dataObj.datasets[index].archive_filename);
             $('.js-file-replace-msg').removeClass('hide');
-            //$('.js-new-file-msg').addClass('hide');
         } else {
             $('.js-file-exists').addClass('hide');
             $('.js-existing-file').addClass('hide');
             $('.js-file-replace-msg').addClass('hide');
-            //$('.js-new-file-msg').removeClass('hide');
         }
 
         var siteStr = '';
@@ -677,12 +676,6 @@ $(document).ready(function () {
         }
         editingScreen = true;
 
-        //$('.js-edit-form .js-file-drop-zone').addClass('hide');
-
-        /*$('.js-edit-form .js-param').each(function() {
-            var param = $(this).attr('data-param');
-            $(this).find('.js-input').val(dataObj.datasets[index][param]);
-        });*/
     });
 
 
@@ -779,9 +772,22 @@ $(document).ready(function () {
             }
 
         });
-        $.when(editDataset(jsonObj, url)).done(function (status) {
+        $.when(submitDataset(jsonObj, url, method="PUT")).done(function (status) {
             if (status.result) {
-                alert('Your changes have been saved');
+                var alertMessage = ""
+                if ("admin" == $('.js-auth').attr('data-auth')) {
+                    $.when(changeStatus(url, "draft")).done(function (response) {
+                    if (response.result && response.detail) {
+                        alertMessage=response.detail
+                    } else {
+                        handleFormErrors(submitStatus, "Dataset submission failed. Please check the fields and try again.");
+                    }
+                    });
+                }
+                alert(alertMessage + 'Your changes have been saved.\nPlease note: The screen will refresh after you click OK.');
+                $('.js-clear-form').trigger('click');
+                $('.js-clear-file').trigger('click');
+
             } else {
                 handleFormErrors(status, '\'There was an error with the update.')
             }
@@ -792,9 +798,11 @@ $(document).ready(function () {
     $('body').on('click', '.js-clear-form', function (event) {
         event.preventDefault();
         overrideMsg = true;
-        location.reload();
+        // Always go back to the edit list
+        window.location.assign("?view=edit-list")
 
     });
+
 
     $('body').on('click', '.js-submit-dataset', function (event) {
         event.preventDefault();
@@ -817,6 +825,54 @@ $(document).ready(function () {
         }
     });
 
+    $('body').on('click', '.js-approve', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        var approveUrl = $(this).closest('.js-view-dataset').attr('data-url');
+        var title = $(this).siblings('.title').text()
+        var approve = confirm("Approve Dataset: " + title);
+        if (approve) {
+
+            $.when(changeStatus(approveUrl, "approve")).always(function (xhrResponse) {
+                if (xhrResponse.result == true){
+                    alert("Dataset Approved")
+
+                    // refreshes the page
+                    history.go(0);
+                }
+                else {
+                    alert(xhrResponse.responseJSON.detail)
+                }
+
+
+            });
+        }
+
+    });
+
+    $('body').on('click', '.js-review', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        var approveUrl = $(this).closest('.js-view-dataset').attr('data-url');
+        var title = $(this).siblings('.title').text()
+        var approve = confirm("Request Review of Dataset: " + title);
+        if (approve) {
+
+            $.when(changeStatus(approveUrl, "submit")).always(function (xhrResponse) {
+                if (xhrResponse.result == true){
+                    alert("Dataset Review Requested")
+
+                    // refreshes the page
+                    history.go(0);
+                }
+                else {
+                    alert(xhrResponse.responseJSON.detail)
+                }
+            });
+        }
+
+    });
+
     $('body').on('click', '.js-create-dataset', function (event) {
         event.preventDefault();
         var submissionObj = {};
@@ -833,9 +889,9 @@ $(document).ready(function () {
 
         var entryCount = 0;
         var validEntries = true;
+
         //find all the contacts and authors first before processing others
         if ($('.js-new-value.js-input').length > 0) {
-
 
             $('.js-new-value.js-input').each(function (index) {
                 if (!$(this).find('.js-first-name').val() || !$(this).find('.js-last-name').val() || !$(this).find('.js-email').val()) {
@@ -848,14 +904,12 @@ $(document).ready(function () {
                 $('.js-new-value.js-input').each(function (index) {
 
                     var param = $(this).closest('.js-param').attr('data-param');
-
                     var fname = $(this).find('.js-first-name').val();
                     var lname = $(this).find('.js-last-name').val();
                     var email = $(this).find('.js-email').val();
                     var orcid = $(this).find('.js-orcid').val();
 
                     $.when(createContact(fname, lname, email, '', orcid)).done(function(status) {
-                        //console.log(status);
                         if (status.url && entryCount == $('.js-new-value.js-input').length - 1) {
                             if (!submissionObj[param] && param == 'authors') {
                                 submissionObj[param] = [];
@@ -900,20 +954,12 @@ $(document).ready(function () {
                 alert('Please enter first and last names, and email address for all new contacts/authors');
             }
         } else {
-            var dupname = false;
+            $('.js-loading').removeClass('hide');
             submissionObj = processForm(submissionObj, submitMode);
-            for (var k = 0; k < dataObj.datasets.length; k++) {
-                if (dataObj.datasets[k].name == submissionObj.name) {
-                    dupname = dataObj.datasets[k].data_set_id;
-                }
-            }
-            if (dupname) {
-                var proceed = confirm('Another dataset (' + dupname + ') with the same name was found.\nDo you still want to proceed (Click Cancel to make changes)?');
-                if (proceed) {
-                    createDraft(submissionObj, submitMode);
-                }
-            } else {
+            if (!checkDuplicates(submissionObj)) {
                 createDraft(submissionObj, submitMode);
+            } else {
+                $('.js-loading').addClass('hide');
             }
 
         }
@@ -946,7 +992,6 @@ $(document).ready(function () {
                     var orcid = $(this).find('.js-orcid').val();
 
                     $.when(createContact(fname, lname, '', '', orcid)).done(function(status) {
-                        //console.log(status);
                         if (status.url && entryCount == $('.js-new-value.js-input').length - 1) {
                             if (!submissionObj[param] && param == 'authors') {
                                 submissionObj[param] = [];
@@ -961,21 +1006,10 @@ $(document).ready(function () {
 
                             // no properties are specified. note that ngee tropics resources will always be set
                             // submit will also be present, which will be removed in the createDraft method
-                            var dupname = false;
-                            for (var k = 0; k < dataObj.datasets.length; k++) {
-                                if (dataObj.datasets[k].name == submissionObj.name) {
-                                    dupname = true;
-                                }
-                            }
-                            if (dupname) {
-                                var proceed = confirm('Another dataset with the same name was found.\nDo you still want to proceed (Click Cancel to make changes)?');
-                                if (proceed) {
-                                    completeEdit(submissionObj, url);
-                                } else {
-                                    $('.js-loading').addClass('hide');
-                                }
-                            } else {
+                            if (!checkDuplicates(submissionObj)) {
                                 completeEdit(submissionObj, url);
+                            } else {
+                                $('.js-loading').addClass('hide');
                             }
 
                         } else if (status.url) {
@@ -1012,21 +1046,10 @@ $(document).ready(function () {
         } else {
             $('.js-loading').removeClass('hide');
             submissionObj = processForm(submissionObj, false, true);
-            var dupname = false;
-            for (var k = 0; k < dataObj.datasets.length; k++) {
-                if (dataObj.datasets[k].name == submissionObj.name) {
-                    dupname = true;
-                }
-            }
-            if (dupname) {
-                var proceed = confirm('Another dataset with the same name was found.\nDo you still want to proceed (Click Cancel to make changes)?');
-                if (proceed) {
-                    completeEdit(submissionObj, url);
-                } else {
-                    $('.js-loading').addClass('hide');
-                }
-            } else {
+            if (!checkDuplicates(submissionObj)) {
                 completeEdit(submissionObj, url);
+            } else {
+                $('.js-loading').addClass('hide');
             }
         }
     });
@@ -1102,9 +1125,9 @@ $(document).ready(function () {
             dataObj.approvedDatasets.sort(sortByField);
             showApprovedDatasets();
         }
-        if (dataObj.drafts) {
-            dataObj.drafts.sort(sortByField);
-            showDrafts();
+        if (dataObj.editDatasets) {
+            dataObj.editDatasets.sort(sortByField);
+            showEditDatasets();
         }
 
     });
@@ -1250,19 +1273,15 @@ $(document).ready(function () {
                 $('.js-file-download-btn').attr('data-url', datasetObj['url'])
                     .attr('data-archive', datasetObj['archive'])
                     .attr('href', datasetObj['archive'])
-                    //.clone()
-                    //.appendTo('.js-download-wrapper')
                     .addClass('pull-right');
                 $('.js-download-wrapper').removeClass('hide');
             }
 
             //}
             if (!datasetObj.archive) {
-                //$('.js-data-policy-check').addClass('hide');
                 $('.js-data-policy-text').addClass('hide');
                 $('.js-file-download-btn').addClass('hide');
             } else {
-                //$('.js-data-policy-check').removeClass('hide');
                 $('.js-data-policy-text').removeClass('hide');
                 $('.js-file-download-btn').removeClass('hide');
             }
@@ -1351,10 +1370,6 @@ $(document).ready(function () {
 
 });
 
-function populateDatasets(filter, container) {
-
-}
-
 function createDraft(submissionObj, submitMode) {
     if (submissionObj.submit) {
         if (submitMode && !fileToUpload) {
@@ -1362,15 +1377,15 @@ function createDraft(submissionObj, submitMode) {
         } else {
             $('.js-loading').removeClass('hide');
             delete submissionObj.submit;
-            $.when(createDataset(submissionObj)).done(function (statusObj) {
+            $.when(submitDataset(submissionObj)).done(function (statusObj) {
                 if (statusObj.result || statusObj.status == '0') {
                     if (fileToUpload) {
 
                        uploadData(statusObj.url, fileToUpload, uploadType="create",onSuccess = function (data) {
                                 if (submitMode) {
-                                    $.when(submitDataset(statusObj.url)).done(function (submitStatus) {
+                                    $.when(changeStatus(statusObj.url, "submit")).done(function (submitStatus) {
                                         if (submitStatus.result) {
-                                            alert(submitStatus.detail + '\n\n You will not be able to view this dataset until it is approved. \nPlease note: The screen will refresh after you click OK.');
+                                            alert(submitStatus.detail + '\n\nPlease note: The screen will refresh after you click OK.');
                                             $('.js-clear-form').trigger('click');
                                             $('.js-clear-file').trigger('click');
                                         } else {
@@ -1406,79 +1421,93 @@ function createDraft(submissionObj, submitMode) {
     }
 }
 
-function showDrafts() {
+function showEditDatasets() {
     var approvedCount = 0;
     $('.js-all-datasets table tbody').html('');
-    for (var i = 0; i < dataObj.drafts.length; i++) {
+    for (var i = 0; i < dataObj.editDatasets.length; i++) {
 
-        if (dataObj.drafts[i].status == 0 || dataObj.drafts[i].status == 1) {
-            var tr = $('<tr/>');
-            tr.append('<td>' + dataObj.drafts[i].data_set_id + '</td>');
-            var tag = $('<td/><div/>').addClass('js-view-dataset dataset');
-            tag.append('<h5 class="title">' + (dataObj.drafts[i].name ? dataObj.drafts[i].name : 'NA') + '</h5>')
-                .append('<p class="desc">' + (dataObj.drafts[i].description ? dataObj.drafts[i].description.substring(0, 199) + '...' : 'NA') + '</p>')
-                .attr('data-url', dataObj.drafts[i].url)
-                .attr('data-index', i)
-                .attr('data-url', dataObj.drafts[i].url)
-                .attr('data-index', i);
+        var tr = $('<tr/>');
+        tr.append('<td>' + dataObj.editDatasets[i].data_set_id + '</td>');
+        var tag = $('<td/><div/>').addClass('js-view-dataset dataset');
+        tag.append('<h5 class="title">' + (dataObj.editDatasets[i].name ? dataObj.editDatasets[i].name : 'NA') + '</h5>')
+            .append('<p class="desc">' + (dataObj.editDatasets[i].description ? dataObj.editDatasets[i].description.substring(0, 199) + '...' : 'NA') + '</p>')
+            .attr('data-url', dataObj.editDatasets[i].url)
+            .attr('data-index', i)
+            .attr('data-url', dataObj.editDatasets[i].url)
+            .attr('data-index', i);
 
-            if ($('.js-auth').attr('data-auth') == 'admin' || dataObj.drafts[i].status == 0) {
-                tag.append('<button class="button js-edit-draft">Edit</button>');
+            tag.append('<button class="button js-edit-list">Edit</button>');
+            if ($('.js-auth').attr('data-auth') == 'admin' && dataObj.editDatasets[i].needs_approval)
+            {
+                tag.append(' <button class="button blue js-approve">Approve</button>');
+            }
+            if ($('.js-auth').attr('data-auth') != 'admin' && dataObj.editDatasets[i].needs_review)
+            {
+                tag.append(' <button class="button blue js-review">Request Review</button>');
             }
 
-            tr.append(tag);
+        tr.append(tag);
 
-            var contact = false;
-            for (var j = 0; j < dataObj.contacts.length; j++) {
-                if (dataObj.contacts[j].url.indexOf(dataObj.drafts[i].contact) != -1) {
-                    contact = true;
-                    tr.append('<td>' + dataObj.contacts[j].first_name + ' ' + dataObj.contacts[j].last_name + '</td>');
-                }
+        var contact = false;
+        for (var j = 0; j < dataObj.contacts.length; j++) {
+            if (dataObj.contacts[j].url.indexOf(dataObj.editDatasets[i].contact) != -1) {
+                contact = true;
+                tr.append('<td>' + dataObj.contacts[j].first_name + ' ' + dataObj.contacts[j].last_name + '</td>');
             }
-
-            if (!contact) {
-                tr.append('<td></td>');
-            }
-
-            switch (dataObj.drafts[i].status) {
-                case "0":
-                    tr.append('<td>Draft</td>');
-                    break;
-
-                case "1":
-                    tr.append('<td>Submitted</td>');
-                    break;
-
-                default:
-                    tr.append('<td></td>');
-                    break;
-            }
-            ;
-
-            tr.append('<td>' + new Date(dataObj.drafts[i].modified_date).toLocaleString() + '</td>');
-
-            approvedCount++;
-
-            switch (dataObj.drafts[i].access_level) {
-                case '0':
-                    tr.append('<td>Private</td>');
-                    break;
-
-                case '1':
-                    tr.append('<td>NGEE Tropics</td>');
-                    break;
-
-                case '2':
-                    tr.append('<td>Public</td>');
-                    break;
-                default:
-                    tr.append('<td></td>');
-                    break;
-            }
-
-            $('.js-all-datasets tbody').append(tr);
-
         }
+
+        if (!contact) {
+            tr.append('<td></td>');
+        }
+
+        if (dataObj.editDatasets[i].publication_date) {
+            tr.append('<td>' + new Date(dataObj.editDatasets[i].publication_date).toLocaleString() + '</td>');
+        }
+        else {
+            tr.append('<td></td>');
+        }
+
+        switch (dataObj.editDatasets[i].status) {
+            case "0":
+                tr.append('<td>Draft</td>');
+                break;
+
+            case "1":
+                tr.append('<td>Submitted</td>');
+                break;
+            case "2":
+                tr.append('<td>Approved</td>');
+                break;
+            default:
+                tr.append('<td></td>');
+                break;
+        }
+        ;
+
+        tr.append('<td>' + new Date(dataObj.editDatasets[i].modified_date).toLocaleString() + '</td>');
+
+        approvedCount++;
+
+        switch (dataObj.editDatasets[i].access_level) {
+            case '0':
+                tr.append('<td>Private</td>');
+                break;
+
+            case '1':
+                tr.append('<td>NGEE Tropics</td>');
+                break;
+
+            case '2':
+                tr.append('<td>Public</td>');
+                break;
+            default:
+                tr.append('<td></td>');
+                break;
+        }
+
+        $('.js-all-datasets tbody').append(tr);
+
+
     }
     $('.js-view.view-drafts-view h4 .js-count').html(approvedCount);
 }
@@ -1504,6 +1533,11 @@ function showApprovedDatasets() {
                     tr.append('<td>' + dataObj.contacts[j].first_name + ' ' + dataObj.contacts[j].last_name + '</td>');
                 }
             }
+
+            if (dataObj.approvedDatasets[i].publication_date) {
+                tr.append('<td>' + new Date(dataObj.approvedDatasets[i].publication_date).toLocaleString() + '</td>');
+            }
+
 
             switch (dataObj.approvedDatasets[i].status) {
                 case "0":
@@ -1559,7 +1593,7 @@ function completeEdit(submissionObj, url, submitMode) {
         submissionObj['sites'] = [];
     }
 
-    $.when(editDataset(submissionObj, url)).done(function (data) {
+    $.when(submitDataset(submissionObj, url, method="PUT")).done(function (data) {
         if (data.result) {
 
             if (fileToUpload) {
@@ -1567,9 +1601,20 @@ function completeEdit(submissionObj, url, submitMode) {
                 uploadData(url, fileToUpload, uploadType='update');
 
             } else {
-                alert('Dataset has been updated successfully.\nPlease note: The page will refresh now and take you back to the list of drafts.');
+                var alertMessage = ""
+                if ("admin" != $('.js-auth').attr('data-auth')) {
+                    $.when(changeStatus(url, "draft")).done(function (response) {
+                    if (response.result && response.detail) {
+                        alertMessage=response.detail
+                    } else {
+                        handleFormErrors(submitStatus, "Dataset submission failed. Please check the fields and try again.");
+                    }
+                    });
+                }
+                alert(alertMessage + 'Dataset has been updated successfully.\nPlease note: The screen will refresh after you click OK.');
                 $('.js-clear-form').trigger('click');
                 $('.js-clear-file').trigger('click');
+
             }
         } else {
             handleFormErrors(data, "There was an error with the update.");
@@ -1654,7 +1699,6 @@ function processForm(submissionObj, submitMode, editMode) {
 function populateContacts() {
     var deferObj = jQuery.Deferred();
     $.when(getContacts()).done(function (contacts) {
-        console.log(contacts);
         dataObj.contacts = contacts;
         $('.js-all-contacts').append('<option value="add-new" data-index="-1" class="add-new-option"> - Add Collaborator - </option>');
         for(var i=0;i<contacts.length;i++) {
@@ -1744,8 +1788,6 @@ function createEditForm(templateType) {
 
                 case "reference_list":
                     var list = templates[templateType][param]['list_name'];
-                    //var tag = $();
-                    console.log(list);
                     $('.js-ref-list[data-list="' + list + '"]').clone().removeClass('hide').appendTo(paramHTML);
                     break;
 
@@ -1786,7 +1828,6 @@ function createEditForm(templateType) {
         yearRange: "c-20:c+10"
     });
 
-    //$( document ).tooltip();
     $('.js-tooltip').popover({trigger: "manual", html: true, animation: false, placement: 'right'})
         .on("mouseenter", function () {
             var _this = this;
@@ -1817,9 +1858,6 @@ function createEditForm(templateType) {
             }
         }, 300);
     });
-    /*$('.ui-tooltip').each(function() {
-        $(this).html($(this).attr('title'));
-    });*/
 }
 
 function getCookie(name) {
@@ -1838,7 +1876,15 @@ function getCookie(name) {
     return cookieValue;
 }
 
-function createDataset(submissionObj) {
+/***
+ * POST or PUT dataset to the Archive API
+ *
+ * @param submissionObj - dictionary of dataset
+ * @param url (default: api/v1/datasets)
+ * @param method (default: POST)
+ * @returns {jQuery}
+ */
+function submitDataset(submissionObj, url="api/v1/datasets/", method="POST") {
     var deferObj = jQuery.Deferred();
     var csrftoken = getCookie('csrftoken');
 
@@ -1849,47 +1895,7 @@ function createDataset(submissionObj) {
     });
 
     $.ajax({
-        method: "POST",
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        url: "api/v1/datasets/",
-        dataType: "json",
-        data: JSON.stringify(submissionObj),
-        success: function (data) {
-            data.result = true;
-            deferObj.resolve(data);
-        },
-
-        fail: function (jqXHR, textStatus, errorThrown) {
-            jqXHR.result = false;
-            deferObj.resolve(jqXHR);
-        },
-
-        error: function (jqXHR, textStatus, errorThrown) {
-            jqXHR.result = false;
-            deferObj.resolve(jqXHR);
-        },
-
-    });
-
-    return deferObj.promise();
-}
-
-function editDataset(submissionObj, url) {
-    var deferObj = jQuery.Deferred();
-
-    var csrftoken = getCookie('csrftoken');
-
-    $.ajaxSetup({
-        beforeSend: function (xhr, settings) {
-            xhr.setRequestHeader("X-CSRFToken", csrftoken);
-        }
-    });
-
-    $.ajax({
-        method: "PUT",
+        method: method,
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
@@ -1947,7 +1953,6 @@ function processEditingForm(submissionObj, url) {
                 var orcid = $(this).find('.js-orcid').val();
 
                 $.when(createContact(fname, lname, email, '', orcid)).done(function(status) {
-                    //console.log(status);
                     if (status.url && entryCount == $('.js-new-value.js-input').length - 1) {
                         if (!submissionObj[param] && param == 'authors') {
                             submissionObj[param] = [];
@@ -1961,11 +1966,11 @@ function processEditingForm(submissionObj, url) {
                         submissionObj = processForm(submissionObj, submitMode, true);
                         if (submissionObj.submit) {
                             delete submissionObj.submit;
-                            $.when(editDataset(submissionObj, url)).done(function (status) {
+                            $.when(submitDataset(submissionObj, url, method="PUT")).done(function (status) {
                                 if (status.result) {
-                                    $.when(submitDataset(url)).done(function (submitStatus) {
+                                    $.when(changeStatus(url, "submit")).done(function (submitStatus) {
                                         if (submitStatus.result && submitStatus.detail) {
-                                            alert(submitStatus.detail + ' You will not be able to view this dataset until it is approved. \nPlease note: The screen will refresh after you click OK.');
+                                            alert(submitStatus.detail + 'Please note: The screen will refresh after you click OK.');
                                             $('.js-clear-form').trigger('click');
                                             $('.js-clear-file').trigger('click');
                                         } else {
@@ -2011,11 +2016,11 @@ function processEditingForm(submissionObj, url) {
         submissionObj = processForm(submissionObj, submitMode, true);
         if (submissionObj.submit) {
             delete submissionObj.submit;
-            $.when(editDataset(submissionObj, url)).done(function (status) {
+            $.when(submitDataset(submissionObj, url, method="PUT")).done(function (status) {
                 if (status.result) {
-                    $.when(submitDataset(url)).done(function (submitStatus) {
+                    $.when(changeStatus(url, "submit")).done(function (submitStatus) {
                         if (submitStatus.result && submitStatus.detail) {
-                            alert(submitStatus.detail + ' You will not be able to view this dataset until it is approved. \nPlease note: The screen will refresh after you click OK.');
+                            alert(submitStatus.detail + 'Please note: The screen will refresh after you click OK.');
                             $('.js-clear-form').trigger('click');
                             $('.js-clear-file').trigger('click');
                         } else {
@@ -2078,6 +2083,36 @@ function createContact(fname, lname, email, institute, orcid) {
 
     });
 
+    return deferObj.promise();
+}
+
+/**
+ * Change the status of a dataset with the given url
+ * @param url
+ * @returns {jQuery}
+ */
+function changeStatus(url, status="submit") {
+    var deferObj = jQuery.Deferred();
+    $.ajax({
+        method: "GET",
+        url: url+status,
+        dataType: "json",
+        success: function (data) {
+            data.result = true;
+            deferObj.resolve(data);
+        },
+
+        fail: function (jqXHR, textStatus, errorThrown) {
+            jqXHR.result = false;
+            deferObj.resolve(jqXHR);
+        },
+
+        error: function (jqXHR, textStatus, errorThrown) {
+            jqXHR.result = false;
+            deferObj.resolve(jqXHR);
+        },
+
+    });
     return deferObj.promise();
 }
 
@@ -2258,40 +2293,6 @@ function getMetadata(templateType) {
         },
 
     });
-    return deferObj.promise();
-}
-
-function submitDataset(url) {
-    var csrftoken = getCookie('csrftoken');
-
-    $.ajaxSetup({
-        beforeSend: function (xhr, settings) {
-            xhr.setRequestHeader("X-CSRFToken", csrftoken);
-        }
-    });
-
-    var deferObj = jQuery.Deferred();
-    $.ajax({
-        method: "GET",
-        url: url + 'submit/',
-        dataType: "json",
-        success: function (data) {
-            data.result = true;
-            deferObj.resolve(data);
-        },
-
-        fail: function (jqXHR, textStatus, errorThrown) {
-            jqXHR.result = false;
-            deferObj.resolve(jqXHR);
-        },
-
-        error: function (jqXHR, textStatus, errorThrown) {
-            jqXHR.result = false;
-            deferObj.resolve(jqXHR);
-        },
-
-    });
-
     return deferObj.promise();
 }
 

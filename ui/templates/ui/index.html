@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="static/stylesheets/foundation.css">
         <script type="text/javascript" src="static/js/jquery-3.5.0.min.js"></script>
         <script type="text/javascript" src="static/js/jquery-ui.js"></script>
-        <script type="text/javascript" src="static/js/app.js?v=202106"></script>
+        <script type="text/javascript" src="static/js/app.js?v=202202"></script>
         <link rel="stylesheet" type="text/css" href="static/stylesheets/style.css">
         <script type="text/javascript" src="static/js/foundation.js"></script>
         <script type="text/javascript" src="static/js/what-input.js"></script>
@@ -37,7 +37,7 @@
                      {% if user.is_superuser or user|has_group:"NGT Administrator" %}
                         <span class="float-right user js-auth" data-auth="admin">{{ user.get_username }}</span>
                     {% else %}
-                        <span class="float-right user js-auth">{{ user.get_username }}</span>
+                        <span class="float-right user js-auth" data-auth="{{ user.get_username }}"></span>
                     {% endif %}
                 {% elif user.is_authenticated  and user.is_activated == false %}
                     <span class="js-auth" data-auth="fluxnet"></span>
@@ -54,7 +54,7 @@
                     <br>
                     <div class="columns small-centered small-4">
                         <button class="button js-view-toggle columns small-12" data-view="create">Create New Dataset</button>
-                        <button class="button js-view-toggle columns small-12" data-view="edit-draft">Edit Datasets</button>
+                        <button class="button js-view-toggle columns small-12" data-view="edit-list">Edit Datasets</button>
                         <button class="button js-view-toggle columns small-12" data-view="view">View Approved Datasets</button>
                         <a class="button columns small-12" data-view="view" href="/?view=view-sites">View Field Sites / Plots</a>
                     </div>
@@ -78,6 +78,11 @@
                                         <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
                                     </th>
                                     <th class="js-sort-header pointer" data-sort="contact">Dataset Contact
+                                        <img class="js-sort-icon sort-icon unsorted" src="static/img/unsorted.png">
+                                        <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
+                                        <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
+                                    </th>
+                                    <th class="js-sort-header pointer" data-sort="publication_date">Publication Date
                                         <img class="js-sort-icon sort-icon unsorted" src="static/img/unsorted.png">
                                         <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
                                         <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
@@ -127,9 +132,9 @@
                         </div>
                     </div>
                 </section>
-                <section class="js-view view-drafts-view hide" data-view="edit-draft">
-                    <h4><span class="js-count"></span> Drafts</h4>
-                    <a href="/?view=edit-draft" class="hide js-edit-back-btn">Back</a>
+                <section class="js-view view-drafts-view hide" data-view="edit-list">
+                    <h4><span class="js-count"></span> Datasets</h4>
+                    <a href="/?view=edit-list" class="hide js-edit-back-btn">Back</a>
                     <div class="all-datasets js-all-datasets">
                         <table class=" unstriped">
                             <thead>
@@ -146,6 +151,11 @@
                                         <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
                                     </th>
                                     <th class="js-sort-header pointer" data-sort="contact">Dataset Contact
+                                        <img class="js-sort-icon sort-icon unsorted" src="static/img/unsorted.png">
+                                        <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
+                                        <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
+                                    </th>
+                                    <th class="js-sort-header pointer" data-sort="publication_date">Publication Date
                                         <img class="js-sort-icon sort-icon unsorted" src="static/img/unsorted.png">
                                         <img class="js-sort-icon sort-icon sort-up hide" src="static/img/sort-up.png">
                                         <img class="js-sort-icon sort-icon sort-down hide" src="static/img/sort-down.png">
@@ -176,7 +186,7 @@
                 <section class="js-view create-dataset-view hide" data-view="create">
                     <h4>Create a Dataset</h4>
                     <p><i class="required">*</i><i> = Required for submission</i></p>
-                    <form class="js-create-form dataset small-12 medium-9">
+                    <form class="js-create-form dataset small-12 medium-9" >
                         <div class="small-12 medium-9 small-centered medium-centered file-drop-zone js-file-drop-zone">
                             <h5>
                                 Drag and drop data file into this box <i class="required">*</i>
@@ -224,7 +234,7 @@
                         </div>
                         <div class="small-12">
                             <button type="button" class="button small-10 large-3 js-create-dataset">Save as Draft</button>
-                            <button type="button" class="button small-10 large-3 js-edit-dataset hide">Update Draft</button>
+                            <button type="button" class="button small-10 large-3 js-edit-dataset hide">Update Dataset</button>
                             <button class="button blue small-10 large-3 js-create-dataset js-submit">Submit Dataset</button>
                             <button type="button" class="button small-10 large-3 js-save-dataset hide">Save</button>
                             <input type="reset" class="button secondary small-10 large-3 js-clear-form" value="Clear form">
@@ -233,15 +243,6 @@
                     </form>
                     <div class="js-data-templates hide">
                         <textarea class="js-template string"></textarea>
-                        <!--input type="checkbox" class="boolean js-template" name=""-->
-                        <!--div class="switch boolean js-template">
-                          <input class="switch-input js-input" id="yes-no" type="checkbox" name="yesNoSwitch">
-                          <label class="switch-paddle" for="yes-no">
-                            <span class="show-for-sr">NGEE Tropics Resources</span>
-                            <span class="switch-active" aria-hidden="true">Yes</span>
-                            <span class="switch-inactive" aria-hidden="true">No</span>
-                          </label>
-                        </div-->
 
                         <div class="boolean js-template">
                             <input type="radio" name="binary" class="js-true js-boolean js-input" id="" value="true">
@@ -323,7 +324,6 @@
                 <section class="js-modal-body modal-body">
 
                 </section>
-              <!--button class="button edit-btn js-edit-dataset-btn">Edit</button-->
                 <div class="js-download-wrapper hide row columns small-12">
                     <span class="js-data-policy-text">
                         <input type="checkbox" name="data-policy"  id="data-policy" class="js-data-policy-check">

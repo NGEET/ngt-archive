@@ -48,15 +48,11 @@ class HasSubmitPermission(permissions.BasePermission):
         if "/submit" not in path_info:
             return False
 
-        if obj.status != DRAFT:
-            if (obj.managed_by == request.user  and request.user.has_perm('archive_api.edit_own_draft_dataset')) \
-                    or request.user.has_perm('archive_api.edit_all_draft_dataset'):
-                raise PermissionDenied(detail='Only a data set in DRAFT status may be submitted')
-        elif obj.status == DRAFT :
-            return (obj.managed_by == request.user  and request.user.has_perm('archive_api.edit_own_draft_dataset')) \
-                or request.user.has_perm('archive_api.edit_all_draft_dataset')
-
-        return False
+        if obj.needs_review or obj.submission_date is None:
+            return (obj.managed_by == request.user and request.user.has_perm('archive_api.edit_own_dataset')) \
+                    or request.user.has_perm('archive_api.edit_all_dataset')
+        else:
+            raise PermissionDenied(detail='This dataset does not need a review')
 
 
 class HasApprovePermission(permissions.BasePermission):
@@ -66,42 +62,10 @@ class HasApprovePermission(permissions.BasePermission):
             return False
 
         if request.user.has_perm('archive_api.approve_submitted_dataset'):
-            if obj.status != SUBMITTED:
-                raise PermissionDenied(detail='Only a data set in SUBMITTED status may be approved')
-            elif obj.status == SUBMITTED:
+            if not obj.needs_approval:
+                raise PermissionDenied("This dataset does not need approval")
+            else:
                 return request.user.has_perm('archive_api.approve_submitted_dataset')
-
-        return False
-
-
-class HasUnsubmitPermission(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
-        path_info = request.path_info
-        if "/unsubmit" not in path_info:
-            return False
-
-        if request.user.has_perm('archive_api.unsubmit_submitted_dataset'):
-            if obj.status != SUBMITTED:
-                raise PermissionDenied(detail='Only a data set in SUBMITTED status may be un-submitted')
-
-            elif obj.status == SUBMITTED:
-                return True
-
-        return False
-
-
-class HasUnapprovePermission(permissions.BasePermission):
-    def has_object_permission(self, request, view, obj):
-        path_info = request.path_info
-        if "/unapprove" not in path_info:
-            return False
-
-        if request.user.has_perm('archive_api.unapprove_approved_dataset'):
-            if obj.status != APPROVED:
-                raise PermissionDenied(detail='Only a data set in APPROVED status may be unapproved')
-
-            if obj.status == APPROVED:
-                return True
 
         return False
 
@@ -112,24 +76,19 @@ class HasUploadPermission(permissions.BasePermission):
         if "/upload" not in path_info:
             return False
 
-        if obj.status == DRAFT :
-            return (obj.managed_by == request.user  and request.user.has_perm('archive_api.edit_own_draft_dataset')) \
-                or request.user.has_perm('archive_api.edit_all_draft_dataset')
-        elif obj.status  == SUBMITTED :
-            return request.user.has_perm('archive_api.edit_all_submitted_dataset')
-
-        return False
+        return (obj.managed_by == request.user  and request.user.has_perm('archive_api.edit_own_dataset')) \
+            or request.user.has_perm('archive_api.edit_all_dataset')
 
 
-class HasPublicationDatePermission(permissions.BasePermission):
+class HasApprovalDatePermission(permissions.BasePermission):
     """ Object-level permission to only allow admins and owners to set a publication date"""
     def has_object_permission(self, request, view, obj):
         path_info = request.path_info
-        if "/publication_date" not in path_info:
+        if "/approval_date" not in path_info:
             return False
 
-        has_permission  = (obj.managed_by == request.user and request.user.has_perm('archive_api.edit_own_draft_dataset')) \
-                   or request.user.has_perm('archive_api.edit_all_draft_dataset')
+        has_permission  = (obj.managed_by == request.user and request.user.has_perm('archive_api.edit_own_dataset')) \
+                   or request.user.has_perm('archive_api.edit_all_dataset')
 
         # Only submitted and approved dataset may have the publication date set
         if obj.status in [SUBMITTED, APPROVED]:
@@ -157,12 +116,6 @@ class HasEditPermissionOrReadonly(permissions.BasePermission):
         # Owner is either editing or submitting a draft
         if request.method == "DELETE":
             return False
-        elif obj.status == DRAFT :
-            return (obj.managed_by == request.user and request.user.has_perm('archive_api.edit_own_draft_dataset') )\
-                    or request.user.has_perm('archive_api.edit_all_draft_dataset')
-        elif obj.status == SUBMITTED:
-            return request.user.has_perm('archive_api.edit_all_submitted_dataset')
-        elif obj.status == APPROVED:
-            raise PermissionDenied(detail='A data set in APPROVED status may not be edited')
+        return (obj.managed_by == request.user and request.user.has_perm('archive_api.edit_own_dataset') )\
+            or request.user.has_perm('archive_api.edit_all_dataset')
 
-        return False

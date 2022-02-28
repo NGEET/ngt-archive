@@ -58,18 +58,6 @@ class DataSetClientTestCase(APITestCase):
     def setUp(self):
         self.client = Client()
 
-    def test_set_publication_date_denied(self):
-
-        self.login_user("vibe")
-
-        #########################################################################
-        # User may NOT  publication date to now
-        response = self.client.get("/api/v1/datasets/2/publication_date/")
-        value = json.loads(response.content.decode('utf-8'))
-
-        self.assertEqual({'detail': 'Not found.'}, value)
-        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
-
     def test_client_list(self):
 
         # Unauthorized user that is not in any groups
@@ -104,12 +92,13 @@ class DataSetClientTestCase(APITestCase):
     def test_options(self):
         self.login_user("auser")
         response = self.client.options('/api/v1/datasets/')
+        print(response.content)
         self.assertContains(response, "actions")
         self.assertContains(response, "upload")
+        self.assertContains(response, "draft")
         self.assertContains(response, "submit")
         self.assertContains(response, "approve")
-        self.assertContains(response, "unapprove")
-        self.assertContains(response, "unsubmit")
+
 
     def test_client_unnamed(self):
 
@@ -148,31 +137,29 @@ class DataSetClientTestCase(APITestCase):
         response = self.client.get('/api/v1/datasets/2/')
         value = json.loads(response.content.decode('utf-8'))
         self.maxDiff = None
+        print(value)
         self.assertEqual(value,
-                         {'modified_date': '2016-10-28T23:01:20.066913Z',
-                          'doi': 'https://dx.doi.org/10.1111/892375dkfnsi', 'start_date': '2016-10-28',
-                          'status_comment': '', 'plots': ['http://testserver/api/v1/plots/1/'],
-                          'created_date': '2016-10-28T19:15:35.013361Z',
-                          'funding_organizations': 'A few funding organizations',
-                          'authors': ['http://testserver/api/v1/people/2/'], 'cdiac_import': False,
-                          'doe_funding_contract_numbers': '',
-                          'description': 'Qui illud verear persequeris te. Vis probo nihil verear an, zril tamquam philosophia eos te, quo ne fugit movet contentiones. Quas mucius detraxit vis an, vero omnesque petentium sit ea. Id ius inimicus comprehensam.',
-                          'submission_date': '2016-10-28', 'qaqc_method_description': '',
-                          'variables': ['http://testserver/api/v1/variables/2/',
-                                        'http://testserver/api/v1/variables/3/',
-                                        'http://testserver/api/v1/variables/1/'], 'archive': None,
-                          'cdiac_submission_contact': None, 'reference': '', 'additional_access_information': '',
-                          'contact': 'http://testserver/api/v1/people/2/', 'acknowledgement': '',
-                          'data_set_id': 'NGT0001', 'archive_filename': None,
-                          'modified_by': 'auser', 'status': '1', 'ngee_tropics_resources': True, 'qaqc_status': None,
-                          'end_date': None, 'additional_reference_information': '', 'name': 'Data Set 2',
-                          'managed_by': 'auser', 'sites': ['http://testserver/api/v1/sites/1/'],
-                          'originating_institution': "LBNL", 'version': '0.0',
-                          'url': 'http://testserver/api/v1/datasets/2/', 'access_level': '0',
-                          'publication_date': None,
-                          }
+                      {'url': 'http://testserver/api/v1/datasets/2/', 'data_set_id': 'NGT0001', 'name': 'Data Set 2',
+                       'version': '0.0', 'status': '1',
+                       'citation': 'Cage L (2016): Data Set 2. 0.0. NGEE Tropics Data Collection. (dataset). https://dx.doi.org/10.1111/892375dkfnsi',
+                       'description': 'Qui illud verear persequeris te. Vis probo nihil verear an, zril tamquam philosophia eos te, quo ne fugit movet contentiones. Quas mucius detraxit vis an, vero omnesque petentium sit ea. Id ius inimicus comprehensam.',
+                       'status_comment': '', 'doi': 'https://dx.doi.org/10.1111/892375dkfnsi',
+                       'start_date': '2016-10-28', 'end_date': None, 'qaqc_status': None, 'qaqc_method_description': '',
+                       'ngee_tropics_resources': True, 'funding_organizations': 'A few funding organizations',
+                       'doe_funding_contract_numbers': '', 'acknowledgement': '', 'reference': '',
+                       'additional_reference_information': '', 'access_level': '0', 'additional_access_information': '',
+                       'originating_institution': 'LBNL', 'submission_date': '2016-10-28T00:00:00Z',
+                       'contact': 'http://testserver/api/v1/people/2/', 'sites': ['http://testserver/api/v1/sites/1/'],
+                       'authors': ['http://testserver/api/v1/people/2/'],
+                       'plots': ['http://testserver/api/v1/plots/1/'],
+                       'variables': ['http://testserver/api/v1/variables/2/', 'http://testserver/api/v1/variables/3/',
+                                     'http://testserver/api/v1/variables/1/'], 'archive': None,
+                       'archive_filename': None, 'needs_review': False, 'needs_approval': True, 'is_published': False,
+                       'managed_by': 'auser', 'created_date': '2016-10-28T19:15:35.013361Z', 'modified_by': 'auser',
+                       'modified_date': '2016-10-28T23:01:20.066913Z', 'cdiac_import': False,
+                       'cdiac_submission_contact': None, 'approval_date': None, 'publication_date': None}
 
-                         )
+                      )
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_client_post(self):
@@ -187,10 +174,10 @@ class DataSetClientTestCase(APITestCase):
         self.assertEqual(len(mail.outbox), 1)
         email = mail.outbox[0]
 
-        self.assertEqual(email.subject, "[ngt-archive-test] Dataset Draft (NGT0004)")
-        self.assertTrue(email.body.find("""The dataset NGT0004:FooBarBaz has been saved as a draft in the NGEE Tropics Archive.
-The dataset can be viewed at http://testserver.  Login with your account credentials,
-select "Edit Drafts" and then click the "Edit" button for NGT0004:FooBarBaz.
+        self.assertTrue(email.subject.startswith("[ngt-archive-test] Dataset Draft (NGT0004)"))
+        self.assertTrue(email.body.find("""The dataset NGT0004:FooBarBaz has been saved as a draft in the NGEE-Tropics Archive, and can be viewed at http://testserver.
+
+You can also login with your account credentials, select "Edit Drafts" and then click the "Edit" button for NGT0004:FooBarBaz.
 """) > 0)
         self.assertEqual(email.to, ['myuser@foo.bar'])
         self.assertEqual(email.reply_to, settings.ARCHIVE_API['EMAIL_NGEET_TEAM'])
@@ -222,15 +209,6 @@ select "Edit Drafts" and then click the "Edit" button for NGT0004:FooBarBaz.
         self.assertEqual(value['authors'], ["http://testserver/api/v1/people/2/"])
         self.assertEqual(value['url'], 'http://testserver/api/v1/datasets/5/')
         self.assertEqual(value['qaqc_method_description'], None)
-
-        #########################################################################
-        # User may NOT  publication date to now
-        response = self.client.get("/api/v1/datasets/5/publication_date/")
-        value = json.loads(response.content.decode('utf-8'))
-
-        self.assertEqual({'detail': 'Only a dataset in SUBMITTED or APPROVED status may have a publication date set.'},
-                         value)
-        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
 
         # The submit action should fail
         response = self.client.post('/api/v1/datasets/5/submit/')
@@ -289,7 +267,7 @@ select "Edit Drafts" and then click the "Edit" button for NGT0004:FooBarBaz.
         response = self.client.get("/api/v1/datasets/2/submit/")  # In submitted mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
-        self.assertEqual({'detail': 'Only a data set in DRAFT status may be submitted'}, value)
+        self.assertEqual({'detail': 'This dataset does not need a review'}, value)
 
         #########################################################################
         # NGT User may not APPROVE a dataset
@@ -354,13 +332,6 @@ select "Edit Drafts" and then click the "Edit" button for NGT0004:FooBarBaz.
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual({'detail': 'DataSet has been submitted.', 'success': True}, value)
 
-        #########################################################################
-        # NGT User may not unsubmit a dataset
-        response = self.client.get("/api/v1/datasets/1/unsubmit/")  # In draft mode, owned by auser
-        value = json.loads(response.content.decode('utf-8'))
-        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
-        self.assertEqual({'detail': 'You do not have permission to perform this action.'}, value)
-
     def test_admin_approve_workflow(self):
         """
         Test Admin dataset workflow
@@ -384,7 +355,7 @@ select "Edit Drafts" and then click the "Edit" button for NGT0004:FooBarBaz.
         response = self.client.get("/api/v1/datasets/2/submit/")  # In submitted mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
-        self.assertEqual({'detail': 'Only a data set in DRAFT status may be submitted'}, value)
+        self.assertEqual({'detail': 'This dataset does not need a review'}, value)
         self.assertEqual(0, len(mail.outbox))  # no notification emails sent
 
         with open('{}/Archive.zip'.format(dirname(__file__)), 'rb') as fp:
@@ -398,7 +369,7 @@ select "Edit Drafts" and then click the "Edit" button for NGT0004:FooBarBaz.
                                    data='{"description":"A FooBarBaz DataSet",'
                                         '"name": "Data Set 2", '
                                         '"status_comment": "",'
-                                        '"doi": "",'
+                                        '"doi": "https://doi.org/10.XXXX/123345",'
                                         '"originating_institution": "Lawrence Berkeley National Lab",'
                                         '"start_date": "2016-10-28",'
                                         '"end_date": null,'
@@ -428,7 +399,7 @@ select "Edit Drafts" and then click the "Edit" button for NGT0004:FooBarBaz.
         self.assertEqual(value["description"], "A FooBarBaz DataSet")
         self.assertEqual(value["name"], "Data Set 2")
         self.assertEqual(value["status_comment"], "")
-        self.assertEqual(value["doi"], "")
+        self.assertEqual(value["doi"], "https://doi.org/10.XXXX/123345")
         self.assertEqual(value["originating_institution"], "Lawrence Berkeley National Lab")
         self.assertEqual(value["start_date"], "2016-10-28")
         self.assertEqual(value["end_date"], None)
@@ -454,7 +425,7 @@ select "Edit Drafts" and then click the "Edit" button for NGT0004:FooBarBaz.
         response = self.client.get("/api/v1/datasets/1/approve/")  # In draft mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
-        self.assertEqual({'detail': 'Only a data set in SUBMITTED status may be approved'}, value)
+        self.assertEqual({'detail': 'This dataset does not need approval'}, value)
         self.assertEqual(0, len(mail.outbox))  # no notification emails sent
 
         #########################################################################
@@ -468,37 +439,17 @@ select "Edit Drafts" and then click the "Edit" button for NGT0004:FooBarBaz.
         self.assertEqual(len(mail.outbox), 1)
         email = mail.outbox[0]
 
-        self.assertEqual(email.subject, "[ngt-archive-test] Dataset Approved (NGT0001)")
-        self.assertTrue(email.body.find("""The dataset NGT0001:Data Set 2 created on 10/28/2016  has been approved for release.
-The dataset can be viewed at http://testserver. Login with your account credentials,
-select "View Approved Datasets" and then click the "Approve" button for NGT0001:Data Set 2.
-""") > 0)
+        self.assertTrue(email.subject.startswith("[ngt-archive-test] Dataset Approved (NGT0001)"))
+        self.assertTrue(email.body.find("""The dataset NGT0001:Data Set 2 created on 10/28/2016 has been approved 
+for release and is now published.
+
+The DOI """) > 0)
         self.assertEqual(email.to, ['myuser@foo.bar'])
         self.assertEqual(email.reply_to, settings.ARCHIVE_API['EMAIL_NGEET_TEAM'])
 
-        #########################################################################
-        # NGT Administrator may set publication date to now
-        response = self.client.get("/api/v1/datasets/2/publication_date/")
-        value = json.loads(response.content.decode('utf-8'))
-        self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual({'detail': 'Publication date has been set.', 'success': True}, value)
-
         # Validate that a publication date was set
         response = self.client.get("/api/v1/datasets/2/")
-        assert response.json()["publication_date"] is not None
-
-        #########################################################################
-        # NGT Administrator may set publication date to a specific date
-        response = self.client.get("/api/v1/datasets/2/publication_date/?date=1/2/2018")
-        value = json.loads(response.content.decode('utf-8'))
-        self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual({'detail': 'Publication date has been set.', 'success': True}, value)
-
-        # Validate that a publication date was set
-        response = self.client.get("/api/v1/datasets/2/")
-        pub_date = response.json()["publication_date"]
-        assert pub_date is not None
-        assert pub_date == "2018-01-02"
+        assert response.json()["approval_date"] is not None
 
         #########################################################################
         # APPROVED status: Cannot be deleted by anyone
@@ -511,51 +462,6 @@ select "View Approved Datasets" and then click the "Approve" button for NGT0001:
         response = self.client.get("/api/v1/datasets/2/")
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(value['status'], str(DataSet.STATUS_APPROVED))
-
-        #########################################################################
-        # NGT Administrator can put a dataset back into DRAFT status for corrections by the Owning NGT user
-        response = self.client.get("/api/v1/datasets/2/unsubmit/")  # In draft mode, owned by auser
-        value = json.loads(response.content.decode('utf-8'))
-        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
-        self.assertEqual({'detail': 'Only a data set in SUBMITTED status may be un-submitted'}, value)
-
-        # Make sure no additional notification was sent
-        self.assertEqual(len(mail.outbox), 1)
-
-        response = self.client.get("/api/v1/datasets/2/unapprove/")  # In approved mode, owned by auser
-        value = json.loads(response.content.decode('utf-8'))
-        self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual({'detail': 'DataSet has been unapproved.', 'success': True}, value)
-        self.assertEqual(1, len(mail.outbox))  # no notification emails sent
-
-        #########################################################################
-        # NGT Administrator my unapproved a dataset (put back into submitted mode)
-        response = self.client.get("/api/v1/datasets/1/unapprove/")  # In approved mode, owned by auser
-        value = json.loads(response.content.decode('utf-8'))
-        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
-        self.assertEqual({'detail': 'Only a data set in APPROVED status may be unapproved'}, value)
-        response = self.client.get("/api/v1/datasets/2/")  # Check the status
-        value = json.loads(response.content.decode('utf-8'))
-        self.assertEqual(value['status'], str(DataSet.STATUS_SUBMITTED))
-        self.assertEqual(1, len(mail.outbox))  # no notification emails sent
-
-    def test_admin_unsubmit(self):
-        """
-        Test Admin unsubmit
-        :return:
-        """
-        self.login_user("admin")
-
-        #########################################################################
-        # Adn admin may unsubmit a dataset in SUBIMITTED MODE
-        response = self.client.get("/api/v1/datasets/2/unsubmit/")  # In submitted mode, owned by auser
-        value = json.loads(response.content.decode('utf-8'))
-        self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual({'detail': 'DataSet has been unsubmitted.', 'success': True}, value)
-
-        response = self.client.get("/api/v1/datasets/2/")
-        value = json.loads(response.content.decode('utf-8'))
-        self.assertEqual(value['status'], str(DataSet.STATUS_DRAFT))  # check that the status is in DRAFT
 
     def test_user_delete_not_allowed(self):
         """
@@ -685,9 +591,12 @@ select "View Approved Datasets" and then click the "Approve" button for NGT0001:
         self.assertEqual({'detail': 'DataSet has been submitted.', 'success': True}, value)
         self.assertEqual(outbox_len + 1, len(mail.outbox))  # notification emails sent
         email = mail.outbox[0]
-        self.assertEqual(email.subject, "[ngt-archive-test] Dataset Submitted (NGT0000)")
-        self.assertTrue(email.body.find("""The dataset NGT0000:Data Set 1 created on 10/28/2016 was submitted to the NGEE Tropics Archive.
-You will not be able to view this dataset until it has been approved.
+        self.assertTrue(email.subject.startswith("[ngt-archive-test] Dataset Submitted (NGT0000)"))
+        self.assertTrue(email.body.find("""The dataset NGT0000:Data Set 1 created on 10/28/2016 has been 
+submitted to the NGEE-Tropics Archive.
+
+We will start the review and publication processes for the dataset. As soon as the dataset has been approved, 
+or in case we have any clarifying questions, you will be notified by email.
 """) > 0)
         self.assertEqual(email.to, ['myuser@foo.bar'])
 
@@ -727,12 +636,14 @@ You will not be able to view this dataset until it has been approved.
         Test Dataset Archive Upload
         :return:
         """
-        self.login_user("auser")  # auser does not own Dataset 3
+        self.login_user("vibe")  # auser does not own Dataset 3
         with open('{}/valid_upload.txt'.format(dirname(__file__)), 'r') as fp:
             response = self.client.post('/api/v1/datasets/2/upload/', {'attachment': fp})
-            self.assertContains(response, '"detail":"You do not have permission to perform this action."',
-                                status_code=status.HTTP_403_FORBIDDEN)
+            print(response.content)
+            self.assertContains(response, '"detail":"Not found."',
+                                status_code=status.HTTP_404_NOT_FOUND)
 
+        self.login_user("auser")
         response = self.client.get('/api/v1/datasets/2/')
         self.assertNotContains(response, 'http://testserver/api/v1/datasets/2/archive/',
                                status_code=status.HTTP_200_OK)
@@ -804,23 +715,14 @@ You will not be able to view this dataset until it has been approved.
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual({'detail': 'DataSet has been submitted.', 'success': True}, value)
 
-        # Test unsubmit workflow
-
-        self.login_user("admin")
-        #########################################################################
-        # NGT User may not SUBMIT a dataset in DRAFT mode if they owne it
-        response = self.client.get("/api/v1/datasets/1/unsubmit/")  # In draft mode, owned by auser
-        value = json.loads(response.content.decode('utf-8'))
-        self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual({'detail': 'DataSet has been unsubmitted.', 'success': True}, value)
 
         self.login_user("auser")
         #########################################################################
-        # NGT User may not SUBMIT a dataset in DRAFT mode if they owne it
+        # NGT User may not SUBMIT a dataset in DRAFT mode if they own it
         response = self.client.get("/api/v1/datasets/1/submit/")  # In draft mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
-        self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual({'detail': 'DataSet has been submitted.', 'success': True}, value)
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+        self.assertEqual({'detail': 'This dataset does not need a review'}, value)
 
     def test_issue_187(self):
         "REST API: submit check that plot matches a site #187"
