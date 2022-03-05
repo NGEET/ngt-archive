@@ -35,9 +35,11 @@
                 <a href="api/api-auth/logout/?next=/" class="float-right">Logout</a>
                 {% if user.is_authenticated  and user.is_activated %}
                      {% if user.is_superuser or user|has_group:"NGT Administrator" %}
-                        <span class="float-right user js-auth" data-auth="admin">{{ user.get_username }}</span>
+                        <span class="float-right user js-auth" data-auth="admin"
+                              data-user="{{ user.get_username }}">{{ user.get_username }}</span>
                     {% else %}
-                        <span class="float-right user js-auth" data-auth="{{ user.get_username }}"></span>
+                        <span class="float-right user js-auth"
+                              data-auth="user" data-user="{{ user.get_username }}">{{ user.get_username }}</span>
                     {% endif %}
                 {% elif user.is_authenticated  and user.is_activated == false %}
                     <span class="js-auth" data-auth="fluxnet"></span>

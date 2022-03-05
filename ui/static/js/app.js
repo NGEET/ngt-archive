@@ -305,7 +305,7 @@ $(document).ready(function () {
                 // Show datasets managed by the user or if the user is an adminiastrator
                 for (var i = 0; i < dataObj.datasets.length; i++) {
                     if ($('.js-auth').attr('data-auth') == 'admin' ||
-                        $('.js-auth').attr('data-auth') == dataObj.datasets[i].managed_by) {
+                        $('.js-auth').attr('data-user') == dataObj.datasets[i].managed_by) {
                         dataObj.editDatasets.push(dataObj.datasets[i]);
                     }
                 }
@@ -775,8 +775,8 @@ $(document).ready(function () {
         $.when(submitDataset(jsonObj, url, method="PUT")).done(function (status) {
             if (status.result) {
                 var alertMessage = ""
-                if ("admin" == $('.js-auth').attr('data-auth')) {
-                    $.when(changeStatus(url, "draft")).done(function (response) {
+                if (dataObj.editDatasets[i].managed_by == $('.js-auth').attr('data-user')) {
+                    $.when(changeStatus(url, "draft")).always(function (response) {
                     if (response.result && response.detail) {
                         alertMessage=response.detail
                     } else {
@@ -822,6 +822,7 @@ $(document).ready(function () {
             processEditingForm(submissionObj, url);
         } else {
             alert('Please upload a file in order to submit the dataset.');
+            $('.js-loading').addClass('hide');
         }
     });
 
@@ -1374,6 +1375,7 @@ function createDraft(submissionObj, submitMode) {
     if (submissionObj.submit) {
         if (submitMode && !fileToUpload) {
             alert('Please upload an archive file in order to submit the dataset.');
+            $('.js-loading').addClass('hide');
         } else {
             $('.js-loading').removeClass('hide');
             delete submissionObj.submit;
@@ -1383,7 +1385,7 @@ function createDraft(submissionObj, submitMode) {
 
                        uploadData(statusObj.url, fileToUpload, uploadType="create",onSuccess = function (data) {
                                 if (submitMode) {
-                                    $.when(changeStatus(statusObj.url, "submit")).done(function (submitStatus) {
+                                    $.when(changeStatus(statusObj.url, "submit")).always(function (submitStatus) {
                                         if (submitStatus.result) {
                                             alert(submitStatus.detail + '\n\nPlease note: The screen will refresh after you click OK.');
                                             $('.js-clear-form').trigger('click');
@@ -1415,6 +1417,7 @@ function createDraft(submissionObj, submitMode) {
 
     } else {
         alert('Please fill all the required fields.');
+        $('.js-loading').addClass('hide');
         $('body').animate({
             scrollTop: $('.js-create-form').offset().top
         }, 500);
@@ -1441,7 +1444,7 @@ function showEditDatasets() {
             {
                 tag.append(' <button class="button blue js-approve">Approve</button>');
             }
-            if ($('.js-auth').attr('data-auth') != 'admin' && dataObj.editDatasets[i].needs_review)
+            if ($('.js-auth').attr('data-user') == dataObj.editDatasets[i].managed_by && dataObj.editDatasets[i].needs_review)
             {
                 tag.append(' <button class="button blue js-review">Request Review</button>');
             }
@@ -1602,8 +1605,8 @@ function completeEdit(submissionObj, url, submitMode) {
 
             } else {
                 var alertMessage = ""
-                if ("admin" != $('.js-auth').attr('data-auth')) {
-                    $.when(changeStatus(url, "draft")).done(function (response) {
+                if (data.managed_by == $('.js-auth').attr('data-user')) {
+                    $.when(changeStatus(url, "draft")).always(function (response) {
                     if (response.result && response.detail) {
                         alertMessage=response.detail
                     } else {
@@ -1968,7 +1971,7 @@ function processEditingForm(submissionObj, url) {
                             delete submissionObj.submit;
                             $.when(submitDataset(submissionObj, url, method="PUT")).done(function (status) {
                                 if (status.result) {
-                                    $.when(changeStatus(url, "submit")).done(function (submitStatus) {
+                                    $.when(changeStatus(url, "submit")).always(function (submitStatus) {
                                         if (submitStatus.result && submitStatus.detail) {
                                             alert(submitStatus.detail + 'Please note: The screen will refresh after you click OK.');
                                             $('.js-clear-form').trigger('click');
@@ -2018,7 +2021,7 @@ function processEditingForm(submissionObj, url) {
             delete submissionObj.submit;
             $.when(submitDataset(submissionObj, url, method="PUT")).done(function (status) {
                 if (status.result) {
-                    $.when(changeStatus(url, "submit")).done(function (submitStatus) {
+                    $.when(changeStatus(url, "submit")).always(function (submitStatus) {
                         if (submitStatus.result && submitStatus.detail) {
                             alert(submitStatus.detail + 'Please note: The screen will refresh after you click OK.');
                             $('.js-clear-form').trigger('click');
