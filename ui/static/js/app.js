@@ -22,26 +22,6 @@ function isJson(value) {
 }
 
 /**
- * Check for duplicate dataset names
- * @param submissionObj
- * @returns {boolean}
- */
-function checkDuplicates(submissionObj) {
-    var dupname = false;
-    var proceed = true;
-    for (var k = 0; k < dataObj.datasets.length; k++) {
-        if (dataObj.datasets[k].name == submissionObj.name) {
-            dupname = dataObj.datasets[k].data_set_id;
-        }
-    }
-    if (dupname) {
-        proceed = confirm('Another dataset (' + dupname + ') with the same name was found.\n' +
-            'Do you still want to proceed (Click Cancel to make changes)?');
-    }
-    return !proceed;
-}
-
-/**
  * Upload a data file to the specified data set
  *
  * @param dataSetUrl - the url to the dataset
@@ -957,11 +937,7 @@ $(document).ready(function () {
         } else {
             $('.js-loading').removeClass('hide');
             submissionObj = processForm(submissionObj, submitMode);
-            if (!checkDuplicates(submissionObj)) {
-                createDraft(submissionObj, submitMode);
-            } else {
-                $('.js-loading').addClass('hide');
-            }
+            createDraft(submissionObj, submitMode);
 
         }
 
@@ -1007,11 +983,7 @@ $(document).ready(function () {
 
                             // no properties are specified. note that ngee tropics resources will always be set
                             // submit will also be present, which will be removed in the createDraft method
-                            if (!checkDuplicates(submissionObj)) {
-                                completeEdit(submissionObj, url);
-                            } else {
-                                $('.js-loading').addClass('hide');
-                            }
+                            completeEdit(submissionObj, url);
 
                         } else if (status.url) {
                             if (!submissionObj[param] && param == 'authors') {
@@ -1047,11 +1019,7 @@ $(document).ready(function () {
         } else {
             $('.js-loading').removeClass('hide');
             submissionObj = processForm(submissionObj, false, true);
-            if (!checkDuplicates(submissionObj)) {
-                completeEdit(submissionObj, url);
-            } else {
-                $('.js-loading').addClass('hide');
-            }
+            completeEdit(submissionObj, url);
         }
     });
 
