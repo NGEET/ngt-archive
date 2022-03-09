@@ -13,7 +13,7 @@ from archive_api.models import DataSet, Person
 from django.contrib.auth.models import update_last_login
 
 
-EMAIL_FOOTER="""-----------------
+EMAIL_FOOTER_FORMAT= """-----------------
 More information.
 
 - You can find more information about the NGEE-Tropics Data in this link:
@@ -59,6 +59,7 @@ def notify_new_account(sender, user, **kwargs):
         user.save()
 
     ngt_user = NGTUser.objects.get(id = user.id)
+    email_footer = EMAIL_FOOTER_FORMAT.format(**{"ngeet_team":get_setting("EMAIL_NGEET_TEAM")})
 
     # Has the user been activated to access the NGEE Tropics
     # Data Collection?
@@ -116,7 +117,7 @@ If you also want the ability to contribute/upload data packages to the NGEE-Trop
 - Indicated if you are funded by NGEE-Tropics: Yes/No (note that NGEE-Tropics collaborators, even if not funded by the project, are welcome to deposit their data with the archive)
 
 
-{EMAIL_FOOTER}
+{email_footer}
             """).send()
 
         # Any authenticated use should be set as active
@@ -175,6 +176,7 @@ def dataset_notify_status_change(sender, **kwargs):
     root_url = root_url
     created_date = instance.created_date
     dataset_name = instance.name
+    email_footer = EMAIL_FOOTER_FORMAT.format(**{"ngeet_team": ngeet_team})
     if not dataset_name:
         dataset_name = "Unnamed"
 
@@ -217,7 +219,7 @@ Thank you for contributing your data to the NGEE-Tropics Archive!
 Sincerely,
 The NGEE-Tropics Archive Team
 
-{EMAIL_FOOTER}
+{EMAIL_FOOTER_FORMAT}
 """
         elif instance.status == permissions.DRAFT:
             # USER FIRST CHANGES EMAIL template (Step 6)
@@ -242,7 +244,7 @@ Sincerely,
 The NGEE-Tropics Archive Team
 
 
-{EMAIL_FOOTER}
+{email_footer}
 """
         elif instance.status == permissions.SUBMITTED:
             # USER SUBMIT EMAIL template (Step 3,7)
@@ -266,8 +268,7 @@ Thank you for contributing your data to the NGEE-Tropics Archive!
 Sincerely,
 The NGEE-Tropics Archive Team
 
-
-{EMAIL_FOOTER}
+{email_footer}
 """
 
         elif instance.status == permissions.APPROVED:
@@ -285,7 +286,7 @@ Thank you for contributing your data to the NGEE-Tropics Archive!
 Sincerely,
 The NGEE-Tropics Archive Team
 
-{EMAIL_FOOTER}
+{email_footer}
 """
         else:
             pass  # do nothing for now
