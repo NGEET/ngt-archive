@@ -1,5 +1,20 @@
 # NGEE Tropics Archive Releases
 
+## v2.4.0
+Refactors the publication workflow
+
+ - Issue #348 - Refactor the publication workflow
+    + Adds approval date to Dataset model
+    + Removes unapprove and unsubmit actions and permissions
+    + Changes edit permission to allow editing at any status
+      by the managed_by user or NGEE Tropics Admin
+    + Updates Edit Datasets to list all dataset editable by the logged
+      in users
+    + Adds historical dataset functionality for tracking Dataset changes and
+      allows revert to previous versions
+    + Removes duplicated checking on Dataset metadata form
+
+
 ## v2.3.2
 Minor change to user registrations notification
 
