@@ -13,7 +13,7 @@ from archive_api.models import DataSet, Person
 from django.contrib.auth.models import update_last_login
 
 
-EMAIL_FOOTER_FORMAT= """-----------------
+EMAIL_FOOTER_FORMAT = """-----------------
 More information.
 
 - You can find more information about the NGEE-Tropics Data in this link:
@@ -219,7 +219,7 @@ Thank you for contributing your data to the NGEE-Tropics Archive!
 Sincerely,
 The NGEE-Tropics Archive Team
 
-{EMAIL_FOOTER_FORMAT}
+{email_footer}
 """
         elif instance.status == permissions.DRAFT:
             # USER FIRST CHANGES EMAIL template (Step 6)
