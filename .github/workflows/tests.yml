@@ -23,10 +23,6 @@ jobs:
         python -m pip install --upgrade pip
         python setup.py check
         python setup.py install
-        echo "*****************"
-        echo "     PYTEST"
-        echo "*****************"
-        ./manage.py test -v3
 
     - name: Test with pytest
       run: |

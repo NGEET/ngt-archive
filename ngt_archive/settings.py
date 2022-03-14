@@ -202,9 +202,10 @@ ARCHIVE_API = {
     'DATASET_USER_MAX_UPLOAD_SIZE': 1073741824, # in bytes
     'EMAIL_NGEET_TEAM': ['ngeet-team@testserver'],
     'EMAIL_SUBJECT_PREFIX': '[ngt-archive-test]',
-
-
 }
+
+# tmp directory at the archive root directory
+FILE_UPLOAD_TEMP_DIR = os.path.join(ARCHIVE_API['DATASET_ARCHIVE_ROOT'], "tmp")
 
 GOOGLE_MAPS_KEY = "a secret key"
 

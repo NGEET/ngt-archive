@@ -4,13 +4,11 @@ import re
 import django.contrib.auth.models
 from django.conf import settings
 from django.contrib.auth.models import Group
-from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
 from django.core.validators import RegexValidator
 from django.db import models, transaction
 from django.utils import timezone
 from django.utils.datetime_safe import datetime
-from django.utils.translation import gettext_lazy as _
 from simple_history.models import HistoricalRecords
 
 
@@ -77,12 +75,11 @@ def get_upload_path(instance, filename):
         sub_dir_no = int(int(instance.ngt_id / 10) * 10)
 
     return os.path.join(
-        "{parent_dir_no:04}/{sub_dir_no:04}/{data_set_id}/{version}/{filename_base}_"
+        "{parent_dir_no:04}/{sub_dir_no:04}/{data_set_id}/{filename_base}_"
         "{now:%Y%m%d%H%M%S}{ext}".format(
             **{"data_set_id": instance.data_set_id(),
                "parent_dir_no": parent_dir_no,
                "sub_dir_no": sub_dir_no,
-               "version": instance.version,
                "filename_base": filename_base,
                "now": datetime.now(),
                "ext": filename_ext}))

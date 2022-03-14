@@ -1,5 +1,20 @@
+import os
+
 from django.apps import AppConfig
 from django.db.models.signals import post_migrate
+
+
+def create_tmp_dir(sender, **kwargs):
+    """
+    Create tmp directory if it doesn't exist
+    :param sender:
+    :param kwargs:
+    :return:
+    """
+
+    from ngt_archive import settings
+    tmp_dir = settings.FILE_UPLOAD_TEMP_DIR
+    os.makedirs(tmp_dir, exist_ok=True )
 
 
 def load_groups(sender, **kwargs):
@@ -32,9 +47,9 @@ def load_groups(sender, **kwargs):
 
     admin.permissions.clear()
     admin.permissions.add(add_measurementvariable, change_measurementvariable, change_dataset, add_dataset, add_site,
-                 add_plot, add_contact, change_site, change_plot, change_contact, can_approve_submitted,
-                 can_edit_own, can_edit_all, can_view_all_datasets,
-                 can_upload_large_file)
+                          add_plot, add_contact, change_site, change_plot, change_contact, can_approve_submitted,
+                          can_edit_own, can_edit_all, can_view_all_datasets,
+                          can_upload_large_file)
     admin.save()
     print("{} group permissions updated".format(admin.name))
 
@@ -47,7 +62,7 @@ def load_groups(sender, **kwargs):
             ngt_group = ngt_group[0]
         ngt_group.permissions.clear()
         ngt_group.permissions.add(change_dataset, add_dataset, add_contact, can_edit_own,
-                         can_view_ngeet_approved_datasets)
+                                  can_view_ngeet_approved_datasets)
         ngt_group.save()
         print("{} group permissions updated".format(ngt_group))
 
@@ -58,4 +73,5 @@ class ArchiveApiConfig(AppConfig):
 
     def ready(self):
         post_migrate.connect(load_groups, sender=self)
+        post_migrate.connect(create_tmp_dir, sender=self)
         import archive_api.signals
