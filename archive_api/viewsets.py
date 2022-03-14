@@ -266,16 +266,8 @@ class DataSetViewSet(ModelViewSet):
                     # This is the first time that dataset is being submitted
                     dataset.submission_date = now
                     if dataset.archive and dataset.version == "0.0":
-                        old_path, filename = os.path.split(dataset.archive.name)
-                        dataset.version = "1.0"  # FIXME:  hard coded util statemachine is implemented
-                        new_path = old_path.replace("0.0", dataset.version)
-                        os.makedirs(os.path.join(settings.ARCHIVE_API['DATASET_ARCHIVE_ROOT'], new_path),
-                                    exist_ok=True)
-                        shutil.copy2(
-                            os.path.join(settings.ARCHIVE_API['DATASET_ARCHIVE_ROOT'], old_path, filename),
-                            os.path.join(settings.ARCHIVE_API['DATASET_ARCHIVE_ROOT'], new_path, filename))
+                        dataset.version = "1.0"
 
-                        dataset.archive.name = "{}/{}".format(new_path, filename)
                 elif status == APPROVED:
                     dataset.approval_date = now
                     if original_status == SUBMITTED and not dataset.publication_date:

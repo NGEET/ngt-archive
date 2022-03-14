@@ -3,8 +3,7 @@ import io
 from daterangefilter.filters import DateRangeFilter
 from django.contrib import admin, messages
 from django.contrib.admin import ModelAdmin
-from django.contrib.admin.utils import model_ngettext
-from django.core.exceptions import PermissionDenied, ValidationError
+from django.core.exceptions import ValidationError
 from django.forms import forms
 from django.shortcuts import redirect, render
 from django.urls import path
@@ -26,7 +25,6 @@ class DataSetHistoryAdmin(SimpleHistoryAdmin):
         Lists the changes between revisions in the Admin UI
 
         See: https://django-simple-history.readthedocs.io/en/latest/history_diffing.html
-
 
         :param obj:
         :return:
