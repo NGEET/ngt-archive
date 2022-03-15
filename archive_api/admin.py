@@ -9,11 +9,36 @@ from django.forms import forms
 from django.shortcuts import redirect, render
 from django.urls import path
 from django.utils.datetime_safe import datetime
+from django.utils.safestring import mark_safe
 
 from archive_api.models import DataSet, DataSetDownloadLog, MeasurementVariable, Person, Plot, Site
 from simple_history.admin import SimpleHistoryAdmin
 
-admin.site.register(DataSet,SimpleHistoryAdmin)
+
+@admin.register(DataSet)
+class DataSetHistoryAdmin(SimpleHistoryAdmin):
+    list_display = ["data_set_id", "version", "status", "name"]
+    history_list_display = ["list_changes"]
+    search_fields = ['name', 'status', "ngt_id", "version"]
+
+    def list_changes(self, obj):
+        """
+        Lists the changes between revisions in the Admin UI
+
+        See: https://django-simple-history.readthedocs.io/en/latest/history_diffing.html
+
+
+        :param obj:
+        :return:
+        """
+        diff = []
+        if obj.prev_record:
+            delta = obj.diff_against(obj.prev_record)
+            for change in delta.changes:
+                diff.append("<b>- {}:</b> changed from `{}` to `{}`".format(change.field, change.old, change.new))
+
+        # Mark safe (https://docs.djangoproject.com/en/4.0/ref/utils/#django.utils.safestring.mark_safe)
+        return mark_safe("\n<br>".join(diff))
 
 
 class CsvImportForm(forms.Form):

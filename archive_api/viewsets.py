@@ -278,7 +278,7 @@ class DataSetViewSet(ModelViewSet):
                         dataset.archive.name = "{}/{}".format(new_path, filename)
                 elif status == APPROVED:
                     dataset.approval_date = now
-                    if original_status == SUBMITTED:
+                    if original_status == SUBMITTED and not dataset.publication_date:
                         # The dataset is NOT LIVE yet and is being approved for the first time
                         dataset.publication_date = now
                         dataset.status = status
