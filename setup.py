@@ -41,7 +41,7 @@ setup(name='ngt_archive',
       py_modules=['manage'],
       include_package_data=True,
       install_requires=[
-          "Django == 3.1.2",
+          "Django == 3.1.14",
           "djangorestframework >= 3.11.0",
           "django-filter >= 2.2.0",
           "django-daterangefilter >= 1.0.0",
