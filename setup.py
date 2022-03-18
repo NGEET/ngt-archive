@@ -33,6 +33,7 @@ if sys.version_info < (3, 6):
     sys.exit('Sorry, Python < 3.6 is not supported')
 
 setup(name='ngt_archive',
+      url="https://github.com/NGEET/ngt-archive",
       version=__release__,
       description='NGEE Tropics Archive Service',
       author='Val Hendrix',
