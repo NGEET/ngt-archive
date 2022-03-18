@@ -206,10 +206,6 @@
         "label": "Dataset Access level",
         "choices": [
             {
-                "value": "0",
-                "display_name": "Private"
-            },
-            {
                 "value": "1",
                 "display_name": "NGEE Tropics"
             },

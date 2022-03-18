@@ -80,14 +80,13 @@ def metrics_datasets(request):
 
             writer = csv.writer(response)
             writer.writerow(
-                ['NGT ID', 'Status', 'Access Level', 'Title', 'Approval Date', 'Contact', 'Authors', 'DOI', 'Downloads',
+                ['NGT ID', 'Access Level', 'Title', 'Approval Date', 'Contact', 'Authors', 'DOI', 'Downloads',
                                                                                                             'Citation'])
             for dataset in dataset_report['datasets']:
                 writer.writerow([dataset.data_set_id(),
-                                 dataset.get_status_display(),
                                  dataset.get_access_level_display(),
                                  dataset.name,
-                                 dataset.status == DataSet.STATUS_APPROVED and dataset.modified_date or '',
+                                 dataset.publication_date or '',
                                  dataset.contact and str(dataset.contact) or '',
                                  _get_citation_author_list(dataset), dataset.doi,
                                  DataSetDownloadLog.objects.filter(datetime__gte=start_date,
@@ -110,7 +109,7 @@ def dois(request):
     :return:
     """
 
-    data_sets = get_list_or_404(DataSet, status=DataSet.STATUS_APPROVED,
+    data_sets = get_list_or_404(DataSet, publication_date__isnull=False, publication_date__lt=timezone.now(),
                                 access_level__in=(DataSet.ACCESS_NGEET, DataSet.ACCESS_PUBLIC))
 
     return render(request, 'archive_api/dois.html', context={'user': request.user,
@@ -126,7 +125,7 @@ def doi(request, ngt_id=None):
 
     dataset = get_object_or_404(DataSet, ngt_id=int(ngt_id[3:]))
 
-    if (dataset.status == DataSet.STATUS_APPROVED and \
+    if (dataset.publication_date is not None and dataset.publication_date < timezone.now() and \
             dataset.access_level in [DataSet.ACCESS_PUBLIC, DataSet.ACCESS_NGEET]):
         authors = _get_citation_author_list(dataset)
 

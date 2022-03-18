@@ -8,8 +8,10 @@ from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
 from django.core.validators import RegexValidator
 from django.db import models, transaction
+from django.utils import timezone
 from django.utils.datetime_safe import datetime
 from django.utils.translation import gettext_lazy as _
+from simple_history.models import HistoricalRecords
 
 
 class DatasetArchiveStorage(FileSystemStorage):
@@ -249,14 +251,14 @@ class DataSet(models.Model):
 
     access_level = models.IntegerField(choices=ACCESS_CHOICES, default=0)
     additional_access_information = models.TextField(blank=True, null=True)
-    submission_date = models.DateField(blank=True, null=True)
-    publication_date = models.DateField(blank=True, null=True)
+    submission_date = models.DateTimeField(blank=True, null=True)
+    publication_date = models.DateTimeField(blank=True, null=True)
+    approval_date = models.DateTimeField(blank=True, null=True)
 
-    # Owner is the person who created the dataset
     managed_by = models.ForeignKey(settings.AUTH_USER_MODEL, editable=True, related_name='+', on_delete=models.CASCADE)
     created_date = models.DateTimeField(editable=False, auto_now_add=True)
     modified_by = models.ForeignKey(settings.AUTH_USER_MODEL, editable=False, related_name='+', on_delete=models.CASCADE)
-    modified_date = models.DateTimeField(editable=False, auto_now=True)
+    modified_date = models.DateTimeField(editable=True, blank=True)
 
     # Relationships
     authors = models.ManyToManyField(Person, blank=True, related_name='+', through='Author')
@@ -274,6 +276,10 @@ class DataSet(models.Model):
     archive = models.FileField(upload_to=get_upload_path, storage=dataset_archive_storage,
                                null=True)
 
+    history = HistoricalRecords(
+        history_change_reason_field=models.TextField(null=True)
+    )
+
     @property
     def citation(self):
         """Generate the citation for this dataset """
@@ -289,16 +295,29 @@ class DataSet(models.Model):
 
         return citation_string
 
+    @property
+    def needs_review(self):
+        """Does this data package need a review?  """
+        return self.status == self.STATUS_DRAFT and \
+               self.submission_date is not None
+
+    @property
+    def needs_approval(self):
+        """Does this data package need an approval?  """
+        return self.status == self.STATUS_SUBMITTED
+
+    @property
+    def is_published(self):
+        """Is this dataset published"""
+        return self.publication_date is not None and self.publication_date < timezone.now()
+
     class Meta:
         unique_together = ('ngt_id', 'version')
         ordering = ('-modified_date',)
         permissions = (
             ("approve_submitted_dataset", "Can approve a 'submitted' dataset"),
-            ("edit_own_draft_dataset", "Can edit own 'draft' dataset"),
-            ("edit_all_submitted_dataset", "Can edit any 'submitted' dataset"),
-            ("edit_all_draft_dataset", "Can edit any 'draft' dataset"),
-            ("unsubmit_submitted_dataset", "Can unsubmit a 'submitted' dataset"),
-            ("unapprove_approved_dataset", "Can unapprove a 'approved' dataset"),
+            ("edit_own_dataset", "Can edit own dataset"),
+            ("edit_all_dataset", "Can edit any  dataset"),
             ("view_all_datasets", "Can view all datasets"),
             ("view_ngeet_approved_datasets", "Can view all approved NGEE Tropics datasets"),
             ("upload_large_file_dataset", "Can upload a large file to a dataset")
@@ -315,7 +334,7 @@ class DataSet(models.Model):
         """
         # Performing an atomic transaction when determining the ngt_id
         with transaction.atomic():
-            # if the ngt_id has not beent set then we need to get the next id
+            # if the ngt_id has not been set then we need to get the next id
             if self.ngt_id is None and self.version == "0.0":
                 # select_for_update Locks table for the rest of the transaction
                 # nowait is honored if the db supports it.
@@ -325,6 +344,14 @@ class DataSet(models.Model):
                     self.ngt_id = max_dataset[0].ngt_id + 1
                 else:
                     self.ngt_id = 0  # only for the very first dataset
+
+            # handle the modified date time if not set
+            if "modified_date" not in kwargs:
+                self.modified_date = timezone.now()
+            else:
+                self.modified_date = kwargs["modified_date"]
+                del kwargs['modified_date']
+
             super(DataSet, self).save(*args, **kwargs)
 
     def __str__(self):

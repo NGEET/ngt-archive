@@ -168,11 +168,11 @@ class MetricsPageTestCase(TestCase):
         self.assertEqual(response['Content-Type'], "text/csv")
 
         # Using assertInHTML because it is more forgiving.
-        self.assertInHTML("""NGT ID,Status,Access Level,Title,Approval Date,Contact,Authors,DOI,Downloads,Citation
-NGT0002,Submitted,Private,Data Set 3,,"Cage, Luke - POWER",Cage L,,0,Citation information not available currently. Contact dataset author(s) for citation or acknowledgement text.
-NGT0000,Draft,Private,Data Set 1,,"Cage, Luke - POWER",,,0,Citation information not available currently. Contact dataset author(s) for citation or acknowledgement text.
-NGT0001,Submitted,Private,Data Set 2,,"Cage, Luke - POWER",Cage L,https://dx.doi.org/10.1111/892375dkfnsi,0,Cage L (2016): Data Set 2. 0.0. NGEE Tropics Data Collection. (dataset). https://dx.doi.org/10.1111/892375dkfnsi
-NGT0003,Draft,Private,Data Set 4,,"Cage, Luke - POWER",,,0,Citation information not available currently. Contact dataset author(s) for citation or acknowledgement text.
+        self.assertInHTML("""NGT ID,Access Level,Title,Approval Date,Contact,Authors,DOI,Downloads,Citation
+NGT0002,Private,Data Set 3,,"Cage, Luke - POWER",Cage L,,0,Citation information not available currently. Contact dataset author(s) for citation or acknowledgement text.
+NGT0000,Private,Data Set 1,,"Cage, Luke - POWER",,,0,Citation information not available currently. Contact dataset author(s) for citation or acknowledgement text.
+NGT0001,Private,Data Set 2,,"Cage, Luke - POWER",Cage L,https://dx.doi.org/10.1111/892375dkfnsi,0,Cage L (2016): Data Set 2. 0.0. NGEE Tropics Data Collection. (dataset). https://dx.doi.org/10.1111/892375dkfnsi
+NGT0003,Private,Data Set 4,,"Cage, Luke - POWER",,,0,Citation information not available currently. Contact dataset author(s) for citation or acknowledgement text.
 """, response.content.decode())
 
     def test_unauthenticated(self):

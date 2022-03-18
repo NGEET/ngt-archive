@@ -9,8 +9,36 @@ from django.forms import forms
 from django.shortcuts import redirect, render
 from django.urls import path
 from django.utils.datetime_safe import datetime
+from django.utils.safestring import mark_safe
 
 from archive_api.models import DataSet, DataSetDownloadLog, MeasurementVariable, Person, Plot, Site
+from simple_history.admin import SimpleHistoryAdmin
+
+
+@admin.register(DataSet)
+class DataSetHistoryAdmin(SimpleHistoryAdmin):
+    list_display = ["data_set_id", "version", "status", "name"]
+    history_list_display = ["list_changes"]
+    search_fields = ['name', 'status', "ngt_id", "version"]
+
+    def list_changes(self, obj):
+        """
+        Lists the changes between revisions in the Admin UI
+
+        See: https://django-simple-history.readthedocs.io/en/latest/history_diffing.html
+
+
+        :param obj:
+        :return:
+        """
+        diff = []
+        if obj.prev_record:
+            delta = obj.diff_against(obj.prev_record)
+            for change in delta.changes:
+                diff.append("<b>- {}:</b> changed from `{}` to `{}`".format(change.field, change.old, change.new))
+
+        # Mark safe (https://docs.djangoproject.com/en/4.0/ref/utils/#django.utils.safestring.mark_safe)
+        return mark_safe("\n<br>".join(diff))
 
 
 class CsvImportForm(forms.Form):
@@ -153,91 +181,6 @@ class PlotAdmin(ModelAdmin):
 @admin.register(Site)
 class SiteAdmin(ModelAdmin):
     list_display = ('site_id', 'name', 'description',)
-
-
-@admin.register(DataSet)
-class DraftDataSetAdmin(ModelAdmin):
-    actions = ("mark_as_deleted",)
-    exclude = ("archive", "cdiac_import", "doi", "status", "description", "start_date", "end_date", "qaqc_status",
-               "ngee_tropics_resources", "qaqc_method_description", "submission_date", "publication_date",
-               "status_comment", "funding_organizations", "acknowledgement", "reference", "doe_funding_contract_numbers",
-               "additional_reference_information", "originating_institution", "additional_access_information",
-               "sites", "plots", "variables", "contact", "cdiac_submission_contact", "access_level")
-    list_display = ('ngt_id', 'version', 'name', 'managed_by', 'created_date', 'modified_by', 'modified_date',)
-    readonly_fields = ('ngt_id', 'version', 'name', 'created_date', 'modified_by', 'modified_date',)
-
-    def __init__(self, *args, **kwargs):
-        """
-        Override the parent method in order to remove display links
-        that navigate to show info page.
-        :param args:
-        :param kwargs:
-        """
-        super(self.__class__, self).__init__(*args, **kwargs)
-
-        # This will affect the Title of the page on in the Admin site
-        self.model._meta.verbose_name = 'Draft data set'
-        self.model._meta.verbose_name_plural = 'Draft data sets'
-
-    def save_model(self, request, obj, form, change):
-        """Override save to set modified by"""
-        obj.modified_by = request.user
-        super().save_model(request, obj, form, change)
-
-    def get_actions(self, request):
-        """Overrides parent. Removed the delete selected action"""
-        actions = super(self.__class__, self).get_actions(request)
-        if 'delete_selected' in actions:
-            del actions['delete_selected']
-        return actions
-
-    def get_queryset(self, request):
-        """
-        Returns a QuerySet of all DRAFT DataSets
-        """
-        qs = super(DraftDataSetAdmin, self).get_queryset(request)
-        return qs.filter(status=DataSet.STATUS_DRAFT)
-
-    def has_add_permission(self, request):
-        """
-        Disallow add through the admin interface. These records
-        should only be created in the main site
-
-        param request:
-        :return: False
-        """
-        return False
-
-    def mark_as_deleted(self, request, queryset):
-        """
-        Mark the DRAFT Datasets as deleted. Datasets marked
-        as deleted will not show up in the Archive Service
-
-        :param request: The current http request
-        :param queryset: the selected objects to mark deleted
-        :return: None
-        """
-
-        # Check that the user has delete permission for the actual model
-        if not self.has_delete_permission(request):
-            raise PermissionDenied
-
-        n = queryset.count()
-        if n:
-            for obj in queryset:
-                # We just want to mark deleted NOT physically delte
-                obj.status = DataSet.STATUS_DELETED
-                obj.save()
-
-            self.message_user(request,
-                              "Successfully marked %(count)d %(items)s as DELETED." % {
-                                  "count": n,
-                                  "items": model_ngettext(self.opts, n)
-                              }, messages.SUCCESS)
-        # Return None to display the change list page again.
-        return None
-
-    mark_as_deleted.short_description = "Mark draft data sets as DELETED"
 
 
 @admin.register(DataSetDownloadLog)

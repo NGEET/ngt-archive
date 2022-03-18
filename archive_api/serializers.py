@@ -68,6 +68,7 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
     archive_filename = serializers.SerializerMethodField()
     submission_date = serializers.ReadOnlyField()
     publication_date = serializers.ReadOnlyField()
+    approval_date = serializers.ReadOnlyField()
     authors = AuthorsField()
     archive = serializers.SerializerMethodField()
     status = StringToIntReadOnlyField()
@@ -118,19 +119,19 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = DataSet
-        fields = ('url', 'data_set_id', 'name', 'version', 'status', 'description', 'status_comment',
+        fields = ('url', 'data_set_id', 'name', 'version', 'status', 'citation', 'description', 'status_comment',
                   'doi', 'start_date', 'end_date', 'qaqc_status', 'qaqc_method_description',
                   'ngee_tropics_resources', 'funding_organizations', 'doe_funding_contract_numbers',
                   'acknowledgement', 'reference', 'additional_reference_information',
                   'access_level', 'additional_access_information', 'originating_institution',
                   'submission_date', 'contact', 'sites', 'authors', 'plots', 'variables', 'archive',
-                  'archive_filename',
+                  'archive_filename', 'needs_review', 'needs_approval', "is_published",
                   'managed_by', 'created_date', 'modified_by', 'modified_date'
-                  , 'cdiac_import', 'cdiac_submission_contact','publication_date')
+                  , 'cdiac_import', 'cdiac_submission_contact','approval_date', 'publication_date')
         read_only_fields = ('cdiac_import', 'cdiac_submission_contact',
             'url', 'version', 'managed_by', 'created_date', 'modified_by', 'modified_date', 'status', 'archive',
-            'archive_filename',
-            'submission_date', 'data_set_id','publication_date')
+            'archive_filename', 'citation', 'needs_review', 'needs_approval', "is_published",
+            'submission_date', 'data_set_id','approval_date', 'publication_date')
 
     def validate(self, data):
         """
@@ -208,18 +209,27 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
             # Create dataset first
             dataset = DataSet.objects.create(**validated_data)
             dataset.clean()
+            dataset._change_reason = f'Created Dataset Metadata'
             dataset.save()
 
             # save the author data
-            self.add_authors(author_data, dataset)
+            reasons = set()
+            if len(author_data) > 0:
+                reasons.add("authors")
+                self.add_authors(author_data, dataset)
             for obj in sites_data:
+                reasons.add("sites")
                 dataset.sites.add(obj)
             for obj in plots_data:
+                reasons.add("plots")
                 dataset.plots.add(obj)
             for obj in variables_data:
+                reasons.add("variables")
                 dataset.variables.add(obj)
 
-            dataset.save()
+            if len(reasons) > 0:
+                dataset._change_reason = f'Added {", ".join(reasons)}'
+                dataset.save()
 
         return dataset
 
@@ -238,9 +248,12 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
             if "authors" in validated_data.keys():
                 author_data = validated_data.pop('authors')
 
+                instance._change_reason = 'Adding Authors to  Dataset Metadata'
                 # remove the existing authors
                 Author.objects.filter(dataset_id=instance.id).delete()  # delete first
                 self.add_authors(author_data, instance)
+
+            instance._change_reason = 'Update Dataset Metadata'
 
             # Update Dataset metadata
             super(self.__class__, self).update(instance=instance, validated_data=validated_data)

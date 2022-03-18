@@ -5,11 +5,28 @@ from django.contrib.auth.signals import user_logged_in
 from django.core.mail import EmailMessage
 from django.db import transaction
 from django.dispatch import Signal
+from django.utils import timezone
 
 import archive_api
 from archive_api import permissions
 from archive_api.models import DataSet, Person
 from django.contrib.auth.models import update_last_login
+
+
+EMAIL_FOOTER_FORMAT = """-----------------
+More information.
+
+- You can find more information about the NGEE-Tropics Data in this link:
+https://ngee-tropics.lbl.gov/research/data/
+
+- If you need other help with your account or access to the NGEE-Tropics Archive, please send a message detailing the issue to:
+{ngeet_team}
+
+- If you would like to change your password, please access:
+https://ameriflux-data.lbl.gov/Pages/ResetFluxPassword.aspx
+
+- If you have forgotten your login, please access:
+https://ameriflux-data.lbl.gov/Pages/ForgotFluxUsername.aspx"""
 
 
 # Signal for Dataset Status changes
@@ -42,6 +59,7 @@ def notify_new_account(sender, user, **kwargs):
         user.save()
 
     ngt_user = NGTUser.objects.get(id = user.id)
+    email_footer = EMAIL_FOOTER_FORMAT.format(**{"ngeet_team":get_setting("EMAIL_NGEET_TEAM")})
 
     # Has the user been activated to access the NGEE Tropics
     # Data Collection?
@@ -99,20 +117,7 @@ If you also want the ability to contribute/upload data packages to the NGEE-Trop
 - Indicated if you are funded by NGEE-Tropics: Yes/No (note that NGEE-Tropics collaborators, even if not funded by the project, are welcome to deposit their data with the archive)
 
 
------------------
-More information.
-
-- You can find more information about the NGEE-Tropics Data in this link:
-https://ngee-tropics.lbl.gov/research/data/
-
-- If you need other help with your account or access to the NGEE-Tropics Archive, please send a message detailing the issue to:
-ngee-tropics-archive@lbl.gov
-
-- If you would like to change your password, please access:
-https://ameriflux-data.lbl.gov/Pages/ResetFluxPassword.aspx
-
-- If you have forgotten your login, please access:
-https://ameriflux-data.lbl.gov/Pages/ForgotFluxUsername.aspx
+{email_footer}
             """).send()
 
         # Any authenticated use should be set as active
@@ -142,77 +147,156 @@ django_auth_ldap.backend.populate_user.connect(notify_new_account)
 
 
 def dataset_notify_status_change(sender, **kwargs):
+    """
+    New Steps and Emails
+    The following workflow steps will be impelments
+
+    1. NEW DATASET
+    2. SAVE DRAFT - 1st save email
+    3. SUBMIT - Submit email
+    4. APPROVE - Approve email
+    5. LIVE DATASET
+    6. SAVE - Changes 1st change email
+    7. REQUEST REVIEW - Submit email
+    8. APPROVE - Approve email
+    9. LIVE DATASET (updated)
+
+    :param sender:
+    :param kwargs:
+    :return:
+    """
     instance = kwargs['instance']
     original_status = kwargs['original_status']
     request = kwargs['request']
     root_url = "{}://{}".format(request.scheme, request.get_host())
     content = None
     ngeet_team = ",".join(get_setting("EMAIL_NGEET_TEAM"))
+    fullname = instance.managed_by.get_full_name()
+    dataset_id = instance.data_set_id()
+    root_url = root_url
+    created_date = instance.created_date
+    dataset_name = instance.name
+    email_footer = EMAIL_FOOTER_FORMAT.format(**{"ngeet_team": ngeet_team})
+    if not dataset_name:
+        dataset_name = "Unnamed"
 
-    if original_status != instance.status:
-        if original_status is None and instance.status == permissions.DRAFT:
-            dataset_name = instance.name
-            if not dataset_name:
-                dataset_name = "Unnamed"
+    dataset_name = dataset_name.strip()
 
-            dataset_name = dataset_name.strip()
-            # this is a draft.
-            content = """Dear {fullname},
+    DOI_CITATION = ""
+    if instance.doi and not instance.publication_date:
+        DOI_CITATION = f"""
+The DOI ({instance.doi}) was issued for your dataset, but it is NOT ACTIVE at this 
+time and cannot be accessed. The DOI will be activated when the dataset is approved, 
+keeping the same DOI identifier/number. You can use this DOI to cite your dataset, 
+this is an example citation for the dataset:
 
-The dataset {dataset_id}:{dataset_name} has been saved as a draft in the NGEE Tropics Archive.
-The dataset can be viewed at {root_url}.  Login with your account credentials,
-select "Edit Drafts" and then click the "Edit" button for {dataset_id}:{dataset_name}.
+{instance.citation}
+"""
+    elif instance.doi:
+        DOI_CITATION = f"""
+The DOI ({instance.doi}) issued for the dataset at the submission step will be active 
+and can be accessed within 24h. You can use this DOI to cite your dataset, 
+this is an example citation for the dataset:
 
-Contact the  NGEE Tropics Archive Team ({ngeet_team}) for questions.
-Thanks for submitting your data to the NGEE Tropics Archive!
-
-Sincerely
-The NGEE Tropics Archive Team
-""".format(**{"fullname": instance.managed_by.get_full_name(), "dataset_id": instance.data_set_id(),
-              "dataset_name": dataset_name, "root_url": root_url, "ngeet_team":ngeet_team})
-        elif original_status == permissions.DRAFT and instance.status == permissions.SUBMITTED:
-            content = """Dear {fullname},
-
-The dataset {dataset_id}:{dataset_name} created on {created_date:%m/%d/%Y} was submitted to the NGEE Tropics Archive.
-You will not be able to view this dataset until it has been approved.
-
-You will be notified once the dataset has been approved or if we have questions regarding your submission.
-Note that at this time we do not have the ability to edit the dataset once it has been approved.
-
-Contact the  NGEE Tropics Archive Team ({ngeet_team}) for
-questions or if you want to make any changes to your dataset.
-Thanks for submitting your data to the NGEE Tropics Archive!
-
-Sincerely
-The NGEE Tropics Archive Team
-
+{instance.citation}
 """
 
-        elif original_status == permissions.SUBMITTED and instance.status == permissions.APPROVED:
-            content = """Dear {fullname},
+    if original_status != instance.status:
+        if instance.status == permissions.DRAFT and original_status is None:
 
-The dataset {dataset_id}:{dataset_name} created on {created_date:%m/%d/%Y}  has been approved for release.
-The dataset can be viewed at {root_url}. Login with your account credentials,
-select "View Approved Datasets" and then click the "Approve" button for {dataset_id}:{dataset_name}.
+            # Users FIRST SAVE (Step 2)
+            content = f"""Greetings {fullname},
 
-Contact the NGEE Tropics Archive Team ({ngeet_team})
-for questions. Thanks for submitting your data to the NGEE Tropics Archive!
+The dataset {dataset_id}:{dataset_name} has been saved as a draft in the NGEE-Tropics Archive, and can be viewed at {root_url}.
 
-Sincerely
-The NGEE Tropics Archive Team
+You can also login with your account credentials, select "Edit Drafts" and then click the "Edit" button for {dataset_id}:{dataset_name}.
+
+If you have any questions, please contact us at:
+{ngeet_team}
+
+Thank you for contributing your data to the NGEE-Tropics Archive!
+
+Sincerely,
+The NGEE-Tropics Archive Team
+
+{email_footer}
+"""
+        elif instance.status == permissions.DRAFT:
+            # USER FIRST CHANGES EMAIL template (Step 6)
+            content = f"""Greetings {fullname},
+
+The changes to the dataset {dataset_id}:{dataset_name} have been saved as a draft in 
+the NGEE-Tropics Archive, and can be viewed at {root_url}.
+
+You can also login with your account credentials, select "Edit Drafts" and then click 
+the "Edit" button for {dataset_id}:{dataset_name}.
+
+Note that these changes WILL ONLY BE PUBLISHED after a review process is requested. You 
+can start the review process by clicking the “Request Review” button in the dataset page 
+described above.
+
+If you have any questions, please contact us at:
+{ngeet_team}
+
+Thank you for contributing your data to the NGEE-Tropics Archive!
+
+Sincerely,
+The NGEE-Tropics Archive Team
+
+
+{email_footer}
+"""
+        elif instance.status == permissions.SUBMITTED:
+            # USER SUBMIT EMAIL template (Step 3,7)
+            content = f"""Greetings {fullname},
+
+The dataset {dataset_id}:{dataset_name} created on {created_date:%m/%d/%Y} has been 
+submitted to the NGEE-Tropics Archive.
+
+We will start the review and publication processes for the dataset. As soon as the dataset has been approved, 
+or in case we have any clarifying questions, you will be notified by email.
+
+Note that the publication status will not prevent you from editing your data package. 
+If you did not want to request that your data be published, please reply to this 
+e-mail and we will stop the publication process.
+{DOI_CITATION}
+If you have any questions, please contact us at:
+{ngeet_team}
+
+Thank you for contributing your data to the NGEE-Tropics Archive!
+
+Sincerely,
+The NGEE-Tropics Archive Team
+
+{email_footer}
+"""
+
+        elif instance.status == permissions.APPROVED:
+            # NGEE-TROPICS APPROVE EMAIL template (Step 4)
+            content = f"""Greetings {fullname},
+
+The dataset {dataset_id}:{dataset_name} created on {created_date:%m/%d/%Y} has been approved 
+for release and is now published.
+{DOI_CITATION}
+If you have any questions, please contact us at:
+{ngeet_team}
+
+Thank you for contributing your data to the NGEE-Tropics Archive!
+
+Sincerely,
+The NGEE-Tropics Archive Team
+
+{email_footer}
 """
         else:
             pass  # do nothing for now
 
-        if content:
-            content = content.format(**{"fullname": instance.managed_by.get_full_name(), "dataset_id": instance.data_set_id(),
-                "dataset_name": instance.name, "root_url": root_url, "ngeet_team":ngeet_team, "created_date":instance.created_date})
-
     if content:
         EmailMessage(
-            subject='{} Dataset {} ({})'.format(get_setting("EMAIL_SUBJECT_PREFIX"),
+            subject='{} Dataset {} ({}) on {}'.format(get_setting("EMAIL_SUBJECT_PREFIX"),
                                                 archive_api.models.STATUS_CHOICES[int(instance.status)][1],
-                                                           instance.data_set_id()),
+                                                instance.data_set_id(),
+                                                timezone.now().strftime("%Y-%m-%d %H:%M %Z")),
             body=content,
             to=[instance.managed_by.email],
             cc=get_setting("EMAIL_NGEET_TEAM"),
