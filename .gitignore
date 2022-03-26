@@ -2,6 +2,7 @@
 *.egg-info/
 *.py[cod]
 .DS_Store
+.coverage
 .data
 .env
 .idea

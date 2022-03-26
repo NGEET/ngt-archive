@@ -99,7 +99,6 @@ class DataSetClientTestCase(APITestCase):
         self.assertContains(response, "submit")
         self.assertContains(response, "approve")
 
-
     def test_client_unnamed(self):
 
         self.login_user("auser")
@@ -139,27 +138,33 @@ class DataSetClientTestCase(APITestCase):
         self.maxDiff = None
         print(value)
         self.assertEqual(value,
-                      {'url': 'http://testserver/api/v1/datasets/2/', 'data_set_id': 'NGT0001', 'name': 'Data Set 2',
-                       'version': '0.0', 'status': '1',
-                       'citation': 'Cage L (2016): Data Set 2. 0.0. NGEE Tropics Data Collection. (dataset). https://dx.doi.org/10.1111/892375dkfnsi',
-                       'description': 'Qui illud verear persequeris te. Vis probo nihil verear an, zril tamquam philosophia eos te, quo ne fugit movet contentiones. Quas mucius detraxit vis an, vero omnesque petentium sit ea. Id ius inimicus comprehensam.',
-                       'status_comment': '', 'doi': 'https://dx.doi.org/10.1111/892375dkfnsi',
-                       'start_date': '2016-10-28', 'end_date': None, 'qaqc_status': None, 'qaqc_method_description': '',
-                       'ngee_tropics_resources': True, 'funding_organizations': 'A few funding organizations',
-                       'doe_funding_contract_numbers': '', 'acknowledgement': '', 'reference': '',
-                       'additional_reference_information': '', 'access_level': '0', 'additional_access_information': '',
-                       'originating_institution': 'LBNL', 'submission_date': '2016-10-28T00:00:00Z',
-                       'contact': 'http://testserver/api/v1/people/2/', 'sites': ['http://testserver/api/v1/sites/1/'],
-                       'authors': ['http://testserver/api/v1/people/2/'],
-                       'plots': ['http://testserver/api/v1/plots/1/'],
-                       'variables': ['http://testserver/api/v1/variables/2/', 'http://testserver/api/v1/variables/3/',
-                                     'http://testserver/api/v1/variables/1/'], 'archive': None,
-                       'archive_filename': None, 'needs_review': False, 'needs_approval': True, 'is_published': False,
-                       'managed_by': 'auser', 'created_date': '2016-10-28T19:15:35.013361Z', 'modified_by': 'auser',
-                       'modified_date': '2016-10-28T23:01:20.066913Z', 'cdiac_import': False,
-                       'cdiac_submission_contact': None, 'approval_date': None, 'publication_date': None}
+                         {'url': 'http://testserver/api/v1/datasets/2/', 'data_set_id': 'NGT0001', 'name': 'Data Set 2',
+                          'version': '0.0', 'status': '1',
+                          'citation': 'Cage L (2016): Data Set 2. 0.0. NGEE Tropics Data Collection. (dataset). https://dx.doi.org/10.1111/892375dkfnsi',
+                          'description': 'Qui illud verear persequeris te. Vis probo nihil verear an, zril tamquam philosophia eos te, quo ne fugit movet contentiones. Quas mucius detraxit vis an, vero omnesque petentium sit ea. Id ius inimicus comprehensam.',
+                          'status_comment': '', 'doi': 'https://dx.doi.org/10.1111/892375dkfnsi',
+                          'start_date': '2016-10-28', 'end_date': None, 'qaqc_status': None,
+                          'qaqc_method_description': '',
+                          'ngee_tropics_resources': True, 'funding_organizations': 'A few funding organizations',
+                          'doe_funding_contract_numbers': 'LBNL NGEE-Tropics & UC, Berkeley NGEE-Tropics',
+                          'acknowledgement': '', 'reference': '',
+                          'additional_reference_information': '', 'access_level': '0',
+                          'additional_access_information': '',
+                          'originating_institution': 'LBNL', 'submission_date': '2016-10-28T00:00:00Z',
+                          'contact': 'http://testserver/api/v1/people/2/',
+                          'sites': ['http://testserver/api/v1/sites/1/'],
+                          'authors': ['http://testserver/api/v1/people/2/'],
+                          'plots': ['http://testserver/api/v1/plots/1/'],
+                          'variables': ['http://testserver/api/v1/variables/2/',
+                                        'http://testserver/api/v1/variables/3/',
+                                        'http://testserver/api/v1/variables/1/'], 'archive': None,
+                          'archive_filename': None, 'needs_review': False, 'needs_approval': True,
+                          'is_published': False,
+                          'managed_by': 'auser', 'created_date': '2016-10-28T19:15:35.013361Z', 'modified_by': 'auser',
+                          'modified_date': '2016-10-28T23:01:20.066913Z', 'cdiac_import': False,
+                          'cdiac_submission_contact': None, 'approval_date': None, 'publication_date': None}
 
-                      )
+                         )
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_client_post(self):
@@ -229,7 +234,7 @@ You can also login with your account credentials, select "Edit Drafts" and then 
                                    data='{"data_set_id":"FooBarBaz","description":"A FooBarBaz DataSet",'
                                         '"name": "Data Set 1", '
                                         '"status_comment": "",'
-                                        '"doi": "",'
+                                        '"doi": null,'
                                         '"start_date": "2016-10-28",'
                                         '"end_date": null,'
                                         '"qaqc_status": null,'
@@ -249,7 +254,6 @@ You can also login with your account credentials, select "Edit Drafts" and then 
                                         '"variables": ["http://testserver/api/v1/variables/1/", '
                                         '"http://testserver/api/v1/variables/2/"]}',
                                    content_type='application/json')
-
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         response = self.client.get('/api/v1/datasets/1/')
         value = json.loads(response.content.decode('utf-8'))
@@ -369,7 +373,7 @@ You can also login with your account credentials, select "Edit Drafts" and then 
                                    data='{"description":"A FooBarBaz DataSet",'
                                         '"name": "Data Set 2", '
                                         '"status_comment": "",'
-                                        '"doi": "https://doi.org/10.XXXX/123345",'
+                                        '"doi": "http://dx.doi.org/10.15486/ngt/1855609",'
                                         '"originating_institution": "Lawrence Berkeley National Lab",'
                                         '"start_date": "2016-10-28",'
                                         '"end_date": null,'
@@ -399,7 +403,7 @@ You can also login with your account credentials, select "Edit Drafts" and then 
         self.assertEqual(value["description"], "A FooBarBaz DataSet")
         self.assertEqual(value["name"], "Data Set 2")
         self.assertEqual(value["status_comment"], "")
-        self.assertEqual(value["doi"], "https://doi.org/10.XXXX/123345")
+        self.assertEqual(value["doi"], "http://dx.doi.org/10.15486/ngt/1855609")
         self.assertEqual(value["originating_institution"], "Lawrence Berkeley National Lab")
         self.assertEqual(value["start_date"], "2016-10-28")
         self.assertEqual(value["end_date"], None)
@@ -436,8 +440,14 @@ You can also login with your account credentials, select "Edit Drafts" and then 
         self.assertEqual({'detail': 'DataSet has been approved.', 'success': True}, value)
 
         # Was the notification email sent?
-        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(len(mail.outbox), 2)
         email = mail.outbox[0]
+        self.assertTrue(email.subject.startswith('[ngt-archive-test] Dataset NGT0001 Error on DOI on'))
+        self.assertTrue(email.body.startswith("""Dear NGEE-Tropics Data Admins,
+
+There was an issue publishing or minting a DOI by Mosely Admin. """))
+        self.assertEqual(email.to, ['ngeet-team@testserver'])
+        email = mail.outbox[1]
 
         self.assertTrue(email.subject.startswith("[ngt-archive-test] Dataset Approved (NGT0001)"))
         self.assertTrue(email.body.find("""The dataset NGT0001:Data Set 2 created on 10/28/2016 has been approved 
@@ -589,8 +599,14 @@ The DOI """) > 0)
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual({'detail': 'DataSet has been submitted.', 'success': True}, value)
-        self.assertEqual(outbox_len + 1, len(mail.outbox))  # notification emails sent
+        self.assertEqual(outbox_len + 2, len(mail.outbox))  # notification emails sent
         email = mail.outbox[0]
+        self.assertTrue(email.subject.startswith('[ngt-archive-test] Dataset NGT0000 Error on DOI on'))
+        self.assertTrue(email.body.startswith("""Dear NGEE-Tropics Data Admins,
+
+There was an issue publishing or minting a DOI by Mosely Admin. """) > 0)
+        self.assertEqual(email.to, ['ngeet-team@testserver'])
+        email = mail.outbox[1]
         self.assertTrue(email.subject.startswith("[ngt-archive-test] Dataset Submitted (NGT0000)"))
         self.assertTrue(email.body.find("""The dataset NGT0000:Data Set 1 created on 10/28/2016 has been 
 submitted to the NGEE-Tropics Archive.
@@ -685,7 +701,7 @@ or in case we have any clarifying questions, you will be notified by email.
                                         '"qaqc_method_description": "",'
                                         '"ngee_tropics_resources": false,'
                                         '"funding_organizations": "The funding organizations for my dataset",'
-                                        '"doe_funding_contract_numbers": "",'
+                                        '"doe_funding_contract_numbers": null,'
                                         '"acknowledgement": "",'
                                         '"reference": "",'
                                         '"additional_reference_information": "",'
@@ -714,7 +730,6 @@ or in case we have any clarifying questions, you will be notified by email.
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual({'detail': 'DataSet has been submitted.', 'success': True}, value)
-
 
         self.login_user("auser")
         #########################################################################

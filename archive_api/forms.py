@@ -3,6 +3,8 @@ from datetime import date
 from django import forms
 from django.utils import timezone
 
+from archive_api.models import ServiceAccount, SERVICE_ACCOUNT_CHOICES
+
 
 class MetricsFilterForm(forms.Form):
     start_date = forms.DateField(label='Start Date',
@@ -14,3 +16,17 @@ class MetricsFilterForm(forms.Form):
                                initial=timezone.now(),
                                required=True,
                                help_text="Filter metrics before this date.")
+
+
+class ServiceAccountForm(forms.ModelForm):
+
+    name = forms.CharField(label='Service Name', required=True)
+    service = forms.ChoiceField(label='Service', required=True, choices=SERVICE_ACCOUNT_CHOICES)
+    identity = forms.CharField(label='Account Identity', required=False)
+    secret = forms.CharField(label='Account Secret',
+                             required=True, widget=forms.PasswordInput(attrs={'placeholder':'********', 'autocomplete': 'off','data-toggle': 'password'}))
+    endpoint = forms.CharField(label="Service URL", required=True, widget=forms.URLInput(attrs={'size': 50}),)
+
+    class Meta:
+        model = ServiceAccount
+        fields = '__all__'

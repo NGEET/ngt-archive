@@ -1,31 +1,32 @@
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from django.db import IntegrityError
 
-from archive_api.models import DataSet, Site, Plot, Person, MeasurementVariable
+from archive_api.models import DataSet, ServiceAccount, Site, Plot, Person, MeasurementVariable
 from django.test import TestCase
 
 
 class DataSetTestCaseNew(TestCase):
-    fixtures = ('test_auth.json', )
+    fixtures = ('test_auth.json',)
 
     def setUp(self):
         self.user = User.objects.get(pk=1)
 
     def test_create(self):
-
         id1 = DataSet.objects.create(description="A Fantastic dataset", managed_by=self.user, modified_by=self.user).id
-        id2=DataSet.objects.create(description="Another Fantastic dataset", managed_by=self.user, modified_by=self.user).id
-        id3= DataSet.objects.create(description="A Fantastic dataset", managed_by=self.user, modified_by=self.user,
-                               ngt_id=0, version="1.0").id
+        id2 = DataSet.objects.create(description="Another Fantastic dataset", managed_by=self.user,
+                                     modified_by=self.user).id
+        id3 = DataSet.objects.create(description="A Fantastic dataset", managed_by=self.user, modified_by=self.user,
+                                     ngt_id=0, version="1.0").id
         id4 = DataSet.objects.create(description="A Third dataset", managed_by=self.user, modified_by=self.user).ngt_id
 
         # Test NGT increment
-        self.assertEqual(2,id4)
+        self.assertEqual(2, id4)
 
         foo = DataSet.objects.get(pk=id1)
         self.assertEqual(foo.ngt_id, 0)
-        self.assertEqual(foo.version,"0.0")
-        self.assertEqual(foo.description,"A Fantastic dataset")
+        self.assertEqual(foo.version, "0.0")
+        self.assertEqual(foo.description, "A Fantastic dataset")
 
         foo = DataSet.objects.get(pk=id2)
         self.assertEqual(foo.ngt_id, 1)
@@ -38,12 +39,14 @@ class DataSetTestCaseNew(TestCase):
         self.assertEqual(foo.description, "A Fantastic dataset")
 
         from django.db.utils import IntegrityError
-        self.assertRaises(IntegrityError,DataSet.objects.create,description="Another Fantastic dataset", managed_by=self.user, modified_by=self.user,
-                               version="1.0")
+        self.assertRaises(IntegrityError, DataSet.objects.create, description="Another Fantastic dataset",
+                          managed_by=self.user, modified_by=self.user,
+                          version="1.0")
 
 
 class DataSetTestCase(TestCase):
     fixtures = ('test_auth.json', 'test_archive_api.json',)
+
     def setUp(self):
         pass
 
@@ -81,13 +84,13 @@ class PersonTestCase(TestCase):
     def test_get(self):
         """Assert that the Persons were created"""
         foo = Person.objects.get(first_name="Mary", last_name="Cook", email="mcook@foobar.com",
-                                  institution_affiliation="FooBar")
+                                 institution_affiliation="FooBar")
         self.assertEqual(str(foo), "Cook, Mary - FooBar")
 
     def test_update(self):
         """ Assert that the Persons was updated """
         foo = Person.objects.get(first_name="Mary", last_name="Cook", email="mcook@foobar.com",
-                                  institution_affiliation="FooBar")
+                                 institution_affiliation="FooBar")
 
         foo.first_name = "Jane"
         foo.save()
@@ -100,7 +103,7 @@ class PersonTestCase(TestCase):
     def test_update_orcid_fail(self):
         """ Assert that the Persons throw validation errors """
         foo = Person(first_name="Mary", last_name="Cook", email="mcook@foobar.com",
-                                  institution_affiliation="FooBar", orcid="Bad orcid")
+                     institution_affiliation="FooBar", orcid="Bad orcid")
 
         with self.assertRaises(ValidationError):
             # `full_clean` will raise a ValidationError
@@ -111,7 +114,7 @@ class PersonTestCase(TestCase):
     def test_update_orcid_success(self):
         """ Assert that the Persons throw validation errors """
         foo = Person(first_name="Jane", last_name="Cook", email="mcook@foobar.com",
-                                  institution_affiliation="FooBar", orcid="https://orcid.org/0000-0000-0000-0000")
+                     institution_affiliation="FooBar", orcid="https://orcid.org/0000-0000-0000-0000")
 
         # `full_clean` will raise a ValidationError
         #   if any fields fail validation
@@ -251,3 +254,36 @@ class SiteTestCase(TestCase):
         """Assert that all Plots were found"""
         objects = Plot.objects.all()
         self.assertEqual(len(objects), 2)
+
+
+class ServiceAccountTestCase(TestCase):
+    def setUp(self):
+        ServiceAccount.objects.create(name="FooBar", service=0, identity="foo", secret="bar",
+                                      endpoint="http://foobar.baz")
+
+    def test_get(self):
+        """Assert that the ServiceAccount were created"""
+        foo = ServiceAccount.objects.get(name="FooBar")
+        self.assertEqual(str(foo), "OSTI Elink(FooBar)")
+        self.assertEqual(foo.secret, "bar")
+
+    def test_update(self):
+        """ Assert that the ServiceAccount was updated """
+        foo = ServiceAccount.objects.get(name="FooBar")
+
+        foo.name = "FooBarBaz"
+        foo.save()
+
+        foo = ServiceAccount.objects.get(name="FooBarBaz")
+        self.assertIsNotNone(foo)
+        self.assertEqual(str(foo), "OSTI Elink(FooBarBaz)")
+
+    def test_list(self):
+        """Assert that all ServiceAccount were found"""
+        objs = ServiceAccount.objects.all()
+        self.assertEqual(len(objs), 1)
+
+    def test_duplicate(self):
+        """Assert that and integrity error is raised"""
+        self.assertRaises(IntegrityError, ServiceAccount.objects.create, name="Another DOI", service=0, identity="foobar",
+                          secret="bax", endpoint="https://foobar.baz")

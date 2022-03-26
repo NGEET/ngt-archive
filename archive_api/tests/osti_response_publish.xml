@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<records>
+    <record status="Pending" released="N">
+        <site_input_code>NGEE-TRPC</site_input_code>
+        <osti_id>1525114</osti_id>
+        <dataset_type>SM</dataset_type>
+        <title>Data Set 2</title>
+        <status>SUCCESS</status>
+        <authors>
+            <author>
+                <first_name>Luke</first_name>
+                <last_name>Cage</last_name>
+                <private_email>lcage@foobar.baz</private_email>
+                <affiliation_name>POWER</affiliation_name>
+            </author>
+        </authors>
+        <related_resource></related_resource>
+        <product_nos>NGT0001</product_nos>
+        <product_type>DA</product_type>
+        <contract_nos>LBNL NGEE-Tropics UC, Berkeley NGEE-Tropics</contract_nos>
+        <other_identifying_numbers></other_identifying_numbers>
+        <originating_research_org>Next-Generation Ecosystem Experiments Tropics; LBNL</originating_research_org>
+        <availability></availability>
+        <collaboration_names></collaboration_names>
+        <publication_date>2016</publication_date>
+        <language>English</language>
+        <country>US</country>
+        <sponsor_org>A few funding organizations</sponsor_org>
+        <subject_categories_code>54 ENVIRONMENTAL SCIENCES</subject_categories_code>
+        <keywords></keywords>
+        <accession_num></accession_num>
+        <description>Qui illud verear persequeris te. Vis probo nihil verear an, zril tamquam philosophia eos te, quo ne fugit movet contentiones. Quas mucius detraxit vis an, vero omnesque petentium sit ea. Id ius inimicus comprehensam.</description>
+        <site_url>https://vchendrix/dois/NGT0001</site_url>
+        <date_first_submitted>2022-03-24</date_first_submitted>
+        <date_last_submitted>2022-03-24</date_last_submitted>
+        <doi status="PENDING">10.15486/ngt/1525114</doi>
+        <doi_infix>ngt</doi_infix>
+        <file_extension></file_extension>
+        <software_needed></software_needed>
+        <dataset_size></dataset_size>
+        <contact_name>NGEE Tropics Archive Team, Support Organization</contact_name>
+        <contact_org>Lawrence Berkeley National Lab</contact_org>
+        <contact_email>ngeet-team@testserver</contact_email>
+        <contact_phone>(510) 495-2905</contact_phone>
+        <othnondoe_contract_nos></othnondoe_contract_nos>
+    </record>
+</records>

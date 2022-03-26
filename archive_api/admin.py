@@ -10,8 +10,15 @@ from django.urls import path
 from django.utils.datetime_safe import datetime
 from django.utils.safestring import mark_safe
 
-from archive_api.models import DataSet, DataSetDownloadLog, MeasurementVariable, Person, Plot, Site
+from archive_api.models import DataSet, DataSetDownloadLog, MeasurementVariable, Person, Plot, ServiceAccount, Site
+from archive_api.forms import ServiceAccountForm
 from simple_history.admin import SimpleHistoryAdmin
+
+
+@admin.register(ServiceAccount)
+class ServiceAccountAdmin(ModelAdmin):
+    form = ServiceAccountForm
+    list_display = ["name", "service", "endpoint"]
 
 
 @admin.register(DataSet)

@@ -31,6 +31,7 @@ https://ameriflux-data.lbl.gov/Pages/ForgotFluxUsername.aspx"""
 
 # Signal for Dataset Status changes
 dataset_status_change = Signal(providing_args=['request', 'user', 'instance', 'original_status'])
+dataset_doi_issue = Signal(providing_args=['request', 'user', 'instance', 'error_msg'])
 
 
 def get_setting(setting_name):
@@ -144,6 +145,32 @@ user_logged_in.connect(notify_new_account)
 # This signal has two keyword arguments: user is the
 # User object and ldap_user is the same as user.ldap_user. The sender is the LDAPBackend class.
 django_auth_ldap.backend.populate_user.connect(notify_new_account)
+
+
+def dataset_notify_doi_issue(sender, **kwargs):
+    """
+    Notify the NGEE-Tropics administrators that there was an issue
+    with synchronizing with OSTI
+
+    :param sender:
+    :param kwargs:
+    :return:
+    """
+
+    instance = kwargs['instance']
+    request = kwargs['request']
+    error_msg = kwargs['error_message']
+
+    EmailMessage(
+        subject=f'{get_setting("EMAIL_SUBJECT_PREFIX")} Dataset {instance.data_set_id()} Error on DOI on {timezone.now().strftime("%Y-%m-%d %H:%M %Z")}',
+        body=f"""Dear NGEE-Tropics Data Admins,
+
+There was an issue publishing or minting a DOI by {request.user.get_full_name()}. 
+
+The error message is "{error_msg}"
+""",
+        to=get_setting("EMAIL_NGEET_TEAM"),
+        reply_to=get_setting("EMAIL_NGEET_TEAM")).send()
 
 
 def dataset_notify_status_change(sender, **kwargs):
@@ -304,3 +331,4 @@ The NGEE-Tropics Archive Team
 
 
 dataset_status_change.connect(dataset_notify_status_change)
+dataset_doi_issue.connect(dataset_notify_doi_issue)

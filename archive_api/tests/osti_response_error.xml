@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<records>
+    <record status="Pending" released="N">
+        <site_input_code>NGEE-TRPC</site_input_code>
+        <osti_id>0</osti_id>
+        <dataset_type>SM</dataset_type>
+        <title></title>
+        <status>FAILURE</status>
+        <status_message>Title is required.; DOE Contract/Award Number(s) is required.; Author(s) is required.; Publication Date is required.; Sponsoring Organization is required.; Missing required URL.</status_message>
+        <related_resource></related_resource>
+        <product_nos>None</product_nos>
+        <product_type>DA</product_type>
+        <contract_nos></contract_nos>
+        <other_identifying_numbers></other_identifying_numbers>
+        <originating_research_org>Next-Generation Ecosystem Experiments Tropics</originating_research_org>
+        <availability></availability>
+        <collaboration_names></collaboration_names>
+        <publication_date></publication_date>
+        <language>English</language>
+        <country>US</country>
+        <sponsor_org></sponsor_org>
+        <subject_categories_code>54 ENVIRONMENTAL SCIENCES</subject_categories_code>
+        <keywords></keywords>
+        <accession_num></accession_num>
+        <description></description>
+        <date_first_submitted>2022-03-24</date_first_submitted>
+        <date_last_submitted>2022-03-24</date_last_submitted>
+        <doi_infix>ngt</doi_infix>
+        <file_extension></file_extension>
+        <software_needed></software_needed>
+        <dataset_size></dataset_size>
+        <contact_name>NGEE Tropics Archive Team, Support Organization</contact_name>
+        <contact_org>Lawrence Berkeley National Lab</contact_org>
+        <contact_email>ngeet-team@testserver</contact_email>
+        <contact_phone>(510) 495-2905</contact_phone>
+        <othnondoe_contract_nos></othnondoe_contract_nos>
+    </record>
+</records>

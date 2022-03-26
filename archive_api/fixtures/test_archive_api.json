@@ -142,7 +142,7 @@
       "status": 0,
       "status_comment": "",
       "name": "Data Set 1",
-      "doi": "",
+      "doi": null,
       "start_date": "2016-10-28",
       "end_date": null,
       "qaqc_status": null,
@@ -190,7 +190,7 @@
       "ngee_tropics_resources": true,
       "originating_institution":"LBNL",
       "funding_organizations": "A few funding organizations",
-      "doe_funding_contract_numbers": "",
+      "doe_funding_contract_numbers": "LBNL NGEE-Tropics & UC, Berkeley NGEE-Tropics",
       "acknowledgement": "",
       "reference": "",
       "additional_reference_information": "",
@@ -316,4 +316,5 @@
       "cdiac_submission_contact":2
     }
   }
+
 ]

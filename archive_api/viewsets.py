@@ -30,7 +30,8 @@ from archive_api.permissions import HasArchivePermission, HasSubmitPermission, H
 from archive_api.serializers import DataSetSerializer, MeasurementVariableSerializer, \
     SiteSerializer, PersonSerializer, \
     PlotSerializer
-from archive_api.signals import dataset_status_change
+from archive_api.signals import dataset_status_change, dataset_doi_issue
+from archive_api.service import osti
 
 # import the logging library
 import logging
@@ -60,8 +61,8 @@ class DataSetMetadata(SimpleMetadata):
         data = super(DataSetMetadata, self).determine_metadata(request, view)
 
         max_file_length = request.user.has_perm("archive_api.upload_large_file_dataset") and \
-                            settings.ARCHIVE_API['DATASET_ADMIN_MAX_UPLOAD_SIZE'] or \
-                            settings.ARCHIVE_API['DATASET_USER_MAX_UPLOAD_SIZE']
+                          settings.ARCHIVE_API['DATASET_ADMIN_MAX_UPLOAD_SIZE'] or \
+                          settings.ARCHIVE_API['DATASET_USER_MAX_UPLOAD_SIZE']
 
         for x, y in view.__class__.__dict__.items():
             if type(y) == FunctionType and hasattr(y, "detail"):
@@ -113,8 +114,8 @@ class DataSetViewSet(ModelViewSet):
             serializer.save(modified_by=self.request.user)
 
     @action(detail=True, methods=['GET'],
-                  permission_classes=(
-                  HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasArchivePermission))
+            permission_classes=(
+                    HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasArchivePermission))
     def archive(self, request, pk=None):
 
         dataset = self.get_object()
@@ -143,7 +144,8 @@ class DataSetViewSet(ModelViewSet):
         response['Content-Length'] = os.stat(file_path).st_size
         response['Content-Disposition'] = 'attachment; filename={}'.format(tail)
 
-        logger.info(f"Content-Length:{response['Content-Length'] } Content-Disposition:{response['Content-Disposition']}")
+        logger.info(
+            f"Content-Length:{response['Content-Length']} Content-Disposition:{response['Content-Disposition']}")
 
         DataSetDownloadLog.objects.create(
             user=request.user,
@@ -156,8 +158,8 @@ class DataSetViewSet(ModelViewSet):
         return response
 
     @action(detail=True, methods=['post'],
-                  permission_classes=(
-                  HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasUploadPermission))
+            permission_classes=(
+                    HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasUploadPermission))
     def upload(self, request, *args, **kwargs):
         """
         Upload an archive file to the Dataset
@@ -177,7 +179,7 @@ class DataSetViewSet(ModelViewSet):
                                  'detail': 'Uploaded file size is {:.1f} MB. Max upload size is {:.1f} MB'.format(
                                      upload.size / (1024 * 1024),
                                      maxUploadSize / (
-                                     1024 * 1024)
+                                             1024 * 1024)
                                  )}, status=http_status.HTTP_400_BAD_REQUEST)
 
             try:
@@ -206,8 +208,8 @@ class DataSetViewSet(ModelViewSet):
                             status=http_status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, methods=['post', 'get'],
-                  permission_classes=(
-                  HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasApprovePermission))
+            permission_classes=(
+                    HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasApprovePermission))
     def approve(self, request, pk=None):
         """
         Approve action.  Changes the dataset from SUBMITTED to APPROVED status. User must permissions for this action
@@ -217,10 +219,9 @@ class DataSetViewSet(ModelViewSet):
         return Response({'success': True, 'detail': 'DataSet has been approved.'},
                         status=http_status.HTTP_200_OK)
 
-
     @action(detail=True, methods=['post', 'get'],
-                  permission_classes=(
-                  HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasSubmitPermission))
+            permission_classes=(
+                    HasEditPermissionOrReadonly, permissions.IsAuthenticated, HasSubmitPermission))
     def submit(self, request, pk=None):
         """
         Submit action. Changes the dataset from DRAFT to SUBMITTED status. User must have permissions for this action.
@@ -230,8 +231,8 @@ class DataSetViewSet(ModelViewSet):
                         status=http_status.HTTP_200_OK)
 
     @action(detail=True, methods=['post', 'get'],
-                  permission_classes=(
-                  HasEditPermissionOrReadonly, permissions.IsAuthenticated))
+            permission_classes=(
+                    HasEditPermissionOrReadonly, permissions.IsAuthenticated))
     def draft(self, request, pk=None):
         """
         Submit action. Changes the dataset from DRAFT to SUBMITTED status. User must have permissions for this action.
@@ -248,6 +249,7 @@ class DataSetViewSet(ModelViewSet):
         dataset = self.get_object()  # this will initiate a permissions check
         original_status = dataset.status
         now = timezone.now()
+        doi_function = None
 
         # This will rollback the transaction on failure
         with transaction.atomic():
@@ -263,12 +265,15 @@ class DataSetViewSet(ModelViewSet):
 
                 # The status has changed
                 if status == SUBMITTED:
+                    doi_function = osti.mint
+
                     # This is the first time that dataset is being submitted
                     dataset.submission_date = now
                     if dataset.archive and dataset.version == "0.0":
                         dataset.version = "1.0"
 
                 elif status == APPROVED:
+                    doi_function = osti.publish
                     dataset.approval_date = now
                     if original_status == SUBMITTED and not dataset.publication_date:
                         # The dataset is NOT LIVE yet and is being approved for the first time
@@ -279,11 +284,26 @@ class DataSetViewSet(ModelViewSet):
                                          f'{STATUS_CHOICES[status]}'
                 dataset.save(modified_date=now)
 
+                if doi_function:
+                    try:
+                        # process the DOI
+                        osti_record = doi_function(dataset.id)
+                        if osti_record and osti_record.status != "SUCCESS":
+                            error_message = f"doi:{osti_record.doi} doi_status:{osti_record.doi_status} " \
+                                            f"status:{osti_record.status} status_message:{osti_record.status_message}"
+                            dataset_doi_issue.send(sender=self.__class__, request=request, user=request.user,
+                                                   instance=dataset, error_message=error_message)
+
+                    except Exception as e:
+                        # Send notification to admin if there are any errors
+                        dataset_doi_issue.send(sender=self.__class__, request=request, user=request.user,
+                                               instance=dataset, error_message=str(e))
+
                 # Send the signal for the status change
                 dataset_status_change.send(sender=self.__class__, request=request, user=request.user,
-                                   instance=dataset, original_status=original_status)
+                                           instance=dataset, original_status=original_status)
 
-    def get_queryset(self,):
+    def get_queryset(self, ):
         """
         This view should return a list of all the datasets
         for the currently authenticated user.
@@ -328,8 +348,8 @@ class DataSetViewSet(ModelViewSet):
         # Filter by needs approval
         if needs_approval == 'true':
             where_clause = where_clause & Q(status__gte=DataSet.STATUS_SUBMITTED) & \
-                                          Q(Q(approval_date__lt=F('modified_date')) | Q(approval_date__gt=F('modified_date')) |\
-                                            Q(approval_date=None))
+                           Q(Q(approval_date__lt=F('modified_date')) | Q(approval_date__gt=F('modified_date')) | \
+                             Q(approval_date=None))
         elif needs_approval == 'false':
             where_clause = where_clause & Q(status__lt=DataSet.STATUS_SUBMITTED) | Q(approval_date=F('modified_date'))
 

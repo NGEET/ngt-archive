@@ -1,3 +1,4 @@
+from rest_framework.fields import RegexField, URLField
 from urllib.parse import urlparse
 
 import os
@@ -74,6 +75,7 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
     status = StringToIntReadOnlyField()
     qaqc_status = StringToIntField(required=False,allow_null=True)
     access_level = StringToIntField(required=False, allow_null=True)
+    doi = RegexField("http(s)?://(dx.)?doi.org/10.15486/ngt/", required=False, allow_null=True, allow_blank=True)
 
     def get_archive_filename(self,instance):
 

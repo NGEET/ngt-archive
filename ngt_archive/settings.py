@@ -1,4 +1,7 @@
 from __future__ import print_function
+
+from base64 import b64encode
+
 """
 Django settings for ngt_archive project.
 
@@ -14,6 +17,12 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 import sys
 
 import os
+
+import socket
+try:
+    HOSTNAME = socket.gethostname()
+except:
+    HOSTNAME = 'localhost'
 
 LOGIN_URL = "/api/api-auth/login/"
 EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
@@ -202,6 +211,11 @@ ARCHIVE_API = {
     'DATASET_USER_MAX_UPLOAD_SIZE': 1073741824, # in bytes
     'EMAIL_NGEET_TEAM': ['ngeet-team@testserver'],
     'EMAIL_SUBJECT_PREFIX': '[ngt-archive-test]',
+    # SECURITY WARNING: keep the secret key used in production secret!
+    # Use cryptography library to create a Fernet key (pip install cryptography)
+    # >>> from cryptography.fernet import Fernet
+    # >>> Fernet.generate_key()
+    'SERVICE_ACCOUNT_SECRET_KEY': os.getenv('SERVICE_ACCOUNT_SECRET_KEY', 'JTYRKA98wMg_VQDotXR4ApXfZgH6HBWLHvWwPGtogjw=')
 }
 
 # tmp directory at the archive root directory

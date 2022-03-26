@@ -50,6 +50,7 @@ setup(name='ngt_archive',
           "django-auth-ldap>=2.1.1",
           "django-oauth-toolkit",
           "pytz",
-          "django-simple-history"
+          "django-simple-history",
+          "cryptography"
       ]
       )

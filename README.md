@@ -1,3 +1,5 @@
+[![.github/workflows/tests.yml](https://github.com/NGEET/ngt-archive/actions/workflows/tests.yml/badge.svg)](https://github.com/NGEET/ngt-archive/actions/workflows/tests.yml)
+
 # NGEE Tropics Archive Service
 
 NGEE Tropics Archive Service is a Django application.  The NGEE-Tropics archive 

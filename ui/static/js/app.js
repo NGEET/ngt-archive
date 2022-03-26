@@ -234,7 +234,7 @@ $(document).ready(function () {
         }
     });
 
-    $.getJSON("static/js/metadata/dataset.json?v=202202", function (data) {
+    $.getJSON("static/js/metadata/dataset.json?v=202203", function (data) {
         templates.datasets = data;
         createEditForm('datasets');
     });

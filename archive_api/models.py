@@ -1,5 +1,4 @@
 import os
-import re
 
 import django.contrib.auth.models
 from django.conf import settings
@@ -10,6 +9,110 @@ from django.db import models, transaction
 from django.utils import timezone
 from django.utils.datetime_safe import datetime
 from simple_history.models import HistoricalRecords
+from django.core import validators
+
+from cryptography.fernet import Fernet
+
+
+class SecretField(models.Field):
+    """
+    Secret Field to be used to encryprt and decrypt. Encrypted
+    data is stored as a binary value in the database.
+
+    Design for this field based on:
+
+       Yang, A. (2022, January 4). Using custom model fields to encrypt and decrypt data in Django.
+       Medium. https://medium.com/finnovate-io/using-custom-model-fields-to-encrypt-and-decrypt-data-in-django-8255a4960b72
+    """
+
+    description = "Encrypt Service Account Secret"
+    empty_values = [None, ""]
+
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault('editable', False)
+        # Set default values
+        kwargs['max_length'] = 255
+        kwargs['blank'] = True
+        kwargs['null'] = True
+        super().__init__(*args, **kwargs)
+        if self.max_length is not None:
+            self.validators.append(validators.MaxLengthValidator(self.max_length))
+
+    def deconstruct(self):
+        name, path, args, kwargs = super().deconstruct()
+        if self.editable:
+            kwargs['editable'] = True
+        else:
+            del kwargs['editable']
+        return name, path, args, kwargs
+
+    def get_internal_type(self):
+        return "CharField"
+
+    def get_default(self):
+        if self.has_default() and not callable(self.default):
+            return self.default
+        default = super().get_default()
+        if default == '':
+            return ""
+        return default
+
+    def get_prep_value(self, value):
+        """
+        Encrypt the value to be stored in the database
+
+        Return field's value prepared for interacting with the database backend.
+
+        Used by the default implementations of get_db_prep_save().
+        :param value:
+        :return:
+        """
+        # Instance the Fernet class with the key
+        fernet = Fernet(self._get_secret_key())
+        return fernet.encrypt(isinstance(value, (bytes, bytearray)) and value or value.encode()).decode()
+
+    def from_db_value(self, value, expression, connection):
+        """
+        Decrypt the value coming from the database. Prepares the
+        value coming from the database.
+
+        :param value:
+        :param expression:
+        :param connection:
+        :return:
+        """
+        if value is None:
+            return value
+
+        # Instance the Fernet class with the key
+        fernet = Fernet(self._get_secret_key())
+        return fernet.decrypt(isinstance(value, (bytes, bytearray)) and value or value.encode()).decode()
+
+    def to_python(self, value):
+        """
+        Overrides models.Binaryfield.  We don't want to b64encode
+
+        Convert the input value into the expected Python data type, raising
+        django.core.exceptions.ValidationError if the data can't be converted.
+        Return the converted value. Subclasses should override this.
+
+        :param value:
+        :return:
+        """
+        return value
+
+    def value_to_string(self, obj):
+        """
+        Overrides modes.BinaryField.  There is no b64 encoding
+
+        Secret data is encrypted
+        """
+        return self.get_prep_value(self.value_from_object(obj)).decode()
+
+    @staticmethod
+    def _get_secret_key():
+        """Get the Service account secret key from the settings"""
+        return settings.ARCHIVE_API['SERVICE_ACCOUNT_SECRET_KEY'].encode()
 
 
 class DatasetArchiveStorage(FileSystemStorage):
@@ -55,6 +158,11 @@ ACCESS_CHOICES = (
 PERSON_ROLE_CHOICES = (
     (0, 'Team'),
     (1, 'Collaborator'),
+)
+
+SERVICE_ACCOUNT_CHOICES = (
+    (0, 'OSTI Elink'),
+    (1, 'ESS-DIVE'),
 )
 
 
@@ -233,7 +341,7 @@ class DataSet(models.Model):
                                  default=0)  # (draft [DEFAULT], submitted, approved)
     status_comment = models.TextField(blank=True, null=True)
     name = models.CharField(max_length=150, blank=True, null=True)
-    doi = models.TextField(blank=True, null=True)
+    doi = models.URLField(blank=True, null=True)
     start_date = models.DateField(blank=True, null=True)
     end_date = models.DateField(blank=True, null=True)
     qaqc_status = models.IntegerField(choices=QAQC_STATUS_CHOICES, blank=True, null=True)
@@ -382,3 +490,23 @@ class DataSetDownloadLog(models.Model):
     request_url = models.CharField(max_length=256)
     datetime = models.DateTimeField(editable=False, auto_now_add=True)
     ip_address = models.GenericIPAddressField(blank=True, null=True)
+
+
+class ServiceAccount(models.Model):
+    """
+    Service acount model for storing credentials.
+    """
+    name = models.CharField(max_length=30)
+    service = models.IntegerField(choices=SERVICE_ACCOUNT_CHOICES, unique=True)
+    identity = models.CharField(max_length=30, blank=True, null=True)
+    secret = SecretField(editable=True)
+    endpoint = models.URLField(null=False, blank=False)
+
+    def __str__(self):
+        return self.__unicode__()
+
+    def __unicode__(self):
+        return f"{SERVICE_ACCOUNT_CHOICES[self.service][1]}({self.name})"
+
+    def __repr__(self):
+        return f'<ServiceAccount {self}>'

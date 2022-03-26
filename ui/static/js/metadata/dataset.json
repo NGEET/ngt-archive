@@ -227,21 +227,21 @@
         "multiple": false,
         "description": "<p>Provide comments, if necessary regarding data access. Indicate if there are any data usage constraints here. <b><em>Specify a publication date if you DO NOT wish this dataset to go public on March 31, 2019.</em></b></p>"
     },
-    "doi": {
-        "type": "string",
-        "required": false,
-        "read_only": false,
-        "label": "Dataset DOI",
-        "sequence": 23,
-        "multiple": false,
-        "description": "<p>DOI for this dataset.</p>"
-    },
     "cdiac_submission_contact": {
         "type": "field",
         "required": false,
         "read_only": true,
         "label": "Submission Contact",
-        "sequence": 24
+        "sequence": 23
+    },
+    "doi": {
+        "type": "string",
+        "required": false,
+        "read_only": true,
+        "label": "Dataset DOI",
+        "sequence": -1,
+        "multiple": false,
+        "description": "<p>DOI for this dataset.</p>"
     },
     "url": {
         "type": "field",
