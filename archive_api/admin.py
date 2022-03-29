@@ -9,10 +9,13 @@ from django.shortcuts import redirect, render
 from django.urls import path
 from django.utils.datetime_safe import datetime
 from django.utils.safestring import mark_safe
+from django.utils.translation import ngettext
 
 from archive_api.models import DataSet, DataSetDownloadLog, MeasurementVariable, Person, Plot, ServiceAccount, Site
 from archive_api.forms import ServiceAccountForm
 from simple_history.admin import SimpleHistoryAdmin
+
+from archive_api.service import osti
 
 
 @admin.register(ServiceAccount)
@@ -23,9 +26,77 @@ class ServiceAccountAdmin(ModelAdmin):
 
 @admin.register(DataSet)
 class DataSetHistoryAdmin(SimpleHistoryAdmin):
-    list_display = ["data_set_id", "version", "status", "name"]
+    list_display = ["data_set_id", "version", "status", "doi", "name"]
     history_list_display = ["list_changes"]
     search_fields = ['name', 'status', "ngt_id", "version"]
+
+    actions = ['osti_synchronize', 'osti_mint']
+
+    def osti_synchronize(self, request, queryset):
+        """Synchronizes published datasets with OSTI"""
+
+        published_count = 0
+        for dataset in queryset:
+            if dataset.doi:
+                try:
+                    osti_record = osti.publish(dataset.id)
+                    if osti_record and osti_record.status == "SUCCESS":
+                        published_count += 1
+                    elif osti_record:
+                        self.message_user(request, f"{dataset.data_set_id()} could not be synchronized. {osti_record.status_message}",
+                                          messages.WARNING)
+                except Exception as e:
+                    self.message_user(request,
+                                      f"{dataset.data_set_id()} could not be synchronized. {str(e)}",
+                                      messages.ERROR)
+            else:
+                self.message_user(request,
+                                  f"{dataset.data_set_id()} does not have a DOI and cannot be synchronized",
+                                  messages.WARNING)
+
+        if published_count > 0:
+            self.message_user(request, ngettext(
+                '%d dataset was synchronized with OSTI.',
+                '%d datasets were synchronized with OSTI.',
+                published_count,
+            ) % published_count, messages.SUCCESS)
+        else:
+            self.message_user(request, "No datasets were synchronized with OSTI.", messages.WARNING)
+
+    osti_synchronize.short_description = 'Synchronize via OSTI for selected datasets'
+
+    def osti_mint(self, request, queryset):
+        """Mint DOIs via OSTI with selected datasets"""
+
+        mint_count = 0
+        for dataset in queryset:
+            if not dataset.doi:
+                try:
+                    osti_record = osti.mint(dataset.id)
+                    if osti_record and osti_record.status == "SUCCESS":
+                        mint_count += 1
+                    elif osti_record:
+                        self.message_user(request, f"{dataset.data_set_id()} could mint DOI. {osti_record.status_message}",
+                                          messages.WARNING)
+                except Exception as e:
+                    self.message_user(request,
+                                      f"{dataset.data_set_id()} could mint DOI. {str(e)}",
+                                      messages.ERROR)
+            else:
+                self.message_user(request,
+                                  f"{dataset.data_set_id()} already has a doi.",
+                                  messages.WARNING)
+
+        if mint_count > 0:
+            self.message_user(request, ngettext(
+                '%d dataset with a new DOI.',
+                '%d datasets with new DOIs.',
+                mint_count,
+            ) % mint_count, messages.SUCCESS)
+        else:
+            self.message_user(request, "No DOIs were minted.", messages.WARNING)
+
+    osti_mint.short_description = 'Mint DOIs via OSTI for selected datasets'
 
     def list_changes(self, obj):
         """
