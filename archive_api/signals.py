@@ -210,22 +210,27 @@ def dataset_notify_status_change(sender, **kwargs):
     dataset_name = dataset_name.strip()
 
     DOI_CITATION = ""
-    if instance.doi and not instance.publication_date:
+    if instance.doi and instance.status == permissions.SUBMITTED and not instance.publication_date:
         DOI_CITATION = f"""
 The DOI ({instance.doi}) was issued for your dataset, but it is NOT ACTIVE at this 
 time and cannot be accessed. The DOI will be activated when the dataset is approved, 
-keeping the same DOI identifier/number. You can use this DOI to cite your dataset, 
-this is an example citation for the dataset.This is the current citation for the dataset, 
-it is not final and might change if the author listing or title fields are edited  
-before the dataset is *approved*:
+keeping the same DOI identifier/number. You can use this DOI to cite your dataset. This is the 
+current citation for the dataset, it is not final and might change if the author listing 
+or title fields are edited before the dataset is *approved*:
 
 {instance.citation}
 """
-    elif instance.doi:
+    elif instance.doi and instance.status == permissions.SUBMITTED:
+        DOI_CITATION = f"""
+The DOI ({instance.doi}) will be activated when the dataset is approved, 
+keeping the same DOI identifier/number. You can use this DOI to cite your dataset. 
+
+    {instance.citation}
+    """
+    elif instance.doi and instance.status == permissions.APPROVED:
         DOI_CITATION = f"""
 The DOI ({instance.doi}) issued for the dataset at the submission step will be active 
-and can be accessed within 24h. You can use this DOI to cite your dataset, 
-this is an example citation for the dataset:
+and can be accessed within 24h. You can use this DOI to cite your dataset. 
 
 {instance.citation}
 """
