@@ -251,10 +251,10 @@ class DataSetViewSet(ModelViewSet):
         now = timezone.now()
         doi_function = None
 
-        # This will rollback the transaction on failure
-        with transaction.atomic():
+        if original_status != status:
 
-            if original_status != status:
+            # This will rollback the transaction on failure
+            with transaction.atomic():
                 # Validate the archive field with clean()
                 dataset.modified_by = request.user
                 dataset.status = status
@@ -283,25 +283,27 @@ class DataSetViewSet(ModelViewSet):
                 dataset._change_reason = f'{request.path}: Changed Status from {STATUS_CHOICES[original_status]} to ' \
                                          f'{STATUS_CHOICES[status]}'
                 dataset.save(modified_date=now)
+                dataset.refresh_from_db()
 
-                if doi_function:
-                    try:
-                        # process the DOI
-                        osti_record = doi_function(dataset.id)
-                        if osti_record and osti_record.status != "SUCCESS":
-                            error_message = f"doi:{osti_record.doi} doi_status:{osti_record.doi_status} " \
-                                            f"status:{osti_record.status} status_message:{osti_record.status_message}"
-                            dataset_doi_issue.send(sender=self.__class__, request=request, user=request.user,
-                                                   instance=dataset, error_message=error_message)
-
-                    except Exception as e:
-                        # Send notification to admin if there are any errors
+            if doi_function:
+                try:
+                    # process the DOI
+                    osti_record = doi_function(dataset.id)
+                    if osti_record and osti_record.status != "SUCCESS":
+                        error_message = f"doi:{osti_record.doi} doi_status:{osti_record.doi_status} " \
+                                        f"status:{osti_record.status} status_message:{osti_record.status_message}"
                         dataset_doi_issue.send(sender=self.__class__, request=request, user=request.user,
-                                               instance=dataset, error_message=str(e))
+                                               instance=dataset, error_message=error_message)
 
-                # Send the signal for the status change
-                dataset_status_change.send(sender=self.__class__, request=request, user=request.user,
-                                           instance=dataset, original_status=original_status)
+                except Exception as e:
+                    # Send notification to admin if there are any errors
+                    dataset_doi_issue.send(sender=self.__class__, request=request, user=request.user,
+                                           instance=dataset, error_message=str(e))
+
+            dataset.refresh_from_db()
+            # Send the signal for the status change
+            dataset_status_change.send(sender=self.__class__, request=request, user=request.user,
+                                       instance=dataset, original_status=original_status)
 
     def get_queryset(self, ):
         """

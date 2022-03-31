@@ -752,6 +752,7 @@ $(document).ready(function () {
             }
 
         });
+        $('.js-loading').removeClass('hide');
         $.when(submitDataset(jsonObj, url, method="PUT")).done(function (status) {
             if (status.result) {
                 var alertMessage = ""
@@ -814,9 +815,11 @@ $(document).ready(function () {
         var approve = confirm("Approve Dataset: " + title);
         if (approve) {
 
+            $('.js-loading').removeClass('hide');
             $.when(changeStatus(approveUrl, "approve")).always(function (xhrResponse) {
                 if (xhrResponse.result == true){
                     alert("Dataset Approved")
+                    $('.js-loading').addClass('hide');
 
                     // refreshes the page
                     history.go(0);
@@ -839,6 +842,7 @@ $(document).ready(function () {
         var approve = confirm("Request Review of Dataset: " + title);
         if (approve) {
 
+            $('.js-loading').removeClass('hide');
             $.when(changeStatus(approveUrl, "submit")).always(function (xhrResponse) {
                 if (xhrResponse.result == true){
                     alert("Dataset Review Requested")
@@ -1347,6 +1351,7 @@ function createDraft(submissionObj, submitMode) {
         } else {
             $('.js-loading').removeClass('hide');
             delete submissionObj.submit;
+            $('.js-loading').removeClass('hide');
             $.when(submitDataset(submissionObj)).done(function (statusObj) {
                 if (statusObj.result || statusObj.status == '0') {
                     if (fileToUpload) {
@@ -1563,7 +1568,7 @@ function completeEdit(submissionObj, url, submitMode) {
     if (!submissionObj['sites']) {
         submissionObj['sites'] = [];
     }
-
+    $('.js-loading').removeClass('hide');
     $.when(submitDataset(submissionObj, url, method="PUT")).done(function (data) {
         if (data.result) {
 
@@ -1937,6 +1942,7 @@ function processEditingForm(submissionObj, url) {
                         submissionObj = processForm(submissionObj, submitMode, true);
                         if (submissionObj.submit) {
                             delete submissionObj.submit;
+                            $('.js-loading').removeClass('hide');
                             $.when(submitDataset(submissionObj, url, method="PUT")).done(function (status) {
                                 if (status.result) {
                                     $.when(changeStatus(url, "submit")).always(function (submitStatus) {
@@ -1987,6 +1993,7 @@ function processEditingForm(submissionObj, url) {
         submissionObj = processForm(submissionObj, submitMode, true);
         if (submissionObj.submit) {
             delete submissionObj.submit;
+            $('.js-loading').removeClass('hide');
             $.when(submitDataset(submissionObj, url, method="PUT")).done(function (status) {
                 if (status.result) {
                     $.when(changeStatus(url, "submit")).always(function (submitStatus) {

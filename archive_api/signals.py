@@ -215,7 +215,9 @@ def dataset_notify_status_change(sender, **kwargs):
 The DOI ({instance.doi}) was issued for your dataset, but it is NOT ACTIVE at this 
 time and cannot be accessed. The DOI will be activated when the dataset is approved, 
 keeping the same DOI identifier/number. You can use this DOI to cite your dataset, 
-this is an example citation for the dataset:
+this is an example citation for the dataset.This is the current citation for the dataset, 
+it is not final and might change if the author listing or title fields are edited  
+before the dataset is *approved*:
 
 {instance.citation}
 """
