@@ -584,13 +584,13 @@ $(document).ready(function () {
 
         if (index != -1) {
             for (var param in templates.datasets) {
-                if (param in dataObj.datasets[index]) {
-                    if (Array.isArray(dataObj.datasets[index][param])) {
-                        for (var i = 0; i < dataObj.datasets[index][param].length; i++) {
+                if (param in dataObj.editDatasets[index]) {
+                    if (Array.isArray(dataObj.editDatasets[index][param])) {
+                        for (var i = 0; i < dataObj.editDatasets[index][param].length; i++) {
                             if (i > 0) {
                                 var position = $('.js-edit-form .js-param[data-param="' + param + '"] section').last();
                                 var container = position.clone();
-                                container.find('.js-input').val(dataObj.datasets[index][param][i]);
+                                container.find('.js-input').val(dataObj.editDatasets[index][param][i]);
                                 container.insertAfter(position);
                             } else {
                                 $('.js-edit-form .js-param[data-param="' + param + '"] .js-input').val(dataObj.datasets[index][param][i]);
@@ -598,13 +598,13 @@ $(document).ready(function () {
                         }
                     } else {
                         if ($('.js-edit-form .js-param[data-param="' + param + '"] .js-input').hasClass('js-boolean')) {
-                            if (dataObj.datasets[index][param] == true) {
+                            if (dataObj.editDatasets[index][param] == true) {
                                 $('.js-edit-form .js-param[data-param="' + param + '"] .js-input.js-true').prop('checked', true);
-                            } else if (dataObj.datasets[index][param] == false) {
+                            } else if (dataObj.editDatasets[index][param] == false) {
                                 $('.js-edit-form .js-param[data-param="' + param + '"] .js-input.js-false').prop('checked', true);
                             }
                         } else {
-                            $('.js-edit-form .js-param[data-param="' + param + '"] .js-input').val(dataObj.datasets[index][param]);
+                            $('.js-edit-form .js-param[data-param="' + param + '"] .js-input').val(dataObj.editDatasets[index][param]);
                         }
                     }
                 }
@@ -621,16 +621,16 @@ $(document).ready(function () {
         $('.js-edit-back-btn').removeClass('hide');
         $('.js-edit-form .js-all-plots').removeAttr('disabled');
 
-        if (dataObj.datasets[index].status == 0) {
+        if (dataObj.editDatasets[index].status == 0) {
             $('.js-submit-dataset').removeClass('hide');
         } else {
             $('.js-submit-dataset').addClass('hide');
         }
 
-        if (dataObj.datasets[index].archive) {
+        if (dataObj.editDatasets[index].archive) {
             $('.js-file-exists').removeClass('hide');
             $('.js-existing-file').removeClass('hide')
-                .html(dataObj.datasets[index].archive_filename);
+                .html(dataObj.editDatasets[index].archive_filename);
             $('.js-file-replace-msg').removeClass('hide');
         } else {
             $('.js-file-exists').addClass('hide');
