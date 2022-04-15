@@ -1,5 +1,8 @@
 # NGEE Tropics Archive Releases
 
+## v2.4.1
+Hot fix release to addres issue with edit button loading the wrong metedata in the form.
+
 ## v2.4.0
 Refactors the publication workflow
 
