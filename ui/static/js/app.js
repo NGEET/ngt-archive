@@ -593,7 +593,7 @@ $(document).ready(function () {
                                 container.find('.js-input').val(dataObj.editDatasets[index][param][i]);
                                 container.insertAfter(position);
                             } else {
-                                $('.js-edit-form .js-param[data-param="' + param + '"] .js-input').val(dataObj.datasets[index][param][i]);
+                                $('.js-edit-form .js-param[data-param="' + param + '"] .js-input').val(dataObj.editDatasets[index][param][i]);
                             }
                         }
                     } else {
