@@ -1,3 +1,5 @@
+import json
+
 import io
 
 from daterangefilter.filters import DateRangeFilter
@@ -11,7 +13,8 @@ from django.utils.datetime_safe import datetime
 from django.utils.safestring import mark_safe
 from django.utils.translation import ngettext
 
-from archive_api.models import DataSet, DataSetDownloadLog, MeasurementVariable, Person, Plot, ServiceAccount, Site
+from archive_api.models import DataSet, DataSetDownloadLog, EssDiveTransfer, MeasurementVariable, Person, Plot, \
+    ServiceAccount, Site
 from archive_api.forms import ServiceAccountForm
 from simple_history.admin import SimpleHistoryAdmin
 
@@ -26,11 +29,67 @@ class ServiceAccountAdmin(ModelAdmin):
 
 @admin.register(DataSet)
 class DataSetHistoryAdmin(SimpleHistoryAdmin):
-    list_display = ["data_set_id", "version", "status", "doi", "name"]
+    list_filter = ('access_level', 'status', 'modified_date', 'publication_date', 'approval_date', 'submission_date')
+    list_display = ["data_set_id", "version", "status", "access_level", "doi", "name", "modified_date",
+                    "last_transfer_date"]
     history_list_display = ["list_changes"]
     search_fields = ['name', 'status', "ngt_id", "version"]
 
-    actions = ['osti_synchronize', 'osti_mint']
+    actions = ['osti_synchronize', 'osti_mint', 'essdive_transfer_metadata', 'essdive_transfer_data']
+
+    def last_transfer_date(self, obj):
+        """
+        Get the last transfer date for the dataset
+        :param obj:
+        :return:
+        """
+        trasfer_result = EssDiveTransfer.objects.all().filter(dataset=obj)
+        if trasfer_result:
+            return trasfer_result.order_by('-create_time')[0].create_time
+        else:
+            return None
+
+    def essdive_transfer_data(self, request, queryset):
+        """Transfer dataset metadata+data to ESS-DIVE"""
+        return self._essdive_transfer(request, queryset, EssDiveTransfer.TYPE_DATA)
+
+    essdive_transfer_data.short_description = "Transfer dataset metadata+data to ESS-DIVE"
+
+    def essdive_transfer_metadata(self, request, queryset):
+        """Transfer dataset metadata to ESS-DIVE"""
+        return self._essdive_transfer(request, queryset, EssDiveTransfer.TYPE_METADATA)
+
+    essdive_transfer_metadata.short_description = "Transfer dataset metadata to ESS-DIVE"
+
+    def _essdive_transfer(self, request, queryset, transfer_type):
+
+        transfer_count = 0
+        for dataset in queryset:
+
+            if dataset.access_level == DataSet.ACCESS_PUBLIC and dataset.submission_date is not None:
+                transfer_count += 1
+                EssDiveTransfer.objects.create(dataset=dataset, type=transfer_type)
+                self.message_user(request,
+                                  f"Requested transfer of {dataset.data_set_id()}.",
+                                  messages.SUCCESS)
+            else:
+                if dataset.access_level != DataSet.ACCESS_PUBLIC:
+                    self.message_user(request,
+                                      f"Dataset {dataset.data_set_id()} id not public and cannot be transferred to ESS-DIVE",
+                                      messages.WARNING)
+                if dataset.submission_date is None:
+                    self.message_user(request,
+                                      f"Dataset {dataset.data_set_id()} has never been submitted and cannot be transferred to ESS-DIVE",
+                                      messages.WARNING)
+
+        if transfer_count > 0:
+            self.message_user(request, ngettext(
+                '%d dataset transfer was requested.',
+                '%d dataset transfers were requested.',
+                transfer_count,
+            ) % transfer_count, messages.SUCCESS)
+        else:
+            self.message_user(request, "No datasets were transferred to ESS-DIVE.", messages.WARNING)
 
     def osti_synchronize(self, request, queryset):
         """Synchronizes published datasets with OSTI"""
@@ -43,7 +102,8 @@ class DataSetHistoryAdmin(SimpleHistoryAdmin):
                     if osti_record and osti_record.status == "SUCCESS":
                         published_count += 1
                     elif osti_record:
-                        self.message_user(request, f"{dataset.data_set_id()} could not be synchronized. {osti_record.status_message}",
+                        self.message_user(request,
+                                          f"{dataset.data_set_id()} could not be synchronized. {osti_record.status_message}",
                                           messages.WARNING)
                 except Exception as e:
                     self.message_user(request,
@@ -76,7 +136,8 @@ class DataSetHistoryAdmin(SimpleHistoryAdmin):
                     if osti_record and osti_record.status == "SUCCESS":
                         mint_count += 1
                     elif osti_record:
-                        self.message_user(request, f"{dataset.data_set_id()} could mint DOI. {osti_record.status_message}",
+                        self.message_user(request,
+                                          f"{dataset.data_set_id()} could mint DOI. {osti_record.status_message}",
                                           messages.WARNING)
                 except Exception as e:
                     self.message_user(request,
@@ -257,6 +318,41 @@ class PlotAdmin(ModelAdmin):
 @admin.register(Site)
 class SiteAdmin(ModelAdmin):
     list_display = ('site_id', 'name', 'description',)
+
+
+@admin.register(EssDiveTransfer)
+class EssDiveTransferAdmin(ModelAdmin):
+    search_fields = ['dataset__name', 'status', "message", "type"]
+    list_filter = ['type', 'status', "create_time", "start_time", "end_time"]
+    list_display = ["dataset", "type", "status", "create_time", "start_time", "end_time"]
+    readonly_fields = ('dataset', 'type', 'status', 'message', 'start_time', 'end_time', 'response')
+
+    def get_actions(self, request):
+        """Overrides parent. Removed the delete selected action"""
+        actions = super(self.__class__, self).get_actions(request)
+        if 'delete_selected' in actions:
+            del actions['delete_selected']
+        return actions
+
+    def has_add_permission(self, request):
+        """
+        Disallow add through the admin interface. These records
+        should only be created when a DataSet archive file is downloaded
+        :param request:
+        :return:
+        """
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        """
+        Disallow delete from anywhere in the admin interface.  These records are
+        never to be deleted.
+
+        :param request:
+        :param obj:
+        :return:
+        """
+        return False
 
 
 @admin.register(DataSetDownloadLog)

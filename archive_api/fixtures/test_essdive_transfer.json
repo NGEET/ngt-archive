@@ -1,0 +1,78 @@
+[
+  {
+    "model": "archive_api.serviceaccount",
+    "pk": 2,
+    "fields": {
+      "name": "ESS-DIVE Sandbox",
+      "service": 1,
+      "identity": "https://orcid.org/0000-0003-3265-7990",
+      "secret": "gAAAAABib_xHfKGQtAx32CF2O_Q-8qOw5tfSkGAmNfz3E_vtYGVzfArG89l6trcPkbH8uaT9BWm6BVRumBAz75Csk-s94xDc2A==",
+      "endpoint": "https://api-sandbox.ess-dive.lbl.gov/packages"
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 3,
+    "fields": {
+      "author": 2,
+      "dataset": 5,
+      "order": 0
+    }
+  },
+  {
+    "model": "archive_api.author",
+    "pk": 4,
+    "fields": {
+      "author": 2,
+      "dataset": 5,
+      "order": 1
+    }
+  },
+  {
+    "model": "archive_api.dataset",
+    "pk": 5,
+    "fields": {
+      "ngt_id": 4,
+      "description": "This data package includes leaf traits, canopy traits and sample details for leaves from 71 species sampled from the San Lorenzo forest canopy crane site, Panama (PA-SLZ) during the BNL field campaign in January to March 2020. Each leaf sample is described with species, phenological stage and location within vertical canopy profiles. Leaf area index (LAI) and height is presented for each canopy profile location. Leaf mass per area (LMA), leaf water content (LWC) and leaf carbon and nitrogen content are included for a subset of the samples. This data package includes sample details, processed data for leaf traits and LAI (*.csv), LAI raw data (compressed as *.zip) and digital camera images (*.jpg, compressed as *.zip) of the leaf samples. Metadata files include data descriptions (_dd.csv) for tabular data, a list of all species sampled during the campaign (*.csv) and a detailed description of the field campaign protocol and methods (*.pdf). See related datasets for leaf gas exchange, leaf water potential and leaf spectral measurements made on the samples described here.",
+      "version": "1.0",
+      "status": 2,
+      "status_comment": null,
+      "name": "Leaf structural and chemical traits, and BNL field campaign sample details, San Lorenzo, Panama, 2020",
+      "doi": "http://dx.doi.org/10.15486/ngt/1783737",
+      "start_date": "2020-01-14",
+      "end_date": "2020-03-13",
+      "qaqc_status": 2,
+      "qaqc_method_description": "Experimental design, sampling protocols, and methods are described in detail in PA-SLZ_2020_Protocol.pdf contained with this data package.",
+      "ngee_tropics_resources": true,
+      "funding_organizations": "U.S. Department of Energy Office of Science Office of Biological and Environmental Research",
+      "doe_funding_contract_numbers": "DE-SC0012704",
+      "acknowledgement": "This research was supported as part of NGEE-Tropics, funded by the U.S. Department of Energy, Office of Science, Office of Biological and Environmental Research under contract no. DE-SC0012704.",
+      "reference": null,
+      "additional_reference_information": null,
+      "originating_institution": "Brookhaven National Laboratory",
+      "access_level": 1,
+      "additional_access_information": null,
+      "submission_date": null,
+      "publication_date": "2021-06-18T00:06:32.165Z",
+      "approval_date": "2021-06-18T00:06:32.165Z",
+      "managed_by": 1,
+      "created_date": "2021-04-08T19:44:10.727Z",
+      "modified_by": 2,
+      "modified_date": "2021-06-18T00:06:32.165Z",
+      "contact": 3,
+      "cdiac_import": false,
+      "cdiac_submission_contact": null,
+      "archive": "Archive.zip",
+      "sites": [
+        1
+      ],
+      "plots": [
+        1
+      ],
+      "variables": [
+        1,
+        2
+      ]
+    }
+  }
+]

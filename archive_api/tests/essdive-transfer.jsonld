@@ -1,0 +1,80 @@
+{
+  "@context": "http://schema.org/",
+  "@type": "Dataset",
+  "@id": "http://dx.doi.org/10.15486/ngt/1783737",
+  "name": "Leaf structural and chemical traits, and BNL field campaign sample details, San Lorenzo, Panama, 2020",
+  "alternateName": "NGT0004",
+  "description": [
+    "This data package includes leaf traits, canopy traits and sample details for leaves from 71 species sampled from the San Lorenzo forest canopy crane site, Panama (PA-SLZ) during the BNL field campaign in January to March 2020. Each leaf sample is described with species, phenological stage and location within vertical canopy profiles. Leaf area index (LAI) and height is presented for each canopy profile location. Leaf mass per area (LMA), leaf water content (LWC) and leaf carbon and nitrogen content are included for a subset of the samples. This data package includes sample details, processed data for leaf traits and LAI (*.csv), LAI raw data (compressed as *.zip) and digital camera images (*.jpg, compressed as *.zip) of the leaf samples. Metadata files include data descriptions (_dd.csv) for tabular data, a list of all species sampled during the campaign (*.csv) and a detailed description of the field campaign protocol and methods (*.pdf). See related datasets for leaf gas exchange, leaf water potential and leaf spectral measurements made on the samples described here.",
+    "This dataset was originally published on the NGEE Tropics Archive and is being mirrored on ESS-DIVE for long-term archival",
+    "Acknowledgement: This research was supported as part of NGEE-Tropics, funded by the U.S. Department of Energy, Office of Science, Office of Biological and Environmental Research under contract no. DE-SC0012704."
+  ],
+  "creator": [
+    {
+      "givenName": "Luke",
+      "familyName": "Cage",
+      "affiliation": "POWER",
+      "email": "lcage@foobar.baz"
+    },
+    {
+      "givenName": "Luke",
+      "familyName": "Cage",
+      "affiliation": "POWER",
+      "email": "lcage@foobar.baz"
+    }
+  ],
+  "datePublished": "2021-06-18",
+  "keywords": [
+    "Next-Generation Ecosystem Experiements Tropics",
+    "NGEE-T"
+  ],
+  "variableMeasured": [
+    "Ice",
+    "Water"
+  ],
+  "license": "http://creativecommons.org/licenses/by/4.0/",
+  "spatialCoverage": [
+    {
+      "description": "Et doming epicurei posidonium has, an sit sanctus intellegebat. Ne malis reprehendunt mea. Iisque dolorem vel cu. Ut nam sapientem appellantur definitiones, copiosae placerat inimicus per ei. Cu pro reque putant, cu perfecto urbanitas posidonium eum, pri probo laoreet cu. Ei duo cetero concludaturque, ei adhuc facilis sit.\r\n\r\nAn aeque harum ius, mea ut erant verear salutandi. Eligendi recusabo usu ad. Ad modo vero consequat his, ne aperiam alienum suscipiantur his. Altera laoreet petentium pro ut. His option vocibus at. Vix no semper omnesque maluisset, accusata qualisque ut pro. Eos sint constituto temporibus in. For more information on this site, visit : http://centralcityccpd.baz ",
+      "geo": [
+        {
+          "name": "Northwest",
+          "latitude": -8.983987234,
+          "longitude": 5.9832932847
+        },
+        {
+          "name": "Southeast",
+          "latitude": -8.983987234,
+          "longitude": 5.9832932847
+        }
+      ]
+    }
+  ],
+  "funder": {
+    "name": "U.S. DOE > Office of Science > Biological and Environmental Research (BER)"
+  },
+  "temporalCoverage": {
+    "endDate": "2020-03-13",
+    "startDate": "2020-01-14"
+  },
+  "editor": {
+    "givenName": "Barry",
+    "familyName": "Allen",
+    "affiliation": "CCPD",
+    "email": "ballen@foobar.baz"
+  },
+  "provider": {
+    "name": "Next-Generation Ecosystem Experiments (NGEE) Tropics",
+    "member": {
+      "@id": "http://orcid.org/0000-0003-3983-7847",
+      "givenName": "Jeffrey",
+      "familyName": "Chambers",
+      "email": "jchambers@lbl.gov",
+      "institution": "Lawrence Berkeley National Laboratory",
+      "jobTitle": "Principal Investigator"
+    }
+  },
+  "measurementTechnique": [
+    "Experimental design, sampling protocols, and methods are described in detail in PA-SLZ_2020_Protocol.pdf contained with this data package."
+  ]
+}

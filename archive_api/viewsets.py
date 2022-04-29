@@ -283,6 +283,7 @@ class DataSetViewSet(ModelViewSet):
                 dataset._change_reason = f'{request.path}: Changed Status from {STATUS_CHOICES[original_status]} to ' \
                                          f'{STATUS_CHOICES[status]}'
                 dataset.save(modified_date=now)
+
                 dataset.refresh_from_db()
 
             if doi_function:

@@ -31,7 +31,7 @@ class SecretField(models.Field):
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('editable', False)
         # Set default values
-        kwargs['max_length'] = 255
+        kwargs['max_length'] = "max_length" in kwargs and kwargs["max_length"] or 2048
         kwargs['blank'] = True
         kwargs['null'] = True
         super().__init__(*args, **kwargs)
@@ -107,7 +107,9 @@ class SecretField(models.Field):
 
         Secret data is encrypted
         """
-        return self.get_prep_value(self.value_from_object(obj)).decode()
+        value = self.get_prep_value(self.value_from_object(obj))
+        # Decode only if it is a byte array
+        return isinstance(value, bytes) and value.decode() or value
 
     @staticmethod
     def _get_secret_key():
@@ -137,10 +139,17 @@ class DatasetArchiveStorage(FileSystemStorage):
 
 dataset_archive_storage = DatasetArchiveStorage()
 
+DATASET_STATUS_DRAFT = 0
+DATASET_STATUS_SUBMITTED = 1
+DATASET_STATUS_APPROVED = 2
+
+SERVICE_ACCOUNT_OSTI = 0
+SERVICE_ACCOUNT_ESSDIVE  = 1
+
 STATUS_CHOICES = (
-    (0, 'Draft'),
-    (1, 'Submitted'),
-    (2, 'Approved'),
+    (DATASET_STATUS_DRAFT, 'Draft'),
+    (DATASET_STATUS_SUBMITTED, 'Submitted'),
+    (DATASET_STATUS_APPROVED, 'Approved'),
 )
 
 QAQC_STATUS_CHOICES = (
@@ -161,8 +170,8 @@ PERSON_ROLE_CHOICES = (
 )
 
 SERVICE_ACCOUNT_CHOICES = (
-    (0, 'OSTI Elink'),
-    (1, 'ESS-DIVE'),
+    (SERVICE_ACCOUNT_OSTI, 'OSTI Elink'),
+    (SERVICE_ACCOUNT_ESSDIVE, 'ESS-DIVE'),
 )
 
 
@@ -351,7 +360,7 @@ class DataSet(models.Model):
     doe_funding_contract_numbers = models.CharField(max_length=100, blank=True, null=True)
     acknowledgement = models.TextField(blank=True, null=True)
     reference = models.TextField(blank=True, null=True)
-    additional_reference_information = models.TextField(blank=True, null=True)
+    additional_reference_information = models.TextField(blank=True, null=True, max_length=2255)
     originating_institution = models.TextField(blank=True, null=True)
 
     access_level = models.IntegerField(choices=ACCESS_CHOICES, default=0)
@@ -496,10 +505,10 @@ class ServiceAccount(models.Model):
     """
     Service acount model for storing credentials.
     """
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=40)
     service = models.IntegerField(choices=SERVICE_ACCOUNT_CHOICES, unique=True)
-    identity = models.CharField(max_length=30, blank=True, null=True)
-    secret = SecretField(editable=True)
+    identity = models.CharField(max_length=40, blank=True, null=True)
+    secret = SecretField(editable=True, max_length=2048)
     endpoint = models.URLField(null=False, blank=False)
 
     def __str__(self):
@@ -510,3 +519,56 @@ class ServiceAccount(models.Model):
 
     def __repr__(self):
         return f'<ServiceAccount {self}>'
+
+
+class EssDiveTransfer(models.Model):
+    """
+    ESS-DIVE Transfers
+    """
+
+    STATUS_REQUEST = 0
+    STATUS_QUEUED = 1
+    STATUS_RUNNING = 2
+    STATUS_SUCCESS = 3
+    STATUS_FAILED = 4
+    STATUS_RETRY = 5
+
+    STATUS_CHOICES = (
+        (STATUS_REQUEST, "Requested"),
+        (STATUS_QUEUED, "Queued"),
+        (STATUS_RUNNING, "Running"),
+        (STATUS_SUCCESS, "Success"),
+        (STATUS_FAILED, "Failed"),
+        (STATUS_RETRY, "Retry")
+    )
+
+    TYPE_METADATA = 0
+    TYPE_DATA = 1
+
+    TYPE_CHOICES = (
+        (TYPE_METADATA, "Metadata"),
+        (TYPE_DATA, "Data")
+    )
+
+    dataset = models.ForeignKey(DataSet, on_delete=models.DO_NOTHING, blank=False, null=False)
+    type = models.IntegerField(choices=TYPE_CHOICES, blank=False)
+    status = models.IntegerField(default=STATUS_REQUEST ,choices=STATUS_CHOICES,  blank=False)
+    create_time = models.DateTimeField(auto_now_add=True, editable=False)
+    start_time = models.DateTimeField(editable=True, null=True, blank=True)
+    end_time = models.DateTimeField(editable=True, blank=True, null=True)
+    message = models.TextField(blank=True, null=True)
+    response = models.JSONField(null=True, blank=True)  # Change to native field
+
+    def __str__(self):
+        return self.__unicode__()
+
+    def __unicode__(self):
+        return f"EssDiveTransfer({self.dataset.data_set_id()}, {EssDiveTransfer.TYPE_CHOICES[self.type][1]})"
+
+    def __repr__(self):
+        return str(self)
+
+    class Meta:
+        ordering = ('-id',)
+
+

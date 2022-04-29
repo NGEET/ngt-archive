@@ -1,0 +1,27 @@
+{
+    "total": 1,
+    "user": "http://orcid.org/0000-0003-3265-7990",
+    "query": {
+        "text": "NGT0000"
+    },
+    "pageSize": 25,
+    "rowStart": 1,
+    "result": [
+        {
+            "id": "ess-dive-e1902f9728f70db-20220430T030400919221",
+            "viewUrl": "https://data-sandbox.ess-dive.lbl.gov/view/ess-dive-e1902f9728f70db-20220430T030400919221",
+            "dateUploaded": "2022-04-30T03:04:01.310Z",
+            "dateModified": "2022-04-30T03:04:01.310Z",
+            "isPublic": false,
+            "citation": "Anderson J; Davidson K; Ely K; Lamour J; Rogers A; Serbin S (2022): Leaf spectral reflectance and transmittance, San Lorenzo, Panama, 2020. Next-Generation Ecosystem Experiments (NGEE) Tropics. ess-dive-e1902f9728f70db-20220430T030400919221",
+            "dataset": {
+                "@context": "http://schema.org/",
+                "@type": "Dataset",
+                "@id": null,
+                "name": "Leaf spectral reflectance and transmittance, San Lorenzo, Panama, 2020",
+                "description": "This data package contains full-range (350 – 2500 nm) leaf reflectance and transmittance spectra of leaves collected at the San Lorenzo forest canopy crane site in Panama (PA-SLZ) from January to March 2020. Around 1000 leaves were measured from 50 species and various leaf phenological stages. Leaves were sampled from both the top of the canopy and multiple heights within the canopy from 10 vertical profiles and for six core species, from the top of the canopy. This data package includes processed leaf spectra (*.csv), and raw data from the spectroradiometer (compressed as .zip). Metadata files include data descriptions (_dd.csv) for tabular data and sample information and a description of the field campaign protocol (PA-SLZ_2020_Protocol.pdf). In addition to the leaf spectral measurements included here, these samples were also used for measurement of leaf gas exchange, carbon and nitrogen content and leaf mass per unit leaf area (LMA) contained in related data packages.  This dataset was originally published on the NGEE Tropics Archive and is being mirrored on ESS-DIVE for long-term archival  Acknowledgement: This research was supported as part of NGEE-Tropics, funded by the U.S. Department of Energy, Office of Science, Office of Biological and Environmental Research under contract no. DE-SC0012704.",
+                "datePublished": "2022"
+            }
+        }
+    ]
+}

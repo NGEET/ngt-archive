@@ -1,0 +1,148 @@
+{
+    "id": "ess-dive-e1902f9728f70db-20220430T030400919221",
+    "viewUrl": "https://data-sandbox.ess-dive.lbl.gov/view/ess-dive-e1902f9728f70db-20220430T030400919221",
+    "dateUploaded": "2022-04-30T03:04:01.310Z",
+    "dateModified": "2022-04-30T03:04:01.310Z",
+    "isPublic": false,
+    "citation": "Anderson J; Davidson K; Ely K; Lamour J; Rogers A; Serbin S (2022): Leaf spectral reflectance and transmittance, San Lorenzo, Panama, 2020. Next-Generation Ecosystem Experiments (NGEE) Tropics. ess-dive-e1902f9728f70db-20220430T030400919221",
+    "dataset": {
+        "@context": "http://schema.org/",
+        "@type": "Dataset",
+        "@id": "ess-dive-e1902f9728f70db-20220430T030400919221",
+        "name": "Leaf spectral reflectance and transmittance, San Lorenzo, Panama, 2020",
+        "description": [
+            "This data package contains full-range (350 – 2500 nm) leaf reflectance and transmittance spectra of leaves collected at the San Lorenzo forest canopy crane site in Panama (PA-SLZ) from January to March 2020. Around 1000 leaves were measured from 50 species and various leaf phenological stages. Leaves were sampled from both the top of the canopy and multiple heights within the canopy from 10 vertical profiles and for six core species, from the top of the canopy. This data package includes processed leaf spectra (*.csv), and raw data from the spectroradiometer (compressed as .zip). Metadata files include data descriptions (_dd.csv) for tabular data and sample information and a description of the field campaign protocol (PA-SLZ_2020_Protocol.pdf). In addition to the leaf spectral measurements included here, these samples were also used for measurement of leaf gas exchange, carbon and nitrogen content and leaf mass per unit leaf area (LMA) contained in related data packages.",
+            "This dataset was originally published on the NGEE Tropics Archive and is being mirrored on ESS-DIVE for long-term archival",
+            "Acknowledgement: This research was supported as part of NGEE-Tropics, funded by the U.S. Department of Energy, Office of Science, Office of Biological and Environmental Research under contract no. DE-SC0012704."
+        ],
+        "alternateName": [
+            "http://dx.doi.org/10.15486/ngt/1781003",
+            "NGT0000"
+        ],
+        "creator": [
+            {
+                "@type": "Person",
+                "@id": "https://orcid.org/0000-0001-8925-5226",
+                "givenName": "Jeremiah",
+                "familyName": "Anderson",
+                "affiliation": "Brookhaven National Laboratory",
+                "email": "janderson@bnl.gov"
+            },
+            {
+                "@type": "Person",
+                "@id": "https://orcid.org/0000-0001-5745-9689",
+                "givenName": "Kenneth",
+                "familyName": "Davidson",
+                "affiliation": "Brookhaven National Laboratory",
+                "email": "kdavidson@bnl.gov"
+            },
+            {
+                "@type": "Person",
+                "@id": "http://orcid.org/0000-0002-3915-001X",
+                "givenName": "Kim",
+                "familyName": "Ely",
+                "affiliation": "Brookhaven National Laboratory",
+                "email": "kely@bnl.gov"
+            },
+            {
+                "@type": "Person",
+                "@id": "https://orcid.org/0000-0002-4410-507X",
+                "givenName": "Julien",
+                "familyName": "Lamour",
+                "affiliation": "Brookhaven National Laboratory",
+                "email": "jlamour@bnl.gov"
+            },
+            {
+                "@type": "Person",
+                "@id": "http://orcid.org/0000-0001-9262-7430",
+                "givenName": "Alistair",
+                "familyName": "Rogers",
+                "affiliation": "Brookhaven National Laboratory",
+                "email": "arogers@bnl.gov"
+            },
+            {
+                "@type": "Person",
+                "@id": "http://orcid.org/0000-0003-4136-8971",
+                "givenName": "Shawn",
+                "familyName": "Serbin",
+                "affiliation": "Brookhaven National Laboratory",
+                "email": "sserbin@bnl.gov"
+            }
+        ],
+        "datePublished": "2022-03-01",
+        "keywords": [
+            "Next-Generation Ecosystem Experiements Tropics",
+            "NGEE-T"
+        ],
+        "variableMeasured": [
+            "Leaf spectra"
+        ],
+        "license": "http://creativecommons.org/licenses/by/4.0/",
+        "spatialCoverage": [
+            {
+                "@type": "Place",
+                "description": "Established in 1997, the FTS canopy crane is located approximately 11km South West from the city of Colon, in the middle theParque Natural San Lorenzo (formerly known as FortSherman) and is surrounded by 300-year old, low-landtropical rainforest. The crane is 52 meters tall with aradius of 54 meters, and can reach approximately 240species of trees and lianas. (Paton 2015 FTS Met report) For more information on this site, visit : http://biogeodb.stri.si.edu/physical_monitoring/research/sherman,http://www.stri.si.edu/english/research/facilities/terrestrial/cranes/cranes_and_sites.php or reach out to Argelis Ruiz at ruiza@si.edu .",
+                "geo": [
+                    {
+                        "@type": "GeoCoordinates",
+                        "name": "Northwest",
+                        "latitude": 9.309974,
+                        "longitude": -80.060054
+                    },
+                    {
+                        "@type": "GeoCoordinates",
+                        "name": "Southeast",
+                        "latitude": 9.167649,
+                        "longitude": -79.928904
+                    }
+                ]
+            }
+        ],
+        "funder": [
+            {
+                "@type": "Organization",
+                "name": "U.S. DOE > Office of Science > Biological and Environmental Research (BER)"
+            }
+        ],
+        "temporalCoverage": {
+            "startDate": "2020-01-14",
+            "endDate": "2020-03-13",
+            "@type": "DateTime"
+        },
+        "editor": {
+            "@type": "Person",
+            "@id": "http://orcid.org/0000-0003-4136-8971",
+            "givenName": "Shawn",
+            "familyName": "Serbin",
+            "affiliation": "Brookhaven National Laboratory",
+            "email": "sserbin@bnl.gov"
+        },
+        "citation": [
+            "Lamour, J., Davidson, K.J. Ely, K.S., Anderson, J.A., Li, Q., Rogers, A., Wu, J., Serbin, S.P. Rapid estimation of photosynthetic leaf traits of tropical plants in diverse environmental conditions using reflectance spectroscopy. PLOS One. (2021, accepted)",
+            "Additional information about citations: The included publication uses data from this dataset."
+        ],
+        "provider": {
+            "@type": "Organization",
+            "name": "Next-Generation Ecosystem Experiments (NGEE) Tropics",
+            "member": {
+                "@type": "Person",
+                "@id": "http://orcid.org/0000-0003-3983-7847",
+                "givenName": "Jeffrey",
+                "familyName": "Chambers",
+                "jobTitle": "Principal Investigator",
+                "email": "jchambers@lbl.gov"
+            }
+        },
+        "measurementTechnique": [
+            "Full range (350 – 2500 nm) spectral reflectance and transmittance was measured on leaf samples using two spectrometers with a leaf clip or an integrating sphere. The reflectance was measured in situ at different elevations inside the canopy, or ex situ on cut branches that were brought to the ground. For the ex situ branches the transmittance was also measured with an integrating sphere. A complete description of the site study, design of experiment and spectroscopy measurements is included in ‘PA-SLZ_2020_Protocol.pdf’."
+        ],
+        "distribution": [
+            {
+                "contentUrl": "https://data-sandbox.ess-dive.lbl.gov/catalog/d1/mn/v2/object/ess-dive-e1902f9728f70db-20220430T030400919221",
+                "encodingFormat": "https://eml.ecoinformatics.org/eml-2.2.0",
+                "identifier": "ess-dive-e1902f9728f70db-20220430T030400919221",
+                "name": "Leaf_spectral_reflectance_and_transmittance_San_Lorenzo_Panama_2020.xml"
+            }
+        ]
+    }
+}

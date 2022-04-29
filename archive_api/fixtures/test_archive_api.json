@@ -153,7 +153,7 @@
       "acknowledgement": "",
       "reference": "",
       "additional_reference_information": "",
-      "access_level": 0,
+      "access_level": 2,
       "additional_access_information": "",
       "submission_date": null,
       "contact": 2,
@@ -198,6 +198,7 @@
       "additional_access_information": "",
       "submission_date": "2016-10-28",
       "contact": 2,
+      "archive": "Archive.zip",
       "sites": [
         1
       ],
@@ -314,6 +315,62 @@
       "modified_date": "2016-10-28T23:01:20.066913Z",
       "cdiac_import":true,
       "cdiac_submission_contact":2
+    }
+  },
+  {
+    "model": "archive_api.essdivetransfer",
+    "pk": 1,
+    "fields": {
+      "dataset": 1,
+      "type": 0,
+      "status": 0,
+      "create_time": "2022-04-29T14:28:32.184Z",
+      "start_time": null,
+      "end_time": null,
+      "message": "",
+      "response": {}
+    }
+  },
+  {
+    "model": "archive_api.essdivetransfer",
+    "pk": 2,
+    "fields": {
+      "dataset": 2,
+      "type": 1,
+      "status": 1,
+      "create_time": "2022-04-29T14:32:51.192Z",
+      "start_time": null,
+      "end_time": null,
+      "message": "",
+      "response": {}
+    }
+  },
+  {
+    "model": "archive_api.essdivetransfer",
+    "pk": 3,
+    "fields": {
+      "dataset": 3,
+      "type": 0,
+      "status": 2,
+      "create_time": "2022-04-29T15:50:31.342Z",
+      "start_time": "2022-04-29T15:52:08.973Z",
+      "end_time": null,
+      "message": "",
+      "response": {}
+    }
+  },
+  {
+    "model": "archive_api.essdivetransfer",
+    "pk": 4,
+    "fields": {
+      "dataset": 4,
+      "type": 1,
+      "status": 3,
+      "create_time": "2022-04-29T15:51:15.004Z",
+      "start_time": "2022-04-29T15:52:08.852Z",
+      "end_time": "2022-04-29T15:52:08.868Z",
+      "message": "",
+      "response": {}
     }
   }
 

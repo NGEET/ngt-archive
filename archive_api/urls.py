@@ -1,4 +1,4 @@
-from django.conf.urls import url, include
+from django.conf.urls import re_path, include
 from django.contrib import admin
 from rest_framework import routers
 
@@ -16,7 +16,7 @@ router.register(r'people', PersonViewSet, basename='person')
 router.register(r'plots', PlotViewSet, basename='plot')
 
 urlpatterns = [
-    url(r'^v1/', include((router.urls, 'archive_api'), namespace='v1')),
-    url(r'^metrics/', metrics_datasets, name='metrics'),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    re_path(r'^v1/', include((router.urls, 'archive_api'), namespace='v1')),
+    re_path(r'^metrics/', metrics_datasets, name='metrics'),
+    re_path(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]

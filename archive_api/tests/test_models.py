@@ -1,10 +1,20 @@
+import pytest
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from django.core.management import call_command
 from django.db import IntegrityError
 
 from archive_api.models import DataSet, ServiceAccount, Site, Plot, Person, MeasurementVariable
 from django.test import TestCase
 
+
+@pytest.fixture(scope='module')
+def django_load_data(django_db_setup, django_db_blocker):
+    with django_db_blocker.unblock():
+        call_command('loaddata', 'test_auth.json')
+        call_command('loaddata', 'test_archive_api.json')
+        ServiceAccount.objects.create(name="FooBar", service=0, identity="myuseraccount", secret="foobar",
+                                      endpoint="http://foobar.baz")
 
 class DataSetTestCaseNew(TestCase):
     fixtures = ('test_auth.json',)
@@ -257,15 +267,16 @@ class SiteTestCase(TestCase):
 
 
 class ServiceAccountTestCase(TestCase):
+
     def setUp(self):
-        ServiceAccount.objects.create(name="FooBar", service=0, identity="foo", secret="bar",
+        ServiceAccount.objects.create(name="FooBar", service=0, identity="myuseraccount", secret="foobar",
                                       endpoint="http://foobar.baz")
 
     def test_get(self):
         """Assert that the ServiceAccount were created"""
         foo = ServiceAccount.objects.get(name="FooBar")
         self.assertEqual(str(foo), "OSTI Elink(FooBar)")
-        self.assertEqual(foo.secret, "bar")
+        self.assertEqual(foo.secret, "foobar")
 
     def test_update(self):
         """ Assert that the ServiceAccount was updated """

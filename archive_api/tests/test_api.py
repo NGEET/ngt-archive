@@ -109,7 +109,7 @@ class DataSetClientTestCase(APITestCase):
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         dataset_url = json.loads(response.content.decode('utf-8'))["url"]
 
-        with open('{}/Archive.zip'.format(dirname(__file__)), 'rb') as fp:
+        with open('{}/archives/Archive.zip'.format(dirname(__file__)), 'rb') as fp:
             response = self.client.post("{}upload/".format(dataset_url), {'attachment': fp})
             self.assertContains(response, '"success":true',
                                 status_code=status.HTTP_201_CREATED)
@@ -157,8 +157,9 @@ class DataSetClientTestCase(APITestCase):
                           'plots': ['http://testserver/api/v1/plots/1/'],
                           'variables': ['http://testserver/api/v1/variables/2/',
                                         'http://testserver/api/v1/variables/3/',
-                                        'http://testserver/api/v1/variables/1/'], 'archive': None,
-                          'archive_filename': None, 'needs_review': False, 'needs_approval': True,
+                                        'http://testserver/api/v1/variables/1/'],
+                          'archive': 'http://testserver/api/v1/datasets/2/archive/',
+                          'archive_filename': 'Archive.zip', 'needs_review': False, 'needs_approval': True,
                           'is_published': False,
                           'managed_by': 'auser', 'created_date': '2016-10-28T19:15:35.013361Z', 'modified_by': 'auser',
                           'modified_date': '2016-10-28T23:01:20.066913Z', 'cdiac_import': False,
@@ -327,7 +328,7 @@ You can also login with your account credentials, select "Edit Drafts" and then 
         #########################################################################
         # NGT User may not SUBMIT a dataset in DRAFT mode if they owne it
         # Make sure file is uploaded first
-        with open('{}/Archive.zip'.format(dirname(__file__)), 'rb') as fp:
+        with open('{}/archives/Archive.zip'.format(dirname(__file__)), 'rb') as fp:
             response = self.client.post('/api/v1/datasets/1/upload/', {'attachment': fp})
             self.assertContains(response, '"success":true',
                                 status_code=status.HTTP_201_CREATED)
@@ -362,7 +363,7 @@ You can also login with your account credentials, select "Edit Drafts" and then 
         self.assertEqual({'detail': 'This dataset does not need a review'}, value)
         self.assertEqual(0, len(mail.outbox))  # no notification emails sent
 
-        with open('{}/Archive.zip'.format(dirname(__file__)), 'rb') as fp:
+        with open('{}/archives/Archive.zip'.format(dirname(__file__)), 'rb') as fp:
             response = self.client.post('/api/v1/datasets/2/upload/', {'attachment': fp})
             self.assertContains(response, '"success":true',
                                 status_code=status.HTTP_201_CREATED)
@@ -526,7 +527,7 @@ The DOI """) > 0)
         :return:
         """
         self.login_user("admin")
-        with open('{}/Archive.zip'.format(dirname(__file__)), 'rb') as fp:
+        with open('{}/archives/Archive.zip'.format(dirname(__file__)), 'rb') as fp:
             response = self.client.post('/api/v1/datasets/1/upload/', {'attachment': fp})
             self.assertContains(response, '"success":true',
                                 status_code=status.HTTP_201_CREATED)
@@ -654,17 +655,17 @@ or in case we have any clarifying questions, you will be notified by email.
         """
         self.login_user("vibe")  # auser does not own Dataset 3
         with open('{}/valid_upload.txt'.format(dirname(__file__)), 'r') as fp:
-            response = self.client.post('/api/v1/datasets/2/upload/', {'attachment': fp})
+            response = self.client.post('/api/v1/datasets/1/upload/', {'attachment': fp})
             print(response.content)
             self.assertContains(response, '"detail":"Not found."',
                                 status_code=status.HTTP_404_NOT_FOUND)
 
-        self.login_user("auser")
-        response = self.client.get('/api/v1/datasets/2/')
+        self.login_user("admin")
+        response = self.client.get('/api/v1/datasets/1/')
         self.assertNotContains(response, 'http://testserver/api/v1/datasets/2/archive/',
                                status_code=status.HTTP_200_OK)
 
-        response = self.client.get('http://testserver/api/v1/datasets/2/archive/')
+        response = self.client.get('http://testserver/api/v1/datasets/1/archive/')
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
 
     def test_upload_anyfile(self):
@@ -719,7 +720,7 @@ or in case we have any clarifying questions, you will be notified by email.
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
         ### Make sure file is uploaded before submittind
-        with open('{}/Archive.zip'.format(dirname(__file__)), 'rb') as fp:
+        with open('{}/archives/Archive.zip'.format(dirname(__file__)), 'rb') as fp:
             response = self.client.post('/api/v1/datasets/1/upload/', {'attachment': fp})
             self.assertContains(response, '"success":true',
                                 status_code=status.HTTP_201_CREATED)
@@ -838,7 +839,7 @@ or in case we have any clarifying questions, you will be notified by email.
         """Is the backend enforcing a file size limit? Testing limits for admin and regular users"""
         mock_file_size.return_value = 2147483648
         self.login_user("auser")
-        with open('{}/Archive.zip'.format(dirname(__file__)), 'rb') as fp:
+        with open('{}/archives/Archive.zip'.format(dirname(__file__)), 'rb') as fp:
             response = self.client.post('/api/v1/datasets/1/upload/', {'attachment': fp})
             self.assertContains(response, '"success":false',
                                 status_code=status.HTTP_400_BAD_REQUEST)
@@ -847,7 +848,7 @@ or in case we have any clarifying questions, you will be notified by email.
 
         mock_file_size.return_value = 3147483648
         self.login_user("admin")
-        with open('{}/Archive.zip'.format(dirname(__file__)), 'rb') as fp:
+        with open('{}/archives/Archive.zip'.format(dirname(__file__)), 'rb') as fp:
             response = self.client.post('/api/v1/datasets/1/upload/', {'attachment': fp})
             self.assertContains(response, '"success":false',
                                 status_code=status.HTTP_400_BAD_REQUEST)
@@ -875,7 +876,7 @@ or in case we have any clarifying questions, you will be notified by email.
             response = self.client.get('/api/v1/datasets/1/archive/')
             self.assertContains(response, '')
             self.assertTrue("Content-length" in response)
-            self.assertEquals(response["Content-length"], '3145728')
+            self.assertEqual(response["Content-length"], '3145728')
             self.assertTrue("Content-Disposition" in response)
             self.assertTrue("attachment; filename=bigfile_" in
                             response['Content-Disposition'])

@@ -19,13 +19,14 @@ class MetricsFilterForm(forms.Form):
 
 
 class ServiceAccountForm(forms.ModelForm):
-
-    name = forms.CharField(label='Service Name', required=True)
+    name = forms.CharField(label='Service Name', required=True, widget=forms.TextInput({'size': 40}))
     service = forms.ChoiceField(label='Service', required=True, choices=SERVICE_ACCOUNT_CHOICES)
-    identity = forms.CharField(label='Account Identity', required=False)
+    identity = forms.CharField(label='Account Identity', required=False, widget=forms.TextInput({'size': 40}))
     secret = forms.CharField(label='Account Secret',
-                             required=True, widget=forms.PasswordInput(attrs={'placeholder':'********', 'autocomplete': 'off','data-toggle': 'password'}))
-    endpoint = forms.CharField(label="Service URL", required=True, widget=forms.URLInput(attrs={'size': 50}),)
+                             required=True, widget=forms.PasswordInput(
+            attrs={'placeholder': '********', 'autocomplete': 'off', 'data-toggle': 'password', 'size': 50}),
+                             max_length=1000)
+    endpoint = forms.CharField(label="Service URL", required=True, widget=forms.URLInput(attrs={'size': 50}), )
 
     class Meta:
         model = ServiceAccount

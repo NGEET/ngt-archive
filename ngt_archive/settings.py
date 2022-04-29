@@ -54,7 +54,8 @@ INSTALLED_APPS = [
     'archive_api.apps.ArchiveApiConfig',
     'oauth2_provider',
     'daterangefilter',
-    "simple_history"
+    "simple_history",
+    "django_celery_results"
 ]
 
 MIDDLEWARE= [
@@ -271,3 +272,14 @@ if AUTH_LDAP_SERVER_URI:
         'archive_api.backends.ModelBackend',
         'archive_api.backends.OAuth2Backend',
                     )
+
+# Celery Configuration Options
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_TRACK_STARTED: True
+CELERY_RESULT_BACKEND = 'django-db'
+
+# CELERY_TASK_TIME_LIMIT = 30 * 60
+# CELERY_TASK_ALWAYS_EAGER is set, tasks called using  apply_async or delay  are called directly,
+#     without requiring any broker or celery worker. Change this for production
+CELERY_TASK_ALWAYS_EAGER = False
+CELERY_EAGER_PROPAGATES = False

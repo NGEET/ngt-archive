@@ -13,7 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url, include
+from django.conf.urls import re_path, include
 from django.contrib import admin
 from django.urls import path
 
@@ -54,16 +54,16 @@ oauth2_endpoint_views += [
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    url(r'^', include(ui_urls)),
+    re_path(r'^', include(ui_urls)),
     path('o/', include((oauth2_endpoint_views,'oauth2_provider'), namespace='oauth2_provider')),
-    url(r'^api/', include(api_urls)),
-    url(r'^admin/', admin.site.urls),
-    url(r'^metrics/', metrics_datasets, name='metrics'),
-    url(r'^dois/(?P<ngt_id>[a-zA-Z0-9]+)/$', doi, name='doi'),
-    url(r'^dois/$', dois, name='dois'),
-    url(r'^download/(?P<ngt_id>[a-zA-Z0-9]+)', download, name='download'),
-    url(r'^login/$', auth_views.LoginView.as_view(template_name='archive_api/login.html'), name='login'),
-    url(r'^logout/$', auth_views.LogoutView.as_view(), name='logout'),
+    re_path(r'^api/', include(api_urls)),
+    re_path(r'^admin/', admin.site.urls),
+    re_path(r'^metrics/', metrics_datasets, name='metrics'),
+    re_path(r'^dois/(?P<ngt_id>[a-zA-Z0-9]+)/$', doi, name='doi'),
+    re_path(r'^dois/$', dois, name='dois'),
+    re_path(r'^download/(?P<ngt_id>[a-zA-Z0-9]+)', download, name='download'),
+    re_path(r'^login/$', auth_views.LoginView.as_view(template_name='archive_api/login.html'), name='login'),
+    re_path(r'^logout/$', auth_views.LogoutView.as_view(), name='logout'),
 ]
 
 

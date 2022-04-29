@@ -1,17 +1,20 @@
 import django_auth_ldap.backend
+from celery import chain
 from django.conf import settings
 from django.contrib.auth.models import Group
 from django.contrib.auth.signals import user_logged_in
 from django.core.mail import EmailMessage
 from django.db import transaction
-from django.dispatch import Signal
+from django.db.models.signals import post_save
+from django.dispatch import Signal, receiver
 from django.utils import timezone
 
 import archive_api
 from archive_api import permissions
-from archive_api.models import DataSet, Person
+from archive_api.models import Person, EssDiveTransfer, DataSet
 from django.contrib.auth.models import update_last_login
 
+from archive_api.essdive_transfer import tasks
 
 EMAIL_FOOTER_FORMAT = """-----------------
 More information.
@@ -30,8 +33,10 @@ https://ameriflux-data.lbl.gov/Pages/ForgotFluxUsername.aspx"""
 
 
 # Signal for Dataset Status changes
-dataset_status_change = Signal(providing_args=['request', 'user', 'instance', 'original_status'])
-dataset_doi_issue = Signal(providing_args=['request', 'user', 'instance', 'error_msg'])
+# providing_args=['request', 'user', 'instance', 'original_status']
+dataset_status_change = Signal()
+# providing_args=['request', 'user', 'instance', 'error_msg']
+dataset_doi_issue = Signal()
 
 
 def get_setting(setting_name):
@@ -339,3 +344,21 @@ The NGEE-Tropics Archive Team
 
 dataset_status_change.connect(dataset_notify_status_change)
 dataset_doi_issue.connect(dataset_notify_doi_issue)
+
+
+@receiver(post_save, sender=EssDiveTransfer, dispatch_uid="queue_essdive_transfer")
+def queue_essdive_transfer(sender, instance, **kwargs):
+    """
+    Post Save Signal for EssDive Transfer
+    :param sender:
+    :param instance:
+    :param kwargs:
+    :return:
+    """
+    # Queue the model run on creation
+    if "created" in kwargs and kwargs["created"] and not kwargs["raw"] and \
+            instance.dataset.access_level == DataSet.ACCESS_PUBLIC:
+
+        chain(tasks.transfer_start.s(instance.id),
+              tasks.transfer.s(),
+              tasks.transfer_end.s()).apply_async(link_error=tasks.log_error.s())

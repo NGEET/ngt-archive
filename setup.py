@@ -51,6 +51,10 @@ setup(name='ngt_archive',
           "django-oauth-toolkit",
           "pytz",
           "django-simple-history",
-          "cryptography"
+          "cryptography",
+          "celery",
+          "django_celery_results",
+          "requests",
+          "requests_toolbelt"
       ]
       )
