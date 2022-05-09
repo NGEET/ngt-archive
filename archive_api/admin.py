@@ -31,11 +31,24 @@ class ServiceAccountAdmin(ModelAdmin):
 class DataSetHistoryAdmin(SimpleHistoryAdmin):
     list_filter = ('access_level', 'status', 'modified_date', 'publication_date', 'approval_date', 'submission_date')
     list_display = ["data_set_id", "version", "status", "access_level", "doi", "name", "modified_date",
-                    "last_transfer_date"]
+                    "last_transfer_date", "last_transfer_status"]
     history_list_display = ["list_changes"]
     search_fields = ['name', 'status', "ngt_id", "version"]
 
     actions = ['osti_synchronize', 'osti_mint', 'essdive_transfer_metadata', 'essdive_transfer_data']
+
+    def last_transfer_status(self, obj):
+        """
+        Get the last transfer status for the dataset
+
+        :param obj:
+        :return:
+        """
+        trasfer_result = EssDiveTransfer.objects.all().filter(dataset=obj)
+        if trasfer_result:
+            return trasfer_result.order_by('-create_time')[0].get_status_display()
+        else:
+            return None
 
     def last_transfer_date(self, obj):
         """
@@ -322,9 +335,9 @@ class SiteAdmin(ModelAdmin):
 
 @admin.register(EssDiveTransfer)
 class EssDiveTransferAdmin(ModelAdmin):
-    search_fields = ['dataset__name', 'status', "message", "type"]
+    search_fields = ['dataset__name', 'status', "message", "type", "id"]
     list_filter = ['type', 'status', "create_time", "start_time", "end_time"]
-    list_display = ["dataset", "type", "status", "create_time", "start_time", "end_time"]
+    list_display = ["id", "dataset", "type", "status", "create_time", "start_time", "end_time"]
     readonly_fields = ('dataset', 'type', 'status', 'message', 'start_time', 'end_time', 'response')
 
     def get_actions(self, request):
