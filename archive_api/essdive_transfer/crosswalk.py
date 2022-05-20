@@ -101,9 +101,6 @@ def spatial(dataset):
 
     for location in dataset.sites.all():
 
-        site_desc = location.description
-
-        # TODO: Understand why the lat/lon are being overwritten
         if location.name == "N/A":
             continue
 
@@ -111,8 +108,7 @@ def spatial(dataset):
         elif location.location_bounding_box_ul_latitude is None and location.location_latitude is not None:
 
             site = {
-                "description": "Site Name: " + location.name + ". " + "Site ID: " + location.site_id + ". " +
-                               site_desc,
+                "description": f"Site Name: {location.name}. Site ID: {location.site_id}. {location.description}",
                 "geo": [
                     {
                         "name": "Northwest",
@@ -129,10 +125,11 @@ def spatial(dataset):
 
         # set bounding box coordinates for remaining sites
         else:
+            desc = f"Site Name: {location.name}. Site ID: {location.site_id}. "
+            country = location.country and f"Located in {location.country}. " or ""
 
             site = {
-                "description": "Site Name: " + location.name + ". " + "Site ID: " + location.site_id + ". " +
-                               " Located in " + location.country + ". " + site_desc,
+                "description": f"{desc} {country} {location.description}",
                 "geo": [
                     {
                         "name": "Northwest",
@@ -148,24 +145,17 @@ def spatial(dataset):
             }
 
         # after coordinates have been set in 'site' and description is added, add a URL for location if it has one
-        if location.site_urls != "":
-            add_url = " For more information on this site, visit : " + location.site_urls + " "
-            url_description = location.description + add_url
-            site["description"] = url_description  # removed brackets
+        if location.site_urls:
+            add_url = f"For more information on this site, visit: {location.site_urls}"
+            site["description"] = f"{site['description']} {add_url}"
 
         # add contact information if it exists
-        if location.contacts.count():  # if the contacts key is not empty
+        if location.contacts.count() > 0:  # if the contacts key is not empty
 
-            append_all_contacts = " or reach out to "
-
+            contact_description = " Site contact(s): "
             for con in location.contacts.all():
-                contact_description = " " + con.first_name + " " + con.last_name + \
-                                      " at " + con.email + " . "
-                append_all_contacts = append_all_contacts + contact_description
-
-            site["description"] = site["description"] + append_all_contacts
-
-        # TODO: Check Site Description Length
+                contact_description += f" ({con.first_name} {con.last_name} <{con.email}>) "
+            site["description"] = f"{site['description']} {contact_description}"
 
         spatial_coverage.append(site)
 
