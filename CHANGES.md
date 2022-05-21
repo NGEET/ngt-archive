@@ -1,9 +1,14 @@
 # NGEE Tropics Archive Releases
 
+## v2.6.0
+Enhancement of publication workflow with ESS-DIVE Transfer
+
++ Issue #358 ESS-DIVE Transfer of NGEE-Tropics Datasets
+
 ## v2.5.0
 Enhancement of publication workflow with DOI Automation
 
-+ Issue 350 Automation of DOIs
++ Issue #350 Automation of DOIs
 
 ## v2.4.2
 Hot fix release to address issue where first author being overwritten on edit
