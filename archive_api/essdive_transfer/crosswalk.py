@@ -37,8 +37,11 @@ def creator(dataset):
     """
 
     creators = list()
+    from archive_api.models import Author
 
-    for author in dataset.authors.all():
+    # Get Authors in the specified order
+    for a in Author.objects.filter(dataset_id=dataset.id).order_by('order'):
+        author = a.author
         person = dict()
         person["givenName"] = author.first_name
         person["familyName"] = author.last_name
