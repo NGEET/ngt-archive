@@ -1,5 +1,10 @@
 # NGEE Tropics Archive Releases
 
+## v2.6.1
+Bug fix for ESS-DIVE Transfer
+
++ Issue #359 - ESS-DIVE transfer orders authors alphabetically
+
 ## v2.6.0
 Enhancement of publication workflow with ESS-DIVE Transfer
 
