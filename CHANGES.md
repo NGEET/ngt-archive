@@ -1,5 +1,10 @@
 # NGEE Tropics Archive Releases
 
+## v2.6.2
+Bug fix for OSTI Sync
+
++ Issue #360 - Hostname for OSTI site urls is incorrectly set
+
 ## v2.6.1
 Bug fix for ESS-DIVE Transfer
 

@@ -18,11 +18,8 @@ import sys
 
 import os
 
-import socket
-try:
-    HOSTNAME = socket.gethostname()
-except:
-    HOSTNAME = 'localhost'
+# HOSTNAME for use in DOI site urls
+SERVICE_HOSTNAME = os.getenv("SERVICE_HOSTNAME", "ngt-data.lbl.gov")
 
 LOGIN_URL = "/api/api-auth/login/"
 EMAIL_BACKEND = 'django.core.mail.backends.locmem.EmailBackend'
