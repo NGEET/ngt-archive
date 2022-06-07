@@ -54,7 +54,6 @@ setup(name='ngt_archive',
           "cryptography",
           "celery",
           "django_celery_results",
-          "requests",
           "requests_toolbelt"
       ]
       )

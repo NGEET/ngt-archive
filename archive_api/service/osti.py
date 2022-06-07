@@ -5,7 +5,7 @@ import requests
 import xml.etree.ElementTree as ET
 
 # Basic NGT to OST Mapping
-from django.conf import settings
+from ngt_archive import settings
 
 import archive_api
 from archive_api.models import DataSet, Author, ServiceAccount
@@ -131,7 +131,7 @@ def to_osti_xml(dataset_id=None):
         _set_value(record, 'osti_id', osti_id)
 
     if dataset and dataset.submission_date:
-        _set_value(record, 'site_url', f'https://{settings.HOSTNAME}/dois/{dataset.data_set_id()}')
+        _set_value(record, 'site_url', f'https://{settings.SERVICE_HOSTNAME}/dois/{dataset.data_set_id()}')
         _set_value(record, 'publication_date', dataset.submission_date.strftime("%Y"))
 
     else:
