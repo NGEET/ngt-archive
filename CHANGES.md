@@ -1,5 +1,10 @@
 # NGEE Tropics Archive Releases
 
+## v2.6.3
+Bug fix for NGEE Email
+
++ Issue #355 - Update contact email address across archive to lbl.gov address
+
 ## v2.6.2
 Bug fix for OSTI Sync
 
