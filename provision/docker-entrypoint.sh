@@ -63,7 +63,7 @@ then
         python manage.py loaddata $DJANGO_USERS_JSON_FILE
     else
        # Create a default superuser
-       ./manage.py shell -c "from django.contrib.auth.models import User; User.objects.create_superuser('${ADMIN_USER:-admin}', '${ADMIN_EMAIL-ngee-tropics-archive@googlegroups.com}', '${ADMIN_PASSWORD}')"
+       ./manage.py shell -c "from django.contrib.auth.models import User; User.objects.create_superuser('${ADMIN_USER:-admin}', '${ADMIN_EMAIL-ngee-tropics-archive@lbl.gov}', '${ADMIN_PASSWORD}')"
     fi
 
 
