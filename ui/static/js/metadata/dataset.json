@@ -40,7 +40,7 @@
         "label": "Dataset Field Site",
         "sequence": 5,
         "multiple": true,
-        "description": "<p>Field site(s) where the data were collected from. Select all that apply. Click the +Add button to add more than one site. Additional site information can be viewed using the 'View Sites and Plots' option on the main menu. Contact ngee-tropics-archive@googlegroups.com if the site you need is not listed.</p>"
+        "description": "<p>Field site(s) where the data were collected from. Select all that apply. Click the +Add button to add more than one site. Additional site information can be viewed using the 'View Sites and Plots' option on the main menu. Contact ngee-tropics-archive@lbl.gov if the site you need is not listed.</p>"
     },
     "plots": {
         "type": "reference_list",
@@ -50,7 +50,7 @@
         "label": "Dataset Field Plot",
         "sequence": 6,
         "multiple": true,
-        "description": "<p>Field plot(s) where the data were collected from. Select all that apply. Click the +Add button to add more than one plot. Only the plots belonging to the field site selected above can be chosen. Additional plot information can be viewed using the “View Sites and Plots” option on the main menu. Contact ngee-tropics-archive@googlegroups.com if the plot you need is not listed.</p>"
+        "description": "<p>Field plot(s) where the data were collected from. Select all that apply. Click the +Add button to add more than one plot. Only the plots belonging to the field site selected above can be chosen. Additional plot information can be viewed using the “View Sites and Plots” option on the main menu. Contact ngee-tropics-archive@lbl.gov if the plot you need is not listed.</p>"
     },
     "authors": {
         "type": "reference_list",
@@ -89,7 +89,7 @@
         "label": "Dataset Variable",
         "sequence": 10,
         "multiple": true,
-        "description": "<p>Measurement variables present in the dataset (select all that apply). Select each variable from the picklist. To add more than one variable, hit the +Add button. If the variable you need is not listed, contact ngee-tropics-archive@googlegroups.com.</p>"
+        "description": "<p>Measurement variables present in the dataset (select all that apply). Select each variable from the picklist. To add more than one variable, hit the +Add button. If the variable you need is not listed, contact ngee-tropics-archive@lbl.gov.</p>"
     },
     "start_date": {
         "type": "date",
