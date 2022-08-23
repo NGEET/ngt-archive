@@ -452,11 +452,23 @@ There was an issue publishing or minting a DOI by Mosely Admin. """))
 
         self.assertTrue(email.subject.startswith("[ngt-archive-test] Dataset Approved (NGT0001)"))
         self.assertTrue(email.body.find("""The dataset NGT0001:Data Set 2 created on 10/28/2016 has been approved 
-for release and is now published.
+for release and is now published. You are receiving this email because you either submitted 
+this dataset or are listed as a contact.
 
-The DOI """) > 0)
+This confirmation message is being sent to the dataset manager who requested publication and, 
+if applicable, also to the listed dataset contact. There is no further action required at this time.
+
+*** PLEASE NOTE that this dataset will also be synchronized to the ESS-DIVE data repository for 
+long-term preservation. You might receive messages from ESS-DIVE related to your dataset, but 
+there is no action required based on those requests. This synchronization is managed by the 
+NGEE-Tropics data team, who will reach out to you if more information is needed. ***
+""") > 0)
         self.assertEqual(email.to, ['myuser@foo.bar'])
         self.assertEqual(email.reply_to, settings.ARCHIVE_API['EMAIL_NGEET_TEAM'])
+        import copy
+        cc_emails = copy.copy(settings.ARCHIVE_API['EMAIL_NGEET_TEAM'])
+        cc_emails.append('cramon@foobar.baz')
+        self.assertEqual(email.cc, cc_emails)
 
         # Validate that a publication date was set
         response = self.client.get("/api/v1/datasets/2/")
