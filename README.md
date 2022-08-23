@@ -125,7 +125,7 @@ source .env/bin/activate
 
 Install ngt-archive for development
 ```
-python setup.py develop
+pip install -e ".[dev]"
 ```
 
 Create the database and load some data
