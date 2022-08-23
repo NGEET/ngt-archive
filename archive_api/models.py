@@ -359,7 +359,7 @@ class DataSet(models.Model):
     funding_organizations = models.TextField(blank=True, null=True)
     doe_funding_contract_numbers = models.CharField(max_length=100, blank=True, null=True)
     acknowledgement = models.TextField(blank=True, null=True)
-    reference = models.TextField(blank=True, null=True)
+    reference = models.TextField(blank=True, null=True, max_length=2255)
     additional_reference_information = models.TextField(blank=True, null=True, max_length=2255)
     originating_institution = models.TextField(blank=True, null=True)
 
