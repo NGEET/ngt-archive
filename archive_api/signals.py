@@ -1,3 +1,5 @@
+import copy
+
 import django_auth_ldap.backend
 from celery import chain
 from django.conf import settings
@@ -202,6 +204,7 @@ def dataset_notify_status_change(sender, **kwargs):
     request = kwargs['request']
     root_url = "{}://{}".format(request.scheme, request.get_host())
     content = None
+    cc_emails = copy.copy(get_setting("EMAIL_NGEET_TEAM"))
     ngeet_team = ",".join(get_setting("EMAIL_NGEET_TEAM"))
     fullname = instance.managed_by.get_full_name()
     dataset_id = instance.data_set_id()
@@ -312,10 +315,21 @@ The NGEE-Tropics Archive Team
 
         elif instance.status == permissions.APPROVED:
             # NGEE-TROPICS APPROVE EMAIL template (Step 4)
+            cc_emails.append(instance.contact.email)
             content = f"""Greetings {fullname},
 
 The dataset {dataset_id}:{dataset_name} created on {created_date:%m/%d/%Y} has been approved 
-for release and is now published.
+for release and is now published. You are receiving this email because you either submitted 
+this dataset or are listed as a contact.
+
+This confirmation message is being sent to the dataset manager who requested publication and, 
+if applicable, also to the listed dataset contact. There is no further action required at this time.
+
+*** PLEASE NOTE that this dataset will also be synchronized to the ESS-DIVE data repository for 
+long-term preservation. You might receive messages from ESS-DIVE related to your dataset, but 
+there is no action required based on those requests. This synchronization is managed by the 
+NGEE-Tropics data team, who will reach out to you if more information is needed. ***
+
 {DOI_CITATION}
 If you have any questions, please contact us at:
 {ngeet_team}
@@ -338,7 +352,7 @@ The NGEE-Tropics Archive Team
                                                 timezone.now().strftime("%Y-%m-%d %H:%M %Z")),
             body=content,
             to=[instance.managed_by.email],
-            cc=get_setting("EMAIL_NGEET_TEAM"),
+            cc=cc_emails,
             reply_to=get_setting("EMAIL_NGEET_TEAM")).send()
 
 
