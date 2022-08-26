@@ -1,5 +1,3 @@
-import copy
-
 import django_auth_ldap.backend
 from celery import chain
 from django.conf import settings
@@ -204,7 +202,7 @@ def dataset_notify_status_change(sender, **kwargs):
     request = kwargs['request']
     root_url = "{}://{}".format(request.scheme, request.get_host())
     content = None
-    cc_emails = copy.copy(get_setting("EMAIL_NGEET_TEAM"))
+    cc_emails = list(get_setting("EMAIL_NGEET_TEAM"))
     ngeet_team = ",".join(get_setting("EMAIL_NGEET_TEAM"))
     fullname = instance.managed_by.get_full_name()
     dataset_id = instance.data_set_id()
