@@ -39,7 +39,16 @@ dataset_status_change = Signal()
 dataset_doi_issue = Signal()
 
 
-def get_setting(setting_name):
+def _get_address_spec(display_name, email):
+    """
+        Returns the email as an address specification
+        {display_name} <{email}>
+        https://www.rfc-editor.org/rfc/rfc5322#section-3.4
+    """
+    return f"{display_name} <{email}>"
+
+
+def _get_setting(setting_name):
     """
     Get the settings value if it exists
     :param setting_name:
@@ -60,12 +69,13 @@ def notify_new_account(sender, user, **kwargs):
     :param kwargs:
     :return:
     """
+
     from archive_api.models import NGTUser
     if not user.id:
         user.save()
 
     ngt_user = NGTUser.objects.get(id = user.id)
-    email_footer = EMAIL_FOOTER_FORMAT.format(**{"ngeet_team":get_setting("EMAIL_NGEET_TEAM")})
+    email_footer = EMAIL_FOOTER_FORMAT.format(**{"ngeet_team":_get_setting("EMAIL_NGEET_TEAM")})
 
     # Has the user been activated to access the NGEE Tropics
     # Data Collection?
@@ -100,10 +110,10 @@ def notify_new_account(sender, user, **kwargs):
         elif not user.last_login:
             # Make sure the activation request is only sent once
             EmailMessage(
-                subject=f"{get_setting('EMAIL_SUBJECT_PREFIX')} NGEE-Tropics Account Created for '{user.username}'",
+                subject=f"{_get_setting('EMAIL_SUBJECT_PREFIX')} NGEE-Tropics Account Created for '{user.username}'",
                 to=[user.email],
-                cc=get_setting("EMAIL_NGEET_TEAM"),
-                reply_to=get_setting("EMAIL_NGEET_TEAM"),
+                cc=[_get_setting("EMAIL_NGEET_TEAM")],
+                reply_to=[_get_setting("EMAIL_NGEET_TEAM")],
                 body=f"""Greetings {user.username},
 
 Your access to the NGEE-Tropics Archive has been configured and you can now download data from the portal. Thank you for your participation in this project.
@@ -165,17 +175,18 @@ def dataset_notify_doi_issue(sender, **kwargs):
     instance = kwargs['instance']
     request = kwargs['request']
     error_msg = kwargs['error_message']
+    reply_to = _get_setting("EMAIL_NGEET_TEAM")
 
     EmailMessage(
-        subject=f'{get_setting("EMAIL_SUBJECT_PREFIX")} Dataset {instance.data_set_id()} Error on DOI on {timezone.now().strftime("%Y-%m-%d %H:%M %Z")}',
+        subject=f'{_get_setting("EMAIL_SUBJECT_PREFIX")} Dataset {instance.data_set_id()} Error on DOI on {timezone.now().strftime("%Y-%m-%d %H:%M %Z")}',
         body=f"""Dear NGEE-Tropics Data Admins,
 
 There was an issue publishing or minting a DOI by {request.user.get_full_name()}. 
 
 The error message is "{error_msg}"
 """,
-        to=get_setting("EMAIL_NGEET_TEAM"),
-        reply_to=get_setting("EMAIL_NGEET_TEAM")).send()
+        to=[reply_to],
+        reply_to=[reply_to]).send()
 
 
 def dataset_notify_status_change(sender, **kwargs):
@@ -202,8 +213,9 @@ def dataset_notify_status_change(sender, **kwargs):
     request = kwargs['request']
     root_url = "{}://{}".format(request.scheme, request.get_host())
     content = None
-    cc_emails = list(get_setting("EMAIL_NGEET_TEAM"))
-    ngeet_team = ",".join(get_setting("EMAIL_NGEET_TEAM"))
+    reply_to = _get_setting("EMAIL_NGEET_TEAM")
+    cc_emails = [reply_to]
+    ngeet_team = reply_to
     fullname = instance.managed_by.get_full_name()
     dataset_id = instance.data_set_id()
     root_url = root_url
@@ -313,7 +325,7 @@ The NGEE-Tropics Archive Team
 
         elif instance.status == permissions.APPROVED:
             # NGEE-TROPICS APPROVE EMAIL template (Step 4)
-            cc_emails.append(instance.contact.email)
+            cc_emails.append(_get_address_spec(f"{instance.contact.first_name} {instance.contact.last_name}", instance.contact.email))
             content = f"""Greetings {fullname},
 
 The dataset {dataset_id}:{dataset_name} created on {created_date:%m/%d/%Y} has been approved 
@@ -344,14 +356,14 @@ The NGEE-Tropics Archive Team
 
     if content:
         EmailMessage(
-            subject='{} Dataset {} ({}) on {}'.format(get_setting("EMAIL_SUBJECT_PREFIX"),
-                                                archive_api.models.STATUS_CHOICES[int(instance.status)][1],
-                                                instance.data_set_id(),
-                                                timezone.now().strftime("%Y-%m-%d %H:%M %Z")),
+            subject='{} Dataset {} ({}) on {}'.format(_get_setting("EMAIL_SUBJECT_PREFIX"),
+                                                      archive_api.models.STATUS_CHOICES[int(instance.status)][1],
+                                                      instance.data_set_id(),
+                                                      timezone.now().strftime("%Y-%m-%d %H:%M %Z")),
             body=content,
-            to=[instance.managed_by.email],
+            to=[_get_address_spec(instance.managed_by.get_full_name(), instance.managed_by.email)],
             cc=cc_emails,
-            reply_to=get_setting("EMAIL_NGEET_TEAM")).send()
+            reply_to=[reply_to]).send()
 
 
 dataset_status_change.connect(dataset_notify_status_change)

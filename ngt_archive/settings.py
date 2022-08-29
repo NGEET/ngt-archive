@@ -207,7 +207,7 @@ ARCHIVE_API = {
     'DATASET_ARCHIVE_URL': '/data',  # not used
     'DATASET_ADMIN_MAX_UPLOAD_SIZE': 2147483648, # in bytes
     'DATASET_USER_MAX_UPLOAD_SIZE': 1073741824, # in bytes
-    'EMAIL_NGEET_TEAM': ['ngeet-team@testserver'],
+    'EMAIL_NGEET_TEAM': 'NGEE Tropics Archive Test <ngeet-team@testserver>',
     'EMAIL_SUBJECT_PREFIX': '[ngt-archive-test]',
     # SECURITY WARNING: keep the secret key used in production secret!
     # Use cryptography library to create a Fernet key (pip install cryptography)

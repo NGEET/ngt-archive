@@ -58,8 +58,8 @@ class TestLoginSignals(TestCase):
         email = mail.outbox[0]
 
         self.assertEqual(email.to, [user.email])
-        self.assertEqual(email.cc, ['ngeet-team@testserver'])
-        self.assertEqual(email.reply_to, ['ngeet-team@testserver'])
+        self.assertEqual(email.cc, ['NGEE Tropics Archive Test <ngeet-team@testserver>'])
+        self.assertEqual(email.reply_to, ['NGEE Tropics Archive Test <ngeet-team@testserver>'])
         self.assertEqual(email.subject, "[ngt-archive-test] NGEE-Tropics Account Created for 'flash'")
         self.assertTrue(email.body.find("Greetings flash") > -1)
 
@@ -94,8 +94,8 @@ class TestLoginSignals(TestCase):
         email = mail.outbox[0]
 
         self.assertEqual(email.to, [user.email])
-        self.assertEqual(email.cc, ['ngeet-team@testserver'])
-        self.assertEqual(email.reply_to, ['ngeet-team@testserver'])
+        self.assertEqual(email.cc, ['NGEE Tropics Archive Test <ngeet-team@testserver>'])
+        self.assertEqual(email.reply_to, ['NGEE Tropics Archive Test <ngeet-team@testserver>'])
         self.assertEqual(email.subject, "[ngt-archive-test] NGEE-Tropics Account Created for 'vibe'")
         self.assertTrue(email.body.find("Greetings vibe,") > -1)
 

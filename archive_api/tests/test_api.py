@@ -185,8 +185,8 @@ class DataSetClientTestCase(APITestCase):
 
 You can also login with your account credentials, select "Edit Drafts" and then click the "Edit" button for NGT0004:FooBarBaz.
 """) > 0)
-        self.assertEqual(email.to, ['myuser@foo.bar'])
-        self.assertEqual(email.reply_to, settings.ARCHIVE_API['EMAIL_NGEET_TEAM'])
+        self.assertEqual(email.to, ['Merry Yuser <myuser@foo.bar>'])
+        self.assertEqual(email.reply_to, ['NGEE Tropics Archive Test <ngeet-team@testserver>'] )
 
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(value['access_level'], '0')
@@ -478,7 +478,7 @@ You can also login with your account credentials, select "Edit Drafts" and then 
         self.assertTrue(email.body.startswith("""Dear NGEE-Tropics Data Admins,
 
 There was an issue publishing or minting a DOI by Mosely Admin. """))
-        self.assertEqual(email.to, ['ngeet-team@testserver'])
+        self.assertEqual(email.to, ['NGEE Tropics Archive Test <ngeet-team@testserver>'])
         email = mail.outbox[1]
 
         self.assertTrue(email.subject.startswith("[ngt-archive-test] Dataset Approved (NGT0001)"))
@@ -494,11 +494,13 @@ long-term preservation. You might receive messages from ESS-DIVE related to your
 there is no action required based on those requests. This synchronization is managed by the 
 NGEE-Tropics data team, who will reach out to you if more information is needed. ***
 """) > 0)
-        self.assertEqual(email.to, ['myuser@foo.bar'])
-        self.assertEqual(email.reply_to, settings.ARCHIVE_API['EMAIL_NGEET_TEAM'])
+        self.assertEqual(email.to, ['Merry Yuser <myuser@foo.bar>'])
+        self.assertEqual(email.reply_to,  ['NGEE Tropics Archive Test <ngeet-team@testserver>'])
         import copy
-        cc_emails = copy.copy(settings.ARCHIVE_API['EMAIL_NGEET_TEAM'])
-        cc_emails.append('cramon@foobar.baz')
+        cc_emails = ['NGEE Tropics Archive Test <ngeet-team@testserver>']
+        cc_emails.append('Cisco Ramon <cramon@foobar.baz>')
+        print(email.cc)
+        print(cc_emails)
         self.assertEqual(email.cc, cc_emails)
 
         # Validate that a publication date was set
@@ -649,7 +651,7 @@ NGEE-Tropics data team, who will reach out to you if more information is needed.
         self.assertTrue(email.body.startswith("""Dear NGEE-Tropics Data Admins,
 
 There was an issue publishing or minting a DOI by Mosely Admin. """) > 0)
-        self.assertEqual(email.to, ['ngeet-team@testserver'])
+        self.assertEqual(email.to, ['NGEE Tropics Archive Test <ngeet-team@testserver>'])
         email = mail.outbox[1]
         self.assertTrue(email.subject.startswith("[ngt-archive-test] Dataset Submitted (NGT0000)"))
         self.assertTrue(email.body.find("""The dataset NGT0000:Data Set 1 created on 10/28/2016 has been 
@@ -658,7 +660,7 @@ submitted to the NGEE-Tropics Archive.
 We will start the review and publication processes for the dataset. As soon as the dataset has been approved, 
 or in case we have any clarifying questions, you will be notified by email.
 """) > 0)
-        self.assertEqual(email.to, ['myuser@foo.bar'])
+        self.assertEqual(email.to, ['Merry Yuser <myuser@foo.bar>'])
 
         response = self.client.get("/api/v1/datasets/1/")
         self.assertContains(response, '"version":"1.0"')

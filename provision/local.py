@@ -8,7 +8,7 @@ ARCHIVE_API = {
     'DATASET_ARCHIVE_URL': '/archives/',  # not used
     'DATASET_ADMIN_MAX_UPLOAD_SIZE': 2147483648, # in bytes
     'DATASET_USER_MAX_UPLOAD_SIZE': 1073741824, # in bytes
-    'EMAIL_NGEET_TEAM': (os.getenv('EMAIL_NGEET_TEAM'),),
+    'EMAIL_NGEET_TEAM': os.getenv('EMAIL_NGEET_TEAM'),
     'EMAIL_SUBJECT_PREFIX' : os.getenv('EMAIL_SUBJECT_PREFIX', '[ngt-archive]'),
     'SERVICE_ACCOUNT_SECRET_KEY': os.getenv('SERVICE_ACCOUNT_SECRET_KEY', "")
 
