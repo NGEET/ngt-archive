@@ -7,15 +7,11 @@ import logging
 
 # NGEE-Tropics Project information
 JSONLD_PROVIDER = {
-    "name": "Next-Generation Ecosystem Experiments (NGEE) Tropics",
-    "member": {
-        "@id": "http://orcid.org/0000-0003-3983-7847",
-        "givenName": "Jeffrey",
-        "familyName": "Chambers",
-        "email": "jchambers@lbl.gov",
-        "institution": "Lawrence Berkeley National Laboratory",
-        "jobTitle": "Principal Investigator"
-    }
+    "identifier": {
+      "@type": "PropertyValue",
+      "propertyID": "ess-dive",
+      "value": "a441fe85-5ac3-41b1-bbe5-46df92682609"
+   }
 }
 
 # NGEE-Tropics Keywords
