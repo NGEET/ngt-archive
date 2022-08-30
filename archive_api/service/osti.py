@@ -144,7 +144,7 @@ def to_osti_xml(dataset_id=None):
     # Auto-fill
 
     _set_value(record, 'contact_name', 'NGEE Tropics Archive Team, Support Organization')
-    _set_value(record, 'contact_email', settings.ARCHIVE_API['EMAIL_NGEET_TEAM'][0])
+    _set_value(record, 'contact_email', settings.ARCHIVE_API['EMAIL_NGEET_TEAM'])
     _set_value(record, 'contact_org', 'Lawrence Berkeley National Lab')
     _set_value(record, 'site_code', 'NGEE-TRPC')
     _set_value(record, 'doi_infix', 'ngt')
