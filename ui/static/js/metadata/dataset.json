@@ -188,7 +188,7 @@
         "label": "Dataset Reference(s)",
         "sequence": 19,
         "multiple": false,
-        "description": "<p>Associated publications or datasets where users can learn more about the data, processing method, or how the data were used. Ideally, provide complete citation information for the publication (including DOI).</p>"
+        "description": "<p>Associated publications or datasets where users can learn more about the data, processing method, or how the data were used. Ideally, provide complete citation information for the publication (including DOI). <b>This field has a limit of 2,255 characters.</b></p>"
     },
     "additional_reference_information": {
         "type": "string",

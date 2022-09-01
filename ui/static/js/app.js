@@ -234,7 +234,7 @@ $(document).ready(function () {
         }
     });
 
-    $.getJSON("static/js/metadata/dataset.json?v=202203", function (data) {
+    $.getJSON("static/js/metadata/dataset.json?v=20220901", function (data) {
         templates.datasets = data;
         createEditForm('datasets');
     });
@@ -753,7 +753,7 @@ $(document).ready(function () {
 
         });
         $('.js-loading').removeClass('hide');
-        $.when(submitDataset(jsonObj, url, method="PUT")).done(function (status) {
+        $.when(submitDataset(jsonObj, url, method="PUT")).always(function (status) {
             if (status.result) {
                 var alertMessage = ""
                 if (dataObj.editDatasets[i].managed_by == $('.js-auth').attr('data-user')) {
@@ -762,6 +762,7 @@ $(document).ready(function () {
                         alertMessage=response.detail
                     } else {
                         handleFormErrors(submitStatus, "Dataset submission failed. Please check the fields and try again.");
+                        $('.js-loading').addClass('hide');
                     }
                     });
                 }
@@ -771,6 +772,7 @@ $(document).ready(function () {
 
             } else {
                 handleFormErrors(status, '\'There was an error with the update.')
+                $('.js-loading').addClass('hide');
             }
         });
 
@@ -1352,7 +1354,7 @@ function createDraft(submissionObj, submitMode) {
             $('.js-loading').removeClass('hide');
             delete submissionObj.submit;
             $('.js-loading').removeClass('hide');
-            $.when(submitDataset(submissionObj)).done(function (statusObj) {
+            $.when(submitDataset(submissionObj)).always(function (statusObj) {
                 if (statusObj.result || statusObj.status == '0') {
                     if (fileToUpload) {
 
@@ -1365,6 +1367,7 @@ function createDraft(submissionObj, submitMode) {
                                             $('.js-clear-file').trigger('click');
                                         } else {
                                             handleFormErrors(submitStatus, "Dataset submission failed. Please check the fields and try again.");
+                                            $('.js-loading').addClass('hide');
                                         }
                                     });
                                 } else {
@@ -1569,7 +1572,7 @@ function completeEdit(submissionObj, url, submitMode) {
         submissionObj['sites'] = [];
     }
     $('.js-loading').removeClass('hide');
-    $.when(submitDataset(submissionObj, url, method="PUT")).done(function (data) {
+    $.when(submitDataset(submissionObj, url, method="PUT")).always(function (data) {
         if (data.result) {
 
             if (fileToUpload) {
@@ -1584,6 +1587,7 @@ function completeEdit(submissionObj, url, submitMode) {
                         alertMessage=response.detail
                     } else {
                         handleFormErrors(submitStatus, "Dataset submission failed. Please check the fields and try again.");
+                        $('.js-loading').addClass('hide');
                     }
                     });
                 }
@@ -1943,7 +1947,7 @@ function processEditingForm(submissionObj, url) {
                         if (submissionObj.submit) {
                             delete submissionObj.submit;
                             $('.js-loading').removeClass('hide');
-                            $.when(submitDataset(submissionObj, url, method="PUT")).done(function (status) {
+                            $.when(submitDataset(submissionObj, url, method="PUT")).always(function (status) {
                                 if (status.result) {
                                     $.when(changeStatus(url, "submit")).always(function (submitStatus) {
                                         if (submitStatus.result && submitStatus.detail) {
@@ -1952,10 +1956,12 @@ function processEditingForm(submissionObj, url) {
                                             $('.js-clear-file').trigger('click');
                                         } else {
                                             handleFormErrors(submitStatus, "Dataset submission failed. Please check the fields and try again.");
+                                            $('.js-loading').addClass('hide');
                                         }
                                     });
                                 } else {
                                     handleFormErrors(status, "There was an error with the update.");
+                                    $('.js-loading').addClass('hide');
                                 }
                             });
 
@@ -1994,7 +2000,7 @@ function processEditingForm(submissionObj, url) {
         if (submissionObj.submit) {
             delete submissionObj.submit;
             $('.js-loading').removeClass('hide');
-            $.when(submitDataset(submissionObj, url, method="PUT")).done(function (status) {
+            $.when(submitDataset(submissionObj, url, method="PUT")).always(function (status) {
                 if (status.result) {
                     $.when(changeStatus(url, "submit")).always(function (submitStatus) {
                         if (submitStatus.result && submitStatus.detail) {
@@ -2003,10 +2009,12 @@ function processEditingForm(submissionObj, url) {
                             $('.js-clear-file').trigger('click');
                         } else {
                             handleFormErrors(submitStatus, "Dataset submission failed. Please check the fields and try again.");
+                            $('.js-loading').addClass('hide');
                         }
                     });
                 } else {
                     handleFormErrors(status, "There was an error with the update.");
+                    $('.js-loading').addClass('hide');
                 }
             });
         } else {
