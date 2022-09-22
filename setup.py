@@ -44,7 +44,7 @@ setup(name='ngt_archive',
       install_requires=[
           "Django == 3.1.14",
           "djangorestframework >= 3.11.0",
-          "django-filter == 2.2.0",
+          "django-filter == 2.4.0",
           "django-daterangefilter >= 1.0.0",
           "pyldap>=3.0.0",
           "django-auth-ldap>=2.1.1",
