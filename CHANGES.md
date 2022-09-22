@@ -1,5 +1,13 @@
 # NGEE Tropics Archive Releases
 
+## v2.6.4
+Bug fix release for metdata transfer to ESS-DIVE. Adds project identifier
+to ESS-DIVE transfer and CCs dataset contact on approval of datasets.
+
++ Issue #364 - Update the Approved email to include dataset contact in CC
++ Issue #367 - New Requirement for ESS-DIVE Package Service API
++ Issue #357 - Add character limit to Dataset References field to match OSTI DOI minting requirements
+
 ## v2.6.3
 Bug fix for NGEE Email
 
