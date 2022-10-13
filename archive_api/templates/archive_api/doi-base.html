@@ -12,8 +12,34 @@
         word-wrap: break-word;
     }
 
-     body {
-        font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+
+
+    h3.banner {
+        text-align: center;
+        color: dimgrey;
+        margin: 2px;
+        font-size: 1.5625rem
+    }
+
+    h4.banner {
+        text-align: center;
+        color: dimgrey;
+        padding: 2px;
+        font-size: 1.25rem;
+    }
+
+        body {
+            font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+        }
+
+     h3, h4 {
+        font-weight: normal;
+        font-style: normal;
+        text-rendering: optimizeLegibility;
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+        line-height: 1.4;
+        -webkit-font-smoothing: antialiased;
 
     }
 
@@ -42,6 +68,7 @@
         background-color: #FFFFFF;
         box-shadow: 0px 0px 25px #555;
         padding-bottom: 10px;
+
     }
 
     div.ma {
@@ -56,14 +83,26 @@
 
 
     </style>
+
 </head>
 <script type="text/javascript">
 {% block script %}
 {% endblock %}
 </script>
+
+{%  if  readonly %}
+    <h3 class="banner" >The NGEE-Tropics Archive is undergoing maintenance and is currently in read-only mode.</h3>
+    <h4 class="banner" >Please contact ngee-tropics-archive@lbl.gov if you have any questions.</h4>
+{% endif %}
+
 <body data-feedly-mini="yes">
+
+
 <div class="container">
+
+
     <div class="pagebox">
+
         <div class="hpb" style="float: right;">
             <img width="1100" src="/static/img/tropics_logo.jpg">
         </div>

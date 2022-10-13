@@ -13,6 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
+from django.conf import settings
 from django.conf.urls import re_path, include
 from django.contrib import admin
 from django.urls import path
@@ -40,24 +41,37 @@ oauth2_endpoint_views = [
     path('revoke-token/', oauth2_views.RevokeTokenView.as_view(), name="revoke-token"),
 ]
 
-
 # OAuth2 Application Management endpoints
 oauth2_endpoint_views += [
-    path('applications/', user_passes_test(user_can_create_tokens)(oauth2_views.ApplicationList.as_view()), name="list"),
-    path('applications/register/', user_passes_test(user_can_create_tokens)(oauth2_views.ApplicationRegistration.as_view()), name="register"),
-    path('applications/<pk>/', user_passes_test(user_can_create_tokens)(oauth2_views.ApplicationDetail.as_view()), name="detail"),
-    path('applications/<pk>/delete/', user_passes_test(user_can_create_tokens)(oauth2_views.ApplicationDelete.as_view()), name="delete"),
-    path('applications/<pk>/update/', user_passes_test(user_can_create_tokens)(oauth2_views.ApplicationUpdate.as_view()), name="update"),
+    path('applications/', user_passes_test(user_can_create_tokens)(oauth2_views.ApplicationList.as_view()),
+         name="list"),
+    path('applications/register/',
+         user_passes_test(user_can_create_tokens)(oauth2_views.ApplicationRegistration.as_view()), name="register"),
+    path('applications/<pk>/', user_passes_test(user_can_create_tokens)(oauth2_views.ApplicationDetail.as_view()),
+         name="detail"),
+    path('applications/<pk>/delete/',
+         user_passes_test(user_can_create_tokens)(oauth2_views.ApplicationDelete.as_view()), name="delete"),
+    path('applications/<pk>/update/',
+         user_passes_test(user_can_create_tokens)(oauth2_views.ApplicationUpdate.as_view()), name="update"),
 ]
+
+urlpatterns = []
+if not settings.READ_ONLY:
+    urlpatterns = [
+        re_path(r'^', include(ui_urls)),
+        path('o/', include((oauth2_endpoint_views, 'oauth2_provider'), namespace='oauth2_provider')),
+        re_path(r'^admin/', admin.site.urls),
+    ]
+else:
+    urlpatterns = [
+        re_path(r'^$', dois, name='home'),
+    ]
 
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
-urlpatterns = [
-    re_path(r'^', include(ui_urls)),
-    path('o/', include((oauth2_endpoint_views,'oauth2_provider'), namespace='oauth2_provider')),
+urlpatterns += [
     re_path(r'^api/', include(api_urls)),
-    re_path(r'^admin/', admin.site.urls),
     re_path(r'^metrics/', metrics_datasets, name='metrics'),
     re_path(r'^dois/(?P<ngt_id>[a-zA-Z0-9]+)/$', doi, name='doi'),
     re_path(r'^dois/$', dois, name='dois'),
@@ -65,5 +79,3 @@ urlpatterns = [
     re_path(r'^login/$', auth_views.LoginView.as_view(template_name='archive_api/login.html'), name='login'),
     re_path(r'^logout/$', auth_views.LogoutView.as_view(), name='logout'),
 ]
-
-

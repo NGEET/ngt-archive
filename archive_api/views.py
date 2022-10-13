@@ -1,6 +1,7 @@
 # Create your views here
 import csv
 
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import (
@@ -108,12 +109,14 @@ def dois(request):
     :param request:
     :return:
     """
+    read_only = settings.READ_ONLY
 
     data_sets = get_list_or_404(DataSet, publication_date__isnull=False, publication_date__lt=timezone.now(),
                                 access_level__in=(DataSet.ACCESS_NGEET, DataSet.ACCESS_PUBLIC))
 
     return render(request, 'archive_api/dois.html', context={'user': request.user,
-                                                             'datasets': data_sets})
+                                                             'datasets': data_sets,
+                                                             'readonly': read_only})
 
 
 def doi(request, ngt_id=None):
@@ -124,6 +127,7 @@ def doi(request, ngt_id=None):
     """
 
     dataset = get_object_or_404(DataSet, ngt_id=int(ngt_id[3:]))
+    read_only = settings.READ_ONLY
 
     if (dataset.publication_date is not None and dataset.publication_date < timezone.now() and \
             dataset.access_level in [DataSet.ACCESS_PUBLIC, DataSet.ACCESS_NGEET]):
@@ -143,7 +147,8 @@ def doi(request, ngt_id=None):
                                                                 'authors': authors,
                                                                 'site_ids': site_ids,
                                                                 'sites': sites,
-                                                                'variables': variables})
+                                                                'variables': variables,
+                                                                'readonly': read_only})
     else:
         raise Http404('That dataset does not exist')
 
