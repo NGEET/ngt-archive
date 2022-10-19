@@ -1,5 +1,8 @@
 # NGEE Tropics Archive Releases
 
+## v2.7.0
+Adds a read-only mode for use in failover or recovery circumstance
+
 ## v2.6.4
 Bug fix release for metdata transfer to ESS-DIVE. Adds project identifier
 to ESS-DIVE transfer and CCs dataset contact on approval of datasets.
