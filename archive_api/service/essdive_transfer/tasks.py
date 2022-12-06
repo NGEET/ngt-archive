@@ -9,7 +9,7 @@ from django.utils import timezone
 from rest_framework import status
 from rest_framework.exceptions import APIException
 
-from archive_api.essdive_transfer import crosswalk
+from archive_api.service.essdive_transfer import crosswalk
 from archive_api.models import EssDiveTransfer, ServiceAccount, SERVICE_ACCOUNT_ESSDIVE
 from requests_toolbelt.multipart.encoder import MultipartEncoder, MultipartEncoderMonitor
 

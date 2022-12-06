@@ -14,7 +14,7 @@ from archive_api import permissions
 from archive_api.models import Person, EssDiveTransfer, DataSet
 from django.contrib.auth.models import update_last_login
 
-from archive_api.essdive_transfer import tasks
+from archive_api.service.essdive_transfer import tasks
 
 EMAIL_FOOTER_FORMAT = """-----------------
 More information.
