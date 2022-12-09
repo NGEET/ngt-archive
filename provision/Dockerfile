@@ -34,16 +34,14 @@ ADD licenses/ /app/licenses
 ADD docs/ /app/docs
 ADD ui/ /app/ui
 COPY provision/local.py /app/ngt_archive
-COPY setup.py /app/
+COPY pyproject.toml /app/
 COPY manage.py /app
 COPY README.md /app
 
 
 #Install the application dependencies
 RUN pip install --upgrade pip && \
-    pip install psycopg2-binary && \
-    pip install uwsgi && \
-     pip install /app && \
+    pip install /app && \
     ls -ld /app/static && \
     python -c 'import ngt_archive.settings'
 

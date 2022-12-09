@@ -29,18 +29,6 @@ service sits in the middle of the *NGEE Tropics data workflow*
 These instructions will get you a copy of the project up and running on your local machine for 
 development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
-### Prerequisities
-
-NGEE Tropics Archive is a Django application which requires:
-
-* Python ( >= 3.6)
-* Django ( >= 3.0.5 )
-* Platform (Mac, Linux)
-
-### Setup Development
-There is an option for  local machine 
-development.
-
 #### Desktop
 Use these instructions for setting up development on a desktop computer.
 
@@ -50,15 +38,9 @@ Fork the repository and then clone your fork:
     git clone git@github.com:<your username here>/ngt-archive.git
     cd ngt-archive
 
-Create a virtual environment for development
-    
-    # Python verion >= 3.6
-    python -m venv .menv
-    source .menv/bin/activate
-    
 Install the a django project for development
     
-    python setup.py develop
+    pip install -e ".[dev]"
     ./manage.py collectstatic
     ./manage.py migrate
     ./manage.py loaddata test_auth.json test_archive_api.json
@@ -94,7 +76,6 @@ Load Test Users *superadmin, admin, auser*. Passwords are
     
 The web application has been deployed to apache on your container.
 This service starts up at http://0.0.0.0:8088
-
 
 
 When you are done for the day, you may stop container down:
@@ -175,10 +156,8 @@ Database and operating system are up to the user.
 
 Prepare django application distribution for deployment.
 
-    $ python setup.py sdist
-    Writing ngt_archive-<version>/setup.cfg
-    Creating tar archive
-    removing 'ngt_archive-<version>' (and everything under it)
+    $ pip install -q build
+    $ python -m buildls
 
 Create deployment directory with a Python 3 virtual environment
 
@@ -194,7 +173,7 @@ Install NGT Archive service and its dependencies.
 Link to the Django applications `manange.py` script
 
     $ cd <deploy_dir>
-    $ ln -s lib/python3.4/site-packages/manage.py manage.py
+    $ ln -s lib/python<version>/site-packages/manage.py manage.py
     
 Create custom Django settings in `<deploy_dir>/settings/local.py`. Use
 [settings_local_py.jinja2](settings_local_py.jinja2) as an example. Replace
@@ -213,10 +192,9 @@ see the [tags on this repository](https://github.com/NGEET/ngt-archive/tags).
 
 Workflow for tagging and building release:
 
-1. checkout the version to tag from `master`
-1. `git tag -a v[version]-[release] -m "Tagging release v[version]-[release]"`
-1. build distribution with `setup.py`
-1. `git push origin v[version]-[release]`
+1. checkout the version to tag from `main`
+1. `git tag -a v[version].[release] -m "Tagging release v[version].[release]"`
+1. `git push origin v[version].[release]`
 
 ## Authors
 
