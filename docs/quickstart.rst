@@ -25,8 +25,7 @@ Setup the App
 
     $ virtualenv -p `which python3` .
     $ source bin/activate
-    (ngt-archive)$ python setup.py install
-    (ngt-archive)$ pip install psycopg2 (pg_config needs to be available)
+    (ngt-archive)$ pip install ".[deploy]"
 
 Prepare Settings
 ----------------

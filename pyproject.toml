@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=61.2", "wheel", "setuptools-git-versioning<2",]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools-git-versioning]
+enabled = true
+template = "{tag}"
+dev_template = "{tag}.post{ccount}"
+dirty_template = "{tag}.post{ccount}+dirty"
+
+[project]
+name = "ngt_archive"
+dynamic = ["version"]
+authors = [{name = "Val Hendrix", email = "vchendrix@lbl.gov"}]
+description = "NGEE Tropics Archive Service"
+urls = {Homepage = "https://github.com/NGEET/ngt-archive"}
+dependencies = [
+    "Django == 3.1.14",
+    "djangorestframework >= 3.11.0",
+    "django-filter == 2.2.0",
+    "django-daterangefilter >= 1.0.0",
+    "pyldap>=3.0.0",
+    "django-auth-ldap>=2.1.1",
+    "django-oauth-toolkit",
+    "pytz",
+    "django-simple-history",
+    "cryptography",
+    "celery",
+    "django_celery_results",
+    "requests_toolbelt",
+]
+
+
+
+[project.optional-dependencies]
+dev = ["pytest", "pytest-django"]
+deploy = ["psycopg2-binary", "uwsgi"]
+
+[tool.setuptools]
+py-modules = ["manage"]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+exclude = ["*.tests"]
+namespaces = false
