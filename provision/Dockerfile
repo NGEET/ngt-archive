@@ -41,7 +41,7 @@ COPY README.md /app
 
 #Install the application dependencies
 RUN pip install --upgrade pip && \
-    pip install /app && \
+    pip install "/app[deploy]" && \
     ls -ld /app/static && \
     python -c 'import ngt_archive.settings'
 

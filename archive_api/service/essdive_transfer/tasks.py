@@ -1,17 +1,15 @@
-import math
-
 import json
-
+import math
 import requests
 from celery.app import shared_task
 from celery.utils.log import get_task_logger
 from django.utils import timezone
+from requests_toolbelt.multipart.encoder import MultipartEncoder, MultipartEncoderMonitor
 from rest_framework import status
 from rest_framework.exceptions import APIException
 
+from archive_api.models import EssDiveTransfer, SERVICE_ACCOUNT_ESSDIVE, ServiceAccount
 from archive_api.service.essdive_transfer import crosswalk
-from archive_api.models import EssDiveTransfer, ServiceAccount, SERVICE_ACCOUNT_ESSDIVE
-from requests_toolbelt.multipart.encoder import MultipartEncoder, MultipartEncoderMonitor
 
 log = get_task_logger(__name__)
 
@@ -90,49 +88,68 @@ def transfer_start(run_id):
 
         # Get the current job for this task
         transfer_job = EssDiveTransfer.objects.all().get(id=run_id)
+        transfer_job.status = EssDiveTransfer.STATUS_QUEUED
+        previous_jobs = EssDiveTransfer.objects.filter(dataset__id=transfer_job.dataset.id,
+                                                       status=EssDiveTransfer.STATUS_SUCCESS)
 
-        response = search(run_id)
         essdive_id = None
-        # Does this dataset already exist on ESS-DIVE?
-        if response.status_code == status.HTTP_200_OK:
+        has_previous = previous_jobs and len(previous_jobs) > 0
+        log.info(f"Has previous? {len(previous_jobs)}")
+        if has_previous:
+            # A Previous job was found
+            log.info(
+                f"Determining if ESS-DIVE dataset ({previous_jobs[0].response['id']}) represents {transfer_job.dataset.data_set_id()}")
+            essdive_response = get(previous_jobs[0].response['id'])
+            if essdive_response.status_code == status.HTTP_200_OK:
+                transfer_job.status = EssDiveTransfer.STATUS_QUEUED
+                transfer_job.save()
+                log.info(f"Found ESS-DIVE dataset ({previous_jobs[0].response['id']}) for {transfer_job.dataset.data_set_id()}")
+                essdive_id = previous_jobs[0].response['id']
 
-            # Iterate over the results and get the first dataset with the NGT ID in
-            # the alternate names. Ignore all other results
-            result_json = response.json()
-            for d in result_json["result"]:
-                essdive_response = get(d["id"])
-                essdive_response_json = essdive_response.json()
-                log.info(f"Determining if ESS-DIVE dataset ({d['id']}) represents {transfer_job.dataset.data_set_id()}")
+            else:
+                # It is OK if there was a previous job but none was found.  This might mean that
+                # the dataset was updated in ESS-DIVE and has a new identifier.
+                log.info(f"ESS-DIVE dataset ({previous_jobs[0].response['id']}) for {transfer_job.dataset.data_set_id()} cannot be found")
 
-                if essdive_response.status_code == status.HTTP_200_OK:
-                    # alternateName may be a list or a string
-                    if transfer_job.dataset.data_set_id() in essdive_response_json["dataset"]["alternateName"] or \
-                            transfer_job.dataset.data_set_id() == essdive_response_json["dataset"]["alternateName"]:
-                        essdive_id = d['id']
-                        transfer_job.status = EssDiveTransfer.STATUS_QUEUED
-                        transfer_job.save()
-                        log.info(f"Found ESS-DIVE dataset ({d['id']}) for {transfer_job.dataset.data_set_id()}")
-                        break
-                else:
-                    log.info(f"Ignoring ESS-DIVE dataset ({d['id']}) for {transfer_job.dataset.data_set_id()}")
+        if not essdive_id:
+            # We need to search for an identifierq
+            response = search(run_id)
+            response_json = response.json()
 
-        elif response.status_code != status.HTTP_404_NOT_FOUND:
-            try:
-                response_json = response.json()
-                transfer_job.response = response_json
-                transfer_job.message = response_json["detail"]
-            except:
-                transfer_job.message = "Problem encounter searching for and existing dataset on ESS-DIVE"
+            # Does this dataset already exist on ESS-DIVE?
+            if response.status_code == status.HTTP_200_OK:
 
-            transfer_job.status = EssDiveTransfer.STATUS_FAILED
+                # Iterate over the results and get the first dataset with the NGT ID in
+                # the alternate names. Ignore all other results
+                for d in response_json["result"]:
 
-            transfer_job.save()
-            raise RunError(run_id, transfer_job.message)
+                    essdive_response = get(d["id"])
+                    essdive_response_json = essdive_response.json()
+                    log.info(f"Determining if ESS-DIVE dataset ({d['id']}) represents {transfer_job.dataset.data_set_id()}")
+
+                    if essdive_response.status_code == status.HTTP_200_OK:
+                        # alternateName may be a list or a string
+                        if transfer_job.dataset.data_set_id() in essdive_response_json["dataset"]["alternateName"] or \
+                                transfer_job.dataset.data_set_id() == essdive_response_json["dataset"]["alternateName"]:
+                            essdive_id = d['id']
+
+                            log.info(f"Found ESS-DIVE dataset ({d['id']}) for {transfer_job.dataset.data_set_id()}")
+                            break
+
+            elif response.status_code != status.HTTP_404_NOT_FOUND:
+                _raise_transfer_failure(response_json['detail'], run_id)
+            elif has_previous:
+                _raise_transfer_failure("There are one or more previous transfers for this dataset "
+                                        "but no ESS-DIVE dataset was found.", run_id)
 
         # Return  run information
+        transfer_job.save()
         return {"run_id": run_id, "essdive_id": essdive_id, 'ngt_id': transfer_job.dataset.data_set_id()}
     except RunError as re:
         raise re
+    except json.decoder.JSONDecodeError as je:
+        _raise_transfer_failure(f"Failed decoding ESS-DIVE response ({str(je)}) = "
+                                        f"{response_json.text()}", run_id)
     except Exception as e:
         _raise_run_error(e, run_id)
 
@@ -204,7 +221,8 @@ def transfer(result):
                     log.info(f"Upload progress {transfer_job.dataset.data_set_id()} - bytes {monitor.bytes_read} of {monitor.len} ({percent_complete}%) read")
 
             monitor = MultipartEncoderMonitor(encoder, _upload_progress)
-            response = requests.request(method=method, url=f"{service_account.endpoint}/{essdive_id or ''}",
+            endpoint = f"{service_account.endpoint}/{essdive_id or ''}"
+            response = requests.request(method=method, url=endpoint,
                                         headers={"Authorization": f"Bearer {service_account.secret}",
                                                  'Content-Type': monitor.content_type},
                                         data=monitor)
@@ -282,3 +300,19 @@ def _raise_run_error(e, run_id):
     transfer_job.message = f"{transfer_job.dataset.data_set_id()} {transfer_job.get_type_display()} transfer to {service_account.endpoint} failed. - {str(e)}"
     transfer_job.save()
     raise RunError(run_id, str(e))
+
+
+def _raise_transfer_failure(message: str, run_id: str):
+    """
+    Set transfer job as failed and raise a RunError
+
+    :param message:
+    :param run_id:
+    :raise: RunError
+    """
+    transfer_job = EssDiveTransfer.objects.all().get(id=run_id)
+    transfer_job.end_time = timezone.now()
+    transfer_job.message = message
+    transfer_job.status = EssDiveTransfer.STATUS_FAILED
+    transfer_job.save()
+    raise RunError(transfer_job.id, transfer_job.message)

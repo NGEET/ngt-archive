@@ -19,18 +19,15 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        sudo apt-get install -y python-dev libldap2-dev libsasl2-dev libssl-dev
+        sudo apt-get install -y python-dev-is-python3 libldap2-dev libsasl2-dev libssl-dev
         python -m pip install --upgrade pip
-        pip install flake8 pytest pytest-celery pytest-django pytest-flake8 pytest-mypy pytest-cov pytest-asyncio types-PyYAML types-chardet types-cryptography types-requests
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-        python setup.py check
-        python setup.py install
+        pip install ".[dev]"
     - name: Make artifact directory
       run: |
         mkdir -p ${{ github.workspace }}/artifacts
     - name: Test with pytest
       run: |
-        PYTHONPATH=. pytest -m "not flake8 and not mypy" --cov=archive_api --cov-report term --cov-report html:${{ github.workspace }}/artifacts
+        PYTHONPATH=. pytest -m "not flake8 and not mypy" --cov=archive_api --cov=ngt_archive --cov-report term --cov-report html:${{ github.workspace }}/artifacts
     - name: Archive code coverage results
       uses: actions/upload-artifact@v2
       with:

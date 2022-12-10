@@ -1,6 +1,4 @@
-from pathlib import Path
-
-import requests
+from archive_api.service.essdive_transfer.tasks import requests
 
 import json
 
@@ -12,21 +10,23 @@ from celery.contrib.testing.app import TestApp
 from celery.contrib.testing.worker import start_worker
 
 import archive_api
-from archive_api.essdive_transfer import tasks, crosswalk
+from archive_api.service.essdive_transfer import tasks, crosswalk
 
 BASE_PATH = os.path.dirname(__file__)
 
 # ESS-DIVE Transfers in different states
 RUN_ID_START = 1
+RUN_ID_START_PREVIOUS = 5
 RUN_ID_TRANSFER = 2
 RUN_ID_END = 3
 
 # Datasets in different states
 DATASET_DRAFT = 1
 DATASET_APPROVED = 5
+DATASET_PREVIOUS = 4
 
 
-def create_mock_request(json_file):
+def create_mock_request(json_file, status_code=200):
     """
     Create the Mock request function with the specified JSON file is the response body
 
@@ -47,7 +47,7 @@ def create_mock_request(json_file):
 
             @property
             def status_code(self):
-                return 200
+                return status_code
 
             def json(*args, **kwargs):
                 return file_json
@@ -70,6 +70,27 @@ def mock_get_request(*args, **kwargs):
         @property
         def status_code(self):
             return 200
+
+        def json(*args, **kwargs):
+            file_name = os.path.join(BASE_PATH, filename)
+
+            with open(file_name, 'r') as f:
+                return json.load(f)
+
+    return DummyResponse()
+
+
+def mock_get_request_unauthorized(*args, **kwargs):
+    """ Returns a mock of the get request in archive_api.essdive_transfer.tasks.search"""
+
+    # Determine which call is being made search or get
+    filename = "ngt_essdive_dataset_unauthorized.json"
+
+    class DummyResponse(object):
+
+        @property
+        def status_code(self):
+            return 401
 
         def json(*args, **kwargs):
             file_name = os.path.join(BASE_PATH, filename)
@@ -122,7 +143,7 @@ def test_workflow_execution_success(celery_setup, settings, monkeypatch):
 
 
 @pytest.mark.django_db()
-def test_transfer_start(celery_setup, monkeypatch):
+def test_transfer_start_no_previous(celery_setup, monkeypatch):
     """Test start task"""
 
     monkeypatch.setattr(requests, "get", mock_get_request)
@@ -133,6 +154,35 @@ def test_transfer_start(celery_setup, monkeypatch):
                        'ngt_id': 'NGT0000',
                        'run_id': RUN_ID_START}
 
+
+@pytest.mark.django_db()
+def test_transfer_start_has_previous(celery_setup, monkeypatch):
+    """Test start task"""
+
+    monkeypatch.setattr(requests, "get", mock_get_request)
+
+    task = tasks.transfer_start.delay(RUN_ID_START_PREVIOUS)
+    results = task.get()
+    assert results == {'essdive_id': 'ess-dive-6a065b8db64b880-20220503T150116078267',
+                       'ngt_id': 'NGT0003',
+                       'run_id': RUN_ID_START_PREVIOUS}
+
+
+@pytest.mark.django_db()
+def test_transfer_start_has_previous_not_found(celery_setup, monkeypatch):
+    """Test start task"""
+
+    monkeypatch.setattr(requests, "get", create_mock_request("ngt_essdive_dataset.json", 404))
+
+    task = tasks.transfer_start.delay(RUN_ID_START_PREVIOUS)
+    try:
+        task.get()
+        pytest.fail("RunError should have been thrown")
+    except archive_api.service.essdive_transfer.tasks.RunError as e:
+        assert "Invalid ESS-DIVE Transfer 5 - There are one or more previous transfers for " \
+               "this dataset but no ESS-DIVE dataset was found." == str(e)
+
+
 @pytest.mark.django_db()
 def test_transfer_start_not_authorized(celery_setup, monkeypatch):
     """Test start task"""
@@ -142,7 +192,7 @@ def test_transfer_start_not_authorized(celery_setup, monkeypatch):
     try:
         task.get()
         pytest.fail("RunError should have been thrown")
-    except archive_api.essdive_transfer.tasks.RunError as e:
+    except archive_api.service.essdive_transfer.tasks.RunError as e:
         assert "Invalid ESS-DIVE Transfer 1 - You do not have authorized access" == str(e)
 
 
@@ -168,6 +218,8 @@ def test_essdive_transfer_task_not_authorized(celery_setup, monkeypatch):
     """Test transfer task"""
 
     task = tasks.transfer.delay({'run_id': RUN_ID_TRANSFER, "ngt_id": "NGT0001"})
+    monkeypatch.setattr(requests, "request", create_mock_request("ngt_essdive_dataset_unauthorized.json", 401))
+
     results = task.get()
     assert results == {'response': {'detail': 'You do not have authorized access'},
                        'run_id': 2,

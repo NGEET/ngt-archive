@@ -173,7 +173,7 @@ Install NGT Archive service and its dependencies.
 Link to the Django applications `manange.py` script
 
     $ cd <deploy_dir>
-    $ ln -s lib/python<version>/site-packages/manage.py manage.py
+    $ ln -s lib/python<version> /site-packages/manage.py manage.py
     
 Create custom Django settings in `<deploy_dir>/settings/local.py`. Use
 [settings_local_py.jinja2](settings_local_py.jinja2) as an example. Replace
