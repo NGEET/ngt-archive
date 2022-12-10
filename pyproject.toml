@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=61.2", "wheel", "setuptools-git-versioning<2",]
+requires = ["setuptools>=61.2", "wheel", "setuptools-git-versioning",]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools-git-versioning]
@@ -33,7 +33,9 @@ dependencies = [
 
 
 [project.optional-dependencies]
-dev = ["pytest", "pytest-django"]
+dev = ["flake8", "pytest", "pytest-celery", "pytest-django", "pytest-flake8",
+    "pytest-mypy", "pytest-cov", "pytest-asyncio", "types-PyYAML", "types-chardet",
+    "types-cryptography", "types-requests"]
 deploy = ["psycopg2-binary", "uwsgi"]
 
 [tool.setuptools]

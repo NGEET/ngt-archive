@@ -1,0 +1,19 @@
+[report]
+exclude_lines =
+   NotImplementedError
+   logger
+   def __repr__
+   version
+   release
+   logger.info
+   uvicorn
+   pass
+   ImportError
+omit =
+   */asgi.py
+   */wsgi.py
+   */formparser.py
+   */test_*.py
+   */tests/*
+   */management/commands/importcdiac.py
+fail_under = 82
