@@ -9,12 +9,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.7', '3.8', '3.9']
+        python-version: ['3.7', '3.8', '3.9', '3.10']
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
@@ -27,9 +27,9 @@ jobs:
         mkdir -p ${{ github.workspace }}/artifacts
     - name: Test with pytest
       run: |
-        PYTHONPATH=. pytest -m "not flake8 and not mypy" --cov=archive_api --cov=ngt_archive --cov-report term --cov-report html:${{ github.workspace }}/artifacts
+        PYTHONPATH=. pytest -m "not flake8 and not mypy" --cov=. --cov-report term --cov-report html:${{ github.workspace }}/artifacts
     - name: Archive code coverage results
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: code-coverage-report
         path: ${{ github.workspace }}/artifacts
