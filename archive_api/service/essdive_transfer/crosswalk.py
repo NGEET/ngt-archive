@@ -3,6 +3,12 @@ NGEE-Tropics to ESS-DIVE Metacata crosswalk module
 
 
 """
+import csv
+import collections
+from io import StringIO
+
+from typing import Dict, IO, List, Optional, TextIO, Union
+
 import logging
 
 # NGEE-Tropics Project information
@@ -24,7 +30,7 @@ JSONLD_LICENSE = "http://creativecommons.org/licenses/by/4.0/"
 JSONLD_FUNDER = {"name": "U.S. DOE > Office of Science > Biological and Environmental Research (BER)"}
 
 
-def creator(dataset):
+def _dataset_creator(dataset):
     """
     Generates the ESS-DIVE creators from the NGEE-Tropics DataSet Authors
 
@@ -50,7 +56,7 @@ def creator(dataset):
     return creators
 
 
-def contact_info(dataset):
+def _dataset_contact_info(dataset):
     """
     Creates ESS-DIVE JSON-LD editor from the NGEE-Tropics dataset contact
 
@@ -68,7 +74,7 @@ def contact_info(dataset):
     return person
 
 
-def temporal(dataset):
+def _dataset_temporal(dataset):
     """
     Creates the ESS-DIVE JSON-LD Temporal Coverage from the NGEE-Tropics dataset start
     and end dates
@@ -88,7 +94,7 @@ def temporal(dataset):
     return temporal_coverage
 
 
-def spatial(dataset):
+def _dataset_spatial(dataset):
     """
     Creates the ESS-DIVE JSON-LD Spatial Coverage from the NGEE-Tropics dataset sites array
 
@@ -161,7 +167,7 @@ def spatial(dataset):
     return spatial_coverage
 
 
-def transform(dataset):
+def dataset_transform(dataset):
     """
     Transform NGEE-Tropics DataSet to ESSDIVE JSON-LD
 
@@ -191,16 +197,16 @@ def transform(dataset):
         citation.append(f"Additional information about citations: {dataset.additional_reference_information}")
 
     # ---- creators ----
-    creators = creator(dataset)
+    creators = _dataset_creator(dataset)
 
     # ---- editor ----
-    editor = contact_info(dataset)
+    editor = _dataset_contact_info(dataset)
 
-    # ---- temporal coverage ---
-    temporal_coverage = temporal(dataset)
+    # ---- _dataset_temporal coverage ---
+    temporal_coverage = _dataset_temporal(dataset)
 
-    # --- spatial coverage ---
-    spatial_coverage = spatial(dataset)
+    # --- _dataset_spatial coverage ---
+    spatial_coverage = _dataset_spatial(dataset)
 
     # --- variables ---
     variable_measured = list()
@@ -241,3 +247,83 @@ def transform(dataset):
         if not json_ld[f]: json_ld.pop(f)
 
     return json_ld
+
+
+def locations_transform(dataset) -> List[collections.UserDict]:
+    """
+    Transform the specified datasets sites to
+    the locations reporting format
+
+    :param dataset:
+    :return:
+    """
+    locations = []
+
+    for site in dataset.sites.all():
+        locations.append(collections.UserDict(
+            Submission_Contact_Name="; ".join([f"{c.first_name} {c.last_name}" for c in site.contacts.all()]),
+            Submission_Contact_Email="; ".join([c.email for c in site.contacts.all()]),
+            Location_ID=site.site_id,
+            Description=site.description,
+            Latitude=site.location_latitude,
+            Longitude=site.location_longitude,
+            Elevation=site.location_elevation,
+            Location_Alias=site.name,
+            Parent_Location_ID="",
+            UTC_Offset=site.utc_offset,
+            Country=site.country,
+            Notes=""))
+
+    for plot in dataset.plots.all():
+        locations.append(collections.UserDict(
+            Submission_Contact_Name="; ".join([f"{c.first_name} {c.last_name}" for c in plot.site.contacts.all()]),
+            Submission_Contact_Email="; ".join([c.email for c in plot.site.contacts.all()]),
+            Location_ID=plot.plot_id,
+            Description=plot.description,
+            Latitude=plot.site.location_latitude,
+            Longitude=plot.site.location_longitude,
+            Elevation=plot.location_elevation,
+            Location_Alias=plot.name,
+            Parent_Location_ID=plot.site.site_id,
+            UTC_Offset=plot.site.utc_offset,
+            Country=plot.site.country,
+            Notes=plot.size and f"Size - {plot.size}" or ""))
+
+    return locations
+
+
+def locations_csv(dataset) -> Optional[TextIO]:
+    """
+    Returns a file pointer to a locations csv for the specified
+    dataset. Returns None if there were no locations
+
+    :param dataset:
+    :return: File Pointer
+    """
+    # Transform the locations file
+    locations_json = locations_transform(dataset)
+    if len(locations_json) > 0:
+        # Prepare the StringIO object for writing
+        locations_fp = StringIO()
+        json_to_csv(locations_fp, locations_json)
+
+        return locations_fp
+    return None
+
+
+def json_to_csv(f: TextIO, json_obj: List[Union[collections.UserDict, dict, Dict]]):
+    """
+    Write the locations json as a csv file
+    :param f: file to write to
+    :param json_obj:
+    :return:
+    """
+
+    # Write the CSV file to the io object
+    writer = csv.DictWriter(f, fieldnames=list(json_obj[0].keys()))
+    writer.writeheader()
+    for location in json_obj:
+        writer.writerow(location)
+
+    # Now reset the io to the first position
+    f.seek(0)

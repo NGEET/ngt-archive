@@ -12,6 +12,7 @@ exclude_lines =
 omit =
    */asgi.py
    */wsgi.py
+   */manage.py
    */formparser.py
    */test_*.py
    */tests/*

@@ -972,8 +972,9 @@ class SiteClientTestCase(APITestCase):
                           "location_bounding_box_ul_latitude": None,
                           "location_bounding_box_ul_longitude": None, "location_bounding_box_lr_latitude": None,
                           "location_bounding_box_lr_longitude": None, "site_urls": "http://centralcityccpd.baz",
-                          "submission_date": "2016-10-01", "contacts": [], "pis": [],
-                          "submission": "http://testserver/api/v1/people/3/"})
+                          "submission_date": "2016-10-01", "pis": [],
+                          "submission": "http://testserver/api/v1/people/3/",
+                          "contacts": ['http://testserver/api/v1/people/3/']})
         self.assertEqual(status.HTTP_200_OK, response.status_code)
 
     def test_client_post(self):

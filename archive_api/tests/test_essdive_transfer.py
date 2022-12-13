@@ -236,14 +236,43 @@ def test_essdive_task_end(celery_setup):
 
 
 @pytest.mark.django_db()
-def test_transform(celery_setup):
+def test_dataset_transform(celery_setup):
     """Test the Dataset to ESS-DIVE JSON-LD Transform"""
 
     from archive_api.models import DataSet
     dataset = DataSet.objects.all().get(id=DATASET_APPROVED)
-    jsonld = crosswalk.transform(dataset)
+    jsonld = crosswalk.dataset_transform(dataset)
 
     with open(os.path.join(BASE_PATH, "essdive-transfer.jsonld")) as f:
         expected_json = json.load(f)
 
     assert jsonld == expected_json
+
+
+@pytest.mark.django_db()
+def test_locations_transform(celery_setup):
+    """Test the Locations to ESS-DIVE Locations Reporting format Transform"""
+
+    from archive_api.models import DataSet
+    dataset = DataSet.objects.all().get(id=DATASET_APPROVED)
+    json_locations = crosswalk.locations_transform(dataset)
+    print(json_locations)
+
+    with open(os.path.join(BASE_PATH, "essdive_transfer_locations.json")) as f:
+        expected_json = json.load(f)
+
+    assert json_locations == expected_json
+
+
+def test_json_to_csv():
+    """Test the JSON to csv writer"""
+
+    with open(os.path.join(BASE_PATH, "essdive_transfer_locations.json")) as f:
+        json_to_transform = json.load(f)
+
+    with open(os.path.join(BASE_PATH, "locations.csv")) as f:
+
+        from io import StringIO
+        csv_fp = StringIO()
+        crosswalk.json_to_csv(csv_fp, json_to_transform)
+        assert str(csv_fp.read()).replace("\r", "") == str(f.read()).replace("\r", "")

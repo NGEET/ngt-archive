@@ -275,6 +275,9 @@ if AUTH_LDAP_SERVER_URI:
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_TRACK_STARTED: True
 CELERY_RESULT_BACKEND = 'django-db'
+# Enables extended task result attributes (name, args, kwargs,
+# worker, retries, queue, delivery_info) to be written to backend.
+CELERY_RESULT_EXTENDED = True
 
 # CELERY_TASK_TIME_LIMIT = 30 * 60
 # CELERY_TASK_ALWAYS_EAGER is set, tasks called using  apply_async or delay  are called directly,
