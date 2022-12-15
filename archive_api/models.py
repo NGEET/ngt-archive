@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import os
 
 import django.contrib.auth.models
@@ -7,7 +9,6 @@ from django.core.files.storage import FileSystemStorage
 from django.core.validators import RegexValidator
 from django.db import models, transaction
 from django.utils import timezone
-from django.utils.datetime_safe import datetime
 from simple_history.models import HistoricalRecords
 from django.core import validators
 

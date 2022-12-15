@@ -1,4 +1,6 @@
 # Create your views here
+from datetime import datetime
+
 import csv
 
 from django.conf import settings
@@ -9,7 +11,6 @@ from django.http import (
 )
 from django.shortcuts import render, get_object_or_404, get_list_or_404
 from django.utils import timezone
-from django.utils.datetime_safe import datetime
 
 from archive_api.models import DataSet, DataSetDownloadLog
 
@@ -38,6 +39,7 @@ def metrics_datasets(request):
     :param request:
     :return:
     """
+    current_tz = timezone.get_current_timezone()
 
     # Check the request to see if a search was performed
     if request.POST and "clear" not in request.POST:
@@ -45,7 +47,7 @@ def metrics_datasets(request):
     else:
         # no search or clear (use default parameters)
         form = MetricsFilterForm({
-            'start_date': '2016-01-01',
+            'start_date': timezone.datetime(2016, 1, 1, tzinfo=current_tz).strftime("%Y-%m-%d"),
             'end_date': timezone.now().strftime("%Y-%m-%d")
         })
 
@@ -54,11 +56,10 @@ def metrics_datasets(request):
     if form.is_valid():
 
         # Get the start and end dates and set them to the server timezone
-        current_tz = timezone.get_current_timezone()
         start_date = datetime.strptime(form.data['start_date'], "%Y-%m-%d")
-        start_date = current_tz.localize(start_date)
+        start_date = datetime(start_date.year, start_date.month, start_date.day, tzinfo=current_tz)
         end_date = datetime.strptime(form.data['end_date'], "%Y-%m-%d")
-        end_date = current_tz.localize(end_date)
+        end_date = datetime(end_date.year, end_date.month, end_date.day, tzinfo=current_tz)
 
         # Build the datasets metrics for statuses (Submitted, Approved)
         dataset_report = report_datasets(start_date, end_date, request.user)

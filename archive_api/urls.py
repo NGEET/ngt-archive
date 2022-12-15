@@ -1,5 +1,6 @@
-from django.conf.urls import re_path, include
+from django.conf.urls import include
 from django.contrib import admin
+from django.urls import re_path
 from rest_framework import routers
 
 from archive_api.views import metrics_datasets

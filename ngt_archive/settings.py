@@ -52,7 +52,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'archive_api.apps.ArchiveApiConfig',
     'oauth2_provider',
-    'daterangefilter',
     "simple_history",
     "django_celery_results"
 ]
@@ -162,8 +161,6 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
-
-USE_L10N = True
 
 USE_TZ = True
 
