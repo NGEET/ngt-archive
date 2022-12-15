@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 from base64 import b64encode
+from django.conf.locale.en import formats as en_formats
 
 """
 Django settings for ngt_archive project.
@@ -66,6 +67,7 @@ MIDDLEWARE= [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'simple_history.middleware.HistoryRequestMiddleware',
+    'ngt_archive.middleware.TimezoneMiddleware'
 
 ]
 
@@ -164,6 +166,8 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+en_formats.DATETIME_FORMAT = "m/d/Y H:i e"
 
 OAUTH2_PROVIDER = {
     # this is the list of available scopes

@@ -5,6 +5,8 @@ var overrideMsg = false;
 var editingScreen = false;
 var sortField = 'modified_date';
 var sortReverse = false;
+var LOCALE = 'en-US'
+var DATETIME_OPTIONS = { dateStyle: 'short', timeStyle: 'long', hourCycle: 'h24'}
 
 /**
  * Test if the string is a valid JSON String
@@ -1440,7 +1442,7 @@ function showEditDatasets() {
         }
 
         if (dataObj.editDatasets[i].publication_date) {
-            tr.append('<td>' + new Date(dataObj.editDatasets[i].publication_date).toLocaleString() + '</td>');
+            tr.append('<td>' + new Date(dataObj.editDatasets[i].publication_date).toLocaleString(LOCALE, DATETIME_OPTIONS) + '</td>');
         }
         else {
             tr.append('<td></td>');
@@ -1463,7 +1465,7 @@ function showEditDatasets() {
         }
         ;
 
-        tr.append('<td>' + new Date(dataObj.editDatasets[i].modified_date).toLocaleString() + '</td>');
+        tr.append('<td>' + new Date(dataObj.editDatasets[i].modified_date).toLocaleString(LOCALE, DATETIME_OPTIONS) + '</td>');
 
         approvedCount++;
 
@@ -1514,7 +1516,7 @@ function showApprovedDatasets() {
             }
 
             if (dataObj.approvedDatasets[i].publication_date) {
-                tr.append('<td>' + new Date(dataObj.approvedDatasets[i].publication_date).toLocaleString() + '</td>');
+                tr.append('<td>' + new Date(dataObj.approvedDatasets[i].publication_date).toLocaleString(LOCALE, DATETIME_OPTIONS) + '</td>');
             }
 
 
@@ -1537,7 +1539,7 @@ function showApprovedDatasets() {
             }
             ;
 
-            tr.append('<td>' + new Date(dataObj.approvedDatasets[i].modified_date).toLocaleString() + '</td>');
+            tr.append('<td>' + new Date(dataObj.approvedDatasets[i].modified_date).toLocaleString(LOCALE, DATETIME_OPTIONS) + '</td>');
 
             approvedCount++;
 
