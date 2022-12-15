@@ -150,7 +150,7 @@ class DataSetClientTestCase(APITestCase):
                           'acknowledgement': '', 'reference': '',
                           'additional_reference_information': '', 'access_level': '0',
                           'additional_access_information': '',
-                          'originating_institution': 'LBNL', 'submission_date': '2016-10-28T00:00:00Z',
+                          'originating_institution': 'LBNL', 'submission_date': '2016-10-28T19:15:35.013361Z',
                           'contact': 'http://testserver/api/v1/people/2/',
                           'sites': ['http://testserver/api/v1/sites/1/'],
                           'authors': ['http://testserver/api/v1/people/2/'],
@@ -161,8 +161,8 @@ class DataSetClientTestCase(APITestCase):
                           'archive': 'http://testserver/api/v1/datasets/2/archive/',
                           'archive_filename': 'Archive.zip', 'needs_review': False, 'needs_approval': True,
                           'is_published': False,
-                          'managed_by': 'auser', 'created_date': '2016-10-28T19:15:35.013361Z', 'modified_by': 'auser',
-                          'modified_date': '2016-10-28T23:01:20.066913Z', 'cdiac_import': False,
+                          'managed_by': 'auser', 'created_date': '2016-10-28T12:15:35.013361-07:00', 'modified_by': 'auser',
+                          'modified_date': '2016-10-28T16:01:20.066913-07:00', 'cdiac_import': False,
                           'cdiac_submission_contact': None, 'approval_date': None, 'publication_date': None}
 
                          )

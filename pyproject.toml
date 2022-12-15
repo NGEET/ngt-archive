@@ -14,15 +14,14 @@ dynamic = ["version"]
 authors = [{name = "Val Hendrix", email = "vchendrix@lbl.gov"}]
 description = "NGEE Tropics Archive Service"
 urls = {Homepage = "https://github.com/NGEET/ngt-archive"}
+requires-python = '>=3.9,<3.11'
 dependencies = [
-    "Django == 3.1.14",
+    "Django >= 4.1.1",
     "djangorestframework >= 3.11.0",
-    "django-filter == 2.2.0",
-    "django-daterangefilter >= 1.0.0",
+    "django-filter",
     "pyldap>=3.0.0",
     "django-auth-ldap>=2.1.1",
     "django-oauth-toolkit",
-    "pytz",
     "django-simple-history",
     "cryptography",
     "celery",

@@ -1,15 +1,15 @@
+from datetime import datetime
+
 import json
 
 import io
 
-from daterangefilter.filters import DateRangeFilter
 from django.contrib import admin, messages
-from django.contrib.admin import ModelAdmin
+from django.contrib.admin import FieldListFilter, ModelAdmin
 from django.core.exceptions import ValidationError
 from django.forms import forms
 from django.shortcuts import redirect, render
 from django.urls import path
-from django.utils.datetime_safe import datetime
 from django.utils.safestring import mark_safe
 from django.utils.translation import ngettext
 
@@ -374,7 +374,7 @@ class DataSetDownloadLogAdmin(ModelAdmin):
     This Admin interface allows user to search by date range and user.  The resulting items
     in the list may be downloaded to a CSV file
     """
-    list_filter = (('datetime', DateRangeFilter), 'user',)
+    list_filter = (('datetime', FieldListFilter), 'user',)
     actions = ('download_csv',)
     list_display = ('datetime', 'user_name', 'dataset_status', 'dataset', 'request_url',)
     readonly_fields = ('datetime', 'user', 'dataset_status', 'dataset', 'request_url', 'ip_address')
