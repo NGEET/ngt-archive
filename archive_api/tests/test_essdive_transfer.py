@@ -57,27 +57,42 @@ def create_mock_request(json_file, status_code=200):
     return mock_request
 
 
+class MockGetRequest:
+
+    def __init__(self, search_result_filename="ngt_essdive_dataset_result.json",
+                 dataset_result_filename="ngt_essdive_dataset.json", status_code=200):
+        self._search_result_filename = search_result_filename
+        self._dataset_result_filename = dataset_result_filename
+        self._status_code = status_code
+
+    def __call__(self, *args, **kwargs):
+
+        # Determine which call is being made search or get
+        filename = self._search_result_filename
+        if args[0].split("/")[-1].startswith("ess-dive-"):
+            filename = self._dataset_result_filename
+        status = self._status_code
+
+        class DummyResponse(object):
+
+            @property
+            def status_code(self):
+                return status
+
+            def json(*args, **kwargs):
+                file_name = os.path.join(BASE_PATH, filename)
+
+                with open(file_name, 'r') as f:
+                    return json.load(f)
+
+        return DummyResponse()
+
+
 def mock_get_request(*args, **kwargs):
     """ Returns a mock of the get request in archive_api.essdive_transfer.tasks.search"""
 
-    # Determine which call is being made search or get
-    filename = "ngt_essdive_dataset_result.json"
-    if args[0].endswith("ess-dive-e1902f9728f70db-20220430T030400919221"):
-        filename = "ngt_essdive_dataset.json"
-
-    class DummyResponse(object):
-
-        @property
-        def status_code(self):
-            return 200
-
-        def json(*args, **kwargs):
-            file_name = os.path.join(BASE_PATH, filename)
-
-            with open(file_name, 'r') as f:
-                return json.load(f)
-
-    return DummyResponse()
+    _mock_get_request = MockGetRequest()
+    return _mock_get_request(*args, **kwargs)
 
 
 def mock_get_request_unauthorized(*args, **kwargs):
@@ -197,7 +212,24 @@ def test_transfer_start_not_authorized(celery_setup, monkeypatch):
 
 
 @pytest.mark.django_db()
-def test_essdive_transfer_task(celery_setup, monkeypatch):
+def test_transfer_start_duplicates(celery_setup, monkeypatch):
+    """Test start task"""
+
+    _mock_get_request = MockGetRequest("ngt_essdive_dataset_result_duplicate.json",
+                                       "ngt_essdive_dataset_duplicate.json")
+    monkeypatch.setattr(requests, "get", _mock_get_request)
+    task = tasks.transfer_start.delay(RUN_ID_START)
+
+    try:
+        task.get()
+        pytest.fail("RunError should have been thrown")
+    except archive_api.service.essdive_transfer.tasks.RunError as e:
+        assert "Invalid ESS-DIVE Transfer 1 - Duplicate datasets (ess-dive-e1902f9728f70db-20220530T030400919221, " \
+               "ess-dive-e1902f9728f70db-20220430T030400919221) found on ESS-DIVE for NGT0000." == str(e)
+
+
+@pytest.mark.django_db()
+def test_transfer_task(celery_setup, monkeypatch):
     """Test transfer task"""
 
     filename = os.path.join(BASE_PATH, "ngt_essdive_dataset.json")
@@ -214,7 +246,7 @@ def test_essdive_transfer_task(celery_setup, monkeypatch):
 
 
 @pytest.mark.django_db()
-def test_essdive_transfer_task_not_authorized(celery_setup, monkeypatch):
+def test_transfer_task_not_authorized(celery_setup, monkeypatch):
     """Test transfer task"""
 
     task = tasks.transfer.delay({'run_id': RUN_ID_TRANSFER, "ngt_id": "NGT0001"})

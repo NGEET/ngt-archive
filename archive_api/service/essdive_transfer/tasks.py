@@ -93,7 +93,7 @@ def transfer_start(run_id):
                                                        status=EssDiveTransfer.STATUS_SUCCESS)
 
         essdive_id = None
-        has_previous = previous_jobs and len(previous_jobs) > 0
+        has_previous = len(previous_jobs)
         log.info(f"Has previous? {len(previous_jobs)}")
         if has_previous:
             # A Previous job was found
@@ -131,10 +131,14 @@ def transfer_start(run_id):
                         # alternateName may be a list or a string
                         if transfer_job.dataset.data_set_id() in essdive_response_json["dataset"]["alternateName"] or \
                                 transfer_job.dataset.data_set_id() == essdive_response_json["dataset"]["alternateName"]:
-                            essdive_id = d['id']
 
-                            log.info(f"Found ESS-DIVE dataset ({d['id']}) for {transfer_job.dataset.data_set_id()}")
-                            break
+                            if not essdive_id:
+                                essdive_id = d['id']
+                                log.info(f"Found ESS-DIVE dataset ({d['id']}) for {transfer_job.dataset.data_set_id()}")
+                            else:
+                                _raise_transfer_failure(f"Duplicate datasets ({d['id']}, {essdive_id}) "
+                                                        f"found on ESS-DIVE for {transfer_job.dataset.data_set_id()}.",
+                                                        run_id)
 
             elif response.status_code != status.HTTP_404_NOT_FOUND:
                 _raise_transfer_failure(response_json['detail'], run_id)
