@@ -23,8 +23,6 @@ Setup the App
 -------------
 ::
 
-    $ virtualenv -p `which python3` .
-    $ source bin/activate
     (ngt-archive)$ pip install ".[deploy]"
 
 Prepare Settings
@@ -85,11 +83,6 @@ development, test)::
 
 Database Settings
 ~~~~~~~~~~~~~~~~~
-By default NGEE Tropics Archive uses a sqlite database.  For a postgres database, first install the Postgres
-python client::
-
-    (ngt-archive) $ pip install psycopg2
-
 Add the following to Postgres DB connection details to ``ngeet_archive_settings.py``. Replace the
 items in curly braces with your values.::
 

@@ -2,6 +2,11 @@
 Releases
 ========
 
+Releases After v1.2.1
+=====================
+
+Go to https://github.com/NGEET/ngt-archive/releases
+
 v1.2.1
 ======
 
@@ -13,18 +18,18 @@ v1.2.0
 ======
 Bug fixes, UI Enhancments
 
-- Approved dataset list not showing status values **bug,critical** (`#305  <https://github.com/NGEET/ngt-archive/issues/305>`_) 
-- Fix link in data upload tooltip (`#278 <https://github.com/NGEET/ngt-archive/issues/278>`_) 
-- DatasetContact - new collaborator error message incorrect **bug** (`#243 <https://github.com/NGEET/ngt-archive/issues/243>`_) 
-- data policy link opens in same window enhancement (`#269 <https://github.com/NGEET/ngt-archive/issues/269>`_) 
-- Create UI metadata infrastructure for dynamic layouts **feature** (`#52 <https://github.com/NGEET/ngt-archive/issues/52>`_) 
-- Workflow for downloading a dataset enhancement feature **important** (`#85 <https://github.com/NGEET/ngt-archive/issues/85>`_) 
-- Warn users when they submit a dataset with a title that already exists enhancement **important** (`#248 <https://github.com/NGEET/ngt-archive/issues/248>`_) 
-- Help link fixes (`#290 <https://github.com/NGEET/ngt-archive/issues/290>`_) 
-- "Edit Draft Datasets" to "Edit Datasets" enhancement **question** (`#299 <https://github.com/NGEET/ngt-archive/issues/299>`_) 
-- Add Person: Adding a new contact to two fields does not work enhancement **important** (`#205 <https://github.com/NGEET/ngt-archive/issues/205>`_) 
-- Creating new person objects during dataset editing/creation only provides first and last name enhancement **important,question** (`#169 <https://github.com/NGEET/ngt-archive/issues/169>`_)  
-- Convert View Dataset Listing to a table enhancement **important** (`#283 <https://github.com/NGEET/ngt-archive/issues/283>`_) 
+- Approved dataset list not showing status values **bug,critical** (`#305  <https://github.com/NGEET/ngt-archive/issues/305>`_)
+- Fix link in data upload tooltip (`#278 <https://github.com/NGEET/ngt-archive/issues/278>`_)
+- DatasetContact - new collaborator error message incorrect **bug** (`#243 <https://github.com/NGEET/ngt-archive/issues/243>`_)
+- data policy link opens in same window enhancement (`#269 <https://github.com/NGEET/ngt-archive/issues/269>`_)
+- Create UI metadata infrastructure for dynamic layouts **feature** (`#52 <https://github.com/NGEET/ngt-archive/issues/52>`_)
+- Workflow for downloading a dataset enhancement feature **important** (`#85 <https://github.com/NGEET/ngt-archive/issues/85>`_)
+- Warn users when they submit a dataset with a title that already exists enhancement **important** (`#248 <https://github.com/NGEET/ngt-archive/issues/248>`_)
+- Help link fixes (`#290 <https://github.com/NGEET/ngt-archive/issues/290>`_)
+- "Edit Draft Datasets" to "Edit Datasets" enhancement **question** (`#299 <https://github.com/NGEET/ngt-archive/issues/299>`_)
+- Add Person: Adding a new contact to two fields does not work enhancement **important** (`#205 <https://github.com/NGEET/ngt-archive/issues/205>`_)
+- Creating new person objects during dataset editing/creation only provides first and last name enhancement **important,question** (`#169 <https://github.com/NGEET/ngt-archive/issues/169>`_)
+- Convert View Dataset Listing to a table enhancement **important** (`#283 <https://github.com/NGEET/ngt-archive/issues/283>`_)
 
 v1.1.2
 ======
@@ -45,8 +50,8 @@ v1.1.0
 Bug fixes and usability enhancements
 
 - View Dataset showing invalid title at the top **bug,critical** (`#292  <https://github.com/NGEET/ngt-archive/issues/292>`_)
-- Add introductory text to home page **important** (`#287  <https://github.com/NGEET/ngt-archive/issues/287>`_) 
-- Chrome: Unsafe scripts being loaded **important** (`#281  <https://github.com/NGEET/ngt-archive/issues/281>`_) 
+- Add introductory text to home page **important** (`#287  <https://github.com/NGEET/ngt-archive/issues/287>`_)
+- Chrome: Unsafe scripts being loaded **important** (`#281  <https://github.com/NGEET/ngt-archive/issues/281>`_)
 - Login page minor text changes (`#280  <https://github.com/NGEET/ngt-archive/issues/280>`_)
 - "Leaving page" warning sign pops up after clicking Home in View Drafts (`#279 <https://github.com/NGEET/ngt-archive/issues/279>`_)
 - Fix link in data upload tooltip (`#278 <https://github.com/NGEET/ngt-archive/issues/278>`_)
@@ -73,22 +78,22 @@ v1.0.2
 Bug fix release
 
 - Cannot view files in Edit Draft Datasets **bug,critical** (`#275  <https://github.com/NGEET/ngt-archive/issues/275>`_)
-- Dataset contact missing in View Datasets **bug,critical** (`#270  <https://github.com/NGEET/ngt-archive/issues/270>`_) 
-- clicking "agree to policy" button masks download button **bug,critical** (`#268  <https://github.com/NGEET/ngt-archive/issues/268>`_) 
-- Submission contact shows up as null **bug** (`#261  <https://github.com/NGEET/ngt-archive/issues/261>`_) 
-- Change order of field listing in view datasets/edit drafts **enhancement** (`#259  <https://github.com/NGEET/ngt-archive/issues/259>`_) 
-- View Draft Dataset: Download button for datasets without files **bug,critical** (`#258  <https://github.com/NGEET/ngt-archive/issues/258>`_) 
-- File upload usability problems critical **enhancement** (`#255  <https://github.com/NGEET/ngt-archive/issues/255>`_) 
-- Update draft doesn't refresh the page **enhancement** (`#254  <https://github.com/NGEET/ngt-archive/issues/254>`_) 
-- Add ability to delete drafts **feature** (`#249  <https://github.com/NGEET/ngt-archive/issues/249>`_) 
-- Add tooltip to file upload **enhancement** (`#247  <https://github.com/NGEET/ngt-archive/issues/247>`_) 
-- Change text on home screen **enhancement** (`#246  <https://github.com/NGEET/ngt-archive/issues/246>`_) 
-- Remaining text changes **enhancement** (`#244  <https://github.com/NGEET/ngt-archive/issues/244>`_) 
-- Increase spacing in dataset listing for View Approved Datasets **enhancement** (`#235  <https://github.com/NGEET/ngt-archive/issues/235>`_) 
-- Dataset Acknowledgement: click YES NGEE need to add funding **enhancement** (`#228  <https://github.com/NGEET/ngt-archive/issues/228>`_) 
-- Clicking home while in create or Edit dataset should display warning **enhancement** (`#216  <https://github.com/NGEET/ngt-archive/issues/216>`_) 
+- Dataset contact missing in View Datasets **bug,critical** (`#270  <https://github.com/NGEET/ngt-archive/issues/270>`_)
+- clicking "agree to policy" button masks download button **bug,critical** (`#268  <https://github.com/NGEET/ngt-archive/issues/268>`_)
+- Submission contact shows up as null **bug** (`#261  <https://github.com/NGEET/ngt-archive/issues/261>`_)
+- Change order of field listing in view datasets/edit drafts **enhancement** (`#259  <https://github.com/NGEET/ngt-archive/issues/259>`_)
+- View Draft Dataset: Download button for datasets without files **bug,critical** (`#258  <https://github.com/NGEET/ngt-archive/issues/258>`_)
+- File upload usability problems critical **enhancement** (`#255  <https://github.com/NGEET/ngt-archive/issues/255>`_)
+- Update draft doesn't refresh the page **enhancement** (`#254  <https://github.com/NGEET/ngt-archive/issues/254>`_)
+- Add ability to delete drafts **feature** (`#249  <https://github.com/NGEET/ngt-archive/issues/249>`_)
+- Add tooltip to file upload **enhancement** (`#247  <https://github.com/NGEET/ngt-archive/issues/247>`_)
+- Change text on home screen **enhancement** (`#246  <https://github.com/NGEET/ngt-archive/issues/246>`_)
+- Remaining text changes **enhancement** (`#244  <https://github.com/NGEET/ngt-archive/issues/244>`_)
+- Increase spacing in dataset listing for View Approved Datasets **enhancement** (`#235  <https://github.com/NGEET/ngt-archive/issues/235>`_)
+- Dataset Acknowledgement: click YES NGEE need to add funding **enhancement** (`#228  <https://github.com/NGEET/ngt-archive/issues/228>`_)
+- Clicking home while in create or Edit dataset should display warning **enhancement** (`#216  <https://github.com/NGEET/ngt-archive/issues/216>`_)
 - Show 'Loading' overlay when any AJAX call is being executed enhancement **feature** (`#84  <https://github.com/NGEET/ngt-archive/issues/84>`_)
- 
+
 v1.0.1
 ======
 Bug fix release
