@@ -1,4 +1,5 @@
 [![.github/workflows/tests.yml](https://github.com/NGEET/ngt-archive/actions/workflows/tests.yml/badge.svg)](https://github.com/NGEET/ngt-archive/actions/workflows/tests.yml)
+[![Deploy Sphinx site to Pages](https://github.com/NGEET/ngt-archive/actions/workflows/sphinx.yaml/badge.svg)](https://github.com/NGEET/ngt-archive/actions/workflows/sphinx.yaml)
 
 # NGEE Tropics Archive Service
 
