@@ -966,7 +966,7 @@ class SiteClientTestCase(APITestCase):
                          {"url": "http://testserver/api/v1/sites/1/", "site_id": "CC-CCPD",
                           "name": "Central City CCPD",
                           "description": "Et doming epicurei posidonium has, an sit sanctus intellegebat. Ne malis reprehendunt mea. Iisque dolorem vel cu. Ut nam sapientem appellantur definitiones, copiosae placerat inimicus per ei. Cu pro reque putant, cu perfecto urbanitas posidonium eum, pri probo laoreet cu. Ei duo cetero concludaturque, ei adhuc facilis sit.\r\n\r\nAn aeque harum ius, mea ut erant verear salutandi. Eligendi recusabo usu ad. Ad modo vero consequat his, ne aperiam alienum suscipiantur his. Altera laoreet petentium pro ut. His option vocibus at. Vix no semper omnesque maluisset, accusata qualisque ut pro. Eos sint constituto temporibus in.",
-                          "country": "United States", "state_province": "", "utc_offset": -9,
+                          "country": "United States", "state_province": "Provo", "utc_offset": -9,
                           "location_latitude": -8.983987234, "location_longitude": 5.9832932847,
                           "location_elevation": "100-400", "location_map_url": "",
                           "location_bounding_box_ul_latitude": None,
@@ -1023,7 +1023,7 @@ class PlotClientTestCase(APITestCase):
                          {"url": "http://testserver/api/v1/plots/1/", "plot_id": "CC-CCPD1",
                           "name": "Central City CCPD Plot 1",
                           "description": "Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa, quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt, explicabo. Nemo enim ipsam voluptatem, quia voluptas sit, aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos, qui ratione voluptatem sequi nesciunt, neque porro quisquam est, qui dolorem ipsum, quia dolor sit amet, consectetur, adipisci[ng] velit, sed quia non numquam [do] eius modi tempora inci[di]dunt, ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit, qui in ea voluptate velit esse, quam nihil molestiae consequatur, vel illum, qui dolorem eum fugiat, quo voluptas nulla pariatur",
-                          "size": "", "location_elevation": "", "location_kmz_url": "", "submission_date": "2016-10-08",
+                          "size": "10 hectares", "location_elevation": "", "location_kmz_url": "https://location.com/kmz", "submission_date": "2016-10-08",
                           "pi": "http://testserver/api/v1/people/3/",
                           "site": "http://testserver/api/v1/sites/1/",
                           "submission": "http://testserver/api/v1/people/4/"})

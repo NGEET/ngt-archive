@@ -12,6 +12,7 @@ from typing import Dict, IO, List, Optional, TextIO, Union
 import logging
 
 # NGEE-Tropics Project information
+LOCATION_NOT_APPLICABLE = "N/A"
 JSONLD_PROVIDER = {
     "identifier": {
       "@type": "PropertyValue",
@@ -106,7 +107,7 @@ def _dataset_spatial(dataset):
 
     for location in dataset.sites.all():
 
-        if location.name == "N/A":
+        if location.name == LOCATION_NOT_APPLICABLE:
             continue
 
         # set x,y as bounding box coord for sites 1, 5, 12, 13, 14, 16, 20; which do not have bounding boxes.
@@ -260,21 +261,34 @@ def locations_transform(dataset) -> List[collections.UserDict]:
     locations = []
 
     for site in dataset.sites.all():
-        locations.append(collections.UserDict(
-            Submission_Contact_Name="; ".join([f"{c.first_name} {c.last_name}" for c in site.contacts.all()]),
-            Submission_Contact_Email="; ".join([c.email for c in site.contacts.all()]),
-            Location_ID=site.site_id,
-            Description=site.description,
-            Latitude=site.location_latitude,
-            Longitude=site.location_longitude,
-            Elevation=site.location_elevation,
-            Location_Alias=site.name,
-            Parent_Location_ID="",
-            UTC_Offset=site.utc_offset,
-            Country=site.country,
-            Notes=""))
+        if site.name != LOCATION_NOT_APPLICABLE:
+
+            # Prepare the notes with additional site information
+            notes = []
+            site.site_urls and notes.append(f"Site URL(s): {site.site_urls}")
+            site.location_map_url and notes.append(f"Location Map URL: {site.location_map_url}")
+            site.state_province and notes.append(f"State Province: {site.state_province}")
+
+            locations.append(collections.UserDict(
+                Submission_Contact_Name="; ".join([f"{c.first_name} {c.last_name}" for c in site.contacts.all()]),
+                Submission_Contact_Email="; ".join([c.email for c in site.contacts.all()]),
+                Location_ID=site.site_id,
+                Description=site.description,
+                Latitude=site.location_latitude,
+                Longitude=site.location_longitude,
+                Elevation=site.location_elevation,
+                Location_Alias=site.name,
+                Parent_Location_ID="",
+                UTC_Offset=site.utc_offset,
+                Country=site.country,
+                Notes="; ".join(notes)))
 
     for plot in dataset.plots.all():
+        # Prepare the notes with additional information
+        notes = []
+        plot.location_kmz_url and notes.append(f"Plot Location KMZ URL: {plot.location_kmz_url}")
+        plot.size and notes.append(f"Plot Size: {plot.size}")
+
         locations.append(collections.UserDict(
             Submission_Contact_Name="; ".join([f"{c.first_name} {c.last_name}" for c in plot.site.contacts.all()]),
             Submission_Contact_Email="; ".join([c.email for c in plot.site.contacts.all()]),
@@ -287,7 +301,7 @@ def locations_transform(dataset) -> List[collections.UserDict]:
             Parent_Location_ID=plot.site.site_id,
             UTC_Offset=plot.site.utc_offset,
             Country=plot.site.country,
-            Notes=plot.size and f"Size - {plot.size}" or ""))
+            Notes="; ".join(notes)))
 
     return locations
 

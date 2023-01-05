@@ -11,7 +11,7 @@
     "Parent_Location_ID": "",
     "UTC_Offset": -9,
     "Country": "United States",
-    "Notes": ""
+    "Notes": "Site URL(s): http://centralcityccpd.baz; State Province: Provo"
   },
   {
     "Submission_Contact_Name": "Barry Allen",
@@ -25,6 +25,6 @@
     "Parent_Location_ID": "CC-CCPD",
     "UTC_Offset": -9,
     "Country": "United States",
-    "Notes": ""
+    "Notes": "Plot Location KMZ URL: https://location.com/kmz; Plot Size: 10 hectares"
   }
 ]

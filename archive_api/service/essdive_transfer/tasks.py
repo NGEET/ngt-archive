@@ -202,16 +202,16 @@ def transfer(result):
             files_tuples_array = list()
             files_tuples_array.append(("json-ld", json.dumps(json_ld)))
 
+            # Get the locations csv for this dataset
+            locations_fp = crosswalk.locations_csv(transfer_job.dataset)
+            if locations_fp:
+                log.info(
+                    f"Prepared ESS-DIVE dataset locations.csv file for ESS-DIVE identifier {essdive_id}")
+                files_tuples_array.append(
+                    ('data', ("locations.csv", locations_fp)))
+
             # Is this a data update?
             if transfer_job.type == EssDiveTransfer.TYPE_DATA:
-
-                # Get the locations csv for this dataset
-                locations_fp = crosswalk.locations_csv(transfer_job.dataset)
-                if locations_fp:
-                    log.info(
-                        f"Prepared ESS-DIVE dataset locations.csv file for ESS-DIVE identifier {essdive_id}")
-                    files_tuples_array.append(
-                        ('data', ("locations.csv", locations_fp)))
 
                 log.info(f"Uploading ESS-DIVE dataset file '{transfer_job.dataset.archive.path}' for ESS-DIVE identifier {essdive_id}")
                 files_tuples_array.append(
