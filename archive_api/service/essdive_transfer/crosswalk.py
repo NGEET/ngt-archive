@@ -107,7 +107,7 @@ def _dataset_spatial(dataset):
 
     for location in dataset.sites.all():
 
-        if location.name == LOCATION_NOT_APPLICABLE:
+        if location.site_id == LOCATION_NOT_APPLICABLE:
             continue
 
         # set x,y as bounding box coord for sites 1, 5, 12, 13, 14, 16, 20; which do not have bounding boxes.
@@ -164,8 +164,10 @@ def _dataset_spatial(dataset):
             site["description"] = f"{site['description']} {contact_description}"
 
         spatial_coverage.append(site)
+    if len(spatial_coverage):
+        return spatial_coverage
 
-    return spatial_coverage
+    return None
 
 
 def dataset_transform(dataset):
@@ -244,7 +246,7 @@ def dataset_transform(dataset):
     }
 
     # remove empty fields
-    for f in ["datePublished", "citation", "measurementTechnique", "spatialCoverage", "spatialCoverage", "temporalCoverage", "@id"]:
+    for f in ["datePublished", "citation", "measurementTechnique", "spatialCoverage", "temporalCoverage", "@id"]:
         if not json_ld[f]: json_ld.pop(f)
 
     return json_ld
@@ -261,7 +263,7 @@ def locations_transform(dataset) -> List[collections.UserDict]:
     locations = []
 
     for site in dataset.sites.all():
-        if site.name != LOCATION_NOT_APPLICABLE:
+        if site.site_id != LOCATION_NOT_APPLICABLE:
 
             # Prepare the notes with additional site information
             notes = []
