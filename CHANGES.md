@@ -1,5 +1,14 @@
 # NGEE Tropics Archive Releases
 
+## v3.0.0
+Support for database and Django Framework upgrades, new locations reporting format
+support and bug fixes.
+
++ Issue #376 - Django admin dates should be in locale timezone
++ Issue #373 - Improve ESS-DIVE Transfer to prevent duplicates
++ Issue #372 - Automatic upload of locations reporting format
++ Issue #379 - Fixes N/A Site is transferring locations.csv on ESS-DIVE Transfer
+
 ## v2.7.0
 Adds a read-only mode for use in failover or recovery circumstance
 
