@@ -195,9 +195,10 @@ def dataset_transform(dataset):
 
     # ---- related reference ----
 
-    citation = dataset.reference and dataset.reference.split('\n\n') or list()
+    citation = dataset.reference and dataset.reference.split('\n') or list()
     if dataset.additional_reference_information:
-        citation.append(f"Additional information about citations: {dataset.additional_reference_information}")
+        citation.append(f"Additional information about citations:")
+        citation.extend(dataset.additional_reference_information.split("\n"))
 
     # ---- creators ----
     creators = _dataset_creator(dataset)
