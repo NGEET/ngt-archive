@@ -208,7 +208,7 @@ def transfer(result):
                 log.info(
                     f"Prepared ESS-DIVE dataset locations.csv file for ESS-DIVE identifier {essdive_id}")
                 files_tuples_array.append(
-                    ('data', ("locations.csv", locations_fp)))
+                    ('data', (f"{transfer_job.dataset.data_set_id()}_locations.csv", locations_fp)))
 
             # Is this a data update?
             if transfer_job.type == EssDiveTransfer.TYPE_DATA:
