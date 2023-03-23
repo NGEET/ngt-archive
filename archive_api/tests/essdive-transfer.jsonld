@@ -7,7 +7,8 @@
   "citation": [
     "Larson, Kristine & Small, Eric & Gutmann, Ethan & Bilich, Andria & Braun, John & Zavorotny, Valery & Larson, Citation. (2008). Use of GPS receivers as a soil moisture network for water cycle studies. Geophysical Research Letters - GEOPHYS RES LETT. 35. 10.1029/2008GL036013. Solander et al.: The pantropical response of soil moisture to El Niño, Hydrol. Earth Syst. Sci., 24, 2303–2322, https://doi.org/10.5194/hess-24-2303-2020, 2020.",
     "Additional information about citations:",
-    "this is my additional reference information"
+    "this is my additional reference information",
+    "More stuff"
   ],
   "description": [
     "This data package includes leaf traits, canopy traits and sample details for leaves from 71 species sampled from the San Lorenzo forest canopy crane site, Panama (PA-SLZ) during the BNL field campaign in January to March 2020. Each leaf sample is described with species, phenological stage and location within vertical canopy profiles. Leaf area index (LAI) and height is presented for each canopy profile location. Leaf mass per area (LMA), leaf water content (LWC) and leaf carbon and nitrogen content are included for a subset of the samples. This data package includes sample details, processed data for leaf traits and LAI (*.csv), LAI raw data (compressed as *.zip) and digital camera images (*.jpg, compressed as *.zip) of the leaf samples. Metadata files include data descriptions (_dd.csv) for tabular data, a list of all species sampled during the campaign (*.csv) and a detailed description of the field campaign protocol and methods (*.pdf). See related datasets for leaf gas exchange, leaf water potential and leaf spectral measurements made on the samples described here.",

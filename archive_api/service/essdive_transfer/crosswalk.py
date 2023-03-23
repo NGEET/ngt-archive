@@ -195,10 +195,11 @@ def dataset_transform(dataset):
 
     # ---- related reference ----
 
-    citation = dataset.reference and dataset.reference.split('\n') or list()
+    # Strip empty lines (ESS-DIVE api does not allow that for these fields)
+    citation = dataset.reference and [r for r in dataset.reference.split('\n') if r] or list()
     if dataset.additional_reference_information:
         citation.append(f"Additional information about citations:")
-        citation.extend(dataset.additional_reference_information.split("\n"))
+        citation.extend([r for r in dataset.additional_reference_information.split("\n") if r])
 
     # ---- creators ----
     creators = _dataset_creator(dataset)
