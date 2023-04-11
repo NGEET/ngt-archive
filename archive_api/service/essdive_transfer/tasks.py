@@ -195,7 +195,7 @@ def transfer(result):
             transfer_job.save()
 
             method = essdive_id and "PUT" or "POST"
-            json_ld = crosswalk.dataset_transform(transfer_job.dataset)
+            json_ld, ack_fp = crosswalk.dataset_transform(transfer_job.dataset)
             log.info(f"{essdive_id and 'Updating' or 'Creating'} ESS-DIVE dataset metadata with ESS-DIVE identifier {essdive_id}")
 
             # Prepare the multi part encoding to stream the data
@@ -209,6 +209,12 @@ def transfer(result):
                     f"Prepared ESS-DIVE dataset locations.csv file for ESS-DIVE identifier {essdive_id}")
                 files_tuples_array.append(
                     ('data', (f"{transfer_job.dataset.data_set_id()}_locations.csv", locations_fp)))
+            if ack_fp:
+                # There is an acknowledgements file
+                log.info(
+                    f"Prepared ESS-DIVE dataset acknowledgements.txt file for ESS-DIVE identifier {essdive_id}")
+                files_tuples_array.append(
+                    ('data', (f"{transfer_job.dataset.data_set_id()}_acknowledgements.txt", locations_fp)))
 
             # Is this a data update?
             if transfer_job.type == EssDiveTransfer.TYPE_DATA:
