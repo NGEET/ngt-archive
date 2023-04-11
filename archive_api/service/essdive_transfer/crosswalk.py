@@ -7,7 +7,7 @@ import csv
 import collections
 from io import StringIO
 
-from typing import Dict, IO, List, Optional, TextIO, Union
+from typing import Dict, IO, List, Optional, TextIO, Tuple, Union
 
 import logging
 
@@ -29,6 +29,12 @@ JSONLD_LICENSE = "http://creativecommons.org/licenses/by/4.0/"
 
 # Funding Organization
 JSONLD_FUNDER = {"name": "U.S. DOE > Office of Science > Biological and Environmental Research (BER)"}
+
+DESCRIPTION_MIRROR_FORMAT = "This dataset was originally published on the NGEE Tropics Archive and is " \
+                                        "being mirrored on ESS-DIVE for long-term archival"
+DESCRIPTION_ACK_FORMAT = "Acknowledgement: {0}"
+DESCRIPTION_ACK_FILE_FORMAT = "Please see the {0}_acknowledgements.txt " \
+                              "file for a full listing of dataset acknowledgements."
 
 
 def _dataset_creator(dataset):
@@ -73,6 +79,45 @@ def _dataset_contact_info(dataset):
     if dataset.contact.orcid: person['@id'] = dataset.contact.orcid
 
     return person
+
+
+def _dataset_description(dataset) -> Tuple[List[str], bool]:
+    """
+    Transforms the dataset description. This will be a combination of the description and the
+    acknowledgements
+
+    **<5000 characters with acknowledgement**
+    ```
+    <description>
+
+    This dataset was originally published on the NGEE Tropics Archive and is being mirrored on ESS-DIVE for long-term archival
+
+    Acknowledgement: <acknowledgment>
+    ```
+
+    **>=5000 characters with acknowledgement**
+    ```
+    <description>
+
+    This dataset was originally published on the NGEE Tropics Archive and is being mirrored on ESS-DIVE for long-term archival
+
+    Please see the <NGT_ID>_acknowledgements.txt file for a full listing of dataset acknowledgements.
+    ```
+
+    :param dataset: the ngt dataset json structure.
+    :return: The transformed description and acknowledgement (string) in JSON-LD format and a boolean telling whether and acknowledgement file
+        is needed.
+    """
+    description = [dataset.description, DESCRIPTION_MIRROR_FORMAT]
+    ack_file_needed = False
+    if dataset.acknowledgement:
+        description.append(DESCRIPTION_ACK_FORMAT.format(dataset.acknowledgement))
+
+        if len(''.join(description)) >= 5000:
+            ack_file_needed = True
+            description[-1] = DESCRIPTION_ACK_FILE_FORMAT.format(dataset.data_set_id())
+
+    return description, ack_file_needed
 
 
 def _dataset_temporal(dataset):
@@ -170,12 +215,12 @@ def _dataset_spatial(dataset):
     return None
 
 
-def dataset_transform(dataset):
+def dataset_transform(dataset) -> Tuple[Dict, Optional[TextIO]]:
     """
     Transform NGEE-Tropics DataSet to ESSDIVE JSON-LD
 
     :param dataset: NGEET JSON
-    :return:
+    :return: The JSON-LD and acknowledgements file point (if needed)
     """
     # start log
     logging.info('Transforming package to ESS-DIVE JSON-LD')
@@ -188,10 +233,7 @@ def dataset_transform(dataset):
     submission_date = dataset.publication_date and dataset.publication_date.strftime("%Y-%m-%d") or None
     doi = dataset.doi
 
-    description = [dataset.description, "This dataset was originally published on the NGEE Tropics Archive and is "
-                                        "being mirrored on ESS-DIVE for long-term archival"]
-    if dataset.acknowledgement:
-        description.append(f"Acknowledgement: {dataset.acknowledgement}")
+    description, ack_file_need = _dataset_description(dataset)
 
     # ---- related reference ----
 
@@ -251,7 +293,7 @@ def dataset_transform(dataset):
     for f in ["datePublished", "citation", "measurementTechnique", "spatialCoverage", "temporalCoverage", "@id"]:
         if not json_ld[f]: json_ld.pop(f)
 
-    return json_ld
+    return json_ld, ack_file_need and acknowledgements_txt(dataset) or None
 
 
 def locations_transform(dataset) -> List[collections.UserDict]:
@@ -326,6 +368,24 @@ def locations_csv(dataset) -> Optional[TextIO]:
         json_to_csv(locations_fp, locations_json)
 
         return locations_fp
+    return None
+
+
+def acknowledgements_txt(dataset) -> Optional[TextIO]:
+    """
+    Returns a file pointer to a acknowledgements text file for the specified
+    dataset. Returns None if the transformed dataset description is < 5000 characters.
+
+    :param dataset:
+    :return: File Pointer
+    """
+    # Transform the acknowledgement file
+    if len(dataset.acknowledgement) > 0:
+        # Prepare the StringIO object for writing
+        ack_fp = StringIO()
+        ack_fp.write(dataset.acknowledgement)
+        ack_fp.seek(0)
+        return ack_fp
     return None
 
 

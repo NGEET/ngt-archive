@@ -267,16 +267,32 @@ def test_essdive_task_end(celery_setup):
     assert results == {'run_id': RUN_ID_END}
 
 
+@pytest.mark.parametrize('ack_size', [500, 1000, 5000])
 @pytest.mark.django_db()
-def test_dataset_transform(celery_setup):
+def test_dataset_transform(celery_setup, ack_size):
     """Test the Dataset to ESS-DIVE JSON-LD Transform"""
-
-    from archive_api.models import DataSet
-    dataset = DataSet.objects.all().get(id=DATASET_APPROVED)
-    jsonld = crosswalk.dataset_transform(dataset)
 
     with open(os.path.join(BASE_PATH, "essdive-transfer.jsonld")) as f:
         expected_json = json.load(f)
+
+    from archive_api.models import DataSet
+    dataset = DataSet.objects.all().get(id=DATASET_APPROVED)
+
+    # Create the acknowledgements of a specified size
+    added_ack = "a" * (ack_size - len(dataset.acknowledgement))
+    dataset.acknowledgement += added_ack
+
+    jsonld, ack_fp = crosswalk.dataset_transform(dataset)
+
+    if len(dataset.description)+ack_size >= 5000:
+        assert ack_fp is not None
+        assert ack_fp.read() == dataset.acknowledgement
+        # Replace the expected Ack text
+        expected_json['description'][-1] = "Please see the NGT0004_acknowledgements.txt file for a " \
+                                           "full listing of dataset acknowledgements."
+    else:
+        assert ack_fp is None
+        expected_json['description'][-1] += added_ack
 
     assert jsonld == expected_json
 
