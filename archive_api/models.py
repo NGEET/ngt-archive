@@ -344,7 +344,7 @@ class DataSet(models.Model):
         return "NGT{:04}".format(self.ngt_id)
 
     ngt_id = models.IntegerField()
-    description = models.TextField(blank=True, null=True)
+    description = models.TextField(blank=True, null=True, max_length=4000)
     version = models.CharField(max_length=15, default="0.0")
 
     status = models.IntegerField(choices=STATUS_CHOICES,
