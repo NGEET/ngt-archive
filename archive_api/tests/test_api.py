@@ -260,9 +260,11 @@ You can also login with your account credentials, select "Edit Drafts" and then 
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(value['description'], "A FooBarBaz DataSet")
 
-    def test_client_put_reference_error(self):
+    def test_client_put_field_character_limits(self):
+        """Test field character limit errors"""
         self.login_user("auser")
         reference = 'a'*2256
+        description = 'a'*4001
         response = self.client.put('/api/v1/datasets/1/', data='{"data_set_id":"FooBarBaz","description":"A FooBarBaz DataSet",'
                                         '"name": "Data Set 1", '
                                         '"status_comment": "",'
@@ -276,6 +278,7 @@ You can also login with your account credentials, select "Edit Drafts" and then 
                                         '"doe_funding_contract_numbers": "",'
                                         '"acknowledgement": "",'
                                         '"reference": "'+reference+'",'
+                                        '"description": "'+description+'",'
                                         '"additional_reference_information": "",'
                                         '"additional_access_information": "",'
                                         '"submission_date": "2016-10-28T19:12:35Z",'
@@ -289,7 +292,8 @@ You can also login with your account credentials, select "Edit Drafts" and then 
         print(response.content)
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
         value = json.loads(response.content.decode('utf-8'))
-        self.assertEqual(value, {"reference": ["Ensure this field has no more than 2255 characters."]})
+        self.assertEqual(value, {'description': ['Ensure this field has no more than 4000 characters.'],
+                                 'reference': ['Ensure this field has no more than 2255 characters.']})
 
     def test_user_workflow(self):
         """
