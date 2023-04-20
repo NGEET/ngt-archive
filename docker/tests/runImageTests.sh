@@ -43,6 +43,7 @@ cid=$(docker run  -d \
       uwsgi --module ngt_archive.wsgi:application --http-socket 0.0.0.0:8080 --static-map /static=/app/static )
 echo "Started up container $cid"
 
+
 echo "Start Tests"
 #Run Tests
 
@@ -61,10 +62,13 @@ success "Found manage.py"
 success "NGT Archive is installed"
 
 # Give time to start up
-sleep 5
+while [ $(docker logs $cid | wc -l) -lt 150 ]; do
+  sleep 1
+done
+
 
 # is the app running
-[ $(docker exec $cid ps auxwww | grep 'ngt_archive.wsgi:application' | wc -l) -gt 1 ] || (fail "NGT Archive is not running" && exit 1)
+[ $(docker exec $cid ps auxwww | grep 'uwsgi --module ngt_archive.wsgi:application' | wc -l) -gt 0 ] || (fail "NGT Archive is not running" && exit 1)
 success "NGT Archive is running"
 
 echo "**********"
