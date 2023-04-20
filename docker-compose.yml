@@ -4,7 +4,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: ./provision/Dockerfile
+      dockerfile: docker/Dockerfile
     command: uwsgi --module ngt_archive.wsgi:application --http-socket 0.0.0.0:8088 --static-map /static=/app/static
     environment:
       - DATABASE=postgres
@@ -41,7 +41,7 @@ services:
       - app
     volumes:
       - ${PWD}/static:/usr/share/nginx/html:ro
-      - ${PWD}/provision/nginx:/etc/nginx/conf.d:ro
+      - ${PWD}/docker/nginx:/etc/nginx/conf.d:ro
     ports:
       - 8000:8000
   db:
@@ -56,6 +56,9 @@ services:
       POSTGRES_PASSWORD: a_secret
       POSTGRES_USER: ngeet
     volumes:
-      - ./var-postgres:/var/lib/postgresql/data
+      -  postgres-volume:/var/lib/postgresql/data
 
 
+volumes:
+    postgres-volume:
+        external: false
