@@ -1,0 +1,46 @@
+name: Docker Image CI
+
+on:
+  push:
+    tags:
+      - '*'
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Fetch the tags
+        run: |
+          # fetch the history (including tags) from within a shallow clone
+          git fetch --prune --unshallow
+      - name: Build the Docker image
+        run: |
+          # Get tag and remove `v', if exists
+          tag=`git describe --tags`;
+          tag=${tag//v/};
+          # to lowercase
+          image_name="${{ env.IMAGE_NAME }}"
+          image_name="`echo "$image_name" | sed -e 's/\(.*\)/\L\1/'`"
+          docker build -f ./docker/Dockerfile  --tag ${{ env.REGISTRY }}/$image_name:$tag .;
+          echo "image_name=$image_name" >> $GITHUB_ENV;
+          echo "tag=$tag" >> $GITHUB_ENV;
+      - name: Test Docker Image
+        run: ./docker/tests/runImageTests.sh ${{ env.REGISTRY }}/$image_name:$tag
+      - name: Push docker image to registry
+        run: docker push ${{ env.REGISTRY }}/$image_name:$tag

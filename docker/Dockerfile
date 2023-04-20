@@ -33,7 +33,7 @@ ADD ngt_archive/ /app/ngt_archive
 ADD licenses/ /app/licenses
 ADD docs/ /app/docs
 ADD ui/ /app/ui
-COPY provision/local.py /app/ngt_archive
+COPY docker/local.py /app/ngt_archive
 COPY pyproject.toml /app/
 COPY manage.py /app
 COPY README.md /app
@@ -46,11 +46,11 @@ RUN pip install --upgrade pip && \
     python -c 'import ngt_archive.settings'
 
 
-COPY ./provision/docker-entrypoint.sh /usr/local/bin/
+COPY ./docker/docker-entrypoint.sh /usr/local/bin/
 RUN ln -s usr/local/bin/docker-entrypoint.sh / # backwards compat
 
 # This can be used for executing manage.py commands in a crom
-COPY ./provision/docker-manage-entrypoint.sh /usr/local/bin/
+COPY ./docker/docker-manage-entrypoint.sh /usr/local/bin/
 RUN ln -s usr/local/bin/docker-manage-entrypoint.sh / # backwards compat
 
 ENTRYPOINT ["docker-entrypoint.sh"]
