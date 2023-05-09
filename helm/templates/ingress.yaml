@@ -1,0 +1,43 @@
+{{- if .Values.ingress.enabled -}}
+{{- $fullName := include "ngt-archive.fullname" . -}}
+{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1beta1
+{{- else -}}
+apiVersion: extensions/v1beta1
+{{- end }}
+kind: Ingress
+metadata:
+  annotations:
+    {{- include "ngt-archive.annotations" . | nindent 4 }}
+    {{- include "ngt-archive.annotations.ingress" . | nindent 4 }}
+    {{- with .Values.ingress.annotations }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+  namespace: {{ .Release.Namespace }}
+  name: web
+spec:
+  ingressClassName: nginx
+  rules:
+    {{- range .Values.ingress.hosts }}
+    - host: {{ tpl .host $ | quote }}
+      http:
+        paths:
+          {{- range .paths }}
+          - path: {{ tpl .path $ }}
+            backend:
+              serviceName: web
+              servicePort: 8000
+          {{- end }}
+    {{- end }}
+
+  {{- if .Values.ingress.tls }}
+  tls:
+    {{- range .Values.ingress.tls }}
+    - hosts:
+        {{- range .hosts }}
+        - {{ tpl . $ | quote }}
+        {{- end }}
+      secretName: {{ tpl .secretName $ }}
+    {{- end }}
+  {{- end }}
+ {{- end }}

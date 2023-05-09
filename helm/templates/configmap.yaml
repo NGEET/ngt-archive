@@ -1,0 +1,23 @@
+#######################################
+# All configuration files
+#   Supports running as a (mostly) arbitrary user via --user on docker run.
+#   The main caveat to note is that postgres doesn't care what UID it runs
+#   as (as long as the owner of /var/lib/postgresql/data matches), but initdb
+#   does care (and needs the user to exist in /etc/passwd)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  annotations:
+    {{- include "ngt-archive.annotations" . | nindent 4 }}
+  labels:
+    {{- include "ngt-archive.labels" . | nindent 4 }}
+  namespace: {{ .Release.Namespace }}
+  name: {{ include "ngt-archive.fullname" . }}
+data:
+  {{- $files := .Files }}
+  {{- range $key, $value := .Files }}
+  {{- if hasPrefix "config/" $key }} {{/* only when in config/ */}}
+  {{ $key | trimPrefix "config/" }}:  |
+    {{- tpl ( $files.Get $key ) $ | nindent 4 }}
+  {{- end }}
+  {{- end }}

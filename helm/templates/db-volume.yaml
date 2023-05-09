@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  annotations:
+    {{- include "ngt-archive.annotations" . | nindent 4 }}
+    # Do not remove on upgrade
+    helm.sh/resource-policy: keep
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Values.volume.dbClaim  }}
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: nfs-client
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    {{- include "ngt-archive.annotations" . | nindent 4 }}
+  name: {{ .Values.volume.dbClaim  }}-varrun
+  labels:
+    {{- include "ngt-archive.labels" . | nindent 4 }}
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Mi
+  storageClassName: nfs-client

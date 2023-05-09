@@ -1,0 +1,35 @@
+name: Lint Helm Charts
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ ]
+  pull_request: []
+
+
+jobs:
+  lint-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v2
+        with:
+          version: v3.4.0
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.7
+
+      - name: Helm Chart Testing
+        uses: helm/chart-testing-action@v2.1.0
+
+      - name: Run chart-testing (lint)
+        run: |
+          CHANGED=`ct list-changed --config .github/lintconfig.yaml;`;
+          LINTCONF=$CT_CONFIG_DIR/lintconf.yaml;
+          for c in $CHANGED; do echo "$c/Chart.yaml"; yamllint  --config-file $LINTCONF  $c/Chart.yaml;  echo "$c/values.yaml"; yamllint  --config-file $LINTCONF  $c/values.yaml; done;

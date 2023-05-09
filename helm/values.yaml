@@ -1,0 +1,114 @@
+# Default values for ngt-archive.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+
+# imagePullSecrets - Global registries for image pull secrets
+imagePullSecrets: []
+
+# nameOverride - Override the name of the Chart (.Chart.Name)
+nameOverride: ""
+
+# fullnameOverride - Override the fully qualified app name.
+fullnameOverride: ""
+
+# uid - Filesystem uid
+uid: ""
+# gid - Filesystem gid
+gid: ""
+
+# readOnly - is the archive in readonly mode? (true|false
+readOnly: false
+
+# teamEmail - The email address for the - No Reply <no-reply@noreply.gov>
+teamEmail: ""
+
+# celeryConcurrency - The concurrency number for the celery worker
+celeryConcurrency: 3
+
+# emailSubjectPrefix - Subject prefix for emails sent by the application
+emailSubjectPrefix: ""
+
+# image - Docker image information
+image:
+  # image.repository - The image repository
+  repository: ghcr.io/ngeet/ngt-archive
+  # image.tag - This will used override .Chart.appVersion
+  tag: ""
+
+# k8 - Kubernetes values
+k8: {}
+#  #  k8.creatorId - Kubernetes user id
+#  creatorId: ""
+#  #  k8.clustername - Kubernates cluster name
+#  clustername: ""
+
+# restore - Restore from a backup. Set the name of the file to import in
+restore: {}
+#  # restore.importFile - Import file name
+#  importFile: ""
+
+# secretName - The secret names expected. The secrets expect a specific structure.
+#              (Currently these need to be setup in advance.)
+secretName:
+  # secretName.application - Application secrets (auth-bind-ldap-password, google-maps-key, secret-key)
+  application: app-secrets
+  # secretName.database - Database Password (db-password)
+  database: db-password
+  # secretName.certificate - The secret that points to the certificate for this deployment (ngt-data)
+  certificate: ngt-data
+
+# volume - Volume directory information
+volume:
+  # volume.dbClaim - Postgres db volume name (change this name when restoring from backups)
+  dbClaim: db
+  # volume.backupDirectory - the postgres db backup directory
+  backupDirectory: ''
+  # volume.importDirectory - the directory under the backup to import (e.g. 20221016T230006)
+  importDirectory: ""
+  # volume.dataDirectory - directory where archive data is stored
+  dataDirectory: ""
+  # volume.dataImportDirectory - directory where archive data is imported from
+  dataImportDirectory: ""
+
+# ingress - manage external access to services
+#  (https://kubernetes.io/docs/concepts/services-networking/ingress/)
+ingress:
+  # ingress.name - Name of the ingres. (Defaults to fullname)
+  name: ""
+  # ingress.enabled - enable the ingress
+  enabled: false
+  # ingress.annotations - annotations for this ingress
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  # ingress.hosts - list of hosts for the ingress
+  hosts:
+    - host: chart-example.local
+      paths: []
+  # ingress.tls - transport layer security
+  tls: []
+  #  - secretName: <CHARTNAME>-cert
+  #    hosts:
+  #      - www.<CHARTNAME>.com
+
+# env - environment variables for deployment
+env: []
+
+# web - The web deployment configuration for nginx
+web:
+  # web.serverName - The server name of this host
+  serverName: localhost
+  # web.realIp - obtain client IP from proxy headers
+  realIp:
+    # web.realIp.enabled - enable configuration for real ips
+    enabled: false
+    # web.realIp.fromIps - the list subnet addresses to accept real ips from (e.g. [ '10.42.0.0/16', '144.44.138.155/25' ])
+    fromIps: []
+  # web.locations - configuration for locations
+  locations:
+      # web.locations.root - root location declarations
+      root: []
+#      - name: proxy_set_header
+#        value: "X-Forwarded-Proto https"
+#        comment: "Set protocol to HTTPS"

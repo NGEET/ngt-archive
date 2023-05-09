@@ -36,6 +36,8 @@ dev = ["flake8", "pytest", "pytest-celery", "pytest-django", "pytest-flake8",
     "pytest-mypy", "pytest-cov", "pytest-asyncio", "types-PyYAML", "types-chardet",
     "types-cryptography", "types-requests"]
 deploy = ["psycopg2-binary", "uwsgi"]
+docs = ["sphinx",
+    "myst-parser"]
 
 [tool.setuptools]
 py-modules = ["manage"]
