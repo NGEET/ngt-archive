@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    {{- include "ngt-archive.annotations" . | nindent 4 }}
+    {{- include "ngt-archive.annotations.ingress" . | nindent 4 }}
+  labels:
+  namespace: {{ .Release.Namespace }}
+  name: web
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      workload.user.cattle.io/workloadselector: deployment-{{ .Release.Namespace }}-web
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        # Check the values that would affect the configuration files ( this forces a upgrade on a changes)
+        checksum/config: {{ printf  "%s:%s:%s"  (tpl (toString .Values.web) . ) .Values.gid .Values.uid | sha256sum }}
+      labels:
+        workload.user.cattle.io/workloadselector: deployment-{{ .Release.Namespace }}-web
+    spec:
+      containers:
+      - image: nginx
+        imagePullPolicy: Always
+        name: web
+        ports:
+        - containerPort: 8000
+          name: http
+          protocol: TCP
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            add:
+            - NET_BIND_SERVICE
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: false
+          runAsNonRoot: true
+          runAsUser: {{ .Values.uid }}
+        stdin: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        tty: true
+        volumeMounts:
+        {{- if .Values.volume.dataDirectory }}
+        - mountPath: /data
+          name: vol2
+          readOnly: true
+        {{- end }}
+        - mountPath: /etc/nginx/conf.d/portal.conf
+          name: config-volume
+          subPath: portal.conf
+          readOnly: true
+        - mountPath: /usr/local/nginx/html/error503.html
+          name: config-volume
+          subPath: error503.html
+          readOnly: true
+        - mountPath: /etc/passwd
+          name: config-volume
+          subPath: web_etc_passwd
+          readOnly: true
+        - mountPath: /etc/nginx/nginx.conf
+          name: config-volume
+          subPath: nginx.conf
+          readOnly: true
+      dnsConfig: {}
+      dnsPolicy: ClusterFirst
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: {{ .Values.gid }}
+      terminationGracePeriodSeconds: 500
+      volumes:
+      - name: config-volume
+        configMap:
+          name: {{ include "ngt-archive.fullname" . }}
+          # An array of keys from the ConfigMap to create as files
+          items:
+            - key: portal.conf.tpl
+              path: portal.conf
+            - key: error503.html
+              path: error503.html
+            - key: web_etc_passwd
+              path: web_etc_passwd
+            - key: nginx.conf
+              path: nginx.conf
+      {{- if .Values.volume.dataDirectory }}
+      - hostPath:
+          path: {{ tpl .Values.volume.dataDirectory . }}
+          type: Directory
+        name: vol2
+      {{- end }}
+

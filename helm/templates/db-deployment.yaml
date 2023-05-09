@@ -1,0 +1,117 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    {{- include "ngt-archive.annotations" . | nindent 4 }}
+  labels:
+    workload.user.cattle.io/workloadselector: deployment-{{ .Release.Namespace }}-db
+    {{- include "ngt-archive.labels" . | nindent 4 }}
+  namespace: {{ .Release.Namespace }}
+  name: db
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      workload.user.cattle.io/workloadselector: deployment-{{ .Release.Namespace }}-db
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        # Checksum the values that would affect the configuration files ( this forces a upgrade on a changes)
+        checksum/config: {{ printf  "%s:%s" .Values.gid .Values.uid | sha256sum }}
+      labels:
+        workload.user.cattle.io/workloadselector: deployment-{{ .Release.Namespace }}-db
+    spec:
+      initContainers:
+        - name: {{ include "ngt-archive.fullname" . }}-set-volume-permissions
+          image: ubuntu
+          # Give `postgres` uid/gid permissions a mounted volume
+          command: [ "/bin/bash" ]
+          args:
+            - -c
+            - chown -Rv {{ .Values.uid }}:{{ .Values.gid  }} /var/run/postgresql //var/lib/postgresql/data;
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: db-ngt
+            - name: vol-varrun
+              mountPath: /var/run/postgresql
+      containers:
+      - env:
+        - name: POSTGRES_DB
+          value: ngeet
+        - name: POSTGRES_PASSWORD_FILE
+          value: /secrets/db-password
+        - name: POSTGRES_USER
+          value: ngeet
+        image: postgres:12-alpine
+        imagePullPolicy: Always
+        name: db
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+          privileged: false
+          readOnlyRootFilesystem: false
+          runAsNonRoot: false
+          runAsUser: {{ .Values.uid }}
+          runAsGroup: {{ .Values.gid }}
+        stdin: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        tty: true
+        volumeMounts:
+        - mountPath: /secrets
+          name: vol1
+        - mountPath: /var/lib/postgresql/data
+          name: db-ngt
+        - name: vol-varrun
+          mountPath: /var/run/postgresql
+        - mountPath: /etc/passwd
+          name: vol-config
+          subPath: passwd
+        {{- if and .Values.volume.backupDirectory .Values.volume.importDirectory }}
+        - name: vol-initdb
+          mountPath: /docker-entrypoint-initdb.d
+          readOnly: True
+        {{- end }}
+      dnsConfig: {}
+      dnsPolicy: ClusterFirst
+      hostname: db
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: {{ .Values.gid }}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: vol-config
+        configMap:
+          name: {{ include "ngt-archive.fullname" . }}
+          # An array of keys from the ConfigMap to create as files
+          items:
+            - key: passwd
+              path: passwd
+      - name: vol-varrun
+        persistentVolumeClaim:
+          claimName: {{ .Values.volume.dbClaim  }}-varrun
+      - name: vol1
+        secret:
+          defaultMode: 256
+          optional: false
+          secretName: {{ .Values.secretName.database }}
+      - name: db-ngt
+        persistentVolumeClaim:
+          claimName: {{ .Values.volume.dbClaim }}
+      {{- if and .Values.volume.backupDirectory .Values.volume.importDirectory }}
+      - name: vol-initdb
+        hostPath:
+          path: {{ tpl .Values.volume.backupDirectory . }}/{{ .Values.volume.importDirectory}}
+          type: Directory
+      {{- end }}

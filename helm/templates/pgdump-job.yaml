@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    {{- include "ngt-archive.annotations" . | nindent 4 }}
+    # This is what defines this resource as a hook. Without this line, the
+    # job is considered part of the release.
+    "helm.sh/hook": pre-delete, pre-upgrade
+    "helm.sh/hook-weight": "-5"
+  namespace: {{.Release.Namespace }}
+  name: pgdump-job
+  labels:
+    workload.user.cattle.io/workloadselector: deployment-{{ .Release.Namespace }}-pgdump-job
+    {{- include "ngt-archive.labels" . | nindent 4 }}
+spec:
+  template:
+    spec:
+{{ include "ngt-archive.pgdump-template" . | indent 6 }}
+

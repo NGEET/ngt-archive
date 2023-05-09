@@ -13,6 +13,7 @@ Contents:
 
    intro
    quickstart
+   helm_chart
    releases
    contact
    license

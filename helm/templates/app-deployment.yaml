@@ -1,0 +1,225 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    {{- include "ngt-archive.annotations" . | nindent 4 }}
+  labels:
+    workload.user.cattle.io/workloadselector: deployment-{{ .Release.Namespace }}-app
+    {{- include "ngt-archive.labels" . | nindent 4 }}
+  namespace: {{ .Release.Namespace }}
+  name: app
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      workload.user.cattle.io/workloadselector: deployment-{{ .Release.Namespace }}-app
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        workload.user.cattle.io/workloadselector: deployment-{{ .Release.Namespace }}-app
+    spec:
+      containers:
+      - args:
+          - uwsgi
+          - --module
+          - ngt_archive.wsgi:application
+          - --http-socket
+          - 0.0.0.0:8080
+          - --static-map
+          - /static=/app/static
+        env:
+        - name: SQL_PASSWORD_FILE
+          value: /secrets/db/db-password
+        - name: STATIC_ROOT
+          value: /app/static
+        - name: DATASET_ARCHIVE_ROOT
+          value: /data
+        - name: DATASET_ARCHIVE_SENDFILE_METHOD
+          value: X-Accel-Redirect
+        - name: DJANGO_USERS_JSON_FILE
+          value: /app/backup/ngt-archive-import.json
+        - name: EMAIL_NGEET_TEAM
+          value: {{ .Values.teamEmail | quote }}
+        - name: EMAIL_SUBJECT_PREFIX
+          value: {{ .Values.emailSubjectPrefix | quote }}
+        - name: FILE_UPLOAD_TEMP_DIR
+          value: /tmp
+        - name: GOOGLE_MAPS_KEY_FILE
+          value: /secrets/app/google-maps-key
+        - name: READ_ONLY
+          value: {{ default "false" .Values.readOnly | quote }}
+        - name: SECRET_KEY_FILE
+          value: /secrets/app/secret-key
+        - name: SERVICE_ACCOUNT_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: service-account-secret-key
+        {{- tpl (toYaml .Values.env) . | nindent 8 }}
+        image: {{ .Values.image.repository }}:{{- include "ngt-archive.version" . }}
+        imagePullPolicy: Always
+        name: app
+        ports:
+          - containerPort: 8080
+            name: http
+            protocol: TCP
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            add:
+              - NET_BIND_SERVICE
+            drop:
+              - ALL
+          privileged: false
+          readOnlyRootFilesystem: false
+          runAsNonRoot: true
+          runAsUser: {{ .Values.uid }}
+        stdin: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        tty: true
+        volumeMounts:
+          - mountPath: /secrets/app
+            name: vol-secret-app
+            readOnly: true
+          - mountPath: /secrets/db
+            name: vol-secret-db
+            readOnly: true
+          {{- if .Values.volume.dataDirectory }}
+          - mountPath: /data
+            name: vol-data
+          {{- end -}}
+          {{- if .Values.volume.dataImportDirectory }}
+          - mountPath: /app/import
+            name: vol-import
+            readOnly: true
+          {{- end }}
+      - name: rabbitmq
+        image: rabbitmq
+        ports:
+        - containerPort: 5672
+          name: rabbitmq
+          protocol: TCP
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            add:
+            - NET_BIND_SERVICE
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: false
+          runAsNonRoot: true
+          runAsUser: {{ .Values.uid }}
+        stdin: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        tty: true
+      - command:
+        - docker-manage-entrypoint.sh
+        - celery
+        - -A
+        - ngt_archive
+        - worker
+        - -l
+        - INFO
+        - --concurrency
+        - {{ .Values.celeryConcurrency | quote }}
+        env:
+        - name: SQL_PASSWORD_FILE
+          value: /secrets/db/db-password
+        - name: STATIC_ROOT
+          value: /app/static
+        - name: DATASET_ARCHIVE_ROOT
+          value: /data
+        - name: DATASET_ARCHIVE_SENDFILE_METHOD
+          value: X-Accel-Redirect
+        - name: DJANGO_USERS_JSON_FILE
+          value: /app/import/ngt-archive-import.json
+        - name: EMAIL_NGEET_TEAM
+          value: {{ .Values.teamEmail | quote }}
+        - name: EMAIL_SUBJECT_PREFIX
+          value: {{ .Values.emailSubjectPrefix | quote }}
+        - name: FILE_UPLOAD_TEMP_DIR
+          value: /tmp
+        - name: GOOGLE_MAPS_KEY_FILE
+          value: /secrets/app/google-maps-key
+        - name: SECRET_KEY_FILE
+          value: /secrets/app/secret-key
+        - name: SERVICE_ACCOUNT_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: app-secrets
+              key: service-account-secret-key
+        {{- tpl (toYaml .Values.env) . | nindent 8 }}
+        image: {{ .Values.image.repository }}:{{- include "ngt-archive.version" . }}
+        imagePullPolicy: Always
+        name: celery
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: false
+          runAsNonRoot: true
+          runAsUser: {{ .Values.uid }}
+        stdin: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        tty: true
+        volumeMounts:
+        - mountPath: /secrets/app
+          name: vol-secret-app
+          readOnly: true
+        - mountPath: /secrets/db
+          name: vol-secret-db
+          readOnly: true
+        {{- if .Values.volume.dataDirectory }}
+        - mountPath: /data
+          name: vol-data
+          readOnly: true
+        {{- end }}
+      dnsConfig: {}
+      dnsPolicy: ClusterFirst
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: {{ .Values.gid }}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: vol-secret-app
+        secret:
+          defaultMode: 256
+          optional: false
+          secretName: {{ .Values.secretName.application }}
+      - name: vol-secret-db
+        secret:
+          defaultMode: 256
+          optional: false
+          secretName: {{ .Values.secretName.database }}
+      {{- if .Values.volume.dataImportDirectory }}
+      - name: vol-import
+        hostPath:
+          path: {{ tpl .Values.volume.dataImportDirectory . }}
+          type: Directory
+      {{- end }}
+      {{- if .Values.volume.dataDirectory }}
+      - name: vol-data
+        hostPath:
+          path: {{ tpl .Values.volume.dataDirectory . }}
+          type: Directory
+      {{- end }}

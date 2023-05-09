@@ -1,0 +1,22 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  annotations:
+    {{- include "ngt-archive.annotations" . | nindent 4 }}
+  labels:
+    workload.user.cattle.io/workloadselector: deployment-{{ .Release.Namespace }}-pgdump
+    {{- include "ngt-archive.labels" . | nindent 4 }}
+  namespace: {{ .Release.Namespace }}
+  name: pgdump-cron
+spec:
+  concurrencyPolicy: Allow
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          schedulerName: default-scheduler
+{{ include "ngt-archive.pgdump-template" . | indent 10 }}
+  schedule: 0 6 * * *
+  successfulJobsHistoryLimit: 3
+  suspend: false

@@ -1,0 +1,8 @@
+chart-dirs: helm
+check-version-increment: true
+debug: false
+remote: origin
+target-branch: main
+validate-chart-schema: true
+validate-maintainers: false
+validate-yaml: true
