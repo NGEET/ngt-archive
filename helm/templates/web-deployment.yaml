@@ -67,7 +67,7 @@ spec:
           readOnly: true
         - mountPath: /etc/passwd
           name: config-volume
-          subPath: web_etc_passwd
+          subPath: nginx_etc_passwd
           readOnly: true
         - mountPath: /etc/nginx/nginx.conf
           name: config-volume
@@ -94,8 +94,8 @@ spec:
               path: portal.conf
             - key: error503.html
               path: error503.html
-            - key: web_etc_passwd
-              path: web_etc_passwd
+            - key: nginx_etc_passwd
+              path: nginx_etc_passwd
             - key: nginx.conf
               path: nginx.conf
       {{- if .Values.volume.dataDirectory }}

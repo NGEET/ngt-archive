@@ -76,7 +76,7 @@ spec:
           mountPath: /var/run/postgresql
         - mountPath: /etc/passwd
           name: vol-config
-          subPath: passwd
+          subPath: db_passwd
         {{- if and .Values.volume.backupDirectory .Values.volume.importDirectory }}
         - name: vol-initdb
           mountPath: /docker-entrypoint-initdb.d
@@ -96,8 +96,8 @@ spec:
           name: {{ include "ngt-archive.fullname" . }}
           # An array of keys from the ConfigMap to create as files
           items:
-            - key: passwd
-              path: passwd
+            - key: db_passwd
+              path: db_passwd
       - name: vol-varrun
         persistentVolumeClaim:
           claimName: {{ .Values.volume.dbClaim  }}-varrun

@@ -22,6 +22,9 @@ spec:
     type: RollingUpdate
   template:
     metadata:
+      annotations:
+        # Checksum the values that would affect the configuration files ( this forces a upgrade on a changes)
+        checksum/config: {{ printf  "%s:%s" .Values.gid .Values.uid | sha256sum }}
       labels:
         workload.user.cattle.io/workloadselector: deployment-{{ .Release.Namespace }}-app
     spec:
@@ -87,6 +90,12 @@ spec:
         terminationMessagePolicy: File
         tty: true
         volumeMounts:
+          - mountPath: /app/static
+            name: staticfiles
+          - mountPath: /etc/passwd
+            name: vol-config
+            subPath: ngt_archive_etc_passwd
+            readOnly: true
           - mountPath: /secrets/app
             name: vol-secret-app
             readOnly: true
@@ -178,6 +187,10 @@ spec:
         terminationMessagePolicy: File
         tty: true
         volumeMounts:
+        - mountPath: /etc/passwd
+          name: vol-config
+          subPath: ngt_archive_etc_passwd
+          readOnly: true
         - mountPath: /secrets/app
           name: vol-secret-app
           readOnly: true
@@ -201,6 +214,15 @@ spec:
         fsGroup: {{ .Values.gid }}
       terminationGracePeriodSeconds: 30
       volumes:
+      - emptyDir: {}
+        name: staticfiles
+      - name: vol-config
+        configMap:
+          name: {{ include "ngt-archive.fullname" . }}
+          # An array of keys from the ConfigMap to create as files
+          items:
+          - key: ngt_archive_etc_passwd
+            path: ngt_archive_etc_passwd
       - name: vol-secret-app
         secret:
           defaultMode: 256
