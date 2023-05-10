@@ -1,5 +1,5 @@
 [![.github/workflows/tests.yml](https://github.com/NGEET/ngt-archive/actions/workflows/tests.yml/badge.svg)](https://github.com/NGEET/ngt-archive/actions/workflows/tests.yml)
-[![Deploy Sphinx site to Pages](https://github.com/NGEET/ngt-archive/actions/workflows/sphinx.yaml/badge.svg)](https://github.com/NGEET/ngt-archive/actions/workflows/sphinx.yaml)
+[![Deploy Pages](https://github.com/NGEET/ngt-archive/actions/workflows/pages.yaml/badge.svg)](https://github.com/NGEET/ngt-archive/actions/workflows/pages.yaml)
 [![Docker Image CI](https://github.com/NGEET/ngt-archive/actions/workflows/docker-image.yaml/badge.svg?branch=main)](https://github.com/NGEET/ngt-archive/actions/workflows/docker-image.yaml)
 [![Lint Helm Charts](https://github.com/NGEET/ngt-archive/actions/workflows/lint_helm.yaml/badge.svg)](https://github.com/NGEET/ngt-archive/actions/workflows/lint_helm.yaml)
 
