@@ -1,5 +1,16 @@
 # NGEE Tropics Archive Releases
 
+## v3.0.1
+Bug fix release to address issues with ESS-DIVE transfer.  Additionally,
+bundles Docker image build and helm chart repository with this repository.
+
++ Issue #394 - Adds Helm chart repository to Github Actions
++ Issue #391 - Adds Docker image build into Github Action workflow
++ Issue #387 - Generates ack file when abstract limit reached
++ Issue #386 - Limits dataset descripiton to 4000 characters
++ Issue #381 - Adds NGEE-Tropics id to the locations csv file name
++ Issue #382 - Cannot transfer dataset multiple lines in citation
+
 ## v3.0.0
 Support for database and Django Framework upgrades, new locations reporting format
 support and bug fixes.
