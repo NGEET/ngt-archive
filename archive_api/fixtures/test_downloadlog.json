@@ -1,0 +1,62 @@
+[
+  {
+    "model": "archive_api.datasetdownloadlog",
+    "pk": 4,
+    "fields": {
+      "user": 3,
+      "dataset": 4,
+      "dataset_status": 2,
+      "request_url": "/api/v1/datasets/4/archive/",
+      "datetime": "2017-02-03T02:16:28.425Z",
+      "ip_address": "71.188.122.243"
+    }
+  },
+  {
+    "model": "archive_api.datasetdownloadlog",
+    "pk": 5,
+    "fields": {
+      "user": 8,
+      "dataset": 3,
+      "dataset_status": 2,
+      "request_url": "/api/v1/datasets/3/archive/",
+      "datetime": "2017-02-03T02:17:38.164Z",
+      "ip_address": "71.188.122.243"
+    }
+  },
+  {
+    "model": "archive_api.datasetdownloadlog",
+    "pk": 6,
+    "fields": {
+      "user": 8,
+      "dataset": 2,
+      "dataset_status": 2,
+      "request_url": "/api/v1/datasets/2/archive/",
+      "datetime": "2017-02-03T02:18:00.732Z",
+      "ip_address": "71.188.122.243"
+    }
+  },
+  {
+    "model": "archive_api.datasetdownloadlog",
+    "pk": 7,
+    "fields": {
+      "user": 8,
+      "dataset": 1,
+      "dataset_status": 2,
+      "request_url": "/api/v1/datasets/1/archive/",
+      "datetime": "2017-02-03T02:18:11.175Z",
+      "ip_address": "71.188.122.243"
+    }
+  },
+  {
+    "model": "archive_api.datasetdownloadlog",
+    "pk": 8,
+    "fields": {
+      "user": 8,
+      "dataset": 1,
+      "dataset_status": 2,
+      "request_url": "/api/v1/datasets/1/archive/",
+      "datetime": "2017-02-03T20:46:20.355Z",
+      "ip_address": "131.243.223.128"
+    }
+  }
+]

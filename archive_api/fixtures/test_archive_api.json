@@ -84,7 +84,9 @@
       "location_bounding_box_lr_latitude": null,
       "location_bounding_box_lr_longitude": null,
       "site_urls": "http://centralcityccpd.baz",
-      "contacts": [3],
+      "contacts": [
+        3
+      ],
       "pis": [],
       "submission": 3,
       "submission_date": "2016-10-01"
@@ -109,7 +111,9 @@
       "location_bounding_box_lr_latitude": null,
       "location_bounding_box_lr_longitude": null,
       "site_urls": "http://earth2.baz",
-      "contacts": [3],
+      "contacts": [
+        3
+      ],
       "pis": [],
       "submission": 3,
       "submission_date": "2015-07-01"
