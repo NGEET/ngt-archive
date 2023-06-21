@@ -1,5 +1,10 @@
 # NGEE Tropics Archive Releases
 
+## 3.0.2
+Bug fix release to resolve dataset download log issue in the admin UI.
+
++ Issue #401 - Error accessing dataset download log
+
 ## v3.0.1
 Bug fix release to address issues with ESS-DIVE transfer.  Additionally,
 bundles Docker image build and helm chart repository with this repository.
