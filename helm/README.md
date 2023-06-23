@@ -95,6 +95,38 @@ Basic installation.
 ```bash
 $ helm install <release name> ngt-archive/ngt-archive
 ```
+## Services on Kubernetes
+
+```mermaid
+graph
+  99cea515-1e95-2528-9fbc-6e0d367a7454((rabbitmq)):::Container
+  9696836c-9f07-4a9f-b0c2-d96a13cf30a4((db)):::Pod
+  9225a4c4-1ed4-08a4-9f39-5f382a67a6b9((Kubernetes)):::Cluster
+  c5a39026-cf90-4b31-a6c0-c5e272b96b08((app)):::Pod
+  0d3fd85a-8ed6-4d6f-d0db-a569343220cf((celery)):::Container
+  e958fe08-d23a-416c-9f0c-ff2c7b60a173((db)):::ReplicaSet
+  af2909b5-33cb-42cd-af59-5bfeb0f3e384((web)):::ReplicaSet
+  fbb13668-4d22-f54f-90e5-36cd71ba27f0((nginx)):::Container
+  25d7eb2d-1447-4b7d-8e55-bd50e401493d((app)):::ReplicaSet
+  858309b6-5ac8-58d9-dfce-c360e797df14((set-volume-perms)):::Container
+  6b6e51b9-1a83-4796-a511-db0846ab8583((web)):::Pod
+  f22dc04b-3daf-fb77-f379-4b25eff5fc83((django)):::Container
+  c93ebb37-ec10-865a-437a-ebee300aab71((posgres)):::Container
+  b8411a03-3cbd-33fe-5862-7ad8cf453556((ngt-data)):::Namespace
+  c5a39026-cf90-4b31-a6c0-c5e272b96b08 -- Container --> 99cea515-1e95-2528-9fbc-6e0d367a7454
+  c5a39026-cf90-4b31-a6c0-c5e272b96b08 -- Container --> 0d3fd85a-8ed6-4d6f-d0db-a569343220cf
+  9696836c-9f07-4a9f-b0c2-d96a13cf30a4 -- InitContainer --> 858309b6-5ac8-58d9-dfce-c360e797df14
+  9696836c-9f07-4a9f-b0c2-d96a13cf30a4 -- Container --> c93ebb37-ec10-865a-437a-ebee300aab71
+  af2909b5-33cb-42cd-af59-5bfeb0f3e384 -- Pod --> 6b6e51b9-1a83-4796-a511-db0846ab8583
+  b8411a03-3cbd-33fe-5862-7ad8cf453556 -- ReplicaSet --> 25d7eb2d-1447-4b7d-8e55-bd50e401493d
+  c5a39026-cf90-4b31-a6c0-c5e272b96b08 -- Container --> f22dc04b-3daf-fb77-f379-4b25eff5fc83
+  e958fe08-d23a-416c-9f0c-ff2c7b60a173 -- Pod --> 9696836c-9f07-4a9f-b0c2-d96a13cf30a4
+  6b6e51b9-1a83-4796-a511-db0846ab8583 -- Container --> fbb13668-4d22-f54f-90e5-36cd71ba27f0
+  9225a4c4-1ed4-08a4-9f39-5f382a67a6b9 -- Namespace --> b8411a03-3cbd-33fe-5862-7ad8cf453556
+  b8411a03-3cbd-33fe-5862-7ad8cf453556 -- ReplicaSet --> e958fe08-d23a-416c-9f0c-ff2c7b60a173
+  b8411a03-3cbd-33fe-5862-7ad8cf453556 -- ReplicaSet --> af2909b5-33cb-42cd-af59-5bfeb0f3e384
+  25d7eb2d-1447-4b7d-8e55-bd50e401493d -- Pod --> c5a39026-cf90-4b31-a6c0-c5e272b96b08
+```
 
 ## People
 
