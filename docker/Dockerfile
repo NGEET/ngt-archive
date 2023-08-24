@@ -19,7 +19,7 @@ WORKDIR /app
 # Run OS updates
 # create unprivileged user, create application directories, and ensure proper permissions
 # Install application dependencies
-RUN apt-get update &&  apt-get install -y --no-install-recommends libldap2-dev libsasl2-dev libssl-dev netcat-traditional\
+RUN apt-get update &&  apt-get install -y --no-install-recommends  netcat python-dev libldap2-dev libsasl2-dev libssl-dev \
     && rm -rf /var/lib/apt/lists/* \
     && groupadd -g ${GID} webapp \
     && useradd -u ${UID} -g ${GID} -c 'Web app User' webapp \
