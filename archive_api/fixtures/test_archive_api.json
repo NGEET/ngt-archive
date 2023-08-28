@@ -224,10 +224,10 @@
     "fields": {
       "ngt_id": 2,
       "description": "Qui illud verear persequeris te. Vis probo nihil verear an, zril tamquam philosophia eos te, quo ne fugit movet contentiones. Quas mucius detraxit vis an, vero omnesque petentium sit ea. Id ius inimicus comprehensam.",
-      "status": 1,
+      "status": 2,
       "status_comment": "",
       "name": "Data Set 3",
-      "doi": "",
+      "doi": "https://doi.org/10.15486/ngt/8343947",
       "start_date": "2016-10-29",
       "end_date": null,
       "qaqc_status": null,
@@ -241,6 +241,7 @@
       "access_level": 0,
       "additional_access_information": "",
       "submission_date": "2016-10-29T19:15:35.013361Z",
+      "publication_date": "2016-10-29T19:15:35.013361Z",
       "contact": 2,
       "sites": [
         1
