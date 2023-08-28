@@ -23,12 +23,13 @@ MAPPING = [('title', 'name', ""),
 @dataclass
 class OSTIRecord:
     status: str
+    site_url:  Optional[str]
     doi: Optional[str]
     doi_status: Optional[str]
     status_message: Optional[str]
 
 
-def submit(osti_xml) -> OSTIRecord:
+def _submit(osti_xml) -> OSTIRecord:
     """
     Submit OSTI xml record
     :param dataset_id:
@@ -50,10 +51,20 @@ def submit(osti_xml) -> OSTIRecord:
             doi_status = doi is not None and doi.get("status") or None
             record_status = root.find("./record/status")
             record_status_message = root.find("./record/status_message")
-            return OSTIRecord(status=record_status.text,
+            site_url = root.find("./record/site_url")
+            osti_record = OSTIRecord(status=record_status.text,
+                              site_url=site_url is not None and site_url.text or None,
                               doi=doi is not None and f"https://doi.org/{doi.text}" or None,
                               doi_status=doi_status,
                               status_message=record_status_message is not None and record_status_message.text or None)
+            if osti_record.doi and not osti_record.doi.startswith("https://doi.org/10.15486/ngt/"):
+                raise ServiceAccountException(
+                    f"Error in publish data; There was a problem minting the DOI - "
+                    f"The doi, {osti_record.doi}, is not a valid doi", 0)
+            if not osti_record or osti_record.status != "SUCCESS":
+                raise ServiceAccountException(
+                    f"Error in doi record - {osti_record.status_message}", 0)
+            return osti_record
         else:
             raise ServiceAccountException(f"HTTP Status: {r.status_code} HTTP Response: {r.content}",
                                           doi_service.service)
@@ -73,7 +84,7 @@ def mint(dataset_id) -> Optional[OSTIRecord]:
 
     dataset = DataSet.objects.get(pk=dataset_id)
     if not dataset.doi:
-        osti_record = submit(str(to_osti_xml()))
+        osti_record = _submit(str(to_osti_xml()))
         if osti_record:
             if osti_record.status == "SUCCESS":
                 dataset.doi = osti_record.doi
@@ -89,18 +100,24 @@ def publish(dataset_id) -> OSTIRecord:
 
     :param dataset_id: the database identifier of the dataset to mint a doi for
     :return: OSTIRecord
-    :raise: Except if no `ServiceAccount` defintion exists or any unexpected errors occur
-    :rtype: archive_api.service.common.ServiceAccountException
+    :raises: archive_api.service.common.ServiceAccountException
     """
-
     dataset = DataSet.objects.get(pk=dataset_id)
+
     if not dataset.doi:
         osti_record = mint(dataset_id)
-        if not osti_record or osti_record.status != "SUCCESS":
-            raise ServiceAccountException(
-                f"Cannot publish; There was a problem minting the DOI - {osti_record.status_message}", 0)
+    else:
+        osti_record = _submit(str(to_osti_xml(dataset_id)))
 
-    return submit(str(to_osti_xml(dataset_id)))
+    dataset.refresh_from_db()
+    # Only check the site url on publish
+    if osti_record and dataset.doi and dataset.status >= dataset.STATUS_APPROVED:
+        if osti_record.site_url != _get_site_url(dataset):
+            raise ServiceAccountException(
+                f"Error in publish data; There was a problem minting the DOI - "
+                f"The site url, {osti_record.site_url}, does not match our record, {_get_site_url(dataset)}.", 0)
+    return osti_record
+
 
 
 def to_osti_xml(dataset_id=None):
@@ -130,11 +147,12 @@ def to_osti_xml(dataset_id=None):
         osti_id = dataset.doi.split("/")[-1]
         _set_value(record, 'osti_id', osti_id)
 
-    if dataset and dataset.submission_date:
-        _set_value(record, 'site_url', f'https://{settings.SERVICE_HOSTNAME}/dois/{dataset.data_set_id()}')
-        _set_value(record, 'publication_date', dataset.submission_date.strftime("%Y"))
-
-    else:
+    # Should this dataset be published or reserved
+    if dataset and dataset.publication_date and dataset.status == dataset.STATUS_APPROVED:
+        _set_value(record, 'site_url', _get_site_url(dataset))
+        _set_value(record, 'publication_date', dataset.publication_date.strftime("%Y"))
+    elif dataset and not dataset.doi or dataset is None:
+        # reserve a doi before publication or for a dummy dataset
         _set_value(record, 'set_reserved', "")
 
     # DataSet Type: Dataset Type refers to the main content of the
@@ -190,3 +208,12 @@ def _creators(record, dataset):
             _set_value(creator_detail, 'last_name', a.author.last_name)
             _set_value(creator_detail, 'private_email', a.author.email)
             _set_value(creator_detail, 'affiliation_name', a.author.institution_affiliation)
+
+def _get_site_url(dataset):
+    """
+    Build the site url from the dataset
+
+    :param dataset: The NGT Archive dataset to build creators for
+    :return: string representing the site url
+    """
+    return f'https://{settings.SERVICE_HOSTNAME}/dois/{dataset.data_set_id()}'
