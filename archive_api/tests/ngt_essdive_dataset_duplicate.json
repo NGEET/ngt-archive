@@ -1,6 +1,9 @@
 {
     "id": "ess-dive-e1902f9728f70db-20220530T030400919221",
     "viewUrl": "https://data-sandbox.ess-dive.lbl.gov/view/ess-dive-e1902f9728f70db-20220530T030400919221",
+    "url": "https://api.ess-dive.lbl.gov/packages/ess-dive-e1902f9728f70db-20220430T030400919221",
+    "next": null,
+    "previous": "https://api.ess-dive.lbl.gov/packages/ess-dive-3fbdb62c053b39f-20230927T031340386",
     "dateUploaded": "2022-04-30T03:04:01.310Z",
     "dateModified": "2022-04-30T03:04:01.310Z",
     "isPublic": false,

@@ -101,10 +101,12 @@ def transfer_start(run_id):
                 f"Determining if ESS-DIVE dataset ({previous_jobs[0].response['id']}) represents {transfer_job.dataset.data_set_id()}")
             essdive_response = get(previous_jobs[0].response['id'])
             if essdive_response.status_code == status.HTTP_200_OK:
-                transfer_job.status = EssDiveTransfer.STATUS_QUEUED
-                transfer_job.save()
-                log.info(f"Found ESS-DIVE dataset ({previous_jobs[0].response['id']}) for {transfer_job.dataset.data_set_id()}")
-                essdive_id = previous_jobs[0].response['id']
+                # Make sure the ESS-DIVE dataset is the current dataset
+                if essdive_response.json()['next'] is None:
+                    transfer_job.status = EssDiveTransfer.STATUS_QUEUED
+                    transfer_job.save()
+                    log.info(f"Found ESS-DIVE dataset ({previous_jobs[0].response['id']}) for {transfer_job.dataset.data_set_id()}")
+                    essdive_id = previous_jobs[0].response['id']
 
             else:
                 # It is OK if there was a previous job but none was found.  This might mean that
