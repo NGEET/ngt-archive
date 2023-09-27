@@ -1,5 +1,16 @@
 # NGEE Tropics Archive Releases
 
+## 3.1.1
+Bug fix for ESS-DIVE Transfer
+
++ Issue #409 - Prevents old dataset transfer
+
+## 3.1.0
+Adds additional checks for OSTI DOI service
+
++ Issue #403 - SSL error for openssl 3
++ Issue #405 - Adds checks for OSTI service 
+
 ## 3.0.2
 Bug fix release to resolve dataset download log issue in the admin UI.
 
