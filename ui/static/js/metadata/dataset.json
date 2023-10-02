@@ -21,7 +21,7 @@
         "max_length": 120,
         "sequence": 3,
         "multiple": false,
-        "description": "<p>This is the title of the dataset that will be listed in the DOI and dataset viewing pages. The title should be descriptive, and include what, when, and where​ ​data was collected (120 character limit.). If possible, include the site ID in the title.</p> <p><i>E.g.: Sapflow and Soil Moisture Raw data, Jan 2016-Apr 2016, BR-Ma2: Manaus</i></p>"
+        "description": "<p>This is the title of the dataset that will be listed in the DOI and dataset viewing pages. The title should be descriptive, and include what, when, and where​ ​data was collected. If possible, include the site ID in the title.</p> <p><i>E.g.: Sapflow and Soil Moisture Raw data, Jan 2016-Apr 2016, BR-Ma2: Manaus.</i> <b>This field has a limit of 100 characters.</b></p>"
     },
     "description": {
         "type": "string",
@@ -170,7 +170,7 @@
         "label": "Dataset Funding Contract Number(s)",
         "sequence": 17,
         "multiple": false,
-        "description": "<p>List the numbers of any DOE contract under which the work was funded. If no DOE funding for this dataset or field is empty set as 'NONE'. If the dataset is a result of a joint effort between two or more DOE Site/Facility Management Contractors, etc., additional DOE contract numbers may be entered. The 'DE' should not be included as a part of the number.</p>"
+        "description": "<p>List the numbers of any DOE contract under which the work was funded. If no DOE funding for this dataset or field is empty set as 'NONE'. If the dataset is a result of a joint effort between two or more DOE Site/Facility Management Contractors, etc., additional DOE contract numbers may be entered. The 'DE' should not be included as a part of the number. <b>This field has a limit of 100 characters.</b></p>"
     },
     "acknowledgement": {
         "type": "string",
@@ -197,7 +197,7 @@
         "label": "Additional Information about Dataset Reference(s)",
         "sequence": 20,
         "multiple": false,
-        "description": "<p>Brief description of dataset reference (e,g, paper) relevance, relationship with this dataset or other comments.</p>"
+        "description": "<p>Brief description of dataset reference (e,g, paper) relevance, relationship with this dataset or other comments.  <b>This field has a limit of 2,255 characters.</b></p>"
     },
     "access_level": {
         "type": "choice",
