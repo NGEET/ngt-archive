@@ -227,7 +227,8 @@ You can also login with your account credentials, select "Edit Drafts" and then 
                                                     'variables',
                                                     'ngee_tropics_resources',
                                                     'funding_organizations',
-                                                    'originating_institution']}, value)
+                                                    'originating_institution',
+                                                    'qaqc_method_description']}, value)
 
     def test_client_put(self):
         self.login_user("auser")
@@ -329,7 +330,8 @@ You can also login with your account credentials, select "Edit Drafts" and then 
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
         self.assertEqual(
-            {'missingRequiredFields': ['archive', 'authors', 'funding_organizations', 'originating_institution']},
+            {'missingRequiredFields': ['archive', 'authors', 'funding_organizations', 'originating_institution',
+                                       'qaqc_method_description']},
             value)
 
         response = self.client.put('/api/v1/datasets/1/',
@@ -340,7 +342,7 @@ You can also login with your account credentials, select "Edit Drafts" and then 
                                         '"start_date": "2016-10-28",'
                                         '"end_date": null,'
                                         '"qaqc_status": null,'
-                                        '"qaqc_method_description": "",'
+                                        '"qaqc_method_description": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?",'
                                         '"ngee_tropics_resources": true,'
                                         '"funding_organizations": "The funding organizations for my dataset",'
                                         '"doe_funding_contract_numbers": "",'
@@ -384,7 +386,8 @@ You can also login with your account credentials, select "Edit Drafts" and then 
         response = self.client.get("/api/v1/datasets/1/submit/")  # In draft mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(
-            {'missingRequiredFields': ['archive', 'authors', 'funding_organizations', 'originating_institution']},
+            {'missingRequiredFields': ['archive', 'authors', 'funding_organizations', 'originating_institution',
+                                       'qaqc_method_description']},
             value)
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
@@ -414,7 +417,18 @@ You can also login with your account credentials, select "Edit Drafts" and then 
                                         '"start_date": "2016-10-28",'
                                         '"end_date": null,'
                                         '"qaqc_status": null,'
-                                        '"qaqc_method_description": "",'
+                                        '"qaqc_method_description": "Sed ut perspiciatis unde omnis iste natus error '
+                                        'sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque '
+                                        'ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta '
+                                        'sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut '
+                                        'odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem '
+                                        'sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, '
+                                        'consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt '
+                                        'ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima '
+                                        'veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, '
+                                        'nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure '
+                                        'reprehenderit qui in ea voluptate velit esse quam nihil molestiae '
+                                        'consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?",'
                                         '"ngee_tropics_resources": true,'
                                         '"funding_organizations": "The funding organizations for my dataset",'
                                         '"doe_funding_contract_numbers": "",'
@@ -444,7 +458,7 @@ You can also login with your account credentials, select "Edit Drafts" and then 
         self.assertEqual(value["start_date"], "2016-10-28")
         self.assertEqual(value["end_date"], None)
         self.assertEqual(value["qaqc_status"], None)
-        self.assertEqual(value["qaqc_method_description"], "")
+        self.assertEqual(value["qaqc_method_description"], "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?")
         self.assertEqual(value["ngee_tropics_resources"], True)
         self.assertEqual(value["funding_organizations"], "The funding organizations for my dataset")
         self.assertEqual(value["doe_funding_contract_numbers"], "")
@@ -622,7 +636,7 @@ NGEE-Tropics data team, who will reach out to you if more information is needed.
                                         '"start_date": "2016-10-28",'
                                         '"end_date": null,'
                                         '"qaqc_status": null,'
-                                        '"qaqc_method_description": "",'
+                                        '"qaqc_method_description": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?",'
                                         '"ngee_tropics_resources": true,'
                                         '"funding_organizations": "The funding organizations for my dataset",'
                                         '"doe_funding_contract_numbers": "",'
@@ -748,7 +762,7 @@ or in case we have any clarifying questions, you will be notified by email.
                                         '"start_date": "2016-10-28",'
                                         '"end_date": null,'
                                         '"qaqc_status": null,'
-                                        '"qaqc_method_description": "",'
+                                        '"qaqc_method_description": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?",'
                                         '"ngee_tropics_resources": false,'
                                         '"funding_organizations": "The funding organizations for my dataset",'
                                         '"doe_funding_contract_numbers": null,'

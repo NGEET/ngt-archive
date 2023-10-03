@@ -146,6 +146,9 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
             'start_date'] > data['end_date']:
             errors["end_date"]="Start date must come before end date"
 
+        if 'qaqc_method_description' in data.keys() and data['qaqc_method_description'] and len(data['qaqc_method_description'].split()) < 100:
+            errors["qaqc_method_description"] = "Methods Description must be at least 100 words."
+
         # Validate the selected plots
         if 'plots' in data.keys():
             if 'sites' not in data.keys():
@@ -166,7 +169,7 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
 
             for field in ['sites', 'authors', 'name', 'description', 'contact', 'variables',
                           'ngee_tropics_resources', 'funding_organizations', 'originating_institution',
-                          'access_level']:  # Check for required fields
+                          'access_level', 'qaqc_method_description']:  # Check for required fields
                 if field in data.keys():
                     if data[field] is None or (isinstance(data[field], (list, tuple, str)) and not data[field]):
                         errors.setdefault('missingRequiredFields', [])
