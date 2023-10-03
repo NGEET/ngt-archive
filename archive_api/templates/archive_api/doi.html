@@ -21,7 +21,7 @@
     link = document.getElementById('download-link').href;
 
     document.getElementById('download-link').removeAttribute('href');
-    ocument.getElementById('download-link').style.color = "grey";
+    document.getElementById('download-link').style.color = "grey";
 
     }
 
@@ -173,7 +173,7 @@
 
             {% if not dataset.reference == None %}
 
-                {{ dataset.reference }}
+                {{ dataset.reference | linebreaks }}
 
             {% else %}
                 This are no dataset references available.
