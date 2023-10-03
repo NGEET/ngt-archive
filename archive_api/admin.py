@@ -88,9 +88,9 @@ class DataSetHistoryAdmin(SimpleHistoryAdmin):
                     self.message_user(request,
                                       f"Dataset {dataset.data_set_id()} id not public and cannot be transferred to ESS-DIVE",
                                       messages.WARNING)
-                if dataset.submission_date is None:
+                if dataset.publication_date is None:
                     self.message_user(request,
-                                      f"Dataset {dataset.data_set_id()} has never been submitted and cannot be transferred to ESS-DIVE",
+                                      f"Dataset {dataset.data_set_id()} has never been published and cannot be transferred to ESS-DIVE",
                                       messages.WARNING)
 
         if transfer_count > 0:
