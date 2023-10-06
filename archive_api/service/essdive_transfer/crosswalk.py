@@ -264,7 +264,7 @@ def dataset_transform(dataset) -> Tuple[Dict, Optional[TextIO]]:
     # --- methods ---
     measurement_technique = None
     if dataset.qaqc_method_description is not None:
-        measurement_technique = [dataset.qaqc_method_description]
+        measurement_technique = dataset.qaqc_method_description and [r for r in dataset.qaqc_method_description .split('\n') if r] or list()
 
     # --- ASSIGN TO JSON-LD ----
 
