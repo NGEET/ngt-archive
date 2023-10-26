@@ -236,7 +236,7 @@ $(document).ready(function () {
         }
     });
 
-    $.getJSON("static/js/metadata/dataset.json?v=20231023", function (data) {
+    $.getJSON("static/js/metadata/dataset.json?v=20231026", function (data) {
         templates.datasets = data;
         createEditForm('datasets');
     });
@@ -824,14 +824,12 @@ $(document).ready(function () {
                 if (xhrResponse.result == true){
                     alert("Dataset Approved")
                     $('.js-loading').addClass('hide');
-
-                    // refreshes the page
-                    history.go(0);
                 }
                 else {
-                    alert(xhrResponse.responseJSON.detail)
+                    handleFormErrors(xhrResponse, "Dataset NOT Approved")
                 }
-
+                // refreshes the page
+                history.go(0);
 
             });
         }
@@ -850,13 +848,11 @@ $(document).ready(function () {
             $.when(changeStatus(approveUrl, "submit")).always(function (xhrResponse) {
                 if (xhrResponse.result == true){
                     alert("Dataset Review Requested")
-
-                    // refreshes the page
-                    history.go(0);
                 }
                 else {
-                    alert(xhrResponse.responseJSON.detail)
+                    handleFormErrors(xhrResponse, "Dataset review NOT Requested")
                 }
+                history.go(0);
             });
         }
 
@@ -2297,7 +2293,7 @@ function handleFormErrors(httpResponse, errorPrefixMessage) {
     if (httpResponse.status === 400) {
         if (httpResponse.responseText) {
 
-            var response = JSON.parse(httpResponse.responseText);
+            var response = httpResponse.responseJSON;
             for (var prop in response) {
 
                 // Which fields are missing
@@ -2312,6 +2308,9 @@ function handleFormErrors(httpResponse, errorPrefixMessage) {
                 }
             }
         }
+    }
+    else {
+        responseStr = httpResponse.responseJSON.detail
     }
     alert(errorPrefixMessage + '\n\n' + responseStr);
 }
