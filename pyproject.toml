@@ -16,8 +16,8 @@ description = "NGEE Tropics Archive Service"
 urls = {Homepage = "https://github.com/NGEET/ngt-archive"}
 requires-python = '>=3.9,<3.11'
 dependencies = [
-    "Django >= 4.1.1",
-    "djangorestframework >= 3.11.0",
+    "Django >= 4.1.1,<=4.2.5",
+    "djangorestframework >= 3.11.0,<=3.14.0",
     "django-filter",
     "pyldap>=3.0.0",
     "django-auth-ldap>=2.1.1",
