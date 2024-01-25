@@ -148,7 +148,7 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
 
         # Make sure description has at least 100 words
         if 'description' in data.keys() and data['description'] and len(data['description'].split()) < 100:
-            errors["description"] = "Description must be at least 100 words."
+            errors["description"] = f"Description must be at least 100 words. Current count is {len(data['description'].split())}."
 
         # Validate the selected plots
         if 'plots' in data.keys():
