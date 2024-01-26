@@ -76,6 +76,8 @@ volume:
 ingress:
   # ingress.name - Name of the ingres. (Defaults to fullname)
   name: ""
+  # ingress.className
+  className: "nginx"
   # ingress.enabled - enable the ingress
   enabled: false
   # ingress.annotations - annotations for this ingress

@@ -1,6 +1,13 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "ngt-archive.fullname" . -}}
-{{- if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
+{{- if and .Values.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
+  {{- if not (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class") }}
+  {{- $_ := set .Values.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.className}}
+  {{- end }}
+{{- end }}
+{{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
+apiVersion: networking.k8s.io/v1
+{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
 apiVersion: networking.k8s.io/v1beta1
 {{- else -}}
 apiVersion: extensions/v1beta1
@@ -16,7 +23,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   name: web
 spec:
-  ingressClassName: nginx
+  ingressClassName: {{ .Values.ingress.className }}
   rules:
     {{- range .Values.ingress.hosts }}
     - host: {{ tpl .host $ | quote }}
@@ -24,9 +31,19 @@ spec:
         paths:
           {{- range .paths }}
           - path: {{ tpl .path $ }}
+            {{- if and .pathType (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
+            pathType: {{ .pathType }}
+            {{- end }}
             backend:
-              serviceName: web
+              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
+              service:
+                name: web
+                port:
+                  number: 8000
+              {{- else }}
+              serviceName: {{ $fullName }}
               servicePort: 8000
+              {{- end }}
           {{- end }}
     {{- end }}
 
