@@ -161,7 +161,7 @@
         "label": "Dataset Funding organization(s)",
         "sequence": 16,
         "multiple": false,
-        "description": "<p>Identify the agencies and offices that funded the work to generate the dataset. Separate multiple funders with a comma and a space.</p>"
+        "description": "<p>Identify the agencies and offices that funded the work to generate the dataset. Separate multiple funders with a comma and a space. <b>This field has a limit of 1024 characters.</b></p>"
     },
     "doe_funding_contract_numbers": {
         "type": "string",
