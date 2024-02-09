@@ -357,7 +357,7 @@ class DataSet(models.Model):
     qaqc_status = models.IntegerField(choices=QAQC_STATUS_CHOICES, blank=True, null=True)
     qaqc_method_description = models.TextField(blank=True, null=True)
     ngee_tropics_resources = models.BooleanField(blank=True, null=True)
-    funding_organizations = models.TextField(blank=True, null=True)
+    funding_organizations = models.TextField(blank=True, null=True, max_length=1024)
     doe_funding_contract_numbers = models.CharField(max_length=100, blank=True, null=True)
     acknowledgement = models.TextField(blank=True, null=True)
     reference = models.TextField(blank=True, null=True, max_length=2255)
