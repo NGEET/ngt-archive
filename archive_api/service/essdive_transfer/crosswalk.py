@@ -5,6 +5,7 @@ NGEE-Tropics to ESS-DIVE Metacata crosswalk module
 """
 import csv
 import collections
+import re
 from io import StringIO
 
 from typing import Dict, IO, List, Optional, TextIO, Tuple, Union
@@ -266,6 +267,18 @@ def dataset_transform(dataset) -> Tuple[Dict, Optional[TextIO]]:
     if dataset.qaqc_method_description is not None:
         measurement_technique = dataset.qaqc_method_description and [r for r in dataset.qaqc_method_description .split('\n') if r] or list()
 
+    # --- Funding Organization and Contract Numbers ---
+    funders = [JSONLD_FUNDER]
+    if dataset.funding_organizations:
+        # if there are line breaks, commas, or semicolons, we assume multiple funders
+        for f in re.split('[\n,;]', dataset.funding_organizations):
+            funders.append({"name": f.strip()})
+
+    # --- DOE Funding Contract Numbers --
+    awards = None
+    if dataset.doe_funding_contract_numbers:
+        awards = re.split('[\n,;]', dataset.doe_funding_contract_numbers)
+
     # --- ASSIGN TO JSON-LD ----
 
     json_ld = {
@@ -282,7 +295,8 @@ def dataset_transform(dataset) -> Tuple[Dict, Optional[TextIO]]:
         "variableMeasured": variable_measured,
         "license": JSONLD_LICENSE,
         "spatialCoverage": spatial_coverage,
-        "funder": JSONLD_FUNDER,
+        "funder": funders,
+        "award": awards,
         "temporalCoverage": temporal_coverage,
         "editor": editor,
         "provider": JSONLD_PROVIDER,
