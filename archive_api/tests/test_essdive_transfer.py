@@ -283,6 +283,7 @@ def test_dataset_transform(celery_setup, ack_size):
     dataset.acknowledgement += added_ack
 
     jsonld, ack_fp = crosswalk.dataset_transform(dataset)
+    print(jsonld)
 
     if len(dataset.description)+ack_size >= 5000:
         assert ack_fp is not None

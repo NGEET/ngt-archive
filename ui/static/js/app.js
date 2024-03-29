@@ -236,7 +236,7 @@ $(document).ready(function () {
         }
     });
 
-    $.getJSON("static/js/metadata/dataset.json?v=20240209", function (data) {
+    $.getJSON("static/js/metadata/dataset.json?v=20240329", function (data) {
         templates.datasets = data;
         createEditForm('datasets');
     });
@@ -1715,14 +1715,20 @@ function createEditForm(templateType) {
                 label += '<i class="required">*</i>';
             }
 
-            var tooltip = '<b class="desc-tooltip js-tooltip" title="' + templates[templateType][param].description + '" > ?</b>';
-
+            var tooltip = '<b class="desc-tooltip js-tooltip" title="' + templates[templateType][param].tooltip + '" > ?</b>';
             paramHTML.append($('<span class="js-display-name display-name"></span>').html(label + '&nbsp;&nbsp;' + tooltip));
+
+            if (templates[templateType][param].description) {
+                paramHTML.append($(templates[templateType][param].description));
+            }
             switch (templates[templateType][param].type) {
                 case "string":
                     var tag = $('.js-template' + '.' + templates[templateType][param].type).clone();
                     if (templates[templateType][param].max_length) {
                         tag.attr('maxlength', templates[templateType][param].max_length);
+                    }
+                    if(templates[templateType][param].placeholder) {
+                        tag.attr('placeholder', templates[templateType][param].placeholder);
                     }
                     tag.removeClass('js-template').addClass('js-input');
                     paramHTML.append(tag);

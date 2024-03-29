@@ -21,7 +21,7 @@
         "max_length": 120,
         "sequence": 3,
         "multiple": false,
-        "description": "<p>This is the title of the dataset that will be listed in the DOI and dataset viewing pages. The title should be descriptive, and include what, when, and where​ ​data was collected. If possible, include the site ID in the title.</p> <p><i>E.g.: Sapflow and Soil Moisture Raw data, Jan 2016-Apr 2016, BR-Ma2: Manaus.</i> <b>This field has a limit of 100 characters.</b></p>"
+        "tooltip": "<p>This is the title of the dataset that will be listed in the DOI and dataset viewing pages. The title should be descriptive, and include what, when, and where​ ​data was collected. If possible, include the site ID in the title.</p> <p><i>E.g.: Sapflow and Soil Moisture Raw data, Jan 2016-Apr 2016, BR-Ma2: Manaus.</i> <b>This field has a limit of 100 characters.</b></p>"
     },
     "description": {
         "type": "string",
@@ -30,7 +30,7 @@
         "label": "Dataset Description",
         "sequence": 4,
         "multiple": false,
-        "description": "<p>Dataset description and overview. This should read as an abstract for the dataset, and provide users with adequate information about what the dataset contains, and how to use it. Include details on what data what, when and where data was collected, and if any data processing was done.</p> <p><i>E.g.: Raw output from the data logger connected to 9 sapflow and 5 soil moisture sensors are provided in xxx.dat. The metadata file (BR-Ma2 E-field log_20160501.xls) has information on locations where the sensors were installed, and other installation/maintenance details. No data processing or QA/QC was done on the raw datasets. Processed datasets will be uploaded separately. Contact janedoe@lbl.gov if you need to use this dataset for additional information.</i> <b>This field has a limit of 4,000 characters and must have at least 100 words.</b></p>"
+        "tooltip": "<p>Dataset tooltip and overview. This should read as an abstract for the dataset, and provide users with adequate information about what the dataset contains, and how to use it. Include details on what data what, when and where data was collected, and if any data processing was done.</p> <p><i>E.g.: Raw output from the data logger connected to 9 sapflow and 5 soil moisture sensors are provided in xxx.dat. The metadata file (BR-Ma2 E-field log_20160501.xls) has information on locations where the sensors were installed, and other installation/maintenance details. No data processing or QA/QC was done on the raw datasets. Processed datasets will be uploaded separately. Contact janedoe@lbl.gov if you need to use this dataset for additional information.</i> <b>This field has a limit of 4,000 characters and must have at least 100 words.</b></p>"
     },
     "sites": {
         "type": "reference_list",
@@ -40,7 +40,7 @@
         "label": "Dataset Field Site",
         "sequence": 5,
         "multiple": true,
-        "description": "<p>Field site(s) where the data were collected from. Select all that apply. Click the +Add button to add more than one site. Additional site information can be viewed using the 'View Sites and Plots' option on the main menu. Contact ngee-tropics-archive@lbl.gov if the site you need is not listed.</p>"
+        "tooltip": "<p>Field site(s) where the data were collected from. Select all that apply. Click the +Add button to add more than one site. Additional site information can be viewed using the 'View Sites and Plots' option on the main menu. Contact ngee-tropics-archive@lbl.gov if the site you need is not listed.</p>"
     },
     "plots": {
         "type": "reference_list",
@@ -50,7 +50,7 @@
         "label": "Dataset Field Plot",
         "sequence": 6,
         "multiple": true,
-        "description": "<p>Field plot(s) where the data were collected from. Select all that apply. Click the +Add button to add more than one plot. Only the plots belonging to the field site selected above can be chosen. Additional plot information can be viewed using the “View Sites and Plots” option on the main menu. Contact ngee-tropics-archive@lbl.gov if the plot you need is not listed.</p>"
+        "tooltip": "<p>Field plot(s) where the data were collected from. Select all that apply. Click the +Add button to add more than one plot. Only the plots belonging to the field site selected above can be chosen. Additional plot information can be viewed using the “View Sites and Plots” option on the main menu. Contact ngee-tropics-archive@lbl.gov if the plot you need is not listed.</p>"
     },
     "authors": {
         "type": "reference_list",
@@ -60,7 +60,7 @@
         "label": "Dataset Author",
         "sequence": 7,
         "multiple": true,
-        "description": "<p>Dataset Authors needed for the purposes of a DOI. <em><b>Add the authors in dataset citation order.</b></em> List the main researchers involved in producing the data, or the authors of the publication who should be listed in the citation for this data. Select authors from picklist. Hit the +Add button to add more authors. If the author is not listed, select  --Add Collaborator --  from the top of the picklist and add an author.</p>"
+        "tooltip": "<p>Dataset Authors needed for the purposes of a DOI. <em><b>Add the authors in dataset citation order.</b></em> List the main researchers involved in producing the data, or the authors of the publication who should be listed in the citation for this data. Select authors from picklist. Hit the +Add button to add more authors. If the author is not listed, select  --Add Collaborator --  from the top of the picklist and add an author.</p>"
     },
     "originating_institution": {
         "type": "string",
@@ -69,7 +69,7 @@
         "label": "Dataset Originating Institution(s)",
         "sequence": 8,
         "multiple": false,
-        "description": "<p>Name of the organization(s) that performed the research or issued the dataset. Separate multiple organizations with a semicolon and a space.</p>"
+        "tooltip": "<p>Name of the organization(s) that performed the research or issued the dataset. Separate multiple organizations with a semicolon and a space.</p>"
     },
     "contact": {
         "type": "reference_list",
@@ -79,7 +79,7 @@
         "label": "Dataset Contact",
         "sequence": 9,
         "multiple": false,
-        "description": "<p>Person who should be listed as the contact for the dataset for the purposes of the DOI or for users seeking further information/usage permissions for the data.  Select contact from picklist. Only one contact is allowed per dataset. If the contact is not listed, select  --Add New Contact --  from the top of the picklist and add the contact.</p>"
+        "tooltip": "<p>Person who should be listed as the contact for the dataset for the purposes of the DOI or for users seeking further information/usage permissions for the data.  Select contact from picklist. Only one contact is allowed per dataset. If the contact is not listed, select  --Add New Contact --  from the top of the picklist and add the contact.</p>"
     },
     "variables": {
         "type": "reference_list",
@@ -89,7 +89,7 @@
         "label": "Dataset Variable",
         "sequence": 10,
         "multiple": true,
-        "description": "<p>Measurement variables present in the dataset (select all that apply). Select each variable from the picklist. To add more than one variable, hit the +Add button. If the variable you need is not listed, contact ngee-tropics-archive@lbl.gov.</p>"
+        "tooltip": "<p>Measurement variables present in the dataset (select all that apply). Select each variable from the picklist. To add more than one variable, hit the +Add button. If the variable you need is not listed, contact ngee-tropics-archive@lbl.gov.</p>"
     },
     "start_date": {
         "type": "date",
@@ -99,7 +99,7 @@
         "sequence": 11,
         "multiple": false,
         "units": "YYYYMMDD",
-        "description": "<p>Earliest date in dataset. Provide in ISO format (YYYY-MM-DD). <i>E.g. 2016-01-10</i><p>",
+        "tooltip": "<p>Earliest date in dataset. Provide in ISO format (YYYY-MM-DD). <i>E.g. 2016-01-10</i><p>",
         "format": "ISO"
     },
     "end_date": {
@@ -110,7 +110,7 @@
         "sequence": 12,
         "multiple": false,
         "units": "YYYYMMDD",
-        "description": "<p>Last date in dataset. Provide in ISO format (YYYY-MM-DD). <i>E.g. 2016-01-10</i></p>",
+        "tooltip": "<p>Last date in dataset. Provide in ISO format (YYYY-MM-DD). <i>E.g. 2016-01-10</i></p>",
         "format": "ISO"
     },
     "qaqc_status": {
@@ -134,16 +134,16 @@
         ],
         "sequence": 13,
         "multiple": false,
-        "description": "<p>Indicate if any QA/QC has been performed on the dataset. Choices are None, Provisional QA-QC, Final QA-QC.</p>"
+        "tooltip": "<p>Indicate if any QA/QC has been performed on the dataset. Choices are None, Provisional QA-QC, Final QA-QC.</p>"
     },
-    "qaqc_method_description": {
+    "qaqc_method_tooltip": {
         "type": "string",
         "required": true,
         "read_only": false,
         "label": "Method Description",
         "sequence": 14,
         "multiple": false,
-        "description": "<p>Information about the methods employed in collecting or generating a data set or other resource. These include descriptions of sampling or experimental procedures, data QA/QC, processing and synthesis.</p>"
+        "tooltip": "<p>Information about the methods employed in collecting or generating a data set or other resource. These include tooltips of sampling or experimental procedures, data QA/QC, processing and synthesis.</p>"
     },
     "ngee_tropics_resources": {
         "type": "boolean",
@@ -152,16 +152,18 @@
         "label": "NGEE Tropics Resources Used? (If \"yes\", internal data policy applies)",
         "sequence": 15,
         "multiple": false,
-        "description": "<p>This should be checked if any NGEE Tropics Resources (financial, personnel, etc.) were used to generate the data. If marked yes, the data will will be subject to the NGEE Tropics Internal Data Policy. NGEE Tropics Internal Data Policy: 'Private' Datasets that have used NGEE Tropics Resources (financial, personnel etc.) will automatically be set to 'NGEE Tropics' access within 6 months of submission. 'Private and 'NGEE Tropics' datasets that have used NGEE Tropics Resources will be set to 'Public' access within 18 months of submission.</p>"
+        "tooltip": "<p>This should be checked if any NGEE Tropics Resources (financial, personnel, etc.) were used to generate the data. If marked yes, the data will will be subject to the NGEE Tropics Internal Data Policy. NGEE Tropics Internal Data Policy: 'Private' Datasets that have used NGEE Tropics Resources (financial, personnel etc.) will automatically be set to 'NGEE Tropics' access within 6 months of submission. 'Private and 'NGEE Tropics' datasets that have used NGEE Tropics Resources will be set to 'Public' access within 18 months of submission.</p>"
     },
     "funding_organizations": {
         "type": "string",
-        "required": true,
+        "required": false,
         "read_only": false,
         "label": "Dataset Funding organization(s)",
+        "description": "<p style='font-size: small;'>(BER is assumed by default.)</p><p>U.S. DOE > Office of Science > Biological and Environmental Research (BER)</p>",
         "sequence": 16,
         "multiple": false,
-        "description": "<p>Identify the agencies and offices that funded the work to generate the dataset. Separate multiple funders with a comma and a space. <b>This field has a limit of 1024 characters.</b></p>"
+        "tooltip": "<p>Identify the agencies and offices that funded the work to generate the dataset. Separate multiple funders with a comma and a space. <b>This field has a limit of 1024 characters.</b></p>",
+        "placeholder": "Add additional funding organizations other than the default."
     },
     "doe_funding_contract_numbers": {
         "type": "string",
@@ -170,7 +172,7 @@
         "label": "Dataset Funding Contract Number(s)",
         "sequence": 17,
         "multiple": false,
-        "description": "<p>List the numbers of any DOE contract under which the work was funded. If no DOE funding for this dataset or field is empty set as 'NONE'. If the dataset is a result of a joint effort between two or more DOE Site/Facility Management Contractors, etc., additional DOE contract numbers may be entered. The 'DE' should not be included as a part of the number. <b>This field has a limit of 100 characters.</b></p>"
+        "tooltip": "<p>List the numbers of any DOE contract under which the work was funded. If no DOE funding for this dataset or field is empty set as 'NONE'. If the dataset is a result of a joint effort between two or more DOE Site/Facility Management Contractors, etc., additional DOE contract numbers may be entered. The 'DE' should not be included as a part of the number. <b>This field has a limit of 100 characters.</b></p>"
     },
     "acknowledgement": {
         "type": "string",
@@ -179,7 +181,7 @@
         "sequence": 18,
         "multiple": false,
         "label": "Dataset Acknowledgement(s)",
-        "description": "<p>Acknowledgement that you want the users of this data to include when they use the data (different from citation). Acknowledgements can include relevant DOI or paper(s), and/or funding for the site support. You can also indicate that you prefer to be contacted for acknowledgement text. If NGEE Tropics resources (financial, personnel etc.) were used, include the following line: 'Funding for NGEE-Tropics data resources was provided by the U.S. Department of Energy Office of Science, Office of Biological and Environmental Research.'</p>"
+        "tooltip": "<p>Acknowledgement that you want the users of this data to include when they use the data (different from citation). Acknowledgements can include relevant DOI or paper(s), and/or funding for the site support. You can also indicate that you prefer to be contacted for acknowledgement text. If NGEE Tropics resources (financial, personnel etc.) were used, include the following line: 'Funding for NGEE-Tropics data resources was provided by the U.S. Department of Energy Office of Science, Office of Biological and Environmental Research.'</p>"
     },
     "reference": {
         "type": "string",
@@ -188,7 +190,7 @@
         "label": "Dataset Reference(s)",
         "sequence": 19,
         "multiple": false,
-        "description": "<p>Associated publications or datasets where users can learn more about the data, processing method, or how the data were used. Ideally, provide complete citation information for the publication (including DOI). <b>This field has a limit of 2,255 characters.</b></p>"
+        "tooltip": "<p>Associated publications or datasets where users can learn more about the data, processing method, or how the data were used. Ideally, provide complete citation information for the publication (including DOI). <b>This field has a limit of 2,255 characters.</b></p>"
     },
     "additional_reference_information": {
         "type": "string",
@@ -197,7 +199,7 @@
         "label": "Additional Information about Dataset Reference(s)",
         "sequence": 20,
         "multiple": false,
-        "description": "<p>Brief description of dataset reference (e,g, paper) relevance, relationship with this dataset or other comments.  <b>This field has a limit of 2,255 characters.</b></p>"
+        "tooltip": "<p>Brief tooltip of dataset reference (e,g, paper) relevance, relationship with this dataset or other comments.  <b>This field has a limit of 2,255 characters.</b></p>"
     },
     "access_level": {
         "type": "choice",
@@ -216,7 +218,7 @@
         ],
         "sequence": 21,
         "multiple": false,
-        "description": "<p>Privacy setting for data files once the submitted record is approved. Choices are Public, NGEE Tropics, Private. Public: Data and metadata can be viewed and downloaded by anyone. NGEE Tropics: Metadata can be viewed by anyone. Data files are available for download to NGEE Tropics personnel and collaborators only. Private: Metadata can be viewed by anyone. Data files are not available for download. 'Private' Datasets that have used NGEE Tropics Resources (financial, personnel etc.) will automatically be set to 'NGEE Tropics' access within 6 months of submission. 'Private and 'NGEE Tropics' datasets that have used NGEE Tropics Resources will be set to 'Public' access within 18 months of submission.</p>"
+        "tooltip": "<p>Privacy setting for data files once the submitted record is approved. Choices are Public, NGEE Tropics, Private. Public: Data and metadata can be viewed and downloaded by anyone. NGEE Tropics: Metadata can be viewed by anyone. Data files are available for download to NGEE Tropics personnel and collaborators only. Private: Metadata can be viewed by anyone. Data files are not available for download. 'Private' Datasets that have used NGEE Tropics Resources (financial, personnel etc.) will automatically be set to 'NGEE Tropics' access within 6 months of submission. 'Private and 'NGEE Tropics' datasets that have used NGEE Tropics Resources will be set to 'Public' access within 18 months of submission.</p>"
     },
     "additional_access_information": {
         "type": "string",
@@ -225,7 +227,7 @@
         "label": "Additional Information about Dataset Access",
         "sequence": 22,
         "multiple": false,
-        "description": "<p>Provide comments, if necessary regarding data access. Indicate if there are any data usage constraints here. <b><em>Specify a publication date if you DO NOT wish this dataset to go public on March 31, 2019.</em></b></p>"
+        "tooltip": "<p>Provide comments, if necessary regarding data access. Indicate if there are any data usage constraints here. <b><em>Specify a publication date if you DO NOT wish this dataset to go public on March 31, 2019.</em></b></p>"
     },
     "cdiac_submission_contact": {
         "type": "field",
@@ -241,7 +243,7 @@
         "label": "Dataset DOI",
         "sequence": -1,
         "multiple": false,
-        "description": "<p>DOI for this dataset.</p>"
+        "tooltip": "<p>DOI for this dataset.</p>"
     },
     "url": {
         "type": "field",

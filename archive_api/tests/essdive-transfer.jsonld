@@ -4,6 +4,7 @@
   "@id": "http://dx.doi.org/10.15486/ngt/1783737",
   "name": "Leaf structural and chemical traits, and BNL field campaign sample details, San Lorenzo, Panama, 2020",
   "alternateName": "NGT0004",
+  "award": ["DE-SC0012704"],
   "citation": [
     "Larson, Kristine & Small, Eric & Gutmann, Ethan & Bilich, Andria & Braun, John & Zavorotny, Valery & Larson, Citation. (2008). Use of GPS receivers as a soil moisture network for water cycle studies. Geophysical Research Letters - GEOPHYS RES LETT. 35. 10.1029/2008GL036013. Solander et al.: The pantropical response of soil moisture to El Niño, Hydrol. Earth Syst. Sci., 24, 2303–2322, https://doi.org/10.5194/hess-24-2303-2020, 2020.",
     "Additional information about citations:",
@@ -56,9 +57,10 @@
       ]
     }
   ],
-  "funder": {
-    "name": "U.S. DOE > Office of Science > Biological and Environmental Research (BER)"
-  },
+  "funder":
+    [{"name": "U.S. DOE > Office of Science > Biological and Environmental Research (BER)"},
+      {"name": "U.S. Department of Energy Office of Science Office of Biological and Environmental Research"}]
+,
   "temporalCoverage": {
     "endDate": "2020-03-13",
     "startDate": "2020-01-14"
