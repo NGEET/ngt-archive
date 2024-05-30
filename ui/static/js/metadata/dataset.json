@@ -30,7 +30,7 @@
         "label": "Dataset Description",
         "sequence": 4,
         "multiple": false,
-        "tooltip": "<p>Dataset tooltip and overview. This should read as an abstract for the dataset, and provide users with adequate information about what the dataset contains, and how to use it. Include details on what data what, when and where data was collected, and if any data processing was done.</p> <p><i>E.g.: Raw output from the data logger connected to 9 sapflow and 5 soil moisture sensors are provided in xxx.dat. The metadata file (BR-Ma2 E-field log_20160501.xls) has information on locations where the sensors were installed, and other installation/maintenance details. No data processing or QA/QC was done on the raw datasets. Processed datasets will be uploaded separately. Contact janedoe@lbl.gov if you need to use this dataset for additional information.</i> <b>This field has a limit of 4,000 characters and must have at least 100 words.</b></p>"
+        "tooltip": "<p>Dataset description and overview. This should read as an abstract for the dataset, and provide users with adequate information about what the dataset contains, and how to use it. Include details on what data what, when and where data was collected, and if any data processing was done.</p> <p><i>E.g.: Raw output from the data logger connected to 9 sapflow and 5 soil moisture sensors are provided in xxx.dat. The metadata file (BR-Ma2 E-field log_20160501.xls) has information on locations where the sensors were installed, and other installation/maintenance details. No data processing or QA/QC was done on the raw datasets. Processed datasets will be uploaded separately. Contact janedoe@lbl.gov if you need to use this dataset for additional information.</i> <b>This field has a limit of 4,000 characters and must have at least 100 words.</b></p>"
     },
     "sites": {
         "type": "reference_list",
@@ -136,14 +136,14 @@
         "multiple": false,
         "tooltip": "<p>Indicate if any QA/QC has been performed on the dataset. Choices are None, Provisional QA-QC, Final QA-QC.</p>"
     },
-    "qaqc_method_tooltip": {
+    "qaqc_method_description": {
         "type": "string",
         "required": true,
         "read_only": false,
         "label": "Method Description",
         "sequence": 14,
         "multiple": false,
-        "tooltip": "<p>Information about the methods employed in collecting or generating a data set or other resource. These include tooltips of sampling or experimental procedures, data QA/QC, processing and synthesis.</p>"
+        "tooltip": "<p>Information about the methods employed in collecting or generating a data set or other resource. These include descriptions of sampling or experimental procedures, data QA/QC, processing and synthesis.</p>"
     },
     "ngee_tropics_resources": {
         "type": "boolean",
@@ -170,9 +170,11 @@
         "required": false,
         "read_only": false,
         "label": "Dataset Funding Contract Number(s)",
+        "description": "<p style='font-size: small;'>(NGEE-Tropics is assumed by default through LBNL contract)</p><p>DE-AC02-05CH11231 will be automatically prepended</p>",
         "sequence": 17,
         "multiple": false,
-        "tooltip": "<p>List the numbers of any DOE contract under which the work was funded. If no DOE funding for this dataset or field is empty set as 'NONE'. If the dataset is a result of a joint effort between two or more DOE Site/Facility Management Contractors, etc., additional DOE contract numbers may be entered. The 'DE' should not be included as a part of the number. <b>This field has a limit of 100 characters.</b></p>"
+        "tooltip": "<p>List the numbers of any DOE contract under which the work was funded. If no DOE funding for this dataset or field is empty set as 'DE-AC02-05CH11231'. If the dataset is a result of a joint effort between two or more DOE Site/Facility Management Contractors, etc., additional DOE contract numbers may be entered. <b>This field has a limit of 100 characters.</b></p>",
+        "placeholder": "Add additional contract numbers other than the default."
     },
     "acknowledgement": {
         "type": "string",
@@ -199,7 +201,7 @@
         "label": "Additional Information about Dataset Reference(s)",
         "sequence": 20,
         "multiple": false,
-        "tooltip": "<p>Brief tooltip of dataset reference (e,g, paper) relevance, relationship with this dataset or other comments.  <b>This field has a limit of 2,255 characters.</b></p>"
+        "tooltip": "<p>Brief description of dataset reference (e,g, paper) relevance, relationship with this dataset or other comments.  <b>This field has a limit of 2,255 characters.</b></p>"
     },
     "access_level": {
         "type": "choice",

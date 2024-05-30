@@ -467,6 +467,15 @@ class DataSet(models.Model):
                 self.modified_date = kwargs["modified_date"]
                 del kwargs['modified_date']
 
+            # prepend the default contract number if not set
+            if self.doe_funding_contract_numbers is not None and self.doe_funding_contract_numbers.strip() != "":
+                if "AC02-05CH11231" not in self.doe_funding_contract_numbers and \
+                  "AC0205CH11231" not in self.doe_funding_contract_numbers:
+                    self.doe_funding_contract_numbers = \
+                        "DE-AC02-05CH11231, " + self.doe_funding_contract_numbers
+            else:
+                self.doe_funding_contract_numbers = "DE-AC02-05CH11231"
+
             super(DataSet, self).save(*args, **kwargs)
 
     def __str__(self):
