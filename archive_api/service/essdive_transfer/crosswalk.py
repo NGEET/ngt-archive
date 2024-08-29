@@ -270,14 +270,16 @@ def dataset_transform(dataset) -> Tuple[Dict, Optional[TextIO]]:
     # --- Funding Organization and Contract Numbers ---
     funders = [JSONLD_FUNDER]
     if dataset.funding_organizations:
-        # if there are line breaks, commas, or semicolons, we assume multiple funders
-        for f in re.split('[\n,;]', dataset.funding_organizations):
+        # if there are line breaks, we assume multiple funders
+        for f in re.split('\n', dataset.funding_organizations):
             funders.append({"name": f.strip()})
 
     # --- DOE Funding Contract Numbers --
-    awards = None
+    awards = []
     if dataset.doe_funding_contract_numbers:
-        awards = re.split('[\n,;]', dataset.doe_funding_contract_numbers)
+        # if there are line breaks, we assume multiple funders
+        for f in re.split('[\n,]', dataset.doe_funding_contract_numbers):
+            awards.append(f.strip())
 
     # --- ASSIGN TO JSON-LD ----
 

@@ -162,7 +162,7 @@
         "description": "<p style='font-size: small;'>(BER is assumed by default.)</p><p>U.S. DOE > Office of Science > Biological and Environmental Research (BER)</p>",
         "sequence": 16,
         "multiple": false,
-        "tooltip": "<p>Identify the agencies and offices that funded the work to generate the dataset. Separate multiple funders with a comma and a space. <b>This field has a limit of 1024 characters.</b></p>",
+        "tooltip": "<p>Identify the agencies and offices that funded the work to generate the dataset. Separate multiple funders with a newline. <b>This field has a limit of 1024 characters.</b></p>",
         "placeholder": "Add additional funding organizations other than the default."
     },
     "doe_funding_contract_numbers": {
@@ -173,7 +173,7 @@
         "description": "<p style='font-size: small;'>(NGEE-Tropics is assumed by default through LBNL contract)</p><p>DE-AC02-05CH11231 will be automatically prepended</p>",
         "sequence": 17,
         "multiple": false,
-        "tooltip": "<p>List the numbers of any DOE contract under which the work was funded. If no DOE funding for this dataset or field is empty set as 'DE-AC02-05CH11231'. If the dataset is a result of a joint effort between two or more DOE Site/Facility Management Contractors, etc., additional DOE contract numbers may be entered. <b>This field has a limit of 100 characters.</b></p>",
+        "tooltip": "<p>List the numbers of any DOE contract under which the work was funded.If no DOE funding for this dataset or field is empty set as 'DE-AC02-05CH11231'. If the dataset is a result of a joint effort between two or more DOE Site/Facility Management Contractors, etc., additional DOE contract numbers may be entered. <b>This field has a limit of 100 characters.  Separate multiple funders with a newline or comma(,). </b></p>",
         "placeholder": "Add additional contract numbers other than the default."
     },
     "acknowledgement": {
