@@ -169,7 +169,7 @@ class DataSetSerializer(serializers.HyperlinkedModelSerializer):
                 errors['missingRequiredFields'].append("archive")
 
             for field in ['sites', 'authors', 'name', 'description', 'contact', 'variables',
-                          'ngee_tropics_resources', 'funding_organizations', 'originating_institution',
+                          'ngee_tropics_resources', 'originating_institution',
                           'access_level', 'qaqc_method_description']:  # Check for required fields
                 if field in data.keys():
                     if data[field] is None or (isinstance(data[field], (list, tuple, str)) and not data[field]):
