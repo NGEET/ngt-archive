@@ -226,7 +226,6 @@ You can also login with your account credentials, select "Edit Drafts" and then 
                                                     'contact',
                                                     'variables',
                                                     'ngee_tropics_resources',
-                                                    'funding_organizations',
                                                     'originating_institution',
                                                     'qaqc_method_description']}, value)
 
@@ -331,7 +330,7 @@ You can also login with your account credentials, select "Edit Drafts" and then 
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
         self.assertEqual(
             {'description': ['Description must be at least 100 words. Current count is 37.'],
-             'missingRequiredFields': ['archive', 'authors', 'funding_organizations', 'originating_institution',
+             'missingRequiredFields': ['archive', 'authors', 'originating_institution',
                                        'qaqc_method_description']},
             value)
 
@@ -388,7 +387,7 @@ You can also login with your account credentials, select "Edit Drafts" and then 
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(
             {'description': ['Description must be at least 100 words. Current count is 37.'],
-             'missingRequiredFields': ['archive', 'authors', 'funding_organizations', 'originating_institution',
+             'missingRequiredFields': ['archive', 'authors', 'originating_institution',
                                        'qaqc_method_description']},
             value)
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
