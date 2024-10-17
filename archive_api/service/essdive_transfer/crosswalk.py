@@ -14,6 +14,7 @@ import logging
 
 # NGEE-Tropics Project information
 LOCATION_NOT_APPLICABLE = "N/A"
+LOCATION_RF_KEYWORD = "ESS-DIVE Location Metadata Reporting Format"
 JSONLD_PROVIDER = {
     "identifier": {
       "@type": "PropertyValue",
@@ -23,7 +24,7 @@ JSONLD_PROVIDER = {
 }
 
 # NGEE-Tropics Keywords
-JSONLD_KEYWORDS = ["Next-Generation Ecosystem Experiements Tropics", "NGEE-T"]
+JSONLD_KEYWORDS = ["Next-Generation Ecosystem Experiements Tropics", "NGEE-T", LOCATION_RF_KEYWORD]
 
 # CC By 4 License
 JSONLD_LICENSE = "http://creativecommons.org/licenses/by/4.0/"
