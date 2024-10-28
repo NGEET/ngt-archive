@@ -554,10 +554,12 @@ class EssDiveTransfer(models.Model):
 
     TYPE_METADATA = 0
     TYPE_DATA = 1
+    TYPE_PERMISSIONS = 2
 
     TYPE_CHOICES = (
         (TYPE_METADATA, "Metadata"),
-        (TYPE_DATA, "Data")
+        (TYPE_DATA, "Data"),
+        (TYPE_PERMISSIONS, "Permissions")
     )
 
     dataset = models.ForeignKey(DataSet, on_delete=models.DO_NOTHING, blank=False, null=False)

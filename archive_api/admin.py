@@ -13,6 +13,7 @@ from django.utils.translation import ngettext
 
 from archive_api.models import DataSet, DataSetDownloadLog, EssDiveTransfer, MeasurementVariable, Person, Plot, \
     ServiceAccount, Site
+
 from archive_api.forms import ServiceAccountForm
 from simple_history.admin import SimpleHistoryAdmin
 
@@ -33,7 +34,8 @@ class DataSetHistoryAdmin(SimpleHistoryAdmin):
     history_list_display = ["list_changes"]
     search_fields = ['name', 'status', "ngt_id", "version"]
 
-    actions = ['osti_synchronize', 'osti_mint', 'essdive_transfer_metadata', 'essdive_transfer_data']
+    actions = ['osti_synchronize', 'osti_mint', 'essdive_transfer_metadata', 'essdive_transfer_data',
+               'update_essdive_permissions']
 
     def last_transfer_status(self, obj):
         """
@@ -59,6 +61,12 @@ class DataSetHistoryAdmin(SimpleHistoryAdmin):
             return trasfer_result.order_by('-create_time')[0].create_time
         else:
             return None
+
+    def update_essdive_permissions(self, request, queryset):
+        """Update permissions for dataset in ESS-DIVE"""
+        return self._essdive_transfer(request, queryset, EssDiveTransfer.TYPE_PERMISSIONS)
+
+    update_essdive_permissions.short_description = "Update permissions for dataset in ESS-DIVE"
 
     def essdive_transfer_data(self, request, queryset):
         """Transfer dataset metadata+data to ESS-DIVE"""
