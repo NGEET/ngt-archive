@@ -249,8 +249,8 @@ def test_transfer_task(celery_setup, monkeypatch):
 def test_transfer_task_not_authorized(celery_setup, monkeypatch):
     """Test transfer task"""
 
-    task = tasks.transfer.delay({'run_id': RUN_ID_TRANSFER, "ngt_id": "NGT0001"})
     monkeypatch.setattr(requests, "request", create_mock_request("ngt_essdive_dataset_unauthorized.json", 401))
+    task = tasks.transfer.delay({'run_id': RUN_ID_TRANSFER, "ngt_id": "NGT0001"})
 
     results = task.get()
     assert results == {'response': {'detail': 'You do not have authorized access'},
@@ -262,7 +262,7 @@ def test_transfer_task_not_authorized(celery_setup, monkeypatch):
 def test_essdive_task_end(celery_setup):
     """Test start end"""
 
-    task = tasks.transfer_end.delay({'response': {}, 'run_id': RUN_ID_END, 'status_code': 3})
+    task = tasks.transfer_end.delay({'run_id': RUN_ID_END})
     results = task.get()
     assert results == {'run_id': RUN_ID_END}
 

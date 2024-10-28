@@ -11,6 +11,8 @@ from rest_framework.exceptions import APIException
 from archive_api.models import EssDiveTransfer, SERVICE_ACCOUNT_ESSDIVE, ServiceAccount
 from archive_api.service.essdive_transfer import crosswalk
 
+TEAM_NGEE_TROPICS_ADMIN = "CN=NGEE-Tropics Admins,DC=dataone,DC=org"
+
 log = get_task_logger(__name__)
 
 
@@ -49,7 +51,6 @@ def get(essdive_id):
     #  if the NGT ID is in the text of the metadata.
     response = requests.get(f"{service_account.endpoint}/{essdive_id}",
                             headers={"Authorization": f"Bearer {service_account.secret}"})
-
     return response
 
 
@@ -154,8 +155,7 @@ def transfer_start(run_id):
     except RunError as re:
         raise re
     except json.decoder.JSONDecodeError as je:
-        _raise_transfer_failure(f"Failed decoding ESS-DIVE response ({str(je)}) = "
-                                        f"{response_json.text()}", run_id)
+        _raise_transfer_failure(f"Failed decoding ESS-DIVE response ({str(je)})", run_id)
     except Exception as e:
         _raise_run_error(e, run_id)
 
@@ -196,62 +196,65 @@ def transfer(result):
             transfer_job.start_time = timezone.now()
             transfer_job.save()
 
-            method = essdive_id and "PUT" or "POST"
-            json_ld, ack_fp = crosswalk.dataset_transform(transfer_job.dataset)
-            log.info(f"{essdive_id and 'Updating' or 'Creating'} ESS-DIVE dataset metadata with ESS-DIVE identifier {essdive_id}")
+            if transfer_job.type in [EssDiveTransfer.TYPE_METADATA, EssDiveTransfer.TYPE_DATA]:
+                method = essdive_id and "PUT" or "POST"
+                json_ld, ack_fp = crosswalk.dataset_transform(transfer_job.dataset)
+                log.info(f"{essdive_id and 'Updating' or 'Creating'} ESS-DIVE dataset metadata with ESS-DIVE identifier {essdive_id}")
 
-            # Prepare the multi part encoding to stream the data
-            files_tuples_array = list()
-            files_tuples_array.append(("json-ld", json.dumps(json_ld)))
+                # Prepare the multi part encoding to stream the data
+                files_tuples_array = list()
+                files_tuples_array.append(("json-ld", json.dumps(json_ld)))
 
-            # Get the locations csv for this dataset
-            locations_fp = crosswalk.locations_csv(transfer_job.dataset)
-            if locations_fp:
-                log.info(
-                    f"Prepared ESS-DIVE dataset locations.csv file for ESS-DIVE identifier {essdive_id}")
-                files_tuples_array.append(
-                    ('data', (f"{transfer_job.dataset.data_set_id()}_locations.csv", locations_fp)))
-            if ack_fp:
-                # There is an acknowledgements file
-                log.info(
-                    f"Prepared ESS-DIVE dataset acknowledgements.txt file for ESS-DIVE identifier {essdive_id}")
-                files_tuples_array.append(
-                    ('data', (f"{transfer_job.dataset.data_set_id()}_acknowledgements.txt", ack_fp)))
+                # Get the locations csv for this dataset
+                locations_fp = crosswalk.locations_csv(transfer_job.dataset)
+                if locations_fp:
+                    log.info(
+                        f"Prepared ESS-DIVE dataset locations.csv file for ESS-DIVE identifier {essdive_id}")
+                    files_tuples_array.append(
+                        ('data', (f"{transfer_job.dataset.data_set_id()}_locations.csv", locations_fp)))
+                if ack_fp:
+                    # There is an acknowledgements file
+                    log.info(
+                        f"Prepared ESS-DIVE dataset acknowledgements.txt file for ESS-DIVE identifier {essdive_id}")
+                    files_tuples_array.append(
+                        ('data', (f"{transfer_job.dataset.data_set_id()}_acknowledgements.txt", ack_fp)))
 
-            # Is this a data update?
-            if transfer_job.type == EssDiveTransfer.TYPE_DATA:
+                # Is this a data update?
+                if transfer_job.type == EssDiveTransfer.TYPE_DATA:
 
-                log.info(f"Uploading ESS-DIVE dataset file '{transfer_job.dataset.archive.path}' for ESS-DIVE identifier {essdive_id}")
-                files_tuples_array.append(
-                    ('data', (transfer_job.dataset.archive.name, open(transfer_job.dataset.archive.path, 'rb'))))
+                    log.info(f"Uploading ESS-DIVE dataset file '{transfer_job.dataset.archive.path}' for ESS-DIVE identifier {essdive_id}")
+                    files_tuples_array.append(
+                        ('data', (transfer_job.dataset.archive.name, open(transfer_job.dataset.archive.path, 'rb'))))
 
-            encoder = MultipartEncoder(fields=files_tuples_array)
-            # need to limit number of messages at each percent
-            monitor_messages = []
+                encoder = MultipartEncoder(fields=files_tuples_array)
+                # need to limit number of messages at each percent
+                monitor_messages = []
 
-            def _upload_progress(monitor: MultipartEncoderMonitor):
-                """
-                Callback for MultipartEncoder Monitor to log upload progress
-                :param monitor: The monitor for this callback
-                :return: None
-                """
-                # Determine percentage complete
-                percent_complete = math.floor(monitor.bytes_read/monitor.len * 100)
-                if percent_complete % 10 == 0 and percent_complete not in monitor_messages:
-                    monitor_messages.append(percent_complete)
-                    log.info(f"Upload progress {transfer_job.dataset.data_set_id()} - bytes {monitor.bytes_read} of {monitor.len} ({percent_complete}%) read")
+                def _upload_progress(monitor: MultipartEncoderMonitor):
+                    """
+                    Callback for MultipartEncoder Monitor to log upload progress
+                    :param monitor: The monitor for this callback
+                    :return: None
+                    """
+                    # Determine percentage complete
+                    percent_complete = math.floor(monitor.bytes_read/monitor.len * 100)
+                    if percent_complete % 10 == 0 and percent_complete not in monitor_messages:
+                        monitor_messages.append(percent_complete)
+                        log.info(f"Upload progress {transfer_job.dataset.data_set_id()} - bytes {monitor.bytes_read} of {monitor.len} ({percent_complete}%) read")
 
-            monitor = MultipartEncoderMonitor(encoder, _upload_progress)
-            endpoint = f"{service_account.endpoint}/{essdive_id or ''}"
-            response = requests.request(method=method, url=endpoint,
-                                        headers={"Authorization": f"Bearer {service_account.secret}",
-                                                 'Content-Type': monitor.content_type},
-                                        data=monitor)
+                monitor = MultipartEncoderMonitor(encoder, _upload_progress)
+                endpoint = f"{service_account.endpoint}/{essdive_id or ''}"
+                response = requests.request(method=method, url=endpoint,
+                                            headers={"Authorization": f"Bearer {service_account.secret}",
+                                                     'Content-Type': monitor.content_type},
+                                            data=monitor)
 
-            json_response = response.json()
+                json_response = response.json()
 
-            # Return run information
-            return {"run_id": run_id, "response": json_response, "status_code": response.status_code}
+                # Return run information
+                return {"run_id": run_id, "response": json_response, "status_code": response.status_code}
+            elif transfer_job.type == EssDiveTransfer.TYPE_PERMISSIONS:
+                return _update_dataset_permissions(result)
         except Exception as e:
             _raise_run_error(e, run_id)
 
@@ -302,6 +305,55 @@ def transfer_end(result):
 
     else:
         RunError(None, "run_id is missing from result")
+
+
+def _update_dataset_permissions(result):
+    """
+    Update the dataset permissions for the dataset on ESS-DIVE
+
+    """
+    log.info("inputs:{}".format(result))
+
+    run_id = result.get("run_id", None)
+    essdive_id = result.get("essdive_id", None)
+
+    assert run_id, "run_id is missing from result"
+    assert essdive_id, "essdive_id is missing from result"
+
+    try:
+
+        # Check for required parameters
+        if not run_id or not essdive_id:
+            raise ValueError("Invalid parameters provided for updating dataset permissions")
+
+        # Get the ESS-DIVE account information
+        service_account = ServiceAccount.objects.all().get(service=SERVICE_ACCOUNT_ESSDIVE)
+        log.info(f"Using {service_account.get_service_display()} service account to update permissions.")
+
+        # Prepare the payload to update the dataset permissions
+        payload = json.dumps({
+            "manage": [
+                service_account.identity,
+                TEAM_NGEE_TROPICS_ADMIN
+            ]
+        })
+        # Update the dataset permissions
+        endpoint = f"{service_account.endpoint}/{essdive_id or ''}/share"
+        response = requests.request(method="PUT", url=endpoint,
+                                    headers={"Authorization": f"Bearer {service_account.secret}",
+                                             'Content-Type': "application/json"},
+                                    data=payload)
+
+        json_response = response.json()
+
+        # Return run information
+        return {"run_id": run_id, "response": json_response, "status_code": response.status_code, "essdive_id": essdive_id}
+    except RunError as re:
+        raise re
+    except json.decoder.JSONDecodeError as je:
+        _raise_transfer_failure(f"Failed decoding ESS-DIVE response ({str(je)})", run_id)
+    except Exception as e:
+        _raise_run_error(e, run_id)
 
 
 def _raise_run_error(e, run_id):
