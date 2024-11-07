@@ -9,14 +9,14 @@ from ngt_archive import settings
 
 import archive_api
 from archive_api.models import DataSet, Author, ServiceAccount
-from archive_api.service.common import ServiceAccountException
+from archive_api.service.common import ServiceAccountException, FUNDER_DOE_BER
 
 MAPPING = [('title', 'name', ""),
            ('contract_nos', 'doe_funding_contract_numbers', "None"),
            ('non-doe_contract_nos', 'doe_funding_contract_numbers', ""),
            ('originating_research_org', 'originating_institution', ""),
            ('description', 'description', ""),
-           ('sponsor_org', 'funding_organizations', ""),
+           ('sponsor_org', 'funding_organizations', FUNDER_DOE_BER),
            ('related_resource', 'reference', "")]
 
 

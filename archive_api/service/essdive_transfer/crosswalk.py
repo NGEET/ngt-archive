@@ -8,9 +8,11 @@ import collections
 import re
 from io import StringIO
 
-from typing import Dict, IO, List, Optional, TextIO, Tuple, Union
+from typing import Dict, List, Optional, TextIO, Tuple, Union
 
 import logging
+
+from archive_api.service.common import FUNDER_DOE_BER
 
 # NGEE-Tropics Project information
 LOCATION_NOT_APPLICABLE = "N/A"
@@ -30,7 +32,7 @@ JSONLD_KEYWORDS = ["Next-Generation Ecosystem Experiements Tropics", "NGEE-T", L
 JSONLD_LICENSE = "http://creativecommons.org/licenses/by/4.0/"
 
 # Funding Organization
-JSONLD_FUNDER = {"name": "U.S. DOE > Office of Science > Biological and Environmental Research (BER)"}
+JSONLD_FUNDER = {"name": FUNDER_DOE_BER}
 
 DESCRIPTION_MIRROR_FORMAT = "This dataset was originally published on the NGEE Tropics Archive and is " \
                                         "being mirrored on ESS-DIVE for long-term archival"
