@@ -11,3 +11,4 @@ class ServiceAccountException(Exception):
         super().__init__(f"Service Account {service}: {msg}")
 
 
+FUNDER_DOE_BER = "U.S. DOE > Office of Science > Biological and Environmental Research (BER)"
