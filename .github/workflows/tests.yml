@@ -12,9 +12,9 @@ jobs:
         python-version: ['3.9', '3.10']
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
@@ -23,14 +23,7 @@ jobs:
         sudo apt-get install -y python-dev-is-python3 libldap2-dev libsasl2-dev libssl-dev
         python -m pip install --upgrade pip
         pip install ".[dev]"
-    - name: Make artifact directory
-      run: |
-        mkdir -p ${{ github.workspace }}/artifacts
     - name: Test with pytest
       run: |
-        PYTHONPATH=. pytest -m "not flake8 and not mypy" --cov=. --cov-report term --cov-report html:${{ github.workspace }}/artifacts
-    - name: Archive code coverage results
-      uses: actions/upload-artifact@v3
-      with:
-        name: code-coverage-report
-        path: ${{ github.workspace }}/artifacts
+        PYTHONPATH=. pytest -m "not flake8 and not mypy" --cov=. --cov-report term-missing
+
