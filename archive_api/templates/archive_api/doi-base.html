@@ -46,17 +46,28 @@
 
     }
 
-    .bod {
-        width: 1100px;
-        background: #F8F8F8;
-    }
+    	  .bod {
+		width: 1100px;
+		background:#F8F8F8;
+	  }
+	  .tab {
+	  	padding-left:5em;
+	  }
+	  .graybox {
+	  	background:#eeeeee;
+	  }
 
-    .tab {
-        padding-left: 5em;
-    }
 
-    .graybox {
-        background: #eeeeee;
+    fieldset.graybox {
+        display: block;
+        min-inline-size: min-content;
+        margin-inline: 2px;
+        border-width: 2px;
+        border-style: groove;
+        border-color: threedface;
+        border-image: initial;
+        padding-block: 0.35em 0.625em;
+        padding-inline: 0.75em;
     }
 
     .container {
@@ -92,6 +103,11 @@
 {% block script %}
 {% endblock %}
 </script>
+        <link rel="stylesheet" href="/static/stylesheets/foundation.css">
+    <link rel="stylesheet" type="text/css" href="/static/stylesheets/style.css">
+    <link rel="stylesheet" type="text/css" href="/static/js/jquery-ui/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="/static/js/jquery-ui/jquery-ui.theme.css">
+    <link rel="stylesheet" type="text/css" href="/static/js/jquery-ui/jquery-ui.structure.css">
 
 {%  if  readonly %}
     <h3 class="banner" >The NGEE-Tropics Archive is undergoing maintenance and is currently in read-only mode.</h3>
@@ -99,7 +115,14 @@
 {% endif %}
 
 <body data-feedly-mini="yes">
-
+<div style="background-color: #ffcc00; padding: 10px; text-align: left; font-size: 16px;">
+        <b>NOTICE:</b> We’re in the process of migrating the NGEE-Tropics Data Archive to
+        <a href="https://ess-dive.lbl.gov/" target="_blank">ESS-DIVE</a>, the long-term data archive for
+        <a href="https://ess.science.energy.gov/" target="_blank">BER/ESS</a>. All public NGEE-Tropics datasets can be
+        accessed in the new
+        <a href="https://data.ess-dive.lbl.gov/portals/ngeetropics" target="_blank">NGEE-Tropics Portal in ESS-DIVE</a>,
+        including after the NGEE-Tropics Data Archive is retired.
+    </div>
 
 <div class="container">
 
@@ -117,7 +140,7 @@
                 <a href="{% url 'login' %}?next={{ request.path }}">Login to download</a>
             {% endif %}
         </div>
-        <div class="ma">
+        <div class="ma" >
             <h1 align="center">
 
                {% block title %}NGEE Tropics Data Collection{% endblock %}

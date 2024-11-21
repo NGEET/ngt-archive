@@ -1,15 +1,54 @@
 {% extends "rest_framework/login.html" %}
 
 {% block title %}{% if name %}{{ name }} – {% endif %}NGEE Tropics Archive{% endblock %}
+{% block style %}
+    <style>	  .graybox {
+	  	background:#eeeeee;
+	  }
 
+
+    fieldset.graybox {
+        display: block;
+        min-inline-size: min-content;
+        margin-inline: 2px;
+        border-width: 2px;
+        border-style: groove;
+        border-color: threedface;
+        border-image: initial;
+        padding-block: 0.35em 0.625em;
+        padding-inline: 0.75em;
+    }</style>
+        <link rel="stylesheet" href="/static/stylesheets/foundation.css">
+    <link rel="stylesheet" type="text/css" href="/static/stylesheets/style.css">
+    <link rel="stylesheet" type="text/css" href="/static/js/jquery-ui/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="/static/js/jquery-ui/jquery-ui.theme.css">
+    <link rel="stylesheet" type="text/css" href="/static/js/jquery-ui/jquery-ui.structure.css">
+
+{%  endblock %}
 {% block body %}
-<body class="container">
+
+    <div style="background-color: #ffcc00; padding: 10px; text-align: left; font-size: 16px;">
+        <b>NOTICE:</b> We’re in the process of migrating the NGEE-Tropics Data Archive to
+        <a href="https://ess-dive.lbl.gov/" target="_blank">ESS-DIVE</a>, the long-term data archive for
+        <a href="https://ess.science.energy.gov/" target="_blank">BER/ESS</a>. All public NGEE-Tropics datasets can be
+        accessed in the new
+        <a href="https://data.ess-dive.lbl.gov/portals/ngeetropics" target="_blank">NGEE-Tropics Portal in ESS-DIVE</a>,
+        including after the NGEE-Tropics Data Archive is retired.
+    </div>
+<body data-feedly-mini="yes">
+
+  <main>
+  <div class="logo">
+                <a href="/">
+                    <img src="/static/img/logo.png">
+                </a>
+            </div>
+      <article class="main-article js-main-article">
   <div class="container-fluid" style="margin-top: 30px">
     <div class="row-fluid">
       <div class="well" style="width: 320px; margin-left: auto; margin-right: auto">
         <div class="row-fluid">
           <div>
-          {% block branding %}<h3 style="margin: 0 0 20px;">NGEE Tropics Archive</h3>{% endblock %}
 
           </div>
         </div><!-- /row fluid -->
@@ -17,6 +56,7 @@
 
         <div class="row-fluid">
           <div>
+           <fieldset class="graybox">
             <form action="{% url 'rest_framework:login' %}" role="form" method="post">
               {% csrf_token %}
               <input type="hidden" name="next" value="{{ next }}" />
@@ -64,7 +104,7 @@ with you shortly.</div>
               {% endif %}
 
               <div class="form-actions-no-box">
-                <input type="submit" name="submit" value="Log in" class="btn btn-primary form-control" id="submit-id-submit">
+                <button type="submit" name="submit" value="Log in" class="button js-view-toggle columns small-12" id="submit-id-submit">Login</button>
               </div>
 
               <div>
@@ -74,10 +114,14 @@ with you shortly.</div>
                 <a href="https://ameriflux-data.lbl.gov/Pages/ResetFluxPassword.aspx">Forgot Password ?</a>
               </div>
             </form>
+            </fieldset>
           </div>
         </div><!-- /.row-fluid -->
       </div><!--/.well-->
     </div><!-- /.row-fluid -->
   </div><!-- /.container-fluid -->
+      </article>
+
+  </main>
 </body>
 {% endblock %}
