@@ -3,25 +3,41 @@
 {% block title %}Login to Download Data{% endblock %}
 {% block content %}
     <div class="hbp"></div>
-    <p>Log in with your FLUXNET credentials.</p>
-    <ul>
-        <li>Click <a href="https://ameriflux-data.lbl.gov/Pages/RequestAccount.aspx">here</a>
-            to create a new FLUXNET account before downloading data from the NGEE Tropics Data Collection.
-        </li>
-        <li>Click <a href="https://ameriflux.lbl.gov/sign-in">here</a> to test your credentials before attempting to
-            login for the first time
-        </li>
-    </ul>    </p>
+
     </div>
-    <fieldset class="graybox">
+    <div class="container-fluid" style="margin-top: 30px">
+    <div class="row-fluid">
+      <div class="well" style="width: 320px; margin-left: auto; margin-right: auto">
+        <div class="row-fluid">
+          <div>
+
+          </div>
+        </div><!-- /row fluid -->
+
+
+        <div class="row-fluid">
+          <div>
+
+    <fieldset class="graybox" >
+        <p>Log in with your FLUXNET credentials.<br>Click <a href="https://ameriflux-data.lbl.gov/Pages/RequestAccount.aspx">here</a> to create a new FLUXNET account.</p>
+        <p>Click <a href="https://ameriflux.lbl.gov/login">here</a> to test your credentials before attempting to login for the first time.</p>
+
         <form method="post">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit">Download Data</button>
+            <div class="form-actions-no-box">
+            <button class="button js-view-toggle columns small-12" type="submit">Download Data</button>
+            </div>
         </form>
-    </fieldset>
-    <p align="center">
+        <p align="center">
         <a href="{{ request.META.HTTP_REFERER }}">Back to Previous Page</a>
     </p>
+    </fieldset>
+          </div>
+        </div><!-- /.row-fluid -->
+      </div><!--/.well-->
+    </div><!-- /.row-fluid -->
+  </div><!-- /.container-fluid -->
+
     </div>
 {% endblock %}
