@@ -35,22 +35,16 @@ spec:
           command: [ "/bin/bash" ]
           args:
             - -c
-            - chown -Rv {{ .Values.uid }}:{{ .Values.gid  }} /var/run/postgresql //var/lib/postgresql/data;
+            - chown -v {{ .Values.uid }}:{{ .Values.gid  }} /var/run/postgresql /var/lib/postgresql/data
           volumeMounts:
             - mountPath: /var/lib/postgresql/data
               name: db-ngt
             - name: vol-varrun
               mountPath: /var/run/postgresql
           securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-                - ALL
-            privileged: false
-            readOnlyRootFilesystem: false
-            runAsNonRoot: true
-            runAsUser: {{ .Values.uid }}
-            runAsGroup: {{ .Values.gid }}
+           allowPrivilegeEscalation: false
+           runAsGroup: 0
+           runAsUser: 0
       containers:
       - env:
         - name: POSTGRES_DB
