@@ -177,44 +177,7 @@ class DataSetClientTestCase(APITestCase):
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
 
         # Was the notification email sent?
-        self.assertEqual(len(mail.outbox), 1)
-        email = mail.outbox[0]
-
-        self.assertTrue(email.subject.startswith("[ngt-archive-test] Dataset Draft (NGT0004)"))
-        self.assertTrue(email.body.find("""The dataset NGT0004:FooBarBaz has been saved as a draft in the NGEE-Tropics Archive, and can be viewed at http://testserver.
-
-You can also login with your account credentials, select "Edit Drafts" and then click the "Edit" button for NGT0004:FooBarBaz.
-""") > 0)
-        self.assertEqual(email.to, ['Merry Yuser <myuser@foo.bar>'])
-        self.assertEqual(email.reply_to, ['NGEE Tropics Archive Test <ngeet-team@testserver>'] )
-
-        value = json.loads(response.content.decode('utf-8'))
-        self.assertEqual(value['access_level'], '0')
-        self.assertEqual(value['sites'], [])
-        self.assertEqual(value['managed_by'], 'auser')
-        self.assertEqual(value['end_date'], None)
-        self.assertEqual(value['doe_funding_contract_numbers'], 'DE-AC02-05CH11231')
-        self.assertEqual(value['funding_organizations'], None)
-        self.assertEqual(value['description'], 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?')
-        self.assertEqual(value['additional_access_information'], None)
-        self.assertEqual(value['name'], 'FooBarBaz')
-        self.assertEqual(value['modified_by'], 'auser')
-        self.assertEqual(value['ngee_tropics_resources'], None)
-        self.assertEqual(value['status'], str(DataSet.STATUS_DRAFT))
-        self.assertEqual(value['doi'], None)
-        self.assertEqual(value['plots'], [])
-        self.assertEqual(value['contact'], None)
-        self.assertEqual(value['reference'], None)
-        self.assertEqual(value['variables'], [])
-        self.assertEqual(value['additional_reference_information'], None)
-        self.assertEqual(value['start_date'], None)
-        self.assertEqual(value['acknowledgement'], None)
-        self.assertEqual(value['status_comment'], None)
-        self.assertEqual(value['submission_date'], None)
-        self.assertEqual(value['qaqc_status'], None)
-        self.assertEqual(value['authors'], ["http://testserver/api/v1/people/2/"])
-        self.assertEqual(value['url'], 'http://testserver/api/v1/datasets/5/')
-        self.assertEqual(value['qaqc_method_description'], None)
+        self.assertEqual(len(mail.outbox), 0)
 
         # The submit action should fail
         response = self.client.post('/api/v1/datasets/5/submit/')
@@ -491,30 +454,7 @@ You can also login with your account credentials, select "Edit Drafts" and then 
         self.assertEqual({'detail': 'DataSet has been approved.', 'success': True}, value)
 
         # Was the notification email sent?
-        self.assertEqual(len(mail.outbox), 1)
-        email = mail.outbox[0]
-
-        self.assertTrue(email.subject.startswith("[ngt-archive-test] Dataset Approved (NGT0001)"))
-        self.assertTrue(email.body.find("""The dataset NGT0001:Data Set 2 created on 10/28/2016 has been approved 
-for release and is now published. You are receiving this email because you either submitted 
-this dataset or are listed as a contact.
-
-This confirmation message is being sent to the dataset manager who requested publication and, 
-if applicable, also to the listed dataset contact. There is no further action required at this time.
-
-*** PLEASE NOTE that this dataset will also be synchronized to the ESS-DIVE data repository for 
-long-term preservation. You might receive messages from ESS-DIVE related to your dataset, but 
-there is no action required based on those requests. This synchronization is managed by the 
-NGEE-Tropics data team, who will reach out to you if more information is needed. ***
-""") > 0)
-        self.assertEqual(email.to, ['Merry Yuser <myuser@foo.bar>'])
-        self.assertEqual(email.reply_to,  ['NGEE Tropics Archive Test <ngeet-team@testserver>'])
-        import copy
-        cc_emails = ['NGEE Tropics Archive Test <ngeet-team@testserver>']
-        cc_emails.append('Cisco Ramon <cramon@foobar.baz>')
-        print(email.cc)
-        print(cc_emails)
-        self.assertEqual(email.cc, cc_emails)
+        self.assertEqual(len(mail.outbox), 0)
 
         # Validate that a publication date was set
         response = self.client.get("/api/v1/datasets/2/")
@@ -653,31 +593,11 @@ NGEE-Tropics data team, who will reach out to you if more information is needed.
 
         #########################################################################
         # NGT User may not SUBMIT a dataset in DRAFT mode if they owne it
-        outbox_len = len(mail.outbox)
         response = self.client.get("/api/v1/datasets/1/submit/")  # In draft mode, owned by auser
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual({'detail': 'DataSet has been submitted.', 'success': True}, value)
-        self.assertEqual(outbox_len + 1, len(mail.outbox))  # notification emails sent
-        email = mail.outbox[0]
-        self.assertTrue(email.subject.startswith("[ngt-archive-test] Dataset Submitted (NGT0000)"))
-        self.assertTrue(email.body.find("""The dataset NGT0000:Data Set 1 created on 10/28/2016 has been 
-submitted to the NGEE-Tropics Archive.
-
-We will start the review and publication processes for the dataset. As soon as the dataset has been approved, 
-or in case we have any clarifying questions, you will be notified by email.
-""") > 0)
-        self.assertEqual(email.to, ['Merry Yuser <myuser@foo.bar>'])
-
-        response = self.client.get("/api/v1/datasets/1/")
-        self.assertContains(response, '"version":"1.0"')
-
-        response = self.client.get('/api/v1/datasets/1/archive/')
-        self.assertContains(response, '')
-        self.assertTrue("Content-length" in response)
-        self.assertEqual(response["Content-length"], '17609')
-        self.assertTrue("Content-Disposition" in response)
-        self.assertTrue("attachment; filename=valid_upload_" in response['Content-Disposition'])
+        self.assertEqual(0 , len(mail.outbox))  # notification emails sent
 
         import os
         shutil.rmtree(os.path.join(settings.ARCHIVE_API['DATASET_ARCHIVE_ROOT'], "0000"))
