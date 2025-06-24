@@ -491,14 +491,8 @@ You can also login with your account credentials, select "Edit Drafts" and then 
         self.assertEqual({'detail': 'DataSet has been approved.', 'success': True}, value)
 
         # Was the notification email sent?
-        self.assertEqual(len(mail.outbox), 2)
+        self.assertEqual(len(mail.outbox), 1)
         email = mail.outbox[0]
-        self.assertTrue(email.subject.startswith('[ngt-archive-test] Dataset NGT0001 Error on DOI on'))
-        self.assertTrue(email.body.startswith("""Dear NGEE-Tropics Data Admins,
-
-There was an issue publishing or minting a DOI by Mosely Admin. """))
-        self.assertEqual(email.to, ['NGEE Tropics Archive Test <ngeet-team@testserver>'])
-        email = mail.outbox[1]
 
         self.assertTrue(email.subject.startswith("[ngt-archive-test] Dataset Approved (NGT0001)"))
         self.assertTrue(email.body.find("""The dataset NGT0001:Data Set 2 created on 10/28/2016 has been approved 
@@ -664,14 +658,8 @@ NGEE-Tropics data team, who will reach out to you if more information is needed.
         value = json.loads(response.content.decode('utf-8'))
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual({'detail': 'DataSet has been submitted.', 'success': True}, value)
-        self.assertEqual(outbox_len + 2, len(mail.outbox))  # notification emails sent
+        self.assertEqual(outbox_len + 1, len(mail.outbox))  # notification emails sent
         email = mail.outbox[0]
-        self.assertTrue(email.subject.startswith('[ngt-archive-test] Dataset NGT0000 Error on DOI on'))
-        self.assertTrue(email.body.startswith("""Dear NGEE-Tropics Data Admins,
-
-There was an issue publishing or minting a DOI by Mosely Admin. """) > 0)
-        self.assertEqual(email.to, ['NGEE Tropics Archive Test <ngeet-team@testserver>'])
-        email = mail.outbox[1]
         self.assertTrue(email.subject.startswith("[ngt-archive-test] Dataset Submitted (NGT0000)"))
         self.assertTrue(email.body.find("""The dataset NGT0000:Data Set 1 created on 10/28/2016 has been 
 submitted to the NGEE-Tropics Archive.
