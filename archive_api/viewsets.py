@@ -30,7 +30,6 @@ from archive_api.permissions import HasArchivePermission, HasSubmitPermission, H
 from archive_api.serializers import DataSetSerializer, MeasurementVariableSerializer, \
     SiteSerializer, PersonSerializer, \
     PlotSerializer
-from archive_api.signals import dataset_status_change
 
 # import the logging library
 import logging
@@ -100,10 +99,6 @@ class DataSetViewSet(ModelViewSet):
         if self.request.user.is_authenticated and serializer.is_valid():
             instance = serializer.save(managed_by=self.request.user, modified_by=self.request.user)
 
-            # Send signal for the status change
-            dataset_status_change.send(sender=self.__class__, request=self.request,
-                                       user=self.request.user,
-                                       instance=instance, original_status=None)
 
     def perform_update(self, serializer):
         """
@@ -284,9 +279,6 @@ class DataSetViewSet(ModelViewSet):
                 dataset.refresh_from_db()
 
             dataset.refresh_from_db()
-            # Send the signal for the status change
-            dataset_status_change.send(sender=self.__class__, request=request, user=request.user,
-                                       instance=dataset, original_status=original_status)
 
     def get_queryset(self, ):
         """
