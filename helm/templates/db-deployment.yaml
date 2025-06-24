@@ -41,6 +41,16 @@ spec:
               name: db-ngt
             - name: vol-varrun
               mountPath: /var/run/postgresql
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+            readOnlyRootFilesystem: false
+            runAsNonRoot: true
+            runAsUser: {{ .Values.uid }}
+            runAsGroup: {{ .Values.gid }}
       containers:
       - env:
         - name: POSTGRES_DB
