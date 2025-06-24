@@ -30,8 +30,7 @@ from archive_api.permissions import HasArchivePermission, HasSubmitPermission, H
 from archive_api.serializers import DataSetSerializer, MeasurementVariableSerializer, \
     SiteSerializer, PersonSerializer, \
     PlotSerializer
-from archive_api.signals import dataset_status_change, dataset_doi_issue
-from archive_api.service import osti
+from archive_api.signals import dataset_status_change
 
 # import the logging library
 import logging
@@ -265,7 +264,6 @@ class DataSetViewSet(ModelViewSet):
 
                 # The status has changed
                 if status == SUBMITTED:
-                    doi_function = osti.mint
 
                     # This is the first time that dataset is being submitted
                     dataset.submission_date = now
@@ -273,7 +271,6 @@ class DataSetViewSet(ModelViewSet):
                         dataset.version = "1.0"
 
                 elif status == APPROVED:
-                    doi_function = osti.publish
                     dataset.approval_date = now
                     if original_status == SUBMITTED and not dataset.publication_date:
                         # The dataset is NOT LIVE yet and is being approved for the first time
@@ -285,21 +282,6 @@ class DataSetViewSet(ModelViewSet):
                 dataset.save(modified_date=now)
 
                 dataset.refresh_from_db()
-
-            if doi_function:
-                try:
-                    # process the DOI
-                    osti_record = doi_function(dataset.id)
-                    if osti_record and osti_record.status != "SUCCESS":
-                        error_message = f"doi:{osti_record.doi} doi_status:{osti_record.doi_status} " \
-                                        f"status:{osti_record.status} status_message:{osti_record.status_message}"
-                        dataset_doi_issue.send(sender=self.__class__, request=request, user=request.user,
-                                               instance=dataset, error_message=error_message)
-
-                except Exception as e:
-                    # Send notification to admin if there are any errors
-                    dataset_doi_issue.send(sender=self.__class__, request=request, user=request.user,
-                                           instance=dataset, error_message=str(e))
 
             dataset.refresh_from_db()
             # Send the signal for the status change
