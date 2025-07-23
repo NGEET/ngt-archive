@@ -381,7 +381,7 @@ def queue_essdive_transfer(sender, instance, **kwargs):
     """
     # Queue the model run on creation
     if "created" in kwargs and kwargs["created"] and not kwargs["raw"] and \
-            instance.dataset.access_level == DataSet.ACCESS_PUBLIC:
+            instance.dataset.access_level in (DataSet.ACCESS_PUBLIC, DataSet.ACCESS_NGEET):
 
         chain(tasks.transfer_start.s(instance.id),
               tasks.transfer.s(),
