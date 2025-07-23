@@ -92,13 +92,13 @@ class DataSetHistoryAdmin(SimpleHistoryAdmin):
                                   f"Requested transfer of {dataset.data_set_id()}.",
                                   messages.SUCCESS)
             else:
-                if dataset.access_level != DataSet.ACCESS_PUBLIC:
+                if dataset.access_level not in (DataSet.ACCESS_PUBLIC, DataSet.ACCESS_NGEET):
                     self.message_user(request,
-                                      f"Dataset {dataset.data_set_id()} id not public and cannot be transferred to ESS-DIVE",
+                                      f"Dataset {dataset.data_set_id()} id not public or ngee-tropics access level and cannot be transferred to ESS-DIVE",
                                       messages.WARNING)
-                if dataset.publication_date is None:
+                if dataset.approval_date is None:
                     self.message_user(request,
-                                      f"Dataset {dataset.data_set_id()} has never been published and cannot be transferred to ESS-DIVE",
+                                      f"Dataset {dataset.data_set_id()} has never been approved and cannot be transferred to ESS-DIVE",
                                       messages.WARNING)
 
         if transfer_count > 0:
