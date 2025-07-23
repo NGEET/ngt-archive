@@ -85,7 +85,7 @@ class DataSetHistoryAdmin(SimpleHistoryAdmin):
         transfer_count = 0
         for dataset in queryset:
 
-            if dataset.access_level == DataSet.ACCESS_PUBLIC and dataset.submission_date is not None:
+            if dataset.access_level in (DataSet.ACCESS_PUBLIC, DataSet.ACCESS_NGEET) and dataset.submission_date is not None:
                 transfer_count += 1
                 EssDiveTransfer.objects.create(dataset=dataset, type=transfer_type)
                 self.message_user(request,
