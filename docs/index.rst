@@ -17,4 +17,5 @@ Contents:
    releases
    contact
    license
+   datasets
 
