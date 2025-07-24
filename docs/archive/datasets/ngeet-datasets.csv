@@ -1,0 +1,19 @@
+Data set id,Version,Status,Access level,Doi,Name,Modified date,Last transfer date,Last transfer status
+NGT0016,1.0,Approved,NGEE Tropics,-,"Sapflow, Weather - Veracruz Mexico, April 2015 to March 2016","09/10/2024 14:26 PDT","07/23/2025 12:11 PDT",Success
+NGT0012,1.0,Approved,NGEE Tropics,-,"Leaf area index, Soltis Tower plot, Costa Rica, 2014","09/10/2024 14:18 PDT","07/23/2025 12:11 PDT",Success
+NGT0014,1.0,Approved,NGEE Tropics,-,"Leaf surface temperature, Soltis Center, 20150122 to 20160702","09/10/2024 14:18 PDT","07/23/2025 12:11 PDT",Success
+NGT0011,1.0,Approved,NGEE Tropics,-,"Meteorological Data, Soltis Center, Costa Rica, Jan 2014 - April 2016","09/10/2024 14:18 PDT","07/23/2025 12:11 PDT",Success
+NGT0024,1.0,Approved,NGEE Tropics,-,"PA_Bar SAP_voltage PAR_voltage","09/10/2024 14:18 PDT","07/23/2025 12:11 PDT",Success
+NGT0006,1.0,Approved,NGEE Tropics,-,"Sapflow, Soltis Center, Costa Rica (26 trees, total of 43 sensors), 2014-2016","09/10/2024 14:18 PDT","07/23/2025 12:11 PDT",Success
+NGT0028,1.0,Approved,NGEE Tropics,-,"Sapflow dataset (Version 2), July 2014-July2016, CR-SoC: Soltis Center","09/10/2024 14:15 PDT","07/23/2025 12:11 PDT",Success
+NGT0023,1.0,Approved,NGEE Tropics,-,"PR-Sabana Meteorological Data 01-2015 to 09-2016","09/10/2024 14:01 PDT","07/23/2025 12:11 PDT",Success
+NGT0025,1.0,Approved,NGEE Tropics,-,"Meteorological drivers, PA-BCI site, 2008-2014, QA/QC provisional data","09/10/2024 13:51 PDT","07/23/2025 12:11 PDT",Success
+NGT0042,1.0,Approved,NGEE Tropics,-,"EcoHydro WorkFlow, version 1.0: R scripts for synthesizing data using metadata described with FRAMES","09/10/2024 13:51 PDT","07/23/2025 12:11 PDT",Success
+NGT0049,1.0,Approved,NGEE Tropics,-,"FAST sensitivity analysis","09/10/2024 13:51 PDT","07/23/2025 12:11 PDT",Success
+NGT0055,1.0,Approved,NGEE Tropics,http://dx.doi.org/10.15486/ngt/1507769,"San Lorenzo meteorological drivers","09/10/2024 13:51 PDT","07/23/2025 12:11 PDT",Success
+NGT0056,1.0,Approved,NGEE Tropics,http://dx.doi.org/10.15486/ngt/1507770,"PNM meteorological drivers","09/10/2024 13:51 PDT","07/23/2025 12:11 PDT",Success
+NGT0094,1.0,Approved,NGEE Tropics,-,"Spatial & Temporal Variability of Soil Pore Water Chemistry & Stable Isotopes at Three Tropical Hillslopes: Puerto Rico","09/10/2024 13:51 PDT","07/23/2025 12:11 PDT",Success
+NGT0129,1.0,Approved,NGEE Tropics,http://dx.doi.org/10.15486/ngt/1602141,"Calibrated soil moisture data from Manaus, Brazil, August 2018 - December 2019","09/10/2024 13:51 PDT","07/23/2025 12:11 PDT",Success
+NGT0191,1.0,Approved,NGEE Tropics,https://doi.org/10.15486/ngt/1884391,"Raw tensiometer soil matric potential data, from Oct 2017-Jun 2020 in Manaus, Brazil","09/10/2024 13:51 PDT","07/23/2025 12:11 PDT",Success
+NGT0210,1.0,Approved,NGEE Tropics,https://doi.org/10.15486/ngt/2234266,"Sap flow data, Jan 2022-Dec 2022, Panama: PNM,BCI, and SLZ","09/10/2024 13:51 PDT","07/23/2025 12:11 PDT",Success
+NGT0005,1.0,Approved,NGEE Tropics,-,"Guyaflux-French Guiana","01/26/2017 09:59 PST",,,
